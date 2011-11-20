@@ -17,7 +17,7 @@ class BeanPropertyAccessorSpec extends Specification {
 
 	def setup() {
 		address = new Address(street: "94 Evergreen Terrace", city: "Springfield", country: "USA")
-		person = new Person(name: "Bart Simpson", password: "bartman", gender: "Male", dateOfBirth: new Date(87, 3, 19), address: address, emails: [home: "bart@thesimpsons.net", school: "bart.simpson@springfieldelementary.edu"])
+		person = new Person(name: "Bart Simpson", password: "bartman", gender: Gender.Male, dateOfBirth: new Date(87, 3, 19), address: address, emails: [home: "bart@thesimpsons.net", school: "bart.simpson@springfieldelementary.edu"])
 		person.save(failOnError: true)
 
 		author = new Author(name: "William Gibson")

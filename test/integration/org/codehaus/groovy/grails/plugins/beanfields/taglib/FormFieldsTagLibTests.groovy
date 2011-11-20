@@ -5,6 +5,7 @@ import org.codehaus.groovy.grails.support.MockStringResourceLoader
 import org.codehaus.groovy.grails.web.taglib.AbstractGrailsTagTests
 import org.codehaus.groovy.grails.web.taglib.exceptions.GrailsTagException
 import org.springframework.web.servlet.support.RequestContextUtils
+import org.codehaus.groovy.grails.web.taglib.*
 
 class FormFieldsTagLibTests extends AbstractGrailsTagTests {
 

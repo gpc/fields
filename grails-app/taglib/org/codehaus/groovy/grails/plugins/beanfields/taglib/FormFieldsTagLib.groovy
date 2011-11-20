@@ -12,7 +12,6 @@ import org.codehaus.groovy.grails.commons.*
 import org.codehaus.groovy.grails.plugins.beanfields.*
 import org.codehaus.groovy.grails.scaffolding.*
 
-@Artefact("TagLibrary")
 class FormFieldsTagLib implements GrailsApplicationAware {
 
 	static namespace = "form"

@@ -174,7 +174,7 @@ class FormFieldsTagLibSpec extends Specification {
 		java.sql.Time | false
 	}
 
-	@Unroll({"select for a $type.name property has a precision of 'day'"})
+	@Unroll({"select for a $type.simpleName property has a precision of 'day'"})
 	def "date and time precision"() {
 		given:
 		def model = [type: type, property: "prop", constraints: [:], persistentProperty: basicProperty]
@@ -193,7 +193,7 @@ class FormFieldsTagLibSpec extends Specification {
 		type << [Date, Calendar, java.sql.Date]
 	}
 
-	def "select for a java.sql.Time property has a precision of 'minute'"() {
+	def "select for a Time property has a precision of 'minute'"() {
 		given:
 		def model = [type: java.sql.Time, property: "prop", constraints: [:], persistentProperty: basicProperty]
 

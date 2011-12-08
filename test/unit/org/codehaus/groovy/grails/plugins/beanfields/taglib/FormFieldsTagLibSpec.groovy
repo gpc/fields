@@ -303,72 +303,92 @@ class FormFieldsTagLibSpec extends Specification {
 		applyTemplate('<form:field bean="personInstance" property="name" invalid="true"/>', [personInstance: personInstance]) == "invalid=true"
 	}
 
-//	void testRenderedInputIsPassedToTemplate() {
-//		views["/forms/default/_field.gsp"] = '${input}'
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == '<input type="text" name="name" value="Bart Simpson" required="" id="name" />'
-//	}
-//
-//	void testRenderedInputIsOverriddenByTemplateForPropertyType() {
-//		views["/forms/default/_field.gsp"] = '${input}'
-//
-//		views["/forms/java.lang.String/_input.gsp"] = 'PROPERTY TYPE TEMPLATE'
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == 'PROPERTY TYPE TEMPLATE'
-//	}
-//
-//	void testRenderedInputIsOverriddenByTemplateForDomainClassProperty() {
-//		views["/forms/default/_field.gsp"] = '${input}'
-//
-//		views["/forms/java.lang.String/_input.gsp"] = 'PROPERTY TYPE TEMPLATE'
-//		views["/forms/person/name/_input.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "CLASS AND PROPERTY TEMPLATE"
-//	}
-//
-//	void testRenderedInputIsOverriddenByTemplateFromControllerViewsDirectory() {
-//		views["/forms/default/_field.gsp"] = '${input}'
-//
-//		views["/forms/java.lang.String/_input.gsp"] = 'PROPERTY TYPE TEMPLATE'
-//		views["/forms/person/name/_input.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
-//		views["/person/name/_input.gsp"] = 'CONTROLLER FIELD TEMPLATE'
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == 'CONTROLLER FIELD TEMPLATE'
-//	}
-//
-//	void testBeanTagRendersFieldsForAllProperties() {
-//		views["/forms/default/_field.gsp"] = '${property} '
-//
-//		def output = applyTemplate('<form:bean bean="personInstance"/>', [personInstance: personInstance])
-//		output =~ /\bname\b/
-//		output =~ /\bpassword\b/
-//		output =~ /\bgender\b/
-//		output =~ /\bdateOfBirth\b/
-//		output =~ /\bminor\b/
-//	}
-//
-//	void testBeanTagRendersIndividualFieldsForEmbeddedProperties() {
-//		views["/forms/default/_field.gsp"] = '${property} '
-//
-//		def output = applyTemplate('<form:bean bean="personInstance"/>', [personInstance: personInstance])
-//		output =~ /\baddress\.street\b/
-//		output =~ /\baddress\.city\b/
-//		output =~ /\baddress\.country\b/
-//	}
-//
-//	void testBeanTagSkipsEventProperties() {
-//		views["/forms/default/_field.gsp"] = '${property} '
-//
-//		def output = applyTemplate('<form:bean bean="personInstance"/>', [personInstance: personInstance])
-//		!output.contains("onLoad")
-//	}
-//
-//	void testBeanTagSkipsTimestampProperties() {
-//		views["/forms/default/_field.gsp"] = '${property} '
-//
-//		def output = applyTemplate('<form:bean bean="personInstance"/>', [personInstance: personInstance])
-//		!output.contains("lastUpdated")
-//	}
+	void "rendered input is passed to template"() {
+		given:
+		views["/forms/default/_field.gsp"] = '${input}'
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == '<input type="text" name="name" value="Bart Simpson" required="" id="name" />'
+	}
+
+	void "rendered input is overridden by template for property type"() {
+		given:
+		views["/forms/default/_field.gsp"] = '${input}'
+		views["/forms/String/_input.gsp"] = 'PROPERTY TYPE TEMPLATE'
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == 'PROPERTY TYPE TEMPLATE'
+	}
+
+	void "rendered input is overridden by template for domain class property"() {
+		given:
+		views["/forms/default/_field.gsp"] = '${input}'
+		views["/forms/String/_input.gsp"] = 'PROPERTY TYPE TEMPLATE'
+		views["/forms/Person/name/_input.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
+
+		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "CLASS AND PROPERTY TEMPLATE"
+	}
+
+	void "rendered input is overridden by template from controller views directory"() {
+		given:
+		views["/forms/default/_field.gsp"] = '${input}'
+		views["/forms/String/_input.gsp"] = 'PROPERTY TYPE TEMPLATE'
+		views["/forms/Person/name/_input.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
+		views["/person/name/_input.gsp"] = 'CONTROLLER FIELD TEMPLATE'
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == 'CONTROLLER FIELD TEMPLATE'
+	}
+
+	void "bean tag renders fields for all properties"() {
+		given:
+		views["/forms/default/_field.gsp"] = '${property} '
+
+		when:
+		def output = applyTemplate('<form:bean bean="personInstance"/>', [personInstance: personInstance])
+
+		then:
+		output =~ /\bname\b/
+		output =~ /\bpassword\b/
+		output =~ /\bgender\b/
+		output =~ /\bdateOfBirth\b/
+		output =~ /\bminor\b/
+	}
+
+	void "bean tag renders individual fields for embedded properties"() {
+		given:
+		views["/forms/default/_field.gsp"] = '${property} '
+
+		when:
+		def output = applyTemplate('<form:bean bean="personInstance"/>', [personInstance: personInstance])
+
+		then:
+		output =~ /\baddress\.street\b/
+		output =~ /\baddress\.city\b/
+		output =~ /\baddress\.country\b/
+	}
+
+	void "bean tag skips event properties"() {
+		given:
+		views["/forms/default/_field.gsp"] = '${property} '
+
+		when:
+		def output = applyTemplate('<form:bean bean="personInstance"/>', [personInstance: personInstance])
+
+		then:
+		!output.contains("onLoad")
+	}
+
+	void "bean tag skips timestamp properties"() {
+		given:
+		views["/forms/default/_field.gsp"] = '${property} '
+
+		when:
+		def output = applyTemplate('<form:bean bean="personInstance"/>', [personInstance: personInstance])
+
+		then:
+		!output.contains("lastUpdated")
+	}
 
 }
 

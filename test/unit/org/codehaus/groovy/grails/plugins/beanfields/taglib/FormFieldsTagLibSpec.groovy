@@ -25,6 +25,7 @@ class FormFieldsTagLibSpec extends Specification {
 	}
 
 	def cleanup() {
+		views.clear()
 		applicationContext.getBean("groovyPagesTemplateEngine").clearPageCache()
 		applicationContext.getBean("groovyPagesTemplateRenderer").clearCache()
 	}
@@ -86,95 +87,113 @@ class FormFieldsTagLibSpec extends Specification {
 		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == 'PROPERTY TYPE TEMPLATE'
 	}
 
-//	void testResolvesTemplateForDomainClassProperty() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", 'DEFAULT FIELD TEMPLATE')
-//		resourceLoader.registerMockResource("/grails-app/views/forms/java.lang.String/_field.gsp", 'PROPERTY TYPE TEMPLATE')
-//		resourceLoader.registerMockResource("/grails-app/views/forms/person/name/_field.gsp", 'CLASS AND PROPERTY TEMPLATE')
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "CLASS AND PROPERTY TEMPLATE"
-//	}
-//
-//	void testResolvesTemplateFromControllerViewsDirectory() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", 'DEFAULT FIELD TEMPLATE')
-//		resourceLoader.registerMockResource("/grails-app/views/forms/java.lang.String/_field.gsp", 'PROPERTY TYPE TEMPLATE')
-//		resourceLoader.registerMockResource("/grails-app/views/forms/person/name/_field.gsp", 'CLASS AND PROPERTY TEMPLATE')
-//		resourceLoader.registerMockResource("/grails-app/views/person/name/_field.gsp", 'CONTROLLER FIELD TEMPLATE')
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == 'CONTROLLER FIELD TEMPLATE'
-//	}
-//
-//	void testBeanAndPropertyAttributesArePassedToTemplate() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", '${bean.getClass().name}.${property}')
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "Person.name"
-//	}
-//
-//	void testConstraintsArePassedToTemplate() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", 'nullable=${constraints.nullable}, blank=${constraints.blank}')
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "nullable=false, blank=false"
-//	}
-//
-//	void testLabelIsResolvedByConventionAndPassedToTemplate() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", '<label>${label}</label>')
-//		messageSource.addMessage("Person.name.label", RequestContextUtils.getLocale(request), "Name of person")
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "<label>Name of person</label>"
-//	}
-//
-//	void testLabelIsDefaultedToNaturalPropertyName() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", '<label>${label}</label>')
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "<label>Name</label>"
-//		assert applyTemplate('<form:field bean="personInstance" property="dateOfBirth"/>', [personInstance: personInstance]) == "<label>Date Of Birth</label>"
-//	}
-//
-//	void testLabelCanBeOverriddenByLabelAttribute() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", '<label>${label}</label>')
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="name" label="Name of person"/>', [personInstance: personInstance]) == "<label>Name of person</label>"
-//	}
-//
+	void "resolves template for domain class property"() {
+		given:
+		views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/forms/String/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
+		views["/forms/person/name/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "CLASS AND PROPERTY TEMPLATE"
+	}
+
+	void "resolves template from controller views directory"() {
+		given:
+		views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/forms/String/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
+		views["/forms/person/name/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
+		views["/person/name/_field.gsp"] = 'CONTROLLER FIELD TEMPLATE'
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == 'CONTROLLER FIELD TEMPLATE'
+	}
+	
+	// TODO: superclasses
+
+	void "bean and property attributes are passed to template"() {
+		given:
+		views["/forms/default/_field.gsp"] = '${bean.getClass().simpleName}.${property}'
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "Person.name"
+	}
+
+	void "constraints are passed to template"() {
+		given:
+		views["/forms/default/_field.gsp"] = 'nullable=${constraints.nullable}, blank=${constraints.blank}'
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "nullable=false, blank=false"
+	}
+
+	void "label is resolved by convention and passed to template"() {
+		given:
+		views["/forms/default/_field.gsp"] = '<label>${label}</label>'
+
+		and:
+		messageSource.addMessage("Person.name.label", request.locale, "Name of person")
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "<label>Name of person</label>"
+	}
+
+	void "label is defaulted to natural property name"() {
+		given:
+		views["/forms/default/_field.gsp"] = '<label>${label}</label>'
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "<label>Name</label>"
+		applyTemplate('<form:field bean="personInstance" property="dateOfBirth"/>', [personInstance: personInstance]) == "<label>Date Of Birth</label>"
+	}
+
+	void "label can be overridden by label attribute"() {
+		given:
+		views["/forms/default/_field.gsp"] = '<label>${label}</label>'
+
+		expect
+		applyTemplate('<form:field bean="personInstance" property="name" label="Name of person"/>', [personInstance: personInstance]) == "<label>Name of person</label>"
+	}
+
 //	void testLabelCanBeOverriddenByLabelKeyAttribute() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", '<label>${label}</label>')
+//		views["/forms/default/_field.gsp"] = '<label>${label}</label>'
 //		messageSource.addMessage("custom.name.label", RequestContextUtils.getLocale(request), "Name of person")
 //
 //		assert applyTemplate('<form:field bean="personInstance" property="name" labelKey="custom.name.label"/>', [personInstance: personInstance]) == "<label>Name of person</label>"
 //	}
 //
 //	void testValueIsDefaultedToPropertyValue() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", '<g:formatDate date="${value}" format="yyyy-MM-dd"/>')
+//		views["/forms/default/_field.gsp"] = '<g:formatDate date="${value}" format="yyyy-MM-dd"/>'
 //
 //		assert applyTemplate('<form:field bean="personInstance" property="dateOfBirth"/>', [personInstance: personInstance]) == "1987-04-19"
 //	}
 //
 //	void testValueIsOverriddenByValueAttribute() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", '${value}')
+//		views["/forms/default/_field.gsp"] = '${value}'
 //
 //		assert applyTemplate('<form:field bean="personInstance" property="name" value="Bartholomew J. Simpson"/>', [personInstance: personInstance]) == "Bartholomew J. Simpson"
 //	}
 //
 //	void testValueFallsBackToDefault() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", '${value}')
+//		views["/forms/default/_field.gsp"] = '${value}'
 //		personInstance.name = null
 //
 //		assert applyTemplate('<form:field bean="personInstance" property="name" default="A. N. Other"/>', [personInstance: personInstance]) == "A. N. Other"
 //	}
 //
 //	void testDefaultAttributeIsIgnoredIfPropertyHasNonNullValue() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", '${value}')
+//		views["/forms/default/_field.gsp"] = '${value}'
 //
 //		assert applyTemplate('<form:field bean="personInstance" property="name" default="A. N. Other"/>', [personInstance: personInstance]) == "Bart Simpson"
 //	}
 //
 //	void testErrorsPassedToTemplateIsAnEmptyCollectionForValidBean() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", '<g:each var="error" in="${errors}"><em>${error}</em></g:each>')
+//		views["/forms/default/_field.gsp"] = '<g:each var="error" in="${errors}"><em>${error}</em></g:each>'
 //
 //		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == ""
 //	}
 //
 //	void testErrorsPassedToTemplateIsAnCollectionOfStrings() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", '<g:each var="error" in="${errors}"><em>${error}</em></g:each>')
+//		views["/forms/default/_field.gsp"] = '<g:each var="error" in="${errors}"><em>${error}</em></g:each>'
 //		personInstance.errors.rejectValue("name", "blank")
 //		personInstance.errors.rejectValue("name", "nullable")
 //
@@ -182,85 +201,85 @@ class FormFieldsTagLibSpec extends Specification {
 //	}
 //
 //	void testResolvesTemplateForEmbeddedClassProperty() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", 'DEFAULT FIELD TEMPLATE')
-//		resourceLoader.registerMockResource("/grails-app/views/forms/java.lang.String/_field.gsp", 'PROPERTY TYPE TEMPLATE')
-//		resourceLoader.registerMockResource("/grails-app/views/forms/address/city/_field.gsp", 'CLASS AND PROPERTY TEMPLATE')
+//		views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+//		views["/forms/java.lang.String/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
+//		views["/forms/address/city/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
 //
 //		assert applyTemplate('<form:field bean="personInstance" property="address.city"/>', [personInstance: personInstance]) == "CLASS AND PROPERTY TEMPLATE"
 //	}
 //
 //	void testRequiredFlagIsPassedToTemplate() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", 'required=${required}')
+//		views["/forms/default/_field.gsp"] = 'required=${required}'
 //
 //		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "required=true"
 //	}
 //
 //	void testRequiredFlagCanBeForcedWithAttribute() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", 'required=${required}')
+//		views["/forms/default/_field.gsp"] = 'required=${required}'
 //
 //		assert applyTemplate('<form:field bean="personInstance" property="minor" required="true"/>', [personInstance: personInstance]) == "required=true"
 //	}
 //
 //	void testRequiredFlagCanBeForcedOffWithAttribute() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", 'required=${required}')
+//		views["/forms/default/_field.gsp"] = 'required=${required}'
 //
 //		assert applyTemplate('<form:field bean="personInstance" property="name" required="false"/>', [personInstance: personInstance]) == "required=false"
 //	}
 //
 //	void testInvalidFlagIsPassedToTemplateIfBeanHasErrors() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", 'invalid=${invalid}')
+//		views["/forms/default/_field.gsp"] = 'invalid=${invalid}'
 //		personInstance.errors.rejectValue("name", "blank")
 //
 //		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "invalid=true"
 //	}
 //
 //	void testInvalidFlagIsNotPassedToTemplateIfBeanHasNoErrors() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", 'invalid=${invalid}')
+//		views["/forms/default/_field.gsp"] = 'invalid=${invalid}'
 //
 //		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "invalid=false"
 //	}
 //
 //	void testInvalidFlagCanBeOverriddenWithAttribute() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", 'invalid=${invalid}')
+//		views["/forms/default/_field.gsp"] = 'invalid=${invalid}'
 //
 //		assert applyTemplate('<form:field bean="personInstance" property="name" invalid="true"/>', [personInstance: personInstance]) == "invalid=true"
 //	}
 //
 //	void testRenderedInputIsPassedToTemplate() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", '${input}')
+//		views["/forms/default/_field.gsp"] = '${input}'
 //
 //		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == '<input type="text" name="name" value="Bart Simpson" required="" id="name" />'
 //	}
 //
 //	void testRenderedInputIsOverriddenByTemplateForPropertyType() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", '${input}')
+//		views["/forms/default/_field.gsp"] = '${input}'
 //
-//		resourceLoader.registerMockResource("/grails-app/views/forms/java.lang.String/_input.gsp", 'PROPERTY TYPE TEMPLATE')
+//		views["/forms/java.lang.String/_input.gsp"] = 'PROPERTY TYPE TEMPLATE'
 //
 //		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == 'PROPERTY TYPE TEMPLATE'
 //	}
 //
 //	void testRenderedInputIsOverriddenByTemplateForDomainClassProperty() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", '${input}')
+//		views["/forms/default/_field.gsp"] = '${input}'
 //
-//		resourceLoader.registerMockResource("/grails-app/views/forms/java.lang.String/_input.gsp", 'PROPERTY TYPE TEMPLATE')
-//		resourceLoader.registerMockResource("/grails-app/views/forms/person/name/_input.gsp", 'CLASS AND PROPERTY TEMPLATE')
+//		views["/forms/java.lang.String/_input.gsp"] = 'PROPERTY TYPE TEMPLATE'
+//		views["/forms/person/name/_input.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
 //
 //		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "CLASS AND PROPERTY TEMPLATE"
 //	}
 //
 //	void testRenderedInputIsOverriddenByTemplateFromControllerViewsDirectory() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", '${input}')
+//		views["/forms/default/_field.gsp"] = '${input}'
 //
-//		resourceLoader.registerMockResource("/grails-app/views/forms/java.lang.String/_input.gsp", 'PROPERTY TYPE TEMPLATE')
-//		resourceLoader.registerMockResource("/grails-app/views/forms/person/name/_input.gsp", 'CLASS AND PROPERTY TEMPLATE')
-//		resourceLoader.registerMockResource("/grails-app/views/person/name/_input.gsp", 'CONTROLLER FIELD TEMPLATE')
+//		views["/forms/java.lang.String/_input.gsp"] = 'PROPERTY TYPE TEMPLATE'
+//		views["/forms/person/name/_input.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
+//		views["/person/name/_input.gsp"] = 'CONTROLLER FIELD TEMPLATE'
 //
 //		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == 'CONTROLLER FIELD TEMPLATE'
 //	}
 //
 //	void testBeanTagRendersFieldsForAllProperties() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", '${property} ')
+//		views["/forms/default/_field.gsp"] = '${property} '
 //
 //		def output = applyTemplate('<form:bean bean="personInstance"/>', [personInstance: personInstance])
 //		output =~ /\bname\b/
@@ -271,7 +290,7 @@ class FormFieldsTagLibSpec extends Specification {
 //	}
 //
 //	void testBeanTagRendersIndividualFieldsForEmbeddedProperties() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", '${property} ')
+//		views["/forms/default/_field.gsp"] = '${property} '
 //
 //		def output = applyTemplate('<form:bean bean="personInstance"/>', [personInstance: personInstance])
 //		output =~ /\baddress\.street\b/
@@ -280,14 +299,14 @@ class FormFieldsTagLibSpec extends Specification {
 //	}
 //
 //	void testBeanTagSkipsEventProperties() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", '${property} ')
+//		views["/forms/default/_field.gsp"] = '${property} '
 //
 //		def output = applyTemplate('<form:bean bean="personInstance"/>', [personInstance: personInstance])
 //		!output.contains("onLoad")
 //	}
 //
 //	void testBeanTagSkipsTimestampProperties() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", '${property} ')
+//		views["/forms/default/_field.gsp"] = '${property} '
 //
 //		def output = applyTemplate('<form:bean bean="personInstance"/>', [personInstance: personInstance])
 //		!output.contains("lastUpdated")

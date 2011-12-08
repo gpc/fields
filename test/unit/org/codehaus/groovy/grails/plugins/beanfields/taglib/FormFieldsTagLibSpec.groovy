@@ -7,11 +7,10 @@ import spock.lang.Specification
 import grails.test.mixin.*
 
 @TestFor(FormFieldsTagLib)
-@Mock(Person)
+@Mock([Person, Employee])
 class FormFieldsTagLibSpec extends Specification {
 
 	def personInstance
-	def resourceLoader
 
 	def setupSpec() {
 		applicationContext.registerSingleton("beanPropertyAccessorFactory", BeanPropertyAccessorFactory)
@@ -91,7 +90,7 @@ class FormFieldsTagLibSpec extends Specification {
 		given:
 		views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
 		views["/forms/String/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
-		views["/forms/person/name/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
+		views["/forms/Person/name/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
 
 		expect:
 		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "CLASS AND PROPERTY TEMPLATE"
@@ -101,14 +100,37 @@ class FormFieldsTagLibSpec extends Specification {
 		given:
 		views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
 		views["/forms/String/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
-		views["/forms/person/name/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
+		views["/forms/Person/name/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
 		views["/person/name/_field.gsp"] = 'CONTROLLER FIELD TEMPLATE'
 
 		expect:
 		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == 'CONTROLLER FIELD TEMPLATE'
 	}
-	
-	// TODO: superclasses
+
+	def "resolves template for superclass property"() {
+		given:
+		views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/forms/Person/name/_field.gsp"] = 'SUPERCLASS TEMPLATE'
+
+		and:
+		def employeeInstance = new Employee(name: "Waylon Smithers", salary: 10)
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: employeeInstance]) == 'SUPERCLASS TEMPLATE'
+	}
+
+	def "subclass property template overrides superclass property template"() {
+		given:
+		views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/forms/Person/name/_field.gsp"] = 'SUPERCLASS TEMPLATE'
+		views["/forms/Employee/name/_field.gsp"] = 'SUBCLASS TEMPLATE'
+
+		and:
+		def employeeInstance = new Employee(name: "Waylon Smithers", salary: 10)
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: employeeInstance]) == 'SUBCLASS TEMPLATE'
+	}
 
 	void "bean and property attributes are passed to template"() {
 		given:
@@ -150,101 +172,137 @@ class FormFieldsTagLibSpec extends Specification {
 		given:
 		views["/forms/default/_field.gsp"] = '<label>${label}</label>'
 
-		expect
+		expect:
 		applyTemplate('<form:field bean="personInstance" property="name" label="Name of person"/>', [personInstance: personInstance]) == "<label>Name of person</label>"
 	}
 
-//	void testLabelCanBeOverriddenByLabelKeyAttribute() {
-//		views["/forms/default/_field.gsp"] = '<label>${label}</label>'
-//		messageSource.addMessage("custom.name.label", RequestContextUtils.getLocale(request), "Name of person")
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="name" labelKey="custom.name.label"/>', [personInstance: personInstance]) == "<label>Name of person</label>"
-//	}
-//
-//	void testValueIsDefaultedToPropertyValue() {
-//		views["/forms/default/_field.gsp"] = '<g:formatDate date="${value}" format="yyyy-MM-dd"/>'
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="dateOfBirth"/>', [personInstance: personInstance]) == "1987-04-19"
-//	}
-//
-//	void testValueIsOverriddenByValueAttribute() {
-//		views["/forms/default/_field.gsp"] = '${value}'
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="name" value="Bartholomew J. Simpson"/>', [personInstance: personInstance]) == "Bartholomew J. Simpson"
-//	}
-//
-//	void testValueFallsBackToDefault() {
-//		views["/forms/default/_field.gsp"] = '${value}'
-//		personInstance.name = null
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="name" default="A. N. Other"/>', [personInstance: personInstance]) == "A. N. Other"
-//	}
-//
-//	void testDefaultAttributeIsIgnoredIfPropertyHasNonNullValue() {
-//		views["/forms/default/_field.gsp"] = '${value}'
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="name" default="A. N. Other"/>', [personInstance: personInstance]) == "Bart Simpson"
-//	}
-//
-//	void testErrorsPassedToTemplateIsAnEmptyCollectionForValidBean() {
-//		views["/forms/default/_field.gsp"] = '<g:each var="error" in="${errors}"><em>${error}</em></g:each>'
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == ""
-//	}
-//
-//	void testErrorsPassedToTemplateIsAnCollectionOfStrings() {
-//		views["/forms/default/_field.gsp"] = '<g:each var="error" in="${errors}"><em>${error}</em></g:each>'
-//		personInstance.errors.rejectValue("name", "blank")
-//		personInstance.errors.rejectValue("name", "nullable")
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "<em>blank</em><em>nullable</em>"
-//	}
-//
-//	void testResolvesTemplateForEmbeddedClassProperty() {
-//		views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
-//		views["/forms/java.lang.String/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
-//		views["/forms/address/city/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="address.city"/>', [personInstance: personInstance]) == "CLASS AND PROPERTY TEMPLATE"
-//	}
-//
-//	void testRequiredFlagIsPassedToTemplate() {
-//		views["/forms/default/_field.gsp"] = 'required=${required}'
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "required=true"
-//	}
-//
-//	void testRequiredFlagCanBeForcedWithAttribute() {
-//		views["/forms/default/_field.gsp"] = 'required=${required}'
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="minor" required="true"/>', [personInstance: personInstance]) == "required=true"
-//	}
-//
-//	void testRequiredFlagCanBeForcedOffWithAttribute() {
-//		views["/forms/default/_field.gsp"] = 'required=${required}'
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="name" required="false"/>', [personInstance: personInstance]) == "required=false"
-//	}
-//
-//	void testInvalidFlagIsPassedToTemplateIfBeanHasErrors() {
-//		views["/forms/default/_field.gsp"] = 'invalid=${invalid}'
-//		personInstance.errors.rejectValue("name", "blank")
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "invalid=true"
-//	}
-//
-//	void testInvalidFlagIsNotPassedToTemplateIfBeanHasNoErrors() {
-//		views["/forms/default/_field.gsp"] = 'invalid=${invalid}'
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "invalid=false"
-//	}
-//
-//	void testInvalidFlagCanBeOverriddenWithAttribute() {
-//		views["/forms/default/_field.gsp"] = 'invalid=${invalid}'
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="name" invalid="true"/>', [personInstance: personInstance]) == "invalid=true"
-//	}
-//
+	void "label can be overridden by label key attribute"() {
+		given:
+		views["/forms/default/_field.gsp"] = '<label>${label}</label>'
+
+		and:
+		messageSource.addMessage("custom.name.label", request.locale, "Name of person")
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="name" labelKey="custom.name.label"/>', [personInstance: personInstance]) == "<label>Name of person</label>"
+	}
+
+	void "value is defaulted to property value"() {
+		given:
+		views["/forms/default/_field.gsp"] = '<g:formatDate date="${value}" format="yyyy-MM-dd"/>'
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="dateOfBirth"/>', [personInstance: personInstance]) == "1987-04-19"
+	}
+
+	void "value is overridden by value attribute"() {
+		given:
+		views["/forms/default/_field.gsp"] = '${value}'
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="name" value="Bartholomew J. Simpson"/>', [personInstance: personInstance]) == "Bartholomew J. Simpson"
+	}
+
+	void "value falls back to default"() {
+		given:
+		views["/forms/default/_field.gsp"] = '${value}'
+
+		and:
+		personInstance.name = null
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="name" default="A. N. Other"/>', [personInstance: personInstance]) == "A. N. Other"
+	}
+
+	void "default attribute is ignored if property has non-null value"() {
+		given:
+		views["/forms/default/_field.gsp"] = '${value}'
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="name" default="A. N. Other"/>', [personInstance: personInstance]) == "Bart Simpson"
+	}
+
+	void "errors passed to template is an empty collection for valid bean"() {
+		given:
+		views["/forms/default/_field.gsp"] = '<g:each var="error" in="${errors}"><em>${error}</em></g:each>'
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == ""
+	}
+
+	void "errors passed to template is a collection of strings"() {
+		given:
+		views["/forms/default/_field.gsp"] = '<g:each var="error" in="${errors}"><em>${error}</em></g:each>'
+
+		and:
+		personInstance.errors.rejectValue("name", "blank")
+		personInstance.errors.rejectValue("name", "nullable")
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "<em>blank</em><em>nullable</em>"
+	}
+
+	void "resolves template for embedded class property"() {
+		given:
+		views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/forms/String/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
+		views["/forms/Address/city/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="address.city"/>', [personInstance: personInstance]) == "CLASS AND PROPERTY TEMPLATE"
+	}
+
+	void "required flag is passed to template"() {
+		given:
+		views["/forms/default/_field.gsp"] = 'required=${required}'
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "required=true"
+	}
+
+	void "required flag can be forced with attribute"() {
+		given:
+		views["/forms/default/_field.gsp"] = 'required=${required}'
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="minor" required="true"/>', [personInstance: personInstance]) == "required=true"
+	}
+
+	void "required flag can be forced off with attribute"() {
+		given:
+		views["/forms/default/_field.gsp"] = 'required=${required}'
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="name" required="false"/>', [personInstance: personInstance]) == "required=false"
+	}
+
+	void "invalid flag is passed to template if bean has errors"() {
+		given:
+		views["/forms/default/_field.gsp"] = 'invalid=${invalid}'
+
+		and:
+		personInstance.errors.rejectValue("name", "blank")
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "invalid=true"
+	}
+
+	void "invalid flag is not passed to template if bean has no errors"() {
+		given:
+		views["/forms/default/_field.gsp"] = 'invalid=${invalid}'
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "invalid=false"
+	}
+
+	void "invalid flag can be overridden with attribute"() {
+		given:
+		views["/forms/default/_field.gsp"] = 'invalid=${invalid}'
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="name" invalid="true"/>', [personInstance: personInstance]) == "invalid=true"
+	}
+
 //	void testRenderedInputIsPassedToTemplate() {
 //		views["/forms/default/_field.gsp"] = '${input}'
 //
@@ -334,6 +392,11 @@ class Person {
 	def onLoad = {
 		println "loaded"
 	}
+}
+
+@Entity
+class Employee extends Person {
+	int salary
 }
 
 class Address {

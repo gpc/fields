@@ -111,12 +111,11 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		// TODO: implications for templates supplied by plugins
 		def templateResolveOrder = []
 		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/", controllerName, propertyAccessor.propertyName, templateName)
-		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", propertyAccessor.beanClass.propertyName, propertyAccessor.propertyName, templateName)
-		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", propertyAccessor.type.simpleName, templateName)
-        for (superclass in ClassUtils.getAllSuperclasses(propertyAccessor.type)) {
-            templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", superclass.simpleName, templateName)
-
+		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", propertyAccessor.beanClass.clazz.simpleName, propertyAccessor.propertyName, templateName)
+        for (superclass in ClassUtils.getAllSuperclasses(propertyAccessor.beanClass.clazz)) {
+            templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", superclass.simpleName, propertyAccessor.propertyName, templateName)
         }
+		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", propertyAccessor.type.simpleName, templateName)
 		templateResolveOrder << "/forms/default/$templateName"
 
 		def template = templateResolveOrder.find {

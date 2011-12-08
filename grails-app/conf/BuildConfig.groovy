@@ -1,3 +1,5 @@
+grails.servlet.version = "2.5"
+grails.project.work.dir = "target"
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
@@ -10,6 +12,7 @@ grails.project.dependency.resolution = {
     log "warn"
 
     repositories {
+		inherits true
 		grailsHome()
         grailsCentral()
 		grailsPlugins()

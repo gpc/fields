@@ -3,6 +3,7 @@ package org.codehaus.groovy.grails.plugins.beanfields.taglib
 import grails.artefact.Artefact
 import javax.annotation.PostConstruct
 import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang.ClassUtils
 import org.codehaus.groovy.grails.io.support.GrailsResourceUtils
 import org.codehaus.groovy.grails.plugins.GrailsPluginManager
 import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
@@ -30,14 +31,15 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		if (!attrs.bean) throwTagError("Tag [bean] is missing required attribute [bean]")
 		def bean = resolveBean(attrs)
 		def domainClass = resolveDomainClass(bean)
+        def fieldTemplateName = attrs.template ?: "field"
 
 		for (property in resolvePersistentProperties(domainClass)) {
 			if (property.embedded) {
 				for (embeddedProp in resolvePersistentProperties(property.component)) {
-					out << field(bean: bean, property: property.name)
+					out << field(bean: bean, property: property.name, template: fieldTemplateName)
 				}
 			} else {
-				out << field(bean: bean, property: property.name)
+				out << field(bean: bean, property: property.name, template: fieldTemplateName)
 			}
 		}
 	}
@@ -45,24 +47,28 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	Closure field = { attrs ->
 		if (!attrs.bean) throwTagError("Tag [field] is missing required attribute [bean]")
 		if (!attrs.property) throwTagError("Tag [field] is missing required attribute [property]")
+        def templateName = attrs.template ?: "field"
 
 		def propertyAccessor = resolveProperty(attrs)
 		def model = buildModel(propertyAccessor, attrs)
 
-		model.input = renderInput(propertyAccessor, model)
+		//model.input = renderInput(propertyAccessor, model)
 
-		def template = resolveFieldTemplate(propertyAccessor, "field")
+		def template = resolveFieldTemplate(propertyAccessor, templateName)
 		out << render(template: template, model: model)
 	}
 
-	Closure input = { attrs ->
-		if (!attrs.bean) throwTagError("Tag [input] is missing required attribute [bean]")
-		if (!attrs.property) throwTagError("Tag [input] is missing required attribute [property]")
+    Closure widget = { String name, attrs ->
+        if (!attrs.bean) throwTagError("Tag [$name] is missing required attribute [bean]")
+        if (!attrs.property) throwTagError("Tag [$name] is missing required attribute [property]")
 
-		def propertyAccessor = resolveProperty(attrs)
-		def model = buildModel(propertyAccessor, attrs)
-		out << renderInput(propertyAccessor, model)
-	}
+        def propertyAccessor = resolveProperty(attrs)
+        def model = buildModel(propertyAccessor, attrs)
+        out << renderWidget(name, propertyAccessor, model)
+    }
+
+    Closure input = widget.curry("input")
+    Closure show = widget.curry("show")
 
 	private BeanPropertyAccessor resolveProperty(attrs) {
 		def bean = resolveBean(attrs)
@@ -86,8 +92,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		]
 	}
 
-	private String renderInput(BeanPropertyAccessor propertyAccessor, LinkedHashMap<String, Object> model) {
-		def template = resolveFieldTemplate(propertyAccessor, "input")
+	private String renderWidget(String name, BeanPropertyAccessor propertyAccessor, LinkedHashMap<String, Object> model) {
+		def template = resolveFieldTemplate(propertyAccessor, name)
 		if (template) {
 			return render(template: template, model: model)
 		} else {
@@ -100,18 +106,25 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		// order of priority for template resolution
 		// 1: grails-app/views/controller/<property>/_field.gsp
 		// 2: grails-app/views/forms/<class>.<property>/_field.gsp
-		// 3: grails-app/views/forms/<type>/_field.gsp
+		// 3: grails-app/views/forms/<type>/_field.gsp, type is class' simpleName
 		// 4: grails-app/views/forms/default/_field.gsp
 		// TODO: implications for templates supplied by plugins
 		def templateResolveOrder = []
 		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/", controllerName, propertyAccessor.propertyName, templateName)
 		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", propertyAccessor.beanClass.propertyName, propertyAccessor.propertyName, templateName)
-		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", propertyAccessor.type.name, templateName)
+		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", propertyAccessor.type.simpleName, templateName)
+        for (superclass in ClassUtils.getAllSuperclasses(propertyAccessor.type)) {
+            templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", superclass.simpleName, templateName)
+
+        }
 		templateResolveOrder << "/forms/default/$templateName"
 
 		def template = templateResolveOrder.find {
 			groovyPageLocator.findTemplateByPath(it)
 		}
+        if (!template) {
+            log.error "could not find any template $templateResolveOrder"
+        }
 		return template
 	}
 
@@ -120,23 +133,35 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	private GrailsDomainClass resolveDomainClass(bean) {
-		resolveDomainClass(bean.getClass())
+        resolveDomainClass(bean.getClass())
 	}
 
 	private GrailsDomainClass resolveDomainClass(Class beanClass) {
-		grailsApplication.getArtefact("Domain", beanClass.simpleName)
+        grailsApplication.getDomainClass(beanClass.name)
 	}
 
 	private List<GrailsDomainClassProperty> resolvePersistentProperties(GrailsDomainClass domainClass) {
 		boolean hasHibernate = pluginManager?.hasGrailsPlugin('hibernate')
 		def properties = domainClass.persistentProperties as List
+
+        def blackList = ['dateCreated', 'lastUpdated']
+        try {
+            def domainClassExclusions = domainClass.clazz.scaffold?.exclude
+            if (domainClassExclusions) {
+                blackList.addAll(domainClassExclusions)
+            }
+        } catch (MissingPropertyException e) {
+            // MPE occurs if scaffold is not defined on domain class
+        }
+        properties = properties.findAll { ! (it.name in blackList) }
+
 		def comparator = hasHibernate ? new DomainClassPropertyComparator(domainClass) : new SimpleDomainClassPropertyComparator(domainClass)
 		Collections.sort(properties, comparator)
 		properties
 	}
 
 	private Map<String, Object> resolveProperty(bean, String property) {
-		def domainClass = resolveDomainClass(bean.getClass())
+		def domainClass = resolveDomainClass(bean)
 		def path = property.tokenize(".")
 		resolvePropertyFromPathComponents(PropertyAccessorFactory.forBeanPropertyAccess(bean), domainClass, path)
 	}
@@ -260,4 +285,3 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 }
-

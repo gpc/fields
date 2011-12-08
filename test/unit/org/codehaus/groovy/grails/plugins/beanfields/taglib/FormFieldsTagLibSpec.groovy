@@ -1,10 +1,10 @@
 package org.codehaus.groovy.grails.plugins.beanfields.taglib
 
 import grails.persistence.Entity
+import org.codehaus.groovy.grails.plugins.beanfields.BeanPropertyAccessorFactory
 import org.codehaus.groovy.grails.web.taglib.exceptions.GrailsTagException
 import spock.lang.Specification
 import grails.test.mixin.*
-import org.codehaus.groovy.grails.plugins.beanfields.BeanPropertyAccessorFactory
 
 @TestFor(FormFieldsTagLib)
 @Mock(Person)
@@ -13,16 +13,23 @@ class FormFieldsTagLibSpec extends Specification {
 	def personInstance
 	def resourceLoader
 
-	def setup() {
-//		applicationContext.registerSingleton("beanPropertyAccessorFactory", BeanPropertyAccessorFactory)
+	def setupSpec() {
+		applicationContext.registerSingleton("beanPropertyAccessorFactory", BeanPropertyAccessorFactory)
+	}
 
+	def setup() {
 		webRequest.controllerName = "person"
 
 		personInstance = new Person(name: "Bart Simpson", password: "bartman", gender: "Male", dateOfBirth: new Date(87, 3, 19), minor: true)
 		personInstance.address = new Address(street: "94 Evergreen Terrace", city: "Springfield", country: "USA")
 	}
 
-	def "bean attribute is required"() {
+	def cleanup() {
+		applicationContext.getBean("groovyPagesTemplateEngine").clearPageCache()
+		applicationContext.getBean("groovyPagesTemplateRenderer").clearCache()
+	}
+
+	void "bean attribute is required"() {
 		when:
 		applyTemplate('<form:field property="name"/>')
 
@@ -48,32 +55,37 @@ class FormFieldsTagLibSpec extends Specification {
 
 	void "bean attribute can be a String"() {
 		given:
-		tagLib.beanPropertyAccessorFactory = new BeanPropertyAccessorFactory(grailsApplication: grailsApplication)
 		views["/forms/default/_field.gsp"] = '${bean.getClass().simpleName}'
 
 		expect:
 		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "Person"
 	}
 
-//	void testBeanAttributeStringMustReferToVariableInPage() {
-//		shouldFail(GrailsTagException) {
-//			applyTemplate('<form:field bean="personInstance" property="name"/>')
-//		}
-//	}
-//
-//	void testUsesDefaultTemplate() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", 'DEFAULT FIELD TEMPLATE')
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == 'DEFAULT FIELD TEMPLATE'
-//	}
-//
-//	void testResolvesTemplateForPropertyType() {
-//		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", 'DEFAULT FIELD TEMPLATE')
-//		resourceLoader.registerMockResource("/grails-app/views/forms/java.lang.String/_field.gsp", 'PROPERTY TYPE TEMPLATE')
-//
-//		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == 'PROPERTY TYPE TEMPLATE'
-//	}
-//
+	void "bean attribute string must refer to variable in page"() {
+		when:
+		applyTemplate('<form:field bean="personInstance" property="name"/>')
+
+		then:
+		thrown GrailsTagException
+	}
+
+	void testUsesDefaultTemplate() {
+		given:
+		views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == 'DEFAULT FIELD TEMPLATE'
+	}
+
+	void "resolves template for property type"() {
+		given:
+		views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/forms/String/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
+
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == 'PROPERTY TYPE TEMPLATE'
+	}
+
 //	void testResolvesTemplateForDomainClassProperty() {
 //		resourceLoader.registerMockResource("/grails-app/views/forms/default/_field.gsp", 'DEFAULT FIELD TEMPLATE')
 //		resourceLoader.registerMockResource("/grails-app/views/forms/java.lang.String/_field.gsp", 'PROPERTY TYPE TEMPLATE')

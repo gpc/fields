@@ -34,7 +34,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		for (property in resolvePersistentProperties(domainClass)) {
 			if (property.embedded) {
 				for (embeddedProp in resolvePersistentProperties(property.component)) {
-					out << field(bean: bean, property: property.name, template: fieldTemplateName)
+					out << field(bean: bean, property: "${property.name}.${embeddedProp.name}", template: fieldTemplateName)
 				}
 			} else {
 				out << field(bean: bean, property: property.name, template: fieldTemplateName)
@@ -50,7 +50,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		def propertyAccessor = resolveProperty(attrs)
 		def model = buildModel(propertyAccessor, attrs)
 
-//		model.input = renderInput(propertyAccessor, model)
+		model.widget = renderWidget("input", propertyAccessor, model)
 
 		def template = resolveFieldTemplate(propertyAccessor, templateName)
 		out << render(template: template, model: model)
@@ -155,12 +155,6 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		def comparator = hasHibernate ? new DomainClassPropertyComparator(domainClass) : new SimpleDomainClassPropertyComparator(domainClass)
 		Collections.sort(properties, comparator)
 		properties
-	}
-
-	private Map<String, Object> resolveProperty(bean, String property) {
-		def domainClass = resolveDomainClass(bean)
-		def path = property.tokenize(".")
-		resolvePropertyFromPathComponents(PropertyAccessorFactory.forBeanPropertyAccess(bean), domainClass, path)
 	}
 
 	private String resolveLabelText(BeanPropertyAccessor propertyAccessor, Map attrs) {

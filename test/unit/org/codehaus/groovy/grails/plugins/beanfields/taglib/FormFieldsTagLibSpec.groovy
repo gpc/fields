@@ -27,6 +27,8 @@ class FormFieldsTagLibSpec extends Specification {
 		views.clear()
 		applicationContext.getBean("groovyPagesTemplateEngine").clearPageCache()
 		applicationContext.getBean("groovyPagesTemplateRenderer").clearCache()
+
+		messageSource.@messages.clear() // bit of a hack but messages don't get torn down otherwise
 	}
 
 	void "bean attribute is required"() {
@@ -305,7 +307,7 @@ class FormFieldsTagLibSpec extends Specification {
 
 	void "rendered input is passed to template"() {
 		given:
-		views["/forms/default/_field.gsp"] = '${input}'
+		views["/forms/default/_field.gsp"] = '${widget}'
 
 		expect:
 		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == '<input type="text" name="name" value="Bart Simpson" required="" id="name" />'

@@ -33,7 +33,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		for (property in resolvePersistentProperties(domainClass)) {
 			if (property.embedded) {
 				for (embeddedProp in resolvePersistentProperties(property.component)) {
-					out << field(bean: bean, property: "${property.name}.${embeddedProp.name}", template: fieldTemplateName)
+					def propertyPath = "${property.name}.${embeddedProp.name}"
+					out << field(bean: bean, property: propertyPath, template: fieldTemplateName)
 				}
 			} else {
 				out << field(bean: bean, property: property.name, template: fieldTemplateName)

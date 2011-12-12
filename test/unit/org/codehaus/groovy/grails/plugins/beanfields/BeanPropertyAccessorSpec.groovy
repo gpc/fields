@@ -246,7 +246,7 @@ class BeanPropertyAccessorSpec extends Specification {
 	def "resolves errors for an indexed property"() {
 		given:
 		author.books[0].title = ""
-		author.errors.rejectValue('books[0].title', 'blank')
+		author.errors.rejectValue('books[0].title', 'blank') // http://jira.grails.org/browse/GRAILS-7713
 
 		and:
 		def propertyAccessor = factory.accessorFor(author, "books[0].title")

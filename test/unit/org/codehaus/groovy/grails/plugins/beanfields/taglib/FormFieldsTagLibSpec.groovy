@@ -82,7 +82,7 @@ class FormFieldsTagLibSpec extends Specification {
 	void "resolves template for property type"() {
 		given:
 		views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
-		views["/forms/String/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
+		views["/forms/string/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
 
 		expect:
 		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == 'PROPERTY TYPE TEMPLATE'
@@ -91,8 +91,8 @@ class FormFieldsTagLibSpec extends Specification {
 	void "resolves template for domain class property"() {
 		given:
 		views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
-		views["/forms/String/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
-		views["/forms/Person/name/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
+		views["/forms/string/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
+		views["/forms/person/name/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
 
 		expect:
 		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "CLASS AND PROPERTY TEMPLATE"
@@ -101,8 +101,8 @@ class FormFieldsTagLibSpec extends Specification {
 	void "resolves template from controller views directory"() {
 		given:
 		views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
-		views["/forms/String/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
-		views["/forms/Person/name/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
+		views["/forms/string/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
+		views["/forms/person/name/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
 		views["/person/name/_field.gsp"] = 'CONTROLLER FIELD TEMPLATE'
 
 		expect:
@@ -112,7 +112,7 @@ class FormFieldsTagLibSpec extends Specification {
 	def "resolves template for superclass property"() {
 		given:
 		views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
-		views["/forms/Person/name/_field.gsp"] = 'SUPERCLASS TEMPLATE'
+		views["/forms/person/name/_field.gsp"] = 'SUPERCLASS TEMPLATE'
 
 		and:
 		def employeeInstance = new Employee(name: "Waylon Smithers", salary: 10)
@@ -124,8 +124,8 @@ class FormFieldsTagLibSpec extends Specification {
 	def "subclass property template overrides superclass property template"() {
 		given:
 		views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
-		views["/forms/Person/name/_field.gsp"] = 'SUPERCLASS TEMPLATE'
-		views["/forms/Employee/name/_field.gsp"] = 'SUBCLASS TEMPLATE'
+		views["/forms/person/name/_field.gsp"] = 'SUPERCLASS TEMPLATE'
+		views["/forms/employee/name/_field.gsp"] = 'SUBCLASS TEMPLATE'
 
 		and:
 		def employeeInstance = new Employee(name: "Waylon Smithers", salary: 10)
@@ -247,8 +247,8 @@ class FormFieldsTagLibSpec extends Specification {
 	void "resolves template for embedded class property"() {
 		given:
 		views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
-		views["/forms/String/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
-		views["/forms/Address/city/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
+		views["/forms/string/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
+		views["/forms/address/city/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
 
 		expect:
 		applyTemplate('<form:field bean="personInstance" property="address.city"/>', [personInstance: personInstance]) == "CLASS AND PROPERTY TEMPLATE"
@@ -316,7 +316,7 @@ class FormFieldsTagLibSpec extends Specification {
 	void "rendered input is overridden by template for property type"() {
 		given:
 		views["/forms/default/_field.gsp"] = '${widget}'
-		views["/forms/String/_input.gsp"] = 'PROPERTY TYPE TEMPLATE'
+		views["/forms/string/_input.gsp"] = 'PROPERTY TYPE TEMPLATE'
 
 		expect:
 		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == 'PROPERTY TYPE TEMPLATE'
@@ -325,8 +325,8 @@ class FormFieldsTagLibSpec extends Specification {
 	void "rendered input is overridden by template for domain class property"() {
 		given:
 		views["/forms/default/_field.gsp"] = '${widget}'
-		views["/forms/String/_input.gsp"] = 'PROPERTY TYPE TEMPLATE'
-		views["/forms/Person/name/_input.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
+		views["/forms/string/_input.gsp"] = 'PROPERTY TYPE TEMPLATE'
+		views["/forms/person/name/_input.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
 
 		assert applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "CLASS AND PROPERTY TEMPLATE"
 	}
@@ -334,8 +334,8 @@ class FormFieldsTagLibSpec extends Specification {
 	void "rendered input is overridden by template from controller views directory"() {
 		given:
 		views["/forms/default/_field.gsp"] = '${widget}'
-		views["/forms/String/_input.gsp"] = 'PROPERTY TYPE TEMPLATE'
-		views["/forms/Person/name/_input.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
+		views["/forms/string/_input.gsp"] = 'PROPERTY TYPE TEMPLATE'
+		views["/forms/person/name/_input.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
 		views["/person/name/_input.gsp"] = 'CONTROLLER INPUT TEMPLATE'
 
 		expect:

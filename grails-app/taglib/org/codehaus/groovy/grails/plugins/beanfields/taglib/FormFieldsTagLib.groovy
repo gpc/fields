@@ -9,6 +9,7 @@ import org.apache.commons.lang.*
 import org.codehaus.groovy.grails.commons.*
 import org.codehaus.groovy.grails.plugins.beanfields.*
 import org.codehaus.groovy.grails.scaffolding.*
+import grails.util.GrailsNameUtils
 
 class FormFieldsTagLib implements GrailsApplicationAware {
 
@@ -110,11 +111,11 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		// TODO: implications for templates supplied by plugins
 		def templateResolveOrder = []
 		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/", controllerName, propertyAccessor.propertyName, templateName)
-		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", propertyAccessor.beanClass.clazz.simpleName, propertyAccessor.propertyName, templateName)
+		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", propertyAccessor.beanClass.propertyName, propertyAccessor.propertyName, templateName)
         for (superclass in ClassUtils.getAllSuperclasses(propertyAccessor.beanClass.clazz)) {
-            templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", superclass.simpleName, propertyAccessor.propertyName, templateName)
+            templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(superclass), propertyAccessor.propertyName, templateName)
         }
-		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", propertyAccessor.type.simpleName, templateName)
+		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(propertyAccessor.type), templateName)
 		templateResolveOrder << "/forms/default/$templateName"
 
 		def template = templateResolveOrder.find {
@@ -164,6 +165,10 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			label = message(code: attrs.labelKey)
 		}
 		label ?: message(code: propertyAccessor.labelKey, default: propertyAccessor.defaultLabel)
+	}
+
+	private String toPropertyNameFormat(Class type) {
+		GrailsNameUtils.getLogicalPropertyName(type.name, '')
 	}
 
 	private String renderDefaultInput(Map attrs) {

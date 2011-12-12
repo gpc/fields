@@ -17,7 +17,8 @@ class BeanPropertyAccessorSpec extends Specification {
 
 	def setup() {
 		address = new Address(street: "94 Evergreen Terrace", city: "Springfield", country: "USA")
-		person = new Person(name: "Bart Simpson", password: "bartman", gender: Gender.Male, dateOfBirth: new Date(87, 3, 19), address: address, emails: [home: "bart@thesimpsons.net", school: "bart.simpson@springfieldelementary.edu"])
+		person = new Person(name: "Bart Simpson", password: "bartman", gender: Gender.Male, dateOfBirth: new Date(87, 3, 19), address: address)
+		person.emails = [home: "bart@thesimpsons.net", school: "bart.simpson@springfieldelementary.edu"]
 		person.save(failOnError: true)
 
 		author = new Author(name: "William Gibson")
@@ -231,15 +232,13 @@ class BeanPropertyAccessorSpec extends Specification {
 	def "resolves errors for an embedded property"() {
 		given:
 		person.address.country = "Australia"
+		person.errors.rejectValue('address.country', 'not.inList') // http://jira.grails.org/browse/GRAILS-8480
 
 		and:
 		def propertyAccessor = factory.accessorFor(person, "address.country")
 
 		expect:
-		!person.validate()
-
-		and:
-		propertyAccessor.errors.first().code == "inList"
+		propertyAccessor.errors.first().code == "not.inList"
 		propertyAccessor.invalid
 	}
 
@@ -247,14 +246,12 @@ class BeanPropertyAccessorSpec extends Specification {
 	def "resolves errors for an indexed property"() {
 		given:
 		author.books[0].title = ""
+		author.errors.rejectValue('books[0].title', 'blank')
 
 		and:
 		def propertyAccessor = factory.accessorFor(author, "books[0].title")
 
 		expect:
-		!author.validate()
-
-		and:
 		propertyAccessor.errors.first().code == "blank"
 		propertyAccessor.invalid
 	}

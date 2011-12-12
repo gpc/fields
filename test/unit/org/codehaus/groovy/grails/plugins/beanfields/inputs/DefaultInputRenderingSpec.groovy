@@ -2,10 +2,10 @@ package org.codehaus.groovy.grails.plugins.beanfields.inputs
 
 import grails.persistence.Entity
 import grails.util.Environment
+import org.codehaus.groovy.grails.plugins.beanfields.taglib.FormFieldsTagLib
 import grails.test.mixin.*
 import org.codehaus.groovy.grails.commons.*
 import spock.lang.*
-import org.codehaus.groovy.grails.plugins.beanfields.taglib.FormFieldsTagLib
 
 @TestFor(FormFieldsTagLib)
 @Mock(Person)

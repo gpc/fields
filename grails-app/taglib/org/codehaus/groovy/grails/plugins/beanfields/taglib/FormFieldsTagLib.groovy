@@ -1,14 +1,12 @@
 package org.codehaus.groovy.grails.plugins.beanfields.taglib
 
-import grails.artefact.Artefact
 import javax.annotation.PostConstruct
-import org.apache.commons.lang.StringUtils
-import org.apache.commons.lang.ClassUtils
 import org.codehaus.groovy.grails.io.support.GrailsResourceUtils
 import org.codehaus.groovy.grails.plugins.GrailsPluginManager
 import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
 import org.codehaus.groovy.grails.web.pages.discovery.GrailsConventionGroovyPageLocator
 import org.springframework.beans.PropertyAccessorFactory
+import org.apache.commons.lang.*
 import org.codehaus.groovy.grails.commons.*
 import org.codehaus.groovy.grails.plugins.beanfields.*
 import org.codehaus.groovy.grails.scaffolding.*
@@ -52,7 +50,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		def propertyAccessor = resolveProperty(attrs)
 		def model = buildModel(propertyAccessor, attrs)
 
-		//model.input = renderInput(propertyAccessor, model)
+//		model.input = renderInput(propertyAccessor, model)
 
 		def template = resolveFieldTemplate(propertyAccessor, templateName)
 		out << render(template: template, model: model)
@@ -92,7 +90,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		]
 	}
 
-	private String renderWidget(String name, BeanPropertyAccessor propertyAccessor, LinkedHashMap<String, Object> model) {
+	private String renderWidget(String name, BeanPropertyAccessor propertyAccessor, Map model) {
 		def template = resolveFieldTemplate(propertyAccessor, name)
 		if (template) {
 			return render(template: template, model: model)

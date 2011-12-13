@@ -51,7 +51,6 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		def propertyAccessor = resolveProperty(attrs)
 		def model = buildModel(propertyAccessor, attrs)
 
-		boolean editable = attrs.boolean('editable')
 		model.widget = renderWidget("input", propertyAccessor, model)
 
 		def template = resolveFieldTemplate(propertyAccessor, templateName)
@@ -112,7 +111,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		def templateResolveOrder = []
 		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/", controllerName, propertyAccessor.propertyName, templateName)
 		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", propertyAccessor.beanClass.propertyName, propertyAccessor.propertyName, templateName)
-        for (superclass in ClassUtils.getAllSuperclasses(propertyAccessor.beanClass.clazz)) {
+        for (superclass in propertyAccessor.beanSuperclasses) {
             templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(superclass), propertyAccessor.propertyName, templateName)
         }
 		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(propertyAccessor.type), templateName)

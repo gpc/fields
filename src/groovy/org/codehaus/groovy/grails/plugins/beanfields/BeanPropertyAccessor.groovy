@@ -6,6 +6,7 @@ import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import org.springframework.validation.FieldError
 import org.codehaus.groovy.grails.commons.*
 import org.springframework.beans.*
+import org.apache.commons.lang.ClassUtils
 
 class BeanPropertyAccessor {
 
@@ -75,6 +76,10 @@ class BeanPropertyAccessor {
 
 	boolean isInvalid() {
 		!errors.empty
+	}
+	
+	List<Class> getBeanSuperclasses() {
+		ClassUtils.getAllSuperclasses(beanClass.clazz) - Object
 	}
 
 }

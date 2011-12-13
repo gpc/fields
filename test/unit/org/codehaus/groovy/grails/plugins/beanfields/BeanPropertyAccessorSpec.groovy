@@ -7,13 +7,14 @@ import grails.test.mixin.*
 import spock.lang.*
 
 @TestFor(FormFieldsTagLib)
-@Mock([Person, Address, Author, Book])
+@Mock([Person, Address, Author, Book, Employee])
 class BeanPropertyAccessorSpec extends Specification {
 
 	BeanPropertyAccessorFactory factory = new BeanPropertyAccessorFactory(grailsApplication: grailsApplication)
-	@Shared def address
-	@Shared def person
-	@Shared def author
+	@Shared Address address
+	@Shared Person person
+	@Shared Employee employee
+	@Shared Author author
 
 	def setup() {
 		address = new Address(street: "94 Evergreen Terrace", city: "Springfield", country: "USA")
@@ -26,6 +27,9 @@ class BeanPropertyAccessorSpec extends Specification {
 		author.addToBooks new Book(title: "Spook Country")
 		author.addToBooks new Book(title: "Zero History")
 		author.save(failOnError: true)
+
+		employee = new Employee(name: 'Homer J Simpson', jobTitle: 'Safety officer', password: 'barbie', gender: Gender.Male, address: address)
+		employee.save(failOnError: true)
 	}
 
 	def "fails sensibly when given an invalid property path"() {
@@ -273,6 +277,20 @@ class BeanPropertyAccessorSpec extends Specification {
 		person | "minor"       | false // boolean properties are never considered required
 	}
 
+	@Unroll({"the superclasses of ${bean.getClass().simpleName} are $expected"})
+	def 'can retrieve superclasses of the bean class'() {
+		given:
+		def propertyAccessor = factory.accessorFor(bean, path)
+
+		expect:
+		propertyAccessor.beanSuperclasses == expected
+
+		where:
+		bean     | path   | expected
+		person   | 'name' | []
+		employee | 'name' | [Person]
+	}
+
 }
 
 // classes for testing embedded and simple collection properties
@@ -327,4 +345,9 @@ class Book {
 
 enum Gender {
 	Male, Female
+}
+
+@Entity
+class Employee extends Person {
+	String jobTitle
 }

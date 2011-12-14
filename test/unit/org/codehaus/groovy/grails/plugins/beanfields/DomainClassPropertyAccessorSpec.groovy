@@ -8,7 +8,7 @@ import spock.lang.*
 
 @TestFor(FormFieldsTagLib)
 @Mock([Person, Address, Author, Book, Employee])
-class BeanPropertyAccessorSpec extends Specification {
+class DomainClassPropertyAccessorSpec extends Specification {
 
 	BeanPropertyAccessorFactory factory = new BeanPropertyAccessorFactory(grailsApplication: grailsApplication)
 	@Shared Address address
@@ -32,7 +32,7 @@ class BeanPropertyAccessorSpec extends Specification {
 		employee.save(failOnError: true)
 	}
 
-	def "fails sensibly when given an invalid property path"() {
+	void "fails sensibly when given an invalid property path"() {
 		when:
 		factory.accessorFor(person, "invalid")
 
@@ -40,7 +40,7 @@ class BeanPropertyAccessorSpec extends Specification {
 		thrown NotReadablePropertyException
 	}
 
-	def "resolves basic property"() {
+	void "resolves basic property"() {
 		given:
 		def propertyAccessor = factory.accessorFor(person, "name")
 
@@ -56,7 +56,7 @@ class BeanPropertyAccessorSpec extends Specification {
 		propertyAccessor.persistentProperty.name == "name"
 	}
 
-	def "resolves embedded property"() {
+	void "resolves embedded property"() {
 		given:
 		def propertyAccessor = factory.accessorFor(person, "address.city")
 
@@ -72,7 +72,7 @@ class BeanPropertyAccessorSpec extends Specification {
 		propertyAccessor.persistentProperty.name == "city"
 	}
 
-	def "resolves property of indexed association"() {
+	void "resolves property of indexed association"() {
 		given:
 		def propertyAccessor = factory.accessorFor(author, "books[0].title")
 
@@ -88,7 +88,7 @@ class BeanPropertyAccessorSpec extends Specification {
 		propertyAccessor.persistentProperty.name == "title"
 	}
 
-	def "resolves other side of many-to-one association"() {
+	void "resolves other side of many-to-one association"() {
 		given:
 		def propertyAccessor = factory.accessorFor(author.books[0], "author.name")
 
@@ -104,7 +104,7 @@ class BeanPropertyAccessorSpec extends Specification {
 		propertyAccessor.persistentProperty.name == "name"
 	}
 
-	def "resolves property of simple mapped association"() {
+	void "resolves property of simple mapped association"() {
 		given:
 		def propertyAccessor = factory.accessorFor(person, "emails[home]")
 
@@ -118,7 +118,7 @@ class BeanPropertyAccessorSpec extends Specification {
 		propertyAccessor.persistentProperty.name == "emails"
 	}
 
-	def "resolves basic property when value is null"() {
+	void "resolves basic property when value is null"() {
 		given:
 		person.name = null
 
@@ -133,7 +133,7 @@ class BeanPropertyAccessorSpec extends Specification {
 		propertyAccessor.persistentProperty.name == "name"
 	}
 
-	def "resolves embedded property when intervening path is null"() {
+	void "resolves embedded property when intervening path is null"() {
 		given:
 		person.address = null
 
@@ -148,7 +148,7 @@ class BeanPropertyAccessorSpec extends Specification {
 		propertyAccessor.persistentProperty.name == "city"
 	}
 
-	def "resolves constraints of basic domain class property"() {
+	void "resolves constraints of basic domain class property"() {
 		given:
 		def propertyAccessor = factory.accessorFor(person, "name")
 
@@ -158,7 +158,7 @@ class BeanPropertyAccessorSpec extends Specification {
 	}
 
 	@Unroll({ "type of '$property' is $type.name" })
-	def "resolves type of property"() {
+	void "resolves type of property"() {
 		given:
 		def propertyAccessor = factory.accessorFor(bean, property)
 
@@ -175,7 +175,7 @@ class BeanPropertyAccessorSpec extends Specification {
 		author | "books[0].title" | String
 	}
 
-	def "resolves constraints of embedded property"() {
+	void "resolves constraints of embedded property"() {
 		given:
 		def propertyAccessor = factory.accessorFor(person, "address.country")
 
@@ -185,7 +185,7 @@ class BeanPropertyAccessorSpec extends Specification {
 	}
 
 	@Unroll({ "label key for '$property' is '$label'" })
-	def "label key is the same as the scaffolding convention"() {
+	void "label key is the same as the scaffolding convention"() {
 		given:
 		def propertyAccessor = factory.accessorFor(bean, property)
 
@@ -201,7 +201,7 @@ class BeanPropertyAccessorSpec extends Specification {
 	}
 
 	@Unroll({ "default label for '$property' is '$label'" })
-	def "default label is the property's natural name"() {
+	void "default label is the property's natural name"() {
 		given:
 		def propertyAccessor = factory.accessorFor(bean, property)
 
@@ -217,7 +217,7 @@ class BeanPropertyAccessorSpec extends Specification {
 		author | "books[0].title" | "Title"
 	}
 
-	def "resolves errors for a basic property"() {
+	void "resolves errors for a basic property"() {
 		given:
 		person.name = ""
 
@@ -233,7 +233,7 @@ class BeanPropertyAccessorSpec extends Specification {
 	}
 
 	@Issue("http://jira.grails.org/browse/GRAILS-7713")
-	def "resolves errors for an embedded property"() {
+	void "resolves errors for an embedded property"() {
 		given:
 		person.address.country = "Australia"
 		person.errors.rejectValue('address.country', 'not.inList') // http://jira.grails.org/browse/GRAILS-8480
@@ -247,7 +247,7 @@ class BeanPropertyAccessorSpec extends Specification {
 	}
 
 	@Issue("http://jira.grails.org/browse/GRAILS-7713")
-	def "resolves errors for an indexed property"() {
+	void "resolves errors for an indexed property"() {
 		given:
 		author.books[0].title = ""
 		author.errors.rejectValue('books[0].title', 'blank') // http://jira.grails.org/browse/GRAILS-7713
@@ -261,7 +261,7 @@ class BeanPropertyAccessorSpec extends Specification {
 	}
 
 	@Unroll({ "the $path property is ${expected ? '' : 'not '}required" })
-	def "correctly identifies required properties"() {
+	void "correctly identifies required properties"() {
 		given:
 		def propertyAccessor = factory.accessorFor(bean, path)
 

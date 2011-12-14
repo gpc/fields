@@ -8,7 +8,26 @@ import org.codehaus.groovy.grails.commons.*
 import org.springframework.beans.*
 import org.apache.commons.lang.ClassUtils
 
-class BeanPropertyAccessor {
+interface BeanPropertyAccessor {
+	
+	Object getRootBean()
+	Class getRootBeanType()
+	String getPathFromRoot()
+	String getPropertyName()
+	Class getBeanType()
+	List<Class> getBeanSuperclasses()
+	Class getType()
+	Object getValue()
+	ConstrainedProperty getConstraints()
+	String getLabelKey()
+	String getDefaultLabel()
+	List<FieldError> getErrors()
+	boolean isRequired()
+	boolean isInvalid()
+
+}
+
+class DomainClassPropertyAccessor implements BeanPropertyAccessor {
 
 	final rootBean
 	final GrailsDomainClass rootBeanClass
@@ -17,7 +36,7 @@ class BeanPropertyAccessor {
 	String propertyName
 	def value
 
-	BeanPropertyAccessor(rootBean, GrailsDomainClass rootBeanClass, String pathFromRoot) {
+	DomainClassPropertyAccessor(rootBean, GrailsDomainClass rootBeanClass, String pathFromRoot) {
 		this.rootBean = rootBean
 		this.rootBeanClass = rootBeanClass
 		this.pathFromRoot = pathFromRoot
@@ -92,7 +111,7 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 
 	BeanPropertyAccessor accessorFor(bean, String propertyPath) {
 		def rootBeanClass = resolveDomainClass(bean.getClass())
-		def propertyAccessor = new BeanPropertyAccessor(bean, rootBeanClass, propertyPath)
+		def propertyAccessor = new DomainClassPropertyAccessor(bean, rootBeanClass, propertyPath)
 		def pathElements = propertyPath.tokenize(".")
 		resolvePropertyFromPathComponents(propertyAccessor, PropertyAccessorFactory.forBeanPropertyAccess(bean), rootBeanClass, pathElements)
 	}

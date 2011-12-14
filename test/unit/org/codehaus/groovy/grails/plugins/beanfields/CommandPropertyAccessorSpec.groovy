@@ -9,9 +9,14 @@ class CommandPropertyAccessorSpec extends Specification {
 
 	BeanPropertyAccessorFactory factory = new BeanPropertyAccessorFactory(grailsApplication: grailsApplication, applicationContext: applicationContext)
 
-	void 'resolves properties of a command object'() {
+	LoginCommand command
+
+	void setup() {
+		command = mockCommandObject(LoginCommand)
+	}
+
+	void 'resolves a basic property of a command object'() {
 		given:
-		def command = mockCommandObject(LoginCommand)
 		command.password = 'correct horse battery staple'
 
 		and:
@@ -19,6 +24,21 @@ class CommandPropertyAccessorSpec extends Specification {
 
 		expect:
 		propertyAccessor.value == command.password
+		propertyAccessor.rootBeanType == LoginCommand
+		propertyAccessor.beanType == LoginCommand
+		propertyAccessor.pathFromRoot == "password"
+		propertyAccessor.propertyName == "password"
+		propertyAccessor.type == String
+		!propertyAccessor.constraints.blank
+		propertyAccessor.constraints.password
+	}
+
+	void 'resolves a basic property of a command object even when its value is null'() {
+		given:
+		def propertyAccessor = factory.accessorFor(command, 'password')
+
+		expect:
+		propertyAccessor.value == null
 		propertyAccessor.rootBeanType == LoginCommand
 		propertyAccessor.beanType == LoginCommand
 		propertyAccessor.pathFromRoot == "password"

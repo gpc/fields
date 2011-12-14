@@ -1,6 +1,6 @@
 package org.codehaus.groovy.grails.plugins.beanfields
 
-import java.util.regex.Pattern
+import org.codehaus.groovy.grails.plugins.beanfields.AbstractPropertyAccessor
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import org.codehaus.groovy.grails.commons.*
 import org.springframework.beans.*

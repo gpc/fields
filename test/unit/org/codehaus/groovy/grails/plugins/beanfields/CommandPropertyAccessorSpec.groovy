@@ -7,7 +7,7 @@ import spock.lang.Specification
 @TestFor(FormFieldsTagLib)
 class CommandPropertyAccessorSpec extends Specification {
 
-	BeanPropertyAccessorFactory factory = new BeanPropertyAccessorFactory(grailsApplication: grailsApplication)
+	BeanPropertyAccessorFactory factory = new BeanPropertyAccessorFactory(grailsApplication: grailsApplication, applicationContext: applicationContext)
 
 	void 'resolves properties of a command object'() {
 		given:
@@ -20,13 +20,10 @@ class CommandPropertyAccessorSpec extends Specification {
 		expect:
 		propertyAccessor.value == command.password
 		propertyAccessor.rootBeanType == LoginCommand
-		propertyAccessor.rootBeanClass == null
 		propertyAccessor.beanType == LoginCommand
-		propertyAccessor.beanClass == null
 		propertyAccessor.pathFromRoot == "password"
 		propertyAccessor.propertyName == "password"
 		propertyAccessor.type == String
-		propertyAccessor.persistentProperty == null
 		!propertyAccessor.constraints.blank
 		propertyAccessor.constraints.password
 	}

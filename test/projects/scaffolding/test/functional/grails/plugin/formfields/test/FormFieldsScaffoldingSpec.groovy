@@ -20,6 +20,20 @@ class FormFieldsScaffoldingSpec extends GebSpec {
 		'address.country' in inputNames
 	}
 
+	void 'required fields are marked'() {
+		expect:
+		def nameInput = $('input[name=name]')
+		nameInput.parent().hasClass('required')
+		nameInput.previous('label').find('.required-indicator')
+	}
+
+	void 'non-required fields are not marked'() {
+		expect:
+		def streetInput = $('input[name="address.street"]')
+		!streetInput.parent().hasClass('required')
+		!streetInput.previous('label').find('.required-indicator')
+	}
+
 	void 'can save a new instance'() {
 		given:
 		def form = $('form')

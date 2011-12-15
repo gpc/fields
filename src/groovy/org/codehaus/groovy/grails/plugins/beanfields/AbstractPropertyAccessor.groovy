@@ -1,8 +1,9 @@
 package org.codehaus.groovy.grails.plugins.beanfields
 
+import java.util.regex.Pattern
 import org.apache.commons.lang.ClassUtils
 import org.springframework.validation.FieldError
-import java.util.regex.Pattern
+import org.springframework.beans.*
 
 abstract class AbstractPropertyAccessor implements BeanPropertyAccessor {
 
@@ -40,6 +41,10 @@ abstract class AbstractPropertyAccessor implements BeanPropertyAccessor {
 
 	List<Class> getBeanSuperclasses() {
 		ClassUtils.getAllSuperclasses(beanType) - Object
+	}
+
+	protected BeanWrapper beanWrapperFor(Class type, value) {
+		value ? PropertyAccessorFactory.forBeanPropertyAccess(value) : new BeanWrapperImpl(type)
 	}
 
 	private static final Pattern INDEXED_PROPERTY_PATTERN = ~/^(\w+)\[(.+)\]$/

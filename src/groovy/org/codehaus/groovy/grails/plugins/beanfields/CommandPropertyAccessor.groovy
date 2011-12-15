@@ -44,7 +44,7 @@ class CommandPropertyAccessor extends AbstractPropertyAccessor {
 			this.type = type
 			this.propertyName = stripIndex(propertyName)
 		} else {
-			resolvePropertyFromPathComponents(value ? PropertyAccessorFactory.forBeanPropertyAccess(value) : new BeanWrapperImpl(type), pathElements)
+			resolvePropertyFromPathComponents(beanWrapperFor(type, value), pathElements)
 		}
 	}
 }

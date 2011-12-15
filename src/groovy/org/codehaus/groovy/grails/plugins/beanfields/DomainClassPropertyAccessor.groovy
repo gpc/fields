@@ -53,7 +53,7 @@ class DomainClassPropertyAccessor extends AbstractPropertyAccessor {
 
 	private void resolvePropertyFromPathComponents(GrailsDomainClass beanClass, BeanWrapper beanWrapper, List<String> pathElements) {
 		def propertyName = pathElements.remove(0)
-		def value = beanWrapper?.getPropertyValue(propertyName)
+		def value = beanWrapper.getPropertyValue(propertyName)
 		if (pathElements.empty) {
 			this.beanClass = beanClass
 			this.value = value
@@ -61,7 +61,7 @@ class DomainClassPropertyAccessor extends AbstractPropertyAccessor {
 		} else {
 			def persistentProperty = beanClass.getPersistentProperty(stripIndex(propertyName))
 			def propertyDomainClass = resolvePropertyDomainClass(persistentProperty)
-			resolvePropertyFromPathComponents(propertyDomainClass, value ? PropertyAccessorFactory.forBeanPropertyAccess(value) : null, pathElements)
+			resolvePropertyFromPathComponents(propertyDomainClass, value ? PropertyAccessorFactory.forBeanPropertyAccess(value) : new BeanWrapperImpl(propertyDomainClass.clazz), pathElements)
 		}
 	}
 

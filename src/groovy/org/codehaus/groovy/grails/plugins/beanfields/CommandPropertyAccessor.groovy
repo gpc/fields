@@ -1,10 +1,9 @@
 package org.codehaus.groovy.grails.plugins.beanfields
 
 import grails.util.GrailsNameUtils
-import org.codehaus.groovy.grails.validation.ConstrainedProperty
-import org.springframework.beans.PropertyAccessorFactory
-import org.springframework.beans.BeanWrapper
-import org.codehaus.groovy.grails.validation.ConstraintsEvaluator
+import org.codehaus.groovy.grails.plugins.beanfields.AbstractPropertyAccessor
+import org.codehaus.groovy.grails.validation.*
+import org.springframework.beans.*
 
 class CommandPropertyAccessor extends AbstractPropertyAccessor {
 	
@@ -37,14 +36,15 @@ class CommandPropertyAccessor extends AbstractPropertyAccessor {
 
 	private void resolvePropertyFromPathComponents(BeanWrapper beanWrapper, List<String> pathElements) {
 		def propertyName = pathElements.remove(0)
-		def value = beanWrapper?.getPropertyValue(propertyName)
+		def type = beanWrapper.getPropertyType(propertyName)
+		def value = beanWrapper.getPropertyValue(propertyName)
 		if (pathElements.empty) {
-			this.beanType = beanWrapper?.wrappedClass
+			this.beanType = beanWrapper.wrappedClass
 			this.value = value
-			this.type = beanWrapper?.getPropertyType(propertyName)
+			this.type = type
 			this.propertyName = stripIndex(propertyName)
 		} else {
-			resolvePropertyFromPathComponents(value ? PropertyAccessorFactory.forBeanPropertyAccess(value) : null, pathElements)
+			resolvePropertyFromPathComponents(value ? PropertyAccessorFactory.forBeanPropertyAccess(value) : new BeanWrapperImpl(type), pathElements)
 		}
 	}
 }

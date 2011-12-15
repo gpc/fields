@@ -47,7 +47,7 @@ abstract class AbstractPropertyAccessor implements BeanPropertyAccessor {
 		value ? PropertyAccessorFactory.forBeanPropertyAccess(value) : new BeanWrapperImpl(type)
 	}
 
-	private static final Pattern INDEXED_PROPERTY_PATTERN = ~/^(\w+)\[(.+)\]$/
+	protected static final Pattern INDEXED_PROPERTY_PATTERN = ~/^(\w+)\[(.+)\]$/
 
 	protected final String stripIndex(String propertyName) {
 		def matcher = propertyName =~ INDEXED_PROPERTY_PATTERN

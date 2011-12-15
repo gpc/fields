@@ -33,17 +33,6 @@ class CommandPropertyAccessorSpec extends Specification {
 		propertyAccessor.constraints.password
 	}
 
-	void 'properties are nullable by default'() {
-		given:
-		command.password = 'correct horse battery staple'
-
-		and:
-		def propertyAccessor = factory.accessorFor(command, 'password')
-
-		expect:
-		propertyAccessor.constraints.nullable
-	}
-
 	void 'resolves a basic property even when its value is null'() {
 		given:
 		def propertyAccessor = factory.accessorFor(command, 'password')

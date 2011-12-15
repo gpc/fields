@@ -1,16 +1,16 @@
 package org.codehaus.groovy.grails.plugins.beanfields
 
 import grails.util.GrailsNameUtils
-import org.codehaus.groovy.grails.plugins.beanfields.AbstractPropertyAccessor
+import java.lang.reflect.ParameterizedType
 import org.codehaus.groovy.grails.validation.*
 import org.springframework.beans.*
 
 class CommandPropertyAccessor extends AbstractPropertyAccessor {
-	
+
 	final Class rootBeanType
 	Class beanType
 	Class type
-	
+
 	private final ConstraintsEvaluator constraintsEvaluator
 
 	CommandPropertyAccessor(bean, String propertyPath, ConstraintsEvaluator constraintsEvaluator) {
@@ -36,7 +36,7 @@ class CommandPropertyAccessor extends AbstractPropertyAccessor {
 
 	private void resolvePropertyFromPathComponents(BeanWrapper beanWrapper, List<String> pathElements) {
 		def propertyName = pathElements.remove(0)
-		def type = beanWrapper.getPropertyType(propertyName)
+		def type = resolvePropertyType(beanWrapper, propertyName)
 		def value = beanWrapper.getPropertyValue(propertyName)
 		if (pathElements.empty) {
 			this.beanType = beanWrapper.wrappedClass
@@ -46,5 +46,19 @@ class CommandPropertyAccessor extends AbstractPropertyAccessor {
 		} else {
 			resolvePropertyFromPathComponents(beanWrapperFor(type, value), pathElements)
 		}
+	}
+
+	private Class resolvePropertyType(BeanWrapper beanWrapper, String propertyName) {
+		def type = beanWrapper.getPropertyType(propertyName)
+		if (type == null) {
+			def match = propertyName =~ INDEXED_PROPERTY_PATTERN
+			if (match) {
+				def genericType = beanWrapper.getPropertyDescriptor(match[0][1]).readMethod.genericReturnType
+				if (genericType instanceof ParameterizedType) {
+					type = genericType.actualTypeArguments[0]
+				}
+			}
+		}
+		type
 	}
 }

@@ -10,19 +10,21 @@ import org.codehaus.groovy.grails.web.pages.discovery.GrailsConventionGroovyPage
 import org.codehaus.groovy.grails.commons.*
 import org.codehaus.groovy.grails.plugins.beanfields.*
 import org.codehaus.groovy.grails.scaffolding.*
+import org.springframework.context.*
 
-class FormFieldsTagLib implements GrailsApplicationAware {
+class FormFieldsTagLib implements GrailsApplicationAware, ApplicationContextAware {
 
 	static namespace = "form"
 
 	GrailsApplication grailsApplication
+	ApplicationContext applicationContext
 	GrailsConventionGroovyPageLocator groovyPageLocator
 	BeanPropertyAccessorFactory beanPropertyAccessorFactory
 	GrailsPluginManager pluginManager
 
 	@PostConstruct
 	void initialize() {
-		beanPropertyAccessorFactory = new BeanPropertyAccessorFactory(grailsApplication: grailsApplication)
+		beanPropertyAccessorFactory = new BeanPropertyAccessorFactory(grailsApplication: grailsApplication, applicationContext: applicationContext)
 	}
 
 	Closure bean = { attrs ->
@@ -31,15 +33,19 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		def domainClass = resolveDomainClass(bean)
 		def fieldTemplateName = attrs.template ?: "field"
 
-		for (property in resolvePersistentProperties(domainClass)) {
-			if (property.embedded) {
-				for (embeddedProp in resolvePersistentProperties(property.component)) {
-					def propertyPath = "${property.name}.${embeddedProp.name}"
-					out << field(bean: bean, property: propertyPath, template: fieldTemplateName)
+		if (domainClass) {
+			for (property in resolvePersistentProperties(domainClass)) {
+				if (property.embedded) {
+					for (embeddedProp in resolvePersistentProperties(property.component)) {
+						def propertyPath = "${property.name}.${embeddedProp.name}"
+						out << field(bean: bean, property: propertyPath, template: fieldTemplateName)
+					}
+				} else {
+					out << field(bean: bean, property: property.name, template: fieldTemplateName)
 				}
-			} else {
-				out << field(bean: bean, property: property.name, template: fieldTemplateName)
 			}
+		} else {
+
 		}
 	}
 
@@ -129,7 +135,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		// 4: grails-app/views/forms/default/_field.gsp
 		def templateResolveOrder = []
 		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/", controllerName, propertyAccessor.propertyName, templateName)
-		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", propertyAccessor.beanClass.propertyName, propertyAccessor.propertyName, templateName)
+		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(propertyAccessor.beanType), propertyAccessor.propertyName, templateName)
 		for (superclass in propertyAccessor.beanSuperclasses) {
 			templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(superclass), propertyAccessor.propertyName, templateName)
 		}

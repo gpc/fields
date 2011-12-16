@@ -52,7 +52,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		propertyAccessor.beanClass.clazz == Person
 		propertyAccessor.pathFromRoot == "name"
 		propertyAccessor.propertyName == "name"
-		propertyAccessor.type == String
+		propertyAccessor.propertyType == String
 		propertyAccessor.persistentProperty.name == "name"
 	}
 
@@ -68,7 +68,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		propertyAccessor.beanClass.clazz == Address
 		propertyAccessor.pathFromRoot == "address.city"
 		propertyAccessor.propertyName == "city"
-		propertyAccessor.type == String
+		propertyAccessor.propertyType == String
 		propertyAccessor.persistentProperty.name == "city"
 	}
 
@@ -84,7 +84,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		propertyAccessor.beanClass.clazz == Book
 		propertyAccessor.pathFromRoot == "books[0].title"
 		propertyAccessor.propertyName == "title"
-		propertyAccessor.type == String
+		propertyAccessor.propertyType == String
 		propertyAccessor.persistentProperty.name == "title"
 	}
 
@@ -100,7 +100,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		propertyAccessor.beanClass.clazz == Author
 		propertyAccessor.pathFromRoot == "author.name"
 		propertyAccessor.propertyName == "name"
-		propertyAccessor.type == String
+		propertyAccessor.propertyType == String
 		propertyAccessor.persistentProperty.name == "name"
 	}
 
@@ -114,7 +114,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		propertyAccessor.beanType == Person
 		propertyAccessor.pathFromRoot == "emails[home]"
 		propertyAccessor.propertyName == "emails"
-		propertyAccessor.type == String
+		propertyAccessor.propertyType == String
 		propertyAccessor.persistentProperty.name == "emails"
 	}
 
@@ -129,7 +129,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		propertyAccessor.value == null
 		propertyAccessor.pathFromRoot == "name"
 		propertyAccessor.propertyName == "name"
-		propertyAccessor.type == String
+		propertyAccessor.propertyType == String
 		propertyAccessor.persistentProperty.name == "name"
 	}
 
@@ -144,7 +144,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		propertyAccessor.value == null
 		propertyAccessor.pathFromRoot == "address.city"
 		propertyAccessor.propertyName == "city"
-		propertyAccessor.type == String
+		propertyAccessor.propertyType == String
 		propertyAccessor.persistentProperty.name == "city"
 	}
 
@@ -163,7 +163,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		def propertyAccessor = factory.accessorFor(bean, property)
 
 		expect:
-		propertyAccessor.type == type
+		propertyAccessor.propertyType == type
 
 		where:
 		bean   | property         | type

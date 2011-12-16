@@ -86,7 +86,7 @@ class FormFieldsTagLib implements GrailsApplicationAware, ApplicationContextAwar
 		[
 				bean: propertyAccessor.rootBean,
 				property: propertyAccessor.pathFromRoot,
-				type: propertyAccessor.type,
+				type: propertyAccessor.propertyType,
 				label: resolveLabelText(propertyAccessor, attrs),
 				value: attrs.value ?: propertyAccessor.value ?: attrs.default,
 				constraints: propertyAccessor.constraints,
@@ -139,7 +139,7 @@ class FormFieldsTagLib implements GrailsApplicationAware, ApplicationContextAwar
 		for (superclass in propertyAccessor.beanSuperclasses) {
 			templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(superclass), propertyAccessor.propertyName, templateName)
 		}
-		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(propertyAccessor.type), templateName)
+		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(propertyAccessor.propertyType), templateName)
 		templateResolveOrder << "/forms/default/$templateName"
 		templateResolveOrder
 	}

@@ -26,9 +26,9 @@ abstract class AbstractPropertyAccessor implements BeanPropertyAccessor {
 	}
 
 	boolean isRequired() {
-		if (type in [Boolean, boolean]) {
+		if (propertyType in [Boolean, boolean]) {
 			false
-		} else if (type == String) {
+		} else if (propertyType == String) {
 			!constraints.nullable && !constraints.blank
 		} else {
 			!constraints.nullable

@@ -9,7 +9,7 @@ class CommandPropertyAccessor extends AbstractPropertyAccessor {
 
 	final Class rootBeanType
 	Class beanType
-	Class type
+	Class propertyType
 
 	private final ConstraintsEvaluator constraintsEvaluator
 
@@ -36,15 +36,15 @@ class CommandPropertyAccessor extends AbstractPropertyAccessor {
 
 	private void resolvePropertyFromPathComponents(BeanWrapper beanWrapper, List<String> pathElements) {
 		def propertyName = pathElements.remove(0)
-		def type = resolvePropertyType(beanWrapper, propertyName)
+		def propertyType = resolvePropertyType(beanWrapper, propertyName)
 		def value = beanWrapper.getPropertyValue(propertyName)
 		if (pathElements.empty) {
 			this.beanType = beanWrapper.wrappedClass
 			this.value = value
-			this.type = type
+			this.propertyType = propertyType
 			this.propertyName = stripIndex(propertyName)
 		} else {
-			resolvePropertyFromPathComponents(beanWrapperFor(type, value), pathElements)
+			resolvePropertyFromPathComponents(beanWrapperFor(propertyType, value), pathElements)
 		}
 	}
 

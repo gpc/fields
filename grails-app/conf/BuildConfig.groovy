@@ -21,12 +21,12 @@ grails.project.dependency.resolution = {
     }
 
     dependencies {
+		test 'javassist:javassist:3.12.0.GA'
     }
 
     plugins {
         build(":release:1.0.0.RC3") { export = false }
 		test(":spock:0.6-SNAPSHOT") { export = false }
-		test(":hibernate:$grailsVersion") { export = false }
     }
 
 }

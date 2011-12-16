@@ -12,7 +12,7 @@ interface BeanPropertyAccessor {
 	void setPropertyName(String propertyName)
 	Class getBeanType()
 	List<Class> getBeanSuperclasses()
-	Class getType()
+	Class getPropertyType()
 	Object getValue()
 	void setValue(Object value)
 	ConstrainedProperty getConstraints()

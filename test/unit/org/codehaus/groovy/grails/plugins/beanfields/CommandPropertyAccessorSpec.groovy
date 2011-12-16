@@ -28,7 +28,7 @@ class CommandPropertyAccessorSpec extends Specification {
 		propertyAccessor.beanType == TestCommand
 		propertyAccessor.pathFromRoot == "password"
 		propertyAccessor.propertyName == "password"
-		propertyAccessor.type == String
+		propertyAccessor.propertyType == String
 		!propertyAccessor.constraints.blank
 		propertyAccessor.constraints.password
 	}
@@ -43,7 +43,7 @@ class CommandPropertyAccessorSpec extends Specification {
 		propertyAccessor.beanType == TestCommand
 		propertyAccessor.pathFromRoot == "password"
 		propertyAccessor.propertyName == "password"
-		propertyAccessor.type == String
+		propertyAccessor.propertyType == String
 		!propertyAccessor.constraints.blank
 		propertyAccessor.constraints.password
 	}
@@ -61,7 +61,7 @@ class CommandPropertyAccessorSpec extends Specification {
 		propertyAccessor.beanType == TestCommand
 		propertyAccessor.pathFromRoot == "listOfStrings[1]"
 		propertyAccessor.propertyName == "listOfStrings"
-		propertyAccessor.type == String
+		propertyAccessor.propertyType == String
 	}
 
 	void 'resolves a simple indexed property when the value at that index is null'() {
@@ -75,7 +75,7 @@ class CommandPropertyAccessorSpec extends Specification {
 		propertyAccessor.value == null
 		propertyAccessor.pathFromRoot == "listOfStrings[1]"
 		propertyAccessor.propertyName == "listOfStrings"
-		propertyAccessor.type == String
+		propertyAccessor.propertyType == String
 	}
 
 	void 'resolves an untyped simple indexed property when the value at that index is null'() {
@@ -89,7 +89,7 @@ class CommandPropertyAccessorSpec extends Specification {
 		propertyAccessor.value == null
 		propertyAccessor.pathFromRoot == "untypedList[1]"
 		propertyAccessor.propertyName == "untypedList"
-		propertyAccessor.type == Object
+		propertyAccessor.propertyType == Object
 	}
 
 	void 'resolves a simple mapped property'() {
@@ -106,7 +106,7 @@ class CommandPropertyAccessorSpec extends Specification {
 		propertyAccessor.beanType == TestCommand
 		propertyAccessor.pathFromRoot == "mapOfDates[today]"
 		propertyAccessor.propertyName == "mapOfDates"
-		propertyAccessor.type == Date
+		propertyAccessor.propertyType == Date
 	}
 
 	void 'resolves a simple mapped property when the value at that index is null'() {
@@ -121,7 +121,7 @@ class CommandPropertyAccessorSpec extends Specification {
 		propertyAccessor.value == null
 		propertyAccessor.pathFromRoot == "mapOfDates[today]"
 		propertyAccessor.propertyName == "mapOfDates"
-		propertyAccessor.type == Date
+		propertyAccessor.propertyType == Date
 	}
 
 	void 'resolves an untyped simple mapped property when the value at that index is null'() {
@@ -136,7 +136,7 @@ class CommandPropertyAccessorSpec extends Specification {
 		propertyAccessor.value == null
 		propertyAccessor.pathFromRoot == "untypedMap[today]"
 		propertyAccessor.propertyName == "untypedMap"
-		propertyAccessor.type == Object
+		propertyAccessor.propertyType == Object
 	}
 
 	void 'resolves an enum property'() {
@@ -150,7 +150,7 @@ class CommandPropertyAccessorSpec extends Specification {
 		propertyAccessor.value == command.gender
 		propertyAccessor.pathFromRoot == "gender"
 		propertyAccessor.propertyName == "gender"
-		propertyAccessor.type == Gender
+		propertyAccessor.propertyType == Gender
 	}
 
 	void 'resolves a nested property'() {
@@ -166,7 +166,7 @@ class CommandPropertyAccessorSpec extends Specification {
 		propertyAccessor.beanType == Address
 		propertyAccessor.pathFromRoot == "address.city"
 		propertyAccessor.propertyName == "city"
-		propertyAccessor.type == String
+		propertyAccessor.propertyType == String
 	}
 
 	void 'resolves a nested property even when the intervening object is null'() {
@@ -179,7 +179,19 @@ class CommandPropertyAccessorSpec extends Specification {
 		propertyAccessor.beanType == Address
 		propertyAccessor.pathFromRoot == "address.city"
 		propertyAccessor.propertyName == "city"
-		propertyAccessor.type == String
+		propertyAccessor.propertyType == String
+	}
+
+	void 'if a nested property is a domain class then it is handled as one'() {
+		given:
+		command.address = new Address(street: '54 Evergreen Terrace', city: 'Springfield', country: 'USA')
+
+		and:
+		def propertyAccessor = factory.accessorFor(command, 'address.city')
+
+		expect:
+		propertyAccessor.persistentProperty
+		propertyAccessor.persistentProperty.name == 'city'
 	}
 
 }
@@ -194,7 +206,7 @@ class TestCommand {
 	Map untypedMap
 	Gender gender
 	Address address
-	
+
 	static constraints = {
 		username blank: false
 		password blank: false, password: true

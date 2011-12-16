@@ -24,7 +24,7 @@ class DomainClassPropertyAccessor extends AbstractPropertyAccessor {
 		beanClass.clazz
 	}
 
-	Class getType() {
+	Class getPropertyType() {
 		boolean isIndexed = pathFromRoot =~ /\w+\[.*?\]$/
 		boolean isCollection = persistentProperty.isBasicCollectionType() || persistentProperty.isAssociation()
 		if (isIndexed && isCollection) {

@@ -63,6 +63,8 @@ class CommandPropertyAccessor extends AbstractPropertyAccessor {
 							type = genericType.actualTypeArguments[1]
 							break
 					}
+				} else {
+					type = Object
 				}
 			}
 		}

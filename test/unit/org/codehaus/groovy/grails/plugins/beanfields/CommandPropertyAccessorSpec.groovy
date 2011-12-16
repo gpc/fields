@@ -78,6 +78,20 @@ class CommandPropertyAccessorSpec extends Specification {
 		propertyAccessor.type == String
 	}
 
+	void 'resolves an untyped simple indexed property when the value at that index is null'() {
+		given:
+		command.untypedList = ['correct', null, 'battery', 'staple']
+
+		and:
+		def propertyAccessor = factory.accessorFor(command, 'untypedList[1]')
+
+		expect:
+		propertyAccessor.value == null
+		propertyAccessor.pathFromRoot == "untypedList[1]"
+		propertyAccessor.propertyName == "untypedList"
+		propertyAccessor.type == Object
+	}
+
 	void 'resolves a simple mapped property'() {
 		given:
 		def today = new Date()
@@ -108,6 +122,21 @@ class CommandPropertyAccessorSpec extends Specification {
 		propertyAccessor.pathFromRoot == "mapOfDates[today]"
 		propertyAccessor.propertyName == "mapOfDates"
 		propertyAccessor.type == Date
+	}
+
+	void 'resolves an untyped simple mapped property when the value at that index is null'() {
+		given:
+		def today = new Date()
+		command.untypedMap = [yesterday: today -1, today: null, tomorrow: today + 1]
+
+		and:
+		def propertyAccessor = factory.accessorFor(command, 'untypedMap[today]')
+
+		expect:
+		propertyAccessor.value == null
+		propertyAccessor.pathFromRoot == "untypedMap[today]"
+		propertyAccessor.propertyName == "untypedMap"
+		propertyAccessor.type == Object
 	}
 
 	void 'resolves an enum property'() {
@@ -160,7 +189,9 @@ class TestCommand {
 	String username
 	String password
 	List<String> listOfStrings
+	List untypedList
 	Map<String, Date> mapOfDates
+	Map untypedMap
 	Gender gender
 	Address address
 	

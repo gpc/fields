@@ -9,10 +9,10 @@ class CommandPropertyAccessorSpec extends Specification {
 
 	BeanPropertyAccessorFactory factory = new BeanPropertyAccessorFactory(grailsApplication: grailsApplication, applicationContext: applicationContext)
 
-	LoginCommand command
+	TestCommand command
 
 	void setup() {
-		command = mockCommandObject(LoginCommand)
+		command = mockCommandObject(TestCommand)
 	}
 
 	void 'resolves a basic property'() {
@@ -24,8 +24,8 @@ class CommandPropertyAccessorSpec extends Specification {
 
 		expect:
 		propertyAccessor.value == command.password
-		propertyAccessor.rootBeanType == LoginCommand
-		propertyAccessor.beanType == LoginCommand
+		propertyAccessor.rootBeanType == TestCommand
+		propertyAccessor.beanType == TestCommand
 		propertyAccessor.pathFromRoot == "password"
 		propertyAccessor.propertyName == "password"
 		propertyAccessor.type == String
@@ -39,8 +39,8 @@ class CommandPropertyAccessorSpec extends Specification {
 
 		expect:
 		propertyAccessor.value == null
-		propertyAccessor.rootBeanType == LoginCommand
-		propertyAccessor.beanType == LoginCommand
+		propertyAccessor.rootBeanType == TestCommand
+		propertyAccessor.beanType == TestCommand
 		propertyAccessor.pathFromRoot == "password"
 		propertyAccessor.propertyName == "password"
 		propertyAccessor.type == String
@@ -57,8 +57,8 @@ class CommandPropertyAccessorSpec extends Specification {
 
 		expect:
 		propertyAccessor.value == command.listOfStrings[1]
-		propertyAccessor.rootBeanType == LoginCommand
-		propertyAccessor.beanType == LoginCommand
+		propertyAccessor.rootBeanType == TestCommand
+		propertyAccessor.beanType == TestCommand
 		propertyAccessor.pathFromRoot == "listOfStrings[1]"
 		propertyAccessor.propertyName == "listOfStrings"
 		propertyAccessor.type == String
@@ -76,6 +76,38 @@ class CommandPropertyAccessorSpec extends Specification {
 		propertyAccessor.pathFromRoot == "listOfStrings[1]"
 		propertyAccessor.propertyName == "listOfStrings"
 		propertyAccessor.type == String
+	}
+
+	void 'resolves a simple mapped property'() {
+		given:
+		def today = new Date()
+		command.mapOfDates = [yesterday: today -1, today: today, tomorrow: today + 1]
+
+		and:
+		def propertyAccessor = factory.accessorFor(command, 'mapOfDates[today]')
+
+		expect:
+		propertyAccessor.value == command.mapOfDates['today']
+		propertyAccessor.rootBeanType == TestCommand
+		propertyAccessor.beanType == TestCommand
+		propertyAccessor.pathFromRoot == "mapOfDates[today]"
+		propertyAccessor.propertyName == "mapOfDates"
+		propertyAccessor.type == Date
+	}
+
+	void 'resolves a simple mapped property when the value at that index is null'() {
+		given:
+		def today = new Date()
+		command.mapOfDates = [yesterday: today -1, today: null, tomorrow: today + 1]
+
+		and:
+		def propertyAccessor = factory.accessorFor(command, 'mapOfDates[today]')
+
+		expect:
+		propertyAccessor.value == null
+		propertyAccessor.pathFromRoot == "mapOfDates[today]"
+		propertyAccessor.propertyName == "mapOfDates"
+		propertyAccessor.type == Date
 	}
 
 	void 'resolves an enum property'() {
@@ -101,7 +133,7 @@ class CommandPropertyAccessorSpec extends Specification {
 
 		expect:
 		propertyAccessor.value == command.address.city
-		propertyAccessor.rootBeanType == LoginCommand
+		propertyAccessor.rootBeanType == TestCommand
 		propertyAccessor.beanType == Address
 		propertyAccessor.pathFromRoot == "address.city"
 		propertyAccessor.propertyName == "city"
@@ -114,7 +146,7 @@ class CommandPropertyAccessorSpec extends Specification {
 
 		expect:
 		propertyAccessor.value == null
-		propertyAccessor.rootBeanType == LoginCommand
+		propertyAccessor.rootBeanType == TestCommand
 		propertyAccessor.beanType == Address
 		propertyAccessor.pathFromRoot == "address.city"
 		propertyAccessor.propertyName == "city"
@@ -123,11 +155,12 @@ class CommandPropertyAccessorSpec extends Specification {
 
 }
 
-class LoginCommand {
+class TestCommand {
 
 	String username
 	String password
 	List<String> listOfStrings
+	Map<String, Date> mapOfDates
 	Gender gender
 	Address address
 	

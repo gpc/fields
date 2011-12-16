@@ -55,7 +55,14 @@ class CommandPropertyAccessor extends AbstractPropertyAccessor {
 			if (match) {
 				def genericType = beanWrapper.getPropertyDescriptor(match[0][1]).readMethod.genericReturnType
 				if (genericType instanceof ParameterizedType) {
-					type = genericType.actualTypeArguments[0]
+					switch (genericType.rawType) {
+						case Collection:
+							type = genericType.actualTypeArguments[0]
+							break
+						case Map:
+							type = genericType.actualTypeArguments[1]
+							break
+					}
 				}
 			}
 		}

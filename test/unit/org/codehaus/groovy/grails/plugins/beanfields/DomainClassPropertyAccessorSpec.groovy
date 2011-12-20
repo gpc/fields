@@ -5,12 +5,13 @@ import org.codehaus.groovy.grails.plugins.beanfields.taglib.FormFieldsTagLib
 import org.springframework.beans.NotReadablePropertyException
 import grails.test.mixin.*
 import spock.lang.*
+import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
 
 @TestFor(FormFieldsTagLib)
 @Mock([Person, Address, Author, Book, Employee])
 class DomainClassPropertyAccessorSpec extends Specification {
 
-	BeanPropertyAccessorFactory factory = new BeanPropertyAccessorFactory(grailsApplication: grailsApplication)
+	BeanPropertyAccessorFactory factory = new BeanPropertyAccessorFactory(grailsApplication: grailsApplication, constraintsEvaluator: new DefaultConstraintEvaluator())
 	@Shared Address address
 	@Shared Person person
 	@Shared Employee employee

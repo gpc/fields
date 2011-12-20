@@ -90,7 +90,7 @@ class FormFieldsTagLib implements GrailsApplicationAware, ApplicationContextAwar
 				label: resolveLabelText(propertyAccessor, attrs),
 				value: attrs.value ?: propertyAccessor.value ?: attrs.default,
 				constraints: propertyAccessor.constraints,
-				persistentProperty: propertyAccessor instanceof DomainClassPropertyAccessor ? propertyAccessor.persistentProperty : null,
+				persistentProperty: propertyAccessor.persistentProperty,
 				errors: propertyAccessor.errors.collect { message(error: it) },
 				required: attrs.containsKey("required") ? Boolean.valueOf(attrs.required) : propertyAccessor.required,
 				invalid: attrs.containsKey("invalid") ? Boolean.valueOf(attrs.invalid) : propertyAccessor.invalid,

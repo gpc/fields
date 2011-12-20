@@ -5,6 +5,7 @@ import org.codehaus.groovy.grails.plugins.beanfields.BeanPropertyAccessorFactory
 import org.codehaus.groovy.grails.web.taglib.exceptions.GrailsTagException
 import spock.lang.Specification
 import grails.test.mixin.*
+import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
 
 @TestFor(FormFieldsTagLib)
 @Mock([Person, Employee])
@@ -13,7 +14,12 @@ class FormFieldsTagLibSpec extends Specification {
 	def personInstance
 
 	def setupSpec() {
-		applicationContext.registerSingleton("beanPropertyAccessorFactory", BeanPropertyAccessorFactory)
+		defineBeans {
+			constraintsEvaluator(DefaultConstraintEvaluator)
+			beanPropertyAccessorFactory(BeanPropertyAccessorFactory) {
+				constraintsEvaluator = ref('constraintsEvaluator')
+			}
+		}
 	}
 
 	def setup() {

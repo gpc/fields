@@ -1,13 +1,15 @@
 package org.codehaus.groovy.grails.plugins.beanfields
 
-import grails.test.mixin.TestFor
 import org.codehaus.groovy.grails.plugins.beanfields.taglib.FormFieldsTagLib
+import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
 import spock.lang.Specification
+import grails.test.mixin.*
 
 @TestFor(FormFieldsTagLib)
+@Mock(Address)
 class CommandPropertyAccessorSpec extends Specification {
 
-	BeanPropertyAccessorFactory factory = new BeanPropertyAccessorFactory(grailsApplication: grailsApplication, applicationContext: applicationContext)
+	BeanPropertyAccessorFactory factory = new BeanPropertyAccessorFactory(grailsApplication: grailsApplication, constraintsEvaluator: new DefaultConstraintEvaluator())
 
 	TestCommand command
 

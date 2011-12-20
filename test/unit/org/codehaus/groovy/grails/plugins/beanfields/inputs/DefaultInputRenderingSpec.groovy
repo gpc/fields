@@ -19,7 +19,7 @@ class DefaultInputRenderingSpec extends Specification {
 	@Shared def oneToManyProperty = new MockPersistentProperty(oneToMany: true, referencedPropertyType: Person, referencedDomainClass: personDomainClass)
 	@Shared List<Person> people
 
-	def setup() {
+	void setupSpec() {
 		people = ["Bart Simpson", "Homer Simpson", "Monty Burns"].collect {
 			new Person(name: it).save(failOnError: true)
 		}

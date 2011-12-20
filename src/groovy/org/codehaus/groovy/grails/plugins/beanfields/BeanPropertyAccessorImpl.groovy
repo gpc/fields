@@ -7,7 +7,7 @@ import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import org.springframework.validation.FieldError
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 
-class UnifiedBeanPropertyAccessor implements BeanPropertyAccessor {
+class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
 	
 	Object rootBean
 	GrailsDomainClass rootBeanClass // TODO: not required on interface

@@ -18,7 +18,7 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 
 		resolvePropertyFromPath(bean, propertyPath, params)
 
-		new UnifiedBeanPropertyAccessor(params)
+		new BeanPropertyAccessorImpl(params)
 	}
 
 	private GrailsDomainClass resolveDomainClass(Class beanClass) {

@@ -134,7 +134,32 @@ class FormFieldsTagLibSpec extends Specification {
 		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: employeeInstance]) == 'SUBCLASS TEMPLATE'
 	}
 
-	void "bean and property attributes are passed to template"() {
+    def "property template gets resolved by the property's superclass"() {
+        given:
+        views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+        views["/forms/enum/_field.gsp"] = 'ENUM TEMPLATE'
+
+        and:
+        def employeeInstance = new Employee(salutation: SalutationEnum.MR, name: "Waylon Smithers", salary: 10)
+
+        expect:
+        applyTemplate('<form:field bean="personInstance" property="salutation"/>', [personInstance: employeeInstance]) == 'ENUM TEMPLATE'
+    }
+
+    def "property template overrides property's superclass template"() {
+        given:
+        views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+        views["/forms/enum/_field.gsp"] = 'ENUM TEMPLATE'
+        views["/forms/salutationEnum/_field.gsp"] = 'SALUTATION TEMPLATE'
+
+        and:
+        def employeeInstance = new Employee(salutation: SalutationEnum.MR, name: "Waylon Smithers", salary: 10)
+
+        expect:
+        applyTemplate('<form:field bean="personInstance" property="salutation"/>', [personInstance: employeeInstance]) == 'SALUTATION TEMPLATE'
+    }
+
+    void "bean and property attributes are passed to template"() {
 		given:
 		views["/forms/default/_field.gsp"] = '${bean.getClass().simpleName}.${property}'
 
@@ -396,6 +421,7 @@ class FormFieldsTagLibSpec extends Specification {
 
 @Entity
 class Person {
+    SalutationEnum salutation
 	String name
 	String password
 	String gender
@@ -407,6 +433,7 @@ class Person {
 	static embedded = ['address']
 
 	static constraints = {
+        salutation nullable: true
 		name blank: false
 		address nullable: true
 	}
@@ -430,4 +457,9 @@ class Address {
 		city blank: false
 		country inList: ["USA", "UK", "Canada"]
 	}
+}
+
+enum SalutationEnum {
+    MR,
+    MRS
 }

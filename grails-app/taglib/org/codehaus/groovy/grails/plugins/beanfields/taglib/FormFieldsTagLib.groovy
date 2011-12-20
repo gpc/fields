@@ -11,6 +11,7 @@ import org.codehaus.groovy.grails.commons.*
 import org.codehaus.groovy.grails.plugins.beanfields.*
 import org.codehaus.groovy.grails.scaffolding.*
 import org.springframework.context.*
+import org.apache.commons.lang.ClassUtils
 
 class FormFieldsTagLib implements GrailsApplicationAware, ApplicationContextAware {
 
@@ -131,8 +132,10 @@ class FormFieldsTagLib implements GrailsApplicationAware, ApplicationContextAwar
 		// order of priority for template resolution
 		// 1: grails-app/views/controller/<property>/_field.gsp
 		// 2: grails-app/views/forms/<class>.<property>/_field.gsp
-		// 3: grails-app/views/forms/<type>/_field.gsp, type is class' simpleName
-		// 4: grails-app/views/forms/default/_field.gsp
+		// 3: grails-app/views/forms/<anysuperclassclass>.<property>/_field.gsp
+		// 4: grails-app/views/forms/<type>/_field.gsp, type is class' simpleName
+		// 5: grails-app/views/forms/<anysupertype>/_field.gsp, type is class' simpleName
+		// 6: grails-app/views/forms/default/_field.gsp
 		def templateResolveOrder = []
 		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/", controllerName, propertyAccessor.propertyName, templateName)
 		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(propertyAccessor.beanType), propertyAccessor.propertyName, templateName)
@@ -140,6 +143,10 @@ class FormFieldsTagLib implements GrailsApplicationAware, ApplicationContextAwar
 			templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(superclass), propertyAccessor.propertyName, templateName)
 		}
 		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(propertyAccessor.propertyType), templateName)
+        for (propertySuperClass in ClassUtils.getAllSuperclasses(propertyAccessor.propertyType)) {
+            templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(propertySuperClass), templateName)
+
+        }
 		templateResolveOrder << "/forms/default/$templateName"
 		templateResolveOrder
 	}

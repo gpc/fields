@@ -1,7 +1,6 @@
 package org.codehaus.groovy.grails.plugins.beanfields.taglib
 
 import grails.util.GrailsNameUtils
-import javax.annotation.PostConstruct
 import org.apache.commons.lang.StringUtils
 import org.codehaus.groovy.grails.io.support.GrailsResourceUtils
 import org.codehaus.groovy.grails.plugins.GrailsPluginManager
@@ -10,22 +9,15 @@ import org.codehaus.groovy.grails.web.pages.discovery.GrailsConventionGroovyPage
 import org.codehaus.groovy.grails.commons.*
 import org.codehaus.groovy.grails.plugins.beanfields.*
 import org.codehaus.groovy.grails.scaffolding.*
-import org.springframework.context.*
 
-class FormFieldsTagLib implements GrailsApplicationAware, ApplicationContextAware {
+class FormFieldsTagLib implements GrailsApplicationAware {
 
 	static namespace = "form"
 
 	GrailsApplication grailsApplication
-	ApplicationContext applicationContext
 	GrailsConventionGroovyPageLocator groovyPageLocator
 	BeanPropertyAccessorFactory beanPropertyAccessorFactory
 	GrailsPluginManager pluginManager
-
-	@PostConstruct
-	void initialize() {
-		beanPropertyAccessorFactory = new BeanPropertyAccessorFactory(grailsApplication: grailsApplication, applicationContext: applicationContext)
-	}
 
 	Closure bean = { attrs ->
 		if (!attrs.bean) throwTagError("Tag [bean] is missing required attribute [bean]")

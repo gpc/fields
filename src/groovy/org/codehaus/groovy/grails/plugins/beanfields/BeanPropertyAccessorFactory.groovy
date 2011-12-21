@@ -34,7 +34,6 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 	private void resolvePropertyFromPathComponents(BeanWrapper beanWrapper, List<String> pathElements, Map params) {
 		def propertyName = pathElements.remove(0)
 		def beanClass = resolveDomainClass(beanWrapper.wrappedClass)
-		println "wrappedClass: $beanWrapper.wrappedClass, beanClass: $beanClass"
 		def propertyType = resolvePropertyType(beanWrapper, beanClass, propertyName)
 		def value = beanWrapper.getPropertyValue(propertyName)
 		if (pathElements.empty) {
@@ -81,17 +80,6 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 			persistentProperty.type
 		}
 	}
-
-//	private Class resolveDomainPropertyType(GrailsDomainClass beanClass, String propertyName) {
-//		def persistentProperty = beanClass.getPersistentProperty(stripIndex(propertyName))
-//		if (persistentProperty.embedded) {
-//			persistentProperty.component.clazz
-//		} else if (persistentProperty.association) {
-//			persistentProperty.referencedDomainClass.clazz
-//		} else {
-//			null
-//		}
-//	}
 
 	private Class resolveNonDomainPropertyType(BeanWrapper beanWrapper, String propertyName) {
 		def type = beanWrapper.getPropertyType(propertyName)

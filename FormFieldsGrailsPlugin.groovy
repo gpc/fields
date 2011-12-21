@@ -1,3 +1,5 @@
+import org.codehaus.groovy.grails.plugins.beanfields.BeanPropertyAccessorFactory
+
 class FormFieldsGrailsPlugin {
 
 	def version = "1.0-SNAPSHOT"
@@ -16,5 +18,9 @@ class FormFieldsGrailsPlugin {
 	def license = "APACHE"
 	def issueManagement = [system: "GitHub", url: "https://github.com/robfletcher/grails-form-fields/issues"]
 	def scm = [url: "https://github.com/robfletcher/grails-form-fields"]
+
+	def doWithSpring = {
+		beanPropertyAccessorFactory(BeanPropertyAccessorFactory)
+	}
 
 }

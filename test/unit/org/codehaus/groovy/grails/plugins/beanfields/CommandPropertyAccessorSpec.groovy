@@ -11,14 +11,9 @@ class CommandPropertyAccessorSpec extends Specification {
 
 	BeanPropertyAccessorFactory factory = new BeanPropertyAccessorFactory(grailsApplication: grailsApplication, constraintsEvaluator: new DefaultConstraintEvaluator())
 
-	TestCommand command
-
-	void setup() {
-		command = mockCommandObject(TestCommand)
-	}
-
 	void 'resolves a basic property'() {
 		given:
+		TestCommand command = mockCommandObject(TestCommand)
 		command.password = 'correct horse battery staple'
 
 		and:
@@ -37,6 +32,9 @@ class CommandPropertyAccessorSpec extends Specification {
 
 	void 'resolves a basic property even when its value is null'() {
 		given:
+		TestCommand command = mockCommandObject(TestCommand)
+
+		and:
 		def propertyAccessor = factory.accessorFor(command, 'password')
 
 		expect:
@@ -52,6 +50,7 @@ class CommandPropertyAccessorSpec extends Specification {
 
 	void 'resolves a simple indexed property'() {
 		given:
+		TestCommand command = mockCommandObject(TestCommand)
 		command.listOfStrings = ['correct', 'horse', 'battery', 'staple']
 
 		and:
@@ -68,6 +67,7 @@ class CommandPropertyAccessorSpec extends Specification {
 
 	void 'resolves a simple indexed property when the value at that index is null'() {
 		given:
+		TestCommand command = mockCommandObject(TestCommand)
 		command.listOfStrings = ['correct', null, 'battery', 'staple']
 
 		and:
@@ -82,6 +82,7 @@ class CommandPropertyAccessorSpec extends Specification {
 
 	void 'resolves an untyped simple indexed property when the value at that index is null'() {
 		given:
+		TestCommand command = mockCommandObject(TestCommand)
 		command.untypedList = ['correct', null, 'battery', 'staple']
 
 		and:
@@ -96,6 +97,7 @@ class CommandPropertyAccessorSpec extends Specification {
 
 	void 'resolves a simple mapped property'() {
 		given:
+		TestCommand command = mockCommandObject(TestCommand)
 		def today = new Date()
 		command.mapOfDates = [yesterday: today -1, today: today, tomorrow: today + 1]
 
@@ -113,6 +115,7 @@ class CommandPropertyAccessorSpec extends Specification {
 
 	void 'resolves a simple mapped property when the value at that index is null'() {
 		given:
+		TestCommand command = mockCommandObject(TestCommand)
 		def today = new Date()
 		command.mapOfDates = [yesterday: today -1, today: null, tomorrow: today + 1]
 
@@ -128,6 +131,7 @@ class CommandPropertyAccessorSpec extends Specification {
 
 	void 'resolves an untyped simple mapped property when the value at that index is null'() {
 		given:
+		TestCommand command = mockCommandObject(TestCommand)
 		def today = new Date()
 		command.untypedMap = [yesterday: today -1, today: null, tomorrow: today + 1]
 
@@ -143,6 +147,7 @@ class CommandPropertyAccessorSpec extends Specification {
 
 	void 'resolves an enum property'() {
 		given:
+		TestCommand command = mockCommandObject(TestCommand)
 		command.gender = Gender.Male
 
 		and:
@@ -157,6 +162,7 @@ class CommandPropertyAccessorSpec extends Specification {
 
 	void 'resolves a nested property'() {
 		given:
+		TestCommand command = mockCommandObject(TestCommand)
 		command.address = new Address(street: '54 Evergreen Terrace', city: 'Springfield', country: 'USA')
 
 		and:
@@ -173,6 +179,9 @@ class CommandPropertyAccessorSpec extends Specification {
 
 	void 'resolves a nested property even when the intervening object is null'() {
 		given:
+		TestCommand command = mockCommandObject(TestCommand)
+
+		and:
 		def propertyAccessor = factory.accessorFor(command, 'address.city')
 
 		expect:
@@ -186,6 +195,7 @@ class CommandPropertyAccessorSpec extends Specification {
 
 	void 'if a nested property is a domain class then it is handled as one'() {
 		given:
+		TestCommand command = mockCommandObject(TestCommand)
 		command.address = new Address(street: '54 Evergreen Terrace', city: 'Springfield', country: 'USA')
 
 		and:
@@ -194,6 +204,19 @@ class CommandPropertyAccessorSpec extends Specification {
 		expect:
 		propertyAccessor.persistentProperty
 		propertyAccessor.persistentProperty.name == 'city'
+	}
+
+	void 'constraints are defaulted for classes that have no constraints property'() {
+		given:
+		UnconstrainedCommand command = mockCommandObject(UnconstrainedCommand)
+
+		and:
+		def propertyAccessor = factory.accessorFor(command, 'stringProperty')
+
+		expect:
+		propertyAccessor.constraints
+		!propertyAccessor.constraints.nullable
+		propertyAccessor.constraints.blank
 	}
 
 }
@@ -213,4 +236,8 @@ class TestCommand {
 		username blank: false
 		password blank: false, password: true
 	}
+}
+
+class UnconstrainedCommand {
+	String stringProperty
 }

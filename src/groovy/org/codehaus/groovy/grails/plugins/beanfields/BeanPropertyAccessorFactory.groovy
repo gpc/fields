@@ -53,7 +53,12 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 		if (beanClass) {
 			beanClass.constrainedProperties[propertyName]
 		} else {
-			constraintsEvaluator.evaluate(beanWrapper.wrappedClass)[propertyName]
+			// TODO: possibly a better way to get constraints direct from a command object rather than re-evaluating them
+			def constraints = constraintsEvaluator.evaluate(beanWrapper.wrappedClass)[propertyName]
+			if (!constraints) {
+				constraints = new ConstrainedProperty(beanWrapper.wrappedClass, propertyName, beanWrapper.getPropertyType(propertyName))
+			}
+			constraints
 		}
 	}
 

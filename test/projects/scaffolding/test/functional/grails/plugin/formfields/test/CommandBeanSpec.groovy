@@ -7,10 +7,9 @@ class CommandBeanSpec extends GebSpec {
 		go 'command/index'
 
 		expect:
-		$('form').with {
-			username().@type == 'text'
-			password().@type == 'password'
-		}
+		def form = $('form')
+		form.username().@type == 'text'
+		form.password().@type == 'password'
 	}
 
 }

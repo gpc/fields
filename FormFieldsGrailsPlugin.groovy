@@ -1,4 +1,5 @@
 import org.codehaus.groovy.grails.plugins.beanfields.BeanPropertyAccessorFactory
+import org.codehaus.groovy.grails.validation.ConstraintsEvaluator
 
 class FormFieldsGrailsPlugin {
 
@@ -20,7 +21,9 @@ class FormFieldsGrailsPlugin {
 	def scm = [url: "https://github.com/robfletcher/grails-form-fields"]
 
 	def doWithSpring = {
-		beanPropertyAccessorFactory(BeanPropertyAccessorFactory)
+		beanPropertyAccessorFactory(BeanPropertyAccessorFactory) {
+			constraintsEvaluator = ref(ConstraintsEvaluator.BEAN_NAME)
+		}
 	}
-
+	
 }

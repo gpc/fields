@@ -22,6 +22,7 @@ grails.project.dependency.resolution = {
 
     dependencies {
 		test 'javassist:javassist:3.12.0.GA'
+		test 'org.jodd:jodd-wot:3.3'
     }
 
     plugins {

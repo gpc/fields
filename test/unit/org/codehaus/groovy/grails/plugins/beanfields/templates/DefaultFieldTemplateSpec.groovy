@@ -3,6 +3,7 @@ package org.codehaus.groovy.grails.plugins.beanfields.templates
 import grails.test.mixin.TestMixin
 import grails.test.mixin.web.GroovyPageUnitTestMixin
 import spock.lang.Specification
+import static jodd.lagarto.dom.jerry.Jerry.jerry
 
 @TestMixin(GroovyPageUnitTestMixin)
 class DefaultFieldTemplateSpec extends Specification {
@@ -14,37 +15,56 @@ class DefaultFieldTemplateSpec extends Specification {
 		model.label = 'label'
 		model.property = 'property'
 		model.required = false
-		model.widget = 'widget'
+		model.widget = '<input name="property">'
 	}
 	
 	void "default rendering"() {
-		expect:
-		render(template: '/forms/default/field', model: model) == '''<div class="fieldcontain  ">
-	<label for="property">label</label>
-	widget
-</div>'''
+		when:
+		def output = render(template: '/forms/default/field', model: model)
+		
+		then:
+		def root = jerry(output).children()
+		root.get(0).nodeName == 'div'
+		root.hasClass('fieldcontain')
+		
+		and:
+		def label = root.find('label')
+		label.text() == 'label'
+		label.attr('for') == 'property'
+		
+		and:
+		def input = label.next()
+		input.get(0).nodeName == 'input'
+		input.attr('name') == 'property'
 	}
 
 	void "container marked as invalid"() {
 		given:
 		model.invalid = true
 
-		expect:
-		render(template: '/forms/default/field', model: model) == '''<div class="fieldcontain error ">
-	<label for="property">label</label>
-	widget
-</div>'''
+		when:
+		def output = render(template: '/forms/default/field', model: model)
+		
+		then:
+		def root = jerry(output).children()
+		root.hasClass('error')
 	}
 
 	void "container marked as required"() {
 		given:
 		model.required = true
 
-		expect:
-		render(template: '/forms/default/field', model: model) == '''<div class="fieldcontain  required">
-	<label for="property">label<span class="required-indicator">*</span></label>
-	widget
-</div>'''
+		when:
+		def output = render(template: '/forms/default/field', model: model)
+		
+		then:
+		def root = jerry(output).children()
+		root.hasClass('required')
+		
+		and:
+		def indicator = root.find('label .required-indicator')
+		indicator.size()
+		indicator.text() == '*'
 	}
 
 }

@@ -2,6 +2,7 @@ package org.codehaus.groovy.grails.plugins.beanfields.templates
 
 import grails.test.mixin.TestMixin
 import grails.test.mixin.web.GroovyPageUnitTestMixin
+import jodd.lagarto.dom.jerry.Jerry
 import spock.lang.Specification
 import static jodd.lagarto.dom.jerry.Jerry.jerry
 
@@ -18,12 +19,16 @@ class DefaultFieldTemplateSpec extends Specification {
 		model.widget = '<input name="property">'
 	}
 	
+	static Jerry $(String html) {
+		jerry(html).children()
+	}
+	
 	void "default rendering"() {
 		when:
 		def output = render(template: '/forms/default/field', model: model)
 		
 		then:
-		def root = jerry(output).children()
+		def root = $(output)
 		root.get(0).nodeName == 'div'
 		root.hasClass('fieldcontain')
 		
@@ -46,8 +51,7 @@ class DefaultFieldTemplateSpec extends Specification {
 		def output = render(template: '/forms/default/field', model: model)
 		
 		then:
-		def root = jerry(output).children()
-		root.hasClass('error')
+		$(output).hasClass('error')
 	}
 
 	void "container marked as required"() {
@@ -58,7 +62,7 @@ class DefaultFieldTemplateSpec extends Specification {
 		def output = render(template: '/forms/default/field', model: model)
 		
 		then:
-		def root = jerry(output).children()
+		def root = $(output)
 		root.hasClass('required')
 		
 		and:

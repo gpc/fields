@@ -371,9 +371,29 @@ class FormFieldsTagLibSpec extends Specification {
 		def output = applyTemplate('<form:bean bean="personInstance"/>', [personInstance: personInstance])
 
 		then:
-		output =~ /\baddress\.street\b/
-		output =~ /\baddress\.city\b/
-		output =~ /\baddress\.country\b/
+		output.contains('address.street address.city address.country')
+	}
+
+	void "bean tag wraps embedded properties in a container"() {
+		given:
+		views["/forms/default/_field.gsp"] = '${property} '
+
+		when:
+		def output = applyTemplate('<form:bean bean="personInstance"/>', [personInstance: personInstance])
+
+		then:
+		output.contains('<fieldset class="address"><legend>Address</legend>address.street address.city address.country </fieldset>')
+	}
+	
+	void 'bean tag skips properties excluded by a static scaffold property in the domain class'() {
+		given:
+		views["/forms/default/_field.gsp"] = '${property} '
+
+		when:
+		def output = applyTemplate('<form:bean bean="personInstance"/>', [personInstance: personInstance])
+
+		then:
+		!output.contains('excludedProperty')
 	}
 
 	void "bean tag skips event properties"() {
@@ -409,6 +429,7 @@ class Person {
 	Address address
 	boolean minor
 	Date lastUpdated
+	String excludedProperty
 
 	static embedded = ['address']
 
@@ -416,6 +437,8 @@ class Person {
 		name blank: false
 		address nullable: true
 	}
+
+	static scaffold = [exclude: ['excludedProperty']]
 
 	def onLoad = {
 		println "loaded"

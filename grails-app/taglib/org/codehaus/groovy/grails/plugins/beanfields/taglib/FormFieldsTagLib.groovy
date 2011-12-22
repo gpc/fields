@@ -5,10 +5,11 @@ import org.apache.commons.lang.StringUtils
 import org.codehaus.groovy.grails.io.support.GrailsResourceUtils
 import org.codehaus.groovy.grails.plugins.GrailsPluginManager
 import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
+import org.codehaus.groovy.grails.scaffolding.DomainClassPropertyComparator
 import org.codehaus.groovy.grails.web.pages.discovery.GrailsConventionGroovyPageLocator
 import org.codehaus.groovy.grails.commons.*
+import static org.codehaus.groovy.grails.commons.GrailsClassUtils.getStaticPropertyValue
 import org.codehaus.groovy.grails.plugins.beanfields.*
-import org.codehaus.groovy.grails.scaffolding.*
 
 class FormFieldsTagLib implements GrailsApplicationAware {
 
@@ -28,16 +29,19 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		if (domainClass) {
 			for (property in resolvePersistentProperties(domainClass)) {
 				if (property.embedded) {
+					out << '<fieldset class="' << toPropertyNameFormat(property.type) << '">'
+					out << '<legend>' << GrailsNameUtils.getNaturalName(property.type.simpleName) << '</legend>'
 					for (embeddedProp in resolvePersistentProperties(property.component)) {
 						def propertyPath = "${property.name}.${embeddedProp.name}"
 						out << field(bean: bean, property: propertyPath, template: fieldTemplateName)
 					}
+					out << '</fieldset>'
 				} else {
 					out << field(bean: bean, property: property.name, template: fieldTemplateName)
 				}
 			}
 		} else {
-
+			// TODO: handle POGOs
 		}
 	}
 
@@ -149,22 +153,16 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	private List<GrailsDomainClassProperty> resolvePersistentProperties(GrailsDomainClass domainClass) {
-		boolean hasHibernate = pluginManager?.hasGrailsPlugin('hibernate')
 		def properties = domainClass.persistentProperties as List
 
 		def blackList = ['dateCreated', 'lastUpdated']
-		try {
-			def domainClassExclusions = domainClass.clazz.scaffold?.exclude
-			if (domainClassExclusions) {
-				blackList.addAll(domainClassExclusions)
-			}
-		} catch (MissingPropertyException e) {
-			// MPE occurs if scaffold is not defined on domain class
+		def scaffoldProp = getStaticPropertyValue(domainClass.clazz, 'scaffold')
+		if (scaffoldProp) {
+			blackList.addAll(scaffoldProp.exclude)
 		}
 		properties = properties.findAll { !(it.name in blackList) }
 
-		def comparator = hasHibernate ? new DomainClassPropertyComparator(domainClass) : new SimpleDomainClassPropertyComparator(domainClass)
-		Collections.sort(properties, comparator)
+		Collections.sort(properties, new DomainClassPropertyComparator(domainClass))
 		properties
 	}
 

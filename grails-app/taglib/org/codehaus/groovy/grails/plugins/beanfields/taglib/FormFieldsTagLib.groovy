@@ -1,24 +1,21 @@
 package org.codehaus.groovy.grails.plugins.beanfields.taglib
 
 import grails.util.GrailsNameUtils
-import org.codehaus.groovy.grails.io.support.GrailsResourceUtils
-import org.codehaus.groovy.grails.plugins.GrailsPluginManager
+import org.apache.commons.lang.StringUtils
 import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
 import org.codehaus.groovy.grails.scaffolding.DomainClassPropertyComparator
-import org.codehaus.groovy.grails.web.pages.discovery.GrailsConventionGroovyPageLocator
-import org.apache.commons.lang.*
 import org.codehaus.groovy.grails.commons.*
 import static org.codehaus.groovy.grails.commons.GrailsClassUtils.getStaticPropertyValue
 import org.codehaus.groovy.grails.plugins.beanfields.*
+import static org.codehaus.groovy.grails.plugins.beanfields.FormFieldsTemplateService.toPropertyNameFormat
 
 class FormFieldsTagLib implements GrailsApplicationAware {
 
 	static namespace = "form"
 
+	FormFieldsTemplateService formFieldsTemplateService
 	GrailsApplication grailsApplication
-	GrailsConventionGroovyPageLocator groovyPageLocator
 	BeanPropertyAccessorFactory beanPropertyAccessorFactory
-	GrailsPluginManager pluginManager
 
 	Closure bean = { attrs ->
 		if (!attrs.bean) throwTagError("Tag [bean] is missing required attribute [bean]")
@@ -55,7 +52,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 		model.widget = renderWidget("input", propertyAccessor, model)
 
-		def template = findTemplate(propertyAccessor, templateName)
+		def template = formFieldsTemplateService.findTemplate(propertyAccessor, templateName)
 		out << render(template: template.path, plugin: template.plugin, model: model)
 	}
 
@@ -94,55 +91,12 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	private String renderWidget(String name, BeanPropertyAccessor propertyAccessor, Map model) {
-		def template = findTemplate(propertyAccessor, name)
+		def template = formFieldsTemplateService.findTemplate(propertyAccessor, name)
 		if (template) {
 			return render(template: template.path, plugin: template.plugin, model: model)
 		} else {
 			return renderDefaultInput(model)
 		}
-	}
-
-	// TODO: cache the result of this lookup
-	private Map findTemplate(BeanPropertyAccessor propertyAccessor, String templateName) {
-		def candidatePaths = candidateTemplatePaths(propertyAccessor, templateName)
-
-		def template = candidatePaths.findResult { path ->
-			def source = groovyPageLocator.findTemplateByPath(path)
-			source ? [source: source, path: path] : null
-		}
-		if (template) {
-			def plugin = pluginManager.allPlugins.find {
-				template.source.URI.startsWith(it.pluginPath)
-			}
-			template.plugin = plugin?.name
-			log.debug "found template $template.path in plugin $template.plugin"
-			template
-		} else {
-			log.warn "could not find any template $candidatePaths"
-			[:]
-		}
-	}
-
-	private List<String> candidateTemplatePaths(BeanPropertyAccessor propertyAccessor, String templateName) {
-		// order of priority for template resolution
-		// 1: grails-app/views/controller/<property>/_field.gsp
-		// 2: grails-app/views/forms/<class>.<property>/_field.gsp
-		// 3: grails-app/views/forms/<anysuperclassclass>.<property>/_field.gsp
-		// 4: grails-app/views/forms/<type>/_field.gsp, type is class' simpleName
-		// 5: grails-app/views/forms/<anysupertype>/_field.gsp, type is class' simpleName
-		// 6: grails-app/views/forms/default/_field.gsp
-		def templateResolveOrder = []
-		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/", controllerName, propertyAccessor.propertyName, templateName)
-		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(propertyAccessor.beanType), propertyAccessor.propertyName, templateName)
-		for (superclass in propertyAccessor.beanSuperclasses) {
-			templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(superclass), propertyAccessor.propertyName, templateName)
-		}
-		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(propertyAccessor.propertyType), templateName)
-        for (propertySuperClass in ClassUtils.getAllSuperclasses(propertyAccessor.propertyType)) {
-            templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(propertySuperClass), templateName)
-        }
-		templateResolveOrder << "/forms/default/$templateName"
-		templateResolveOrder
 	}
 
 	private resolveBean(Map attrs) {
@@ -177,10 +131,6 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			label = message(code: attrs.labelKey)
 		}
 		label ?: message(code: propertyAccessor.labelKey, default: propertyAccessor.defaultLabel)
-	}
-
-	private String toPropertyNameFormat(Class type) {
-		GrailsNameUtils.getLogicalPropertyName(type.name, '')
 	}
 
 	private String renderDefaultInput(Map attrs) {

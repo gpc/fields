@@ -1,15 +1,11 @@
 package org.codehaus.groovy.grails.plugins.beanfields
 
-import org.codehaus.groovy.grails.plugins.beanfields.BeanPropertyAccessorFactory
-import org.codehaus.groovy.grails.web.taglib.exceptions.GrailsTagException
-import spock.lang.Specification
-import grails.test.mixin.*
-import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
-import org.codehaus.groovy.grails.plugins.beanfields.mock.Person
-import org.codehaus.groovy.grails.plugins.beanfields.mock.Employee
-import org.codehaus.groovy.grails.plugins.beanfields.mock.Address
-import org.codehaus.groovy.grails.plugins.beanfields.mock.Salutation
 import org.codehaus.groovy.grails.plugins.beanfields.taglib.FormFieldsTagLib
+import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
+import org.codehaus.groovy.grails.web.taglib.exceptions.GrailsTagException
+import grails.test.mixin.*
+import org.codehaus.groovy.grails.plugins.beanfields.mock.*
+import spock.lang.*
 
 @TestFor(FormFieldsTagLib)
 @Mock([Person, Employee])
@@ -144,32 +140,32 @@ class FormFieldsTagLibSpec extends Specification {
 		applyTemplate('<form:field bean="personInstance" property="name"/>', [personInstance: employeeInstance]) == 'SUBCLASS TEMPLATE'
 	}
 
-    def "property template gets resolved by the property's superclass"() {
-        given:
-        views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
-        views["/forms/enum/_field.gsp"] = 'ENUM TEMPLATE'
+	def "property template gets resolved by the property's superclass"() {
+		given:
+		views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/forms/enum/_field.gsp"] = 'ENUM TEMPLATE'
 
-        and:
-        def employeeInstance = new Employee(salutation: Salutation.MR, name: "Waylon Smithers", salary: 10)
+		and:
+		def employeeInstance = new Employee(salutation: Salutation.MR, name: "Waylon Smithers", salary: 10)
 
-        expect:
-        applyTemplate('<form:field bean="personInstance" property="salutation"/>', [personInstance: employeeInstance]) == 'ENUM TEMPLATE'
-    }
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="salutation"/>', [personInstance: employeeInstance]) == 'ENUM TEMPLATE'
+	}
 
-    def "property template overrides property's superclass template"() {
-        given:
-        views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
-        views["/forms/enum/_field.gsp"] = 'ENUM TEMPLATE'
-        views["/forms/salutation/_field.gsp"] = 'SALUTATION TEMPLATE'
+	def "property template overrides property's superclass template"() {
+		given:
+		views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/forms/enum/_field.gsp"] = 'ENUM TEMPLATE'
+		views["/forms/salutation/_field.gsp"] = 'SALUTATION TEMPLATE'
 
-        and:
-        def employeeInstance = new Employee(salutation: Salutation.MR, name: "Waylon Smithers", salary: 10)
+		and:
+		def employeeInstance = new Employee(salutation: Salutation.MR, name: "Waylon Smithers", salary: 10)
 
-        expect:
-        applyTemplate('<form:field bean="personInstance" property="salutation"/>', [personInstance: employeeInstance]) == 'SALUTATION TEMPLATE'
-    }
+		expect:
+		applyTemplate('<form:field bean="personInstance" property="salutation"/>', [personInstance: employeeInstance]) == 'SALUTATION TEMPLATE'
+	}
 
-    void "bean and property attributes are passed to template"() {
+	void "bean and property attributes are passed to template"() {
 		given:
 		views["/forms/default/_field.gsp"] = '${bean.getClass().simpleName}.${property}'
 
@@ -413,8 +409,9 @@ class FormFieldsTagLibSpec extends Specification {
 		then:
 		output.contains('<fieldset class="address"><legend>Address</legend>address.street address.city address.country </fieldset>')
 	}
-	
-	void 'bean tag skips properties excluded by a static scaffold property in the domain class'() {
+
+	@Unroll({"bean tag skips $property property"})
+	void 'bean tag skips excluded properties'() {
 		given:
 		views["/forms/default/_field.gsp"] = '${property} '
 
@@ -423,28 +420,9 @@ class FormFieldsTagLibSpec extends Specification {
 
 		then:
 		!output.contains('excludedProperty')
-	}
 
-	void "bean tag skips event properties"() {
-		given:
-		views["/forms/default/_field.gsp"] = '${property} '
-
-		when:
-		def output = applyTemplate('<form:bean bean="personInstance"/>', [personInstance: personInstance])
-
-		then:
-		!output.contains("onLoad")
-	}
-
-	void "bean tag skips timestamp properties"() {
-		given:
-		views["/forms/default/_field.gsp"] = '${property} '
-
-		when:
-		def output = applyTemplate('<form:bean bean="personInstance"/>', [personInstance: personInstance])
-
-		then:
-		!output.contains("lastUpdated")
+		where:
+		property << ['id', 'version', 'onLoad', 'lastUpdated', 'excludedProperty']
 	}
 
 }

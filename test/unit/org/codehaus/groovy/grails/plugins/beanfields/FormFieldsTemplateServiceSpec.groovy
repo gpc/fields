@@ -94,6 +94,24 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		template.source.scriptAsString == 'CONTROLLER FIELD TEMPLATE'
 	}
 
+	void "does not use controller if there isn't one in the current request"() {
+		given:
+		views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/name/_field.gsp"] = 'STRANGE TEMPLATE'
+
+		and:
+		webRequest.controllerName = null
+
+		and:
+		def property = factory.accessorFor(personInstance, 'name')
+
+		expect:
+		def template = service.findTemplate(property, 'field')
+		template.path == '/forms/default/field'
+		template.plugin == null
+		template.source.scriptAsString == 'DEFAULT FIELD TEMPLATE'
+	}
+
 	def "resolves template for superclass property"() {
 		given:
 		views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'

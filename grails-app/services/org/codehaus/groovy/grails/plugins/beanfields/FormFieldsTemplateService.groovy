@@ -48,22 +48,23 @@ class FormFieldsTemplateService {
 		// 5: grails-app/views/forms/<anysupertype>/_field.gsp, type is class' simpleName
 		// 6: grails-app/views/forms/default/_field.gsp
 		def templateResolveOrder = []
-		// TODO: test when there is no controller context
-		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/", controllerName, propertyAccessor.propertyName, templateName)
+		if (controllerName) {
+			templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/", controllerName, propertyAccessor.propertyName, templateName)
+		}
 		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(propertyAccessor.beanType), propertyAccessor.propertyName, templateName)
 		for (superclass in propertyAccessor.beanSuperclasses) {
 			templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(superclass), propertyAccessor.propertyName, templateName)
 		}
 		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(propertyAccessor.propertyType), templateName)
-        for (propertySuperClass in ClassUtils.getAllSuperclasses(propertyAccessor.propertyType)) {
-            templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(propertySuperClass), templateName)
-        }
+		for (propertySuperClass in ClassUtils.getAllSuperclasses(propertyAccessor.propertyType)) {
+			templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(propertySuperClass), templateName)
+		}
 		templateResolveOrder << "/forms/default/$templateName"
 		templateResolveOrder
 	}
-	
+
 	private String getControllerName() {
-		RequestContextHolder.requestAttributes.controllerName
+		RequestContextHolder.requestAttributes?.controllerName
 	}
 
 }

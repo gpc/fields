@@ -1,4 +1,4 @@
-package org.codehaus.groovy.grails.plugins.beanfields.templates
+package org.codehaus.groovy.grails.plugins.beanfields
 
 import grails.test.mixin.TestMixin
 import grails.test.mixin.web.GroovyPageUnitTestMixin

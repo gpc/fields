@@ -4,9 +4,10 @@ import org.codehaus.groovy.grails.plugins.beanfields.taglib.FormFieldsTagLib
 import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
 import spock.lang.Specification
 import grails.test.mixin.*
+import org.codehaus.groovy.grails.plugins.beanfields.mock.*
 
 @TestFor(FormFieldsTagLib)
-@Mock(Address)
+@Mock(Person)
 class CommandPropertyAccessorSpec extends Specification {
 
 	BeanPropertyAccessorFactory factory = new BeanPropertyAccessorFactory(grailsApplication: grailsApplication, constraintsEvaluator: new DefaultConstraintEvaluator())
@@ -163,17 +164,17 @@ class CommandPropertyAccessorSpec extends Specification {
 	void 'resolves a nested property'() {
 		given:
 		TestCommand command = mockCommandObject(TestCommand)
-		command.address = new Address(street: '54 Evergreen Terrace', city: 'Springfield', country: 'USA')
+		command.person = new Person(name: 'Bart Simpson')
 
 		and:
-		def propertyAccessor = factory.accessorFor(command, 'address.city')
+		def propertyAccessor = factory.accessorFor(command, 'person.name')
 
 		expect:
-		propertyAccessor.value == command.address.city
+		propertyAccessor.value == command.person.name
 		propertyAccessor.rootBeanType == TestCommand
-		propertyAccessor.beanType == Address
-		propertyAccessor.pathFromRoot == "address.city"
-		propertyAccessor.propertyName == "city"
+		propertyAccessor.beanType == Person
+		propertyAccessor.pathFromRoot == "person.name"
+		propertyAccessor.propertyName == "name"
 		propertyAccessor.propertyType == String
 	}
 
@@ -182,28 +183,28 @@ class CommandPropertyAccessorSpec extends Specification {
 		TestCommand command = mockCommandObject(TestCommand)
 
 		and:
-		def propertyAccessor = factory.accessorFor(command, 'address.city')
+		def propertyAccessor = factory.accessorFor(command, 'person.name')
 
 		expect:
 		propertyAccessor.value == null
 		propertyAccessor.rootBeanType == TestCommand
-		propertyAccessor.beanType == Address
-		propertyAccessor.pathFromRoot == "address.city"
-		propertyAccessor.propertyName == "city"
+		propertyAccessor.beanType == Person
+		propertyAccessor.pathFromRoot == "person.name"
+		propertyAccessor.propertyName == "name"
 		propertyAccessor.propertyType == String
 	}
 
 	void 'if a nested property is a domain class then it is handled as one'() {
 		given:
 		TestCommand command = mockCommandObject(TestCommand)
-		command.address = new Address(street: '54 Evergreen Terrace', city: 'Springfield', country: 'USA')
+		command.person = new Person(name: 'Bart Simpson')
 
 		and:
-		def propertyAccessor = factory.accessorFor(command, 'address.city')
+		def propertyAccessor = factory.accessorFor(command, 'person.name')
 
 		expect:
 		propertyAccessor.persistentProperty
-		propertyAccessor.persistentProperty.name == 'city'
+		propertyAccessor.persistentProperty.name == 'name'
 	}
 
 	void 'constraints are defaulted for classes that have no constraints property'() {
@@ -230,7 +231,7 @@ class TestCommand {
 	Map<String, Date> mapOfDates
 	Map untypedMap
 	Gender gender
-	Address address
+	Person person
 
 	static constraints = {
 		username blank: false

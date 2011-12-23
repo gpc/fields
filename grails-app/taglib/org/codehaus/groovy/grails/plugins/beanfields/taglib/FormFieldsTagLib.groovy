@@ -140,7 +140,6 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(propertyAccessor.propertyType), templateName)
         for (propertySuperClass in ClassUtils.getAllSuperclasses(propertyAccessor.propertyType)) {
             templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(propertySuperClass), templateName)
-
         }
 		templateResolveOrder << "/forms/default/$templateName"
 		templateResolveOrder

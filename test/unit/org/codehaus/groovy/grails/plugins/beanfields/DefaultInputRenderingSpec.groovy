@@ -1,7 +1,7 @@
-package org.codehaus.groovy.grails.plugins.beanfields.inputs
+package org.codehaus.groovy.grails.plugins.beanfields
 
-import grails.persistence.Entity
 import grails.util.Environment
+import org.codehaus.groovy.grails.plugins.beanfields.mock.Person
 import org.codehaus.groovy.grails.plugins.beanfields.taglib.FormFieldsTagLib
 import grails.test.mixin.*
 import org.codehaus.groovy.grails.commons.*
@@ -21,8 +21,12 @@ class DefaultInputRenderingSpec extends Specification {
 
 	void setupSpec() {
 		people = ["Bart Simpson", "Homer Simpson", "Monty Burns"].collect {
-			new Person(name: it).save(failOnError: true)
+			new Person(name: it)
 		}
+	}
+	
+	void setup() {
+		people*.save(validate: false)
 	}
 
 	@Unroll({"input for a $type.name property matches '$outputPattern'"})
@@ -403,17 +407,6 @@ class DefaultInputRenderingSpec extends Specification {
 
 		and:
 		output.contains("""<a href="/person/create?thing.id=1337">Add Person</a>""")
-	}
-
-}
-
-@Entity
-class Person {
-	String name
-
-	@Override
-	String toString() {
-		name
 	}
 
 }

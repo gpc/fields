@@ -1,11 +1,15 @@
-package org.codehaus.groovy.grails.plugins.beanfields.taglib
+package org.codehaus.groovy.grails.plugins.beanfields
 
-import grails.persistence.Entity
 import org.codehaus.groovy.grails.plugins.beanfields.BeanPropertyAccessorFactory
 import org.codehaus.groovy.grails.web.taglib.exceptions.GrailsTagException
 import spock.lang.Specification
 import grails.test.mixin.*
 import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
+import org.codehaus.groovy.grails.plugins.beanfields.mock.Person
+import org.codehaus.groovy.grails.plugins.beanfields.mock.Employee
+import org.codehaus.groovy.grails.plugins.beanfields.mock.Address
+import org.codehaus.groovy.grails.plugins.beanfields.mock.Salutation
+import org.codehaus.groovy.grails.plugins.beanfields.taglib.FormFieldsTagLib
 
 @TestFor(FormFieldsTagLib)
 @Mock([Person, Employee])
@@ -146,7 +150,7 @@ class FormFieldsTagLibSpec extends Specification {
         views["/forms/enum/_field.gsp"] = 'ENUM TEMPLATE'
 
         and:
-        def employeeInstance = new Employee(salutation: SalutationEnum.MR, name: "Waylon Smithers", salary: 10)
+        def employeeInstance = new Employee(salutation: Salutation.MR, name: "Waylon Smithers", salary: 10)
 
         expect:
         applyTemplate('<form:field bean="personInstance" property="salutation"/>', [personInstance: employeeInstance]) == 'ENUM TEMPLATE'
@@ -156,10 +160,10 @@ class FormFieldsTagLibSpec extends Specification {
         given:
         views["/forms/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
         views["/forms/enum/_field.gsp"] = 'ENUM TEMPLATE'
-        views["/forms/salutationEnum/_field.gsp"] = 'SALUTATION TEMPLATE'
+        views["/forms/salutation/_field.gsp"] = 'SALUTATION TEMPLATE'
 
         and:
-        def employeeInstance = new Employee(salutation: SalutationEnum.MR, name: "Waylon Smithers", salary: 10)
+        def employeeInstance = new Employee(salutation: Salutation.MR, name: "Waylon Smithers", salary: 10)
 
         expect:
         applyTemplate('<form:field bean="personInstance" property="salutation"/>', [personInstance: employeeInstance]) == 'SALUTATION TEMPLATE'
@@ -443,52 +447,4 @@ class FormFieldsTagLibSpec extends Specification {
 		!output.contains("lastUpdated")
 	}
 
-}
-
-@Entity
-class Person {
-    SalutationEnum salutation
-	String name
-	String password
-	String gender
-	Date dateOfBirth
-	Address address
-	boolean minor
-	Date lastUpdated
-	String excludedProperty
-
-	static embedded = ['address']
-
-	static constraints = {
-        salutation nullable: true
-		name blank: false
-		address nullable: true
-	}
-
-	static scaffold = [exclude: ['excludedProperty']]
-
-	def onLoad = {
-		println "loaded"
-	}
-}
-
-@Entity
-class Employee extends Person {
-	int salary
-}
-
-class Address {
-	String street
-	String city
-	String country
-	static constraints = {
-		street blank: false
-		city blank: false
-		country inList: ["USA", "UK", "Canada"]
-	}
-}
-
-enum SalutationEnum {
-    MR,
-    MRS
 }

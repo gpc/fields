@@ -1,14 +1,14 @@
 package org.codehaus.groovy.grails.plugins.beanfields
 
-import grails.persistence.Entity
 import org.codehaus.groovy.grails.plugins.beanfields.taglib.FormFieldsTagLib
+import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
 import org.springframework.beans.NotReadablePropertyException
 import grails.test.mixin.*
+import org.codehaus.groovy.grails.plugins.beanfields.mock.*
 import spock.lang.*
-import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
 
 @TestFor(FormFieldsTagLib)
-@Mock([Person, Address, Author, Book, Employee])
+@Mock([Person, Author, Book, Employee])
 class DomainClassPropertyAccessorSpec extends Specification {
 
 	BeanPropertyAccessorFactory factory = new BeanPropertyAccessorFactory(grailsApplication: grailsApplication, constraintsEvaluator: new DefaultConstraintEvaluator())
@@ -48,7 +48,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		expect:
 		propertyAccessor.value == person.name
 		propertyAccessor.rootBeanType == Person
-		propertyAccessor.rootBeanClass.clazz == Person
+		propertyAccessor.rootBeanClass.clazz == Person // TODO: should we really be testing these non-interface fields?
 		propertyAccessor.beanType == Person
 		propertyAccessor.beanClass.clazz == Person
 		propertyAccessor.pathFromRoot == "name"
@@ -66,11 +66,11 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		propertyAccessor.rootBeanType == Person
 		propertyAccessor.rootBeanClass.clazz == Person
 		propertyAccessor.beanType == Address
-		propertyAccessor.beanClass.clazz == Address
+		propertyAccessor.beanClass == null // TODO: check if this is really the case when not mocked
 		propertyAccessor.pathFromRoot == "address.city"
 		propertyAccessor.propertyName == "city"
 		propertyAccessor.propertyType == String
-		propertyAccessor.persistentProperty.name == "city"
+		propertyAccessor.persistentProperty == null
 	}
 
 	void "resolves property of indexed association"() {
@@ -146,7 +146,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		propertyAccessor.pathFromRoot == "address.city"
 		propertyAccessor.propertyName == "city"
 		propertyAccessor.propertyType == String
-		propertyAccessor.persistentProperty.name == "city"
+		propertyAccessor.persistentProperty == null
 	}
 
 	void "resolves constraints of basic domain class property"() {
@@ -292,63 +292,4 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		employee | 'name' | [Person]
 	}
 
-}
-
-// classes for testing embedded and simple collection properties
-@Entity
-class Person {
-	String name
-	String password
-	Gender gender
-	Date dateOfBirth
-	Map emails = [:]
-	boolean minor
-	static hasMany = [emails: String]
-	Address address
-	static embedded = ['address']
-	static constraints = {
-		name blank: false
-		dateOfBirth nullable: true
-	}
-}
-
-@Entity
-class Address {
-	String street
-	String city
-	String country
-	static constraints = {
-		street blank: false
-		city blank: false
-		country inList: ["USA", "UK", "Canada"]
-	}
-}
-
-// classes for testing indexed associations
-@Entity
-class Author {
-	String name
-	List books
-	static hasMany = [books: Book]
-	static constraints = {
-		name blank: false
-	}
-}
-
-@Entity
-class Book {
-	String title
-	static belongsTo = [author: Author]
-	static constraints = {
-		title blank: false
-	}
-}
-
-enum Gender {
-	Male, Female
-}
-
-@Entity
-class Employee extends Person {
-	String jobTitle
 }

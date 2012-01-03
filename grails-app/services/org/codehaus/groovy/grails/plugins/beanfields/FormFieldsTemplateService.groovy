@@ -6,8 +6,6 @@ import org.codehaus.groovy.grails.io.support.GrailsResourceUtils
 import org.codehaus.groovy.grails.plugins.GrailsPluginManager
 import org.codehaus.groovy.grails.web.pages.discovery.GrailsConventionGroovyPageLocator
 import org.springframework.web.context.request.RequestContextHolder
-import org.apache.commons.lang.builder.HashCodeBuilder
-import org.apache.commons.lang.builder.EqualsBuilder
 
 class FormFieldsTemplateService {
 
@@ -17,12 +15,12 @@ class FormFieldsTemplateService {
 	GrailsPluginManager pluginManager
 
 	Map findTemplate(BeanPropertyAccessor propertyAccessor, String templateName) {
-		findTemplateCached(new BeanPropertyAccessorWrapper(propertyAccessor), controllerName, templateName)
+		findTemplateCached(propertyAccessor, controllerName, templateName)
 	}
 
 	private final Closure findTemplateCached = this.&findTemplateCacheable.memoize()
 
-	private Map findTemplateCacheable(BeanPropertyAccessorWrapper propertyAccessor, String controllerName, String templateName) {
+	private Map findTemplateCacheable(BeanPropertyAccessor propertyAccessor, String controllerName, String templateName) {
 		def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerName, templateName)
 
 		def template = candidatePaths.findResult { path ->
@@ -73,35 +71,6 @@ class FormFieldsTemplateService {
 
 	private String getControllerName() {
 		RequestContextHolder.requestAttributes?.controllerName
-	}
-
-}
-
-class BeanPropertyAccessorWrapper implements BeanPropertyAccessor {
-
-	@Delegate private final BeanPropertyAccessor delegate
-
-	BeanPropertyAccessorWrapper(BeanPropertyAccessor delegate) {
-		this.delegate = delegate
-	}
-
-	@Override
-	int hashCode() {
-		def builder = new HashCodeBuilder()
-		builder.append(delegate.beanType)
-		builder.append(delegate.propertyName)
-		builder.append(delegate.propertyType)
-		builder.toHashCode()
-	}
-
-	@Override
-	boolean equals(Object obj) {
-		if (!(obj instanceof BeanPropertyAccessor)) return false
-		def builder = new EqualsBuilder()
-		builder.append(delegate.beanType, obj.beanType)
-		builder.append(delegate.propertyName, obj.propertyName)
-		builder.append(delegate.propertyType, obj.propertyType)
-		builder.isEquals()
 	}
 
 }

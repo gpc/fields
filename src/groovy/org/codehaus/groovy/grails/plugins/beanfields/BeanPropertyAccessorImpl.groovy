@@ -2,10 +2,10 @@ package org.codehaus.groovy.grails.plugins.beanfields
 
 import grails.util.GrailsNameUtils
 import org.apache.commons.lang.ClassUtils
-import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import org.springframework.validation.FieldError
-import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
+import org.apache.commons.lang.builder.*
+import org.codehaus.groovy.grails.commons.*
 
 class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
 	
@@ -49,5 +49,24 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
 
 	boolean isInvalid() {
 		!errors.isEmpty()
+	}
+
+	@Override
+	int hashCode() {
+		def builder = new HashCodeBuilder()
+		builder.append(beanType)
+		builder.append(propertyName)
+		builder.append(propertyType)
+		builder.toHashCode()
+	}
+
+	@Override
+	boolean equals(Object obj) {
+		if (!(obj instanceof BeanPropertyAccessor)) return false
+		def builder = new EqualsBuilder()
+		builder.append(beanType, obj.beanType)
+		builder.append(propertyName, obj.propertyName)
+		builder.append(propertyType, obj.propertyType)
+		builder.isEquals()
 	}
 }

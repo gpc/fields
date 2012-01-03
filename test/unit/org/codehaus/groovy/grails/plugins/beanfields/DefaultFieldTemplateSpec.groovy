@@ -29,18 +29,15 @@ class DefaultFieldTemplateSpec extends Specification {
 		
 		then:
 		def root = $(output)
-		root.get(0).nodeName == 'div'
-		root.hasClass('fieldcontain')
-		
+		root.is('div.fieldcontain')
+
 		and:
 		def label = root.find('label')
 		label.text() == 'label'
 		label.attr('for') == 'property'
 		
 		and:
-		def input = label.next()
-		input.get(0).nodeName == 'input'
-		input.attr('name') == 'property'
+		label.next().is('input[name=property]')
 	}
 
 	void "container marked as invalid"() {

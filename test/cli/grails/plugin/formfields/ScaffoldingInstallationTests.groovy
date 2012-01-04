@@ -9,11 +9,40 @@ class ScaffoldingInstallationTests extends AbstractTemporaryProjectTest {
 	void installTemplatesCopiesTemplatesToTargetApp() {
 		runGrailsCommand "install-form-fields-templates"
 
-		def srcFile = new File("src/templates/scaffolding/create.gsp")
-		def destFile = new File(workDir, "src/templates/scaffolding/create.gsp")
+		for (filename in ['create.gsp', 'edit.gsp']) {
+			def srcFile = new File(pluginDir, "src/templates/scaffolding/$filename")
+			def targetFile = new File(workDir, "src/templates/scaffolding/$filename")
 
-		assert destFile.isFile()
-		assert checksumCRC32(srcFile) == checksumCRC32(destFile)
+			assert targetFile.isFile()
+			assert checksumCRC32(srcFile) == checksumCRC32(targetFile)
+		}
+		
+		for (filename in ['show.gsp', 'list.gsp', 'renderEditor.template']) {
+			assert !new File(workDir, "src/templates/scaffolding/$filename").exists()
+		}
+	}
+
+	@Test
+	void installTemplatesOverwritesDefaultScaffoldingTemplates() {
+		runGrailsCommand "install-templates"
+
+		for (filename in ['create.gsp', 'edit.gsp']) {
+			def srcFile = new File(pluginDir, "src/templates/scaffolding/$filename")
+			def targetFile = new File(workDir, "src/templates/scaffolding/$filename")
+
+			assert targetFile.isFile()
+			assert checksumCRC32(srcFile) != checksumCRC32(targetFile)
+		}
+
+		runGrailsCommand "install-form-fields-templates"
+
+		for (filename in ['create.gsp', 'edit.gsp']) {
+			def srcFile = new File(pluginDir, "src/templates/scaffolding/$filename")
+			def targetFile = new File(workDir, "src/templates/scaffolding/$filename")
+
+			assert targetFile.isFile()
+			assert checksumCRC32(srcFile) == checksumCRC32(targetFile)
+		}
 	}
 
 	@Override

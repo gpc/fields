@@ -17,13 +17,14 @@ abstract class AbstractTemporaryProjectTest extends AbstractCliTestCase {
 	abstract String getPluginName()
 
 	protected void runGrailsCommand(String... args) {
-		println "$workDir.absolutePath > grails ${args.join(' ')}..."
+		println "$workDir.canonicalPath > grails ${args.join(' ')}..."
 		execute(args as List)
 		waitForProcess()
 		verifyHeader()
 	}
 
-	private File tempDir = new File(System.properties."java.io.tmpdir", getClass().simpleName)
+	protected final File pluginDir = new File('.')
+	private final File tempDir = new File(System.properties."java.io.tmpdir", getClass().simpleName)
 	private String tempProjectName = RandomStringUtils.randomAlphanumeric(8)
 
 	/*
@@ -61,6 +62,7 @@ abstract class AbstractTemporaryProjectTest extends AbstractCliTestCase {
 	private void generateBuildConfig() {
 		new File(workDir, "grails-app/conf/BuildConfig.groovy").text = """\
 grails.servlet.version = "2.5"
+grails.project.work.dir = "target"
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"

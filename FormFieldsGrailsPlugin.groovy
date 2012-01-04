@@ -1,4 +1,4 @@
-import org.codehaus.groovy.grails.plugins.beanfields.BeanPropertyAccessorFactory
+import grails.plugin.formfields.BeanPropertyAccessorFactory
 import org.codehaus.groovy.grails.validation.ConstraintsEvaluator
 
 class FormFieldsGrailsPlugin {

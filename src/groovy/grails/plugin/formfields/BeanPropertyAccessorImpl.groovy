@@ -1,12 +1,13 @@
 package grails.plugin.formfields
 
 import grails.util.GrailsNameUtils
+import groovy.transform.Canonical
 import org.apache.commons.lang.ClassUtils
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import org.springframework.validation.FieldError
-import org.apache.commons.lang.builder.*
 import org.codehaus.groovy.grails.commons.*
 
+@Canonical(includes = 'beanType, propertyName, propertyType')
 class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
 	
 	Object rootBean
@@ -49,24 +50,5 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
 
 	boolean isInvalid() {
 		!errors.isEmpty()
-	}
-
-	@Override
-	int hashCode() {
-		def builder = new HashCodeBuilder()
-		builder.append(beanType)
-		builder.append(propertyName)
-		builder.append(propertyType)
-		builder.toHashCode()
-	}
-
-	@Override
-	boolean equals(Object obj) {
-		if (!(obj instanceof BeanPropertyAccessor)) return false
-		def builder = new EqualsBuilder()
-		builder.append(beanType, obj.beanType)
-		builder.append(propertyName, obj.propertyName)
-		builder.append(propertyType, obj.propertyType)
-		builder.isEquals()
 	}
 }

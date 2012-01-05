@@ -36,4 +36,4 @@ grails.project.dependency.resolution = {
     }
 }
 
-grails.plugin.location.'form-fields' = '../../..'
+grails.plugin.location.'fields' = '../../..'

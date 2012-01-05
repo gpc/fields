@@ -17,14 +17,14 @@
 import grails.plugin.formfields.BeanPropertyAccessorFactory
 import org.codehaus.groovy.grails.validation.ConstraintsEvaluator
 
-class FormFieldsGrailsPlugin {
+class FieldsGrailsPlugin {
 
 	def version = '1.0-SNAPSHOT'
 	def grailsVersion = '2.0 > *'
 	def dependsOn = [:]
 	def pluginExcludes = []
 
-	def title = 'Form Fields Plugin'
+	def title = 'Fields Plugin'
 	def author = 'Rob Fletcher'
 	def authorEmail = 'rfletcherEW@shortmail.com'
 	def description = ''

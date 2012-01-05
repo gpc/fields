@@ -10,7 +10,7 @@ import static org.codehaus.groovy.grails.commons.GrailsClassUtils.getStaticPrope
 
 class FormFieldsTagLib implements GrailsApplicationAware {
 
-	static namespace = "form"
+	static namespace = 'f'
 
 	FormFieldsTemplateService formFieldsTemplateService
 	GrailsApplication grailsApplication

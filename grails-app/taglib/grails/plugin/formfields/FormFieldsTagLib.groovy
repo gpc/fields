@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012 Rob Fletcher
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package grails.plugin.formfields
 
 import grails.util.GrailsNameUtils
@@ -23,11 +39,11 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		def fieldTemplateName = attrs.template ?: 'field'
 
 		if (domainClass) {
-			for (property in resolvePersistentProperties(domainClass)) {
+			for (property in resolvePersistentProperties(domainClass, attrs)) {
 				if (property.embedded) {
 					out << '<fieldset class="' << toPropertyNameFormat(property.type) << '">'
 					out << '<legend>' << GrailsNameUtils.getNaturalName(property.type.simpleName) << '</legend>'
-					for (embeddedProp in resolvePersistentProperties(property.component)) {
+					for (embeddedProp in resolvePersistentProperties(property.component, attrs)) {
 						def propertyPath = "${property.name}.${embeddedProp.name}"
 						out << field(bean: bean, property: propertyPath, template: fieldTemplateName)
 					}
@@ -110,15 +126,16 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		grailsApplication.getDomainClass(beanClass.name)
 	}
 
-	private List<GrailsDomainClassProperty> resolvePersistentProperties(GrailsDomainClass domainClass) {
+	private List<GrailsDomainClassProperty> resolvePersistentProperties(GrailsDomainClass domainClass, attrs) {
 		def properties = domainClass.persistentProperties as List
 
-		def blackList = ['dateCreated', 'lastUpdated']
+		def blacklist = attrs.except?.tokenize(',')*.trim() ?: []
+		blacklist << 'dateCreated' << 'lastUpdated'
 		def scaffoldProp = getStaticPropertyValue(domainClass.clazz, 'scaffold')
 		if (scaffoldProp) {
-			blackList.addAll(scaffoldProp.exclude)
+			blacklist.addAll(scaffoldProp.exclude)
 		}
-		properties = properties.findAll { !(it.name in blackList) }
+		properties = properties.findAll { !(it.name in blacklist) }
 
 		Collections.sort(properties, new DomainClassPropertyComparator(domainClass))
 		properties

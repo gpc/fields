@@ -299,4 +299,16 @@ class FormFieldsTagLibSpec extends Specification {
 		property << ['id', 'version', 'onLoad', 'lastUpdated', 'excludedProperty']
 	}
 
+	void 'all tag skips properties listed with the except attribute'() {
+		given:
+		views["/forms/default/_field.gsp"] = '${property} '
+
+		when:
+		def output = applyTemplate('<f:all bean="personInstance" except="password, minor"/>', [personInstance: personInstance])
+
+		then:
+		!output.contains('password')
+		!output.contains('minor')
+	}
+
 }

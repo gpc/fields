@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+
+
+
+
 package grails.plugin.formfields
 
 import grails.util.GrailsNameUtils
@@ -26,11 +30,23 @@ import static org.codehaus.groovy.grails.commons.GrailsClassUtils.getStaticPrope
 
 class FormFieldsTagLib implements GrailsApplicationAware {
 
-	static namespace = 'f'
+	static final namespace = 'f'
+	static final String BEAN_PAGE_SCOPE_VARIABLE = 'f:with:bean'
 
 	FormFieldsTemplateService formFieldsTemplateService
 	GrailsApplication grailsApplication
 	BeanPropertyAccessorFactory beanPropertyAccessorFactory
+
+	Closure with = { attrs, body ->
+		if (!attrs.bean) throwTagError("Tag [with] is missing required attribute [bean]")
+		def bean = resolveBean(attrs)
+		try {
+			pageScope.variables[BEAN_PAGE_SCOPE_VARIABLE] = bean
+			out << body()
+		} finally {
+			pageScope.variables.remove(BEAN_PAGE_SCOPE_VARIABLE)
+		}
+	}
 
 	Closure all = { attrs ->
 		if (!attrs.bean) throwTagError("Tag [all] is missing required attribute [bean]")
@@ -58,7 +74,6 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	Closure field = { attrs ->
-		if (!attrs.bean) throwTagError("Tag [field] is missing required attribute [bean]")
 		if (!attrs.property) throwTagError("Tag [field] is missing required attribute [property]")
 		def templateName = attrs.template ?: 'field'
 
@@ -72,7 +87,6 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	Closure widget = { String name, attrs ->
-		if (!attrs.bean) throwTagError("Tag [$name] is missing required attribute [bean]")
 		if (!attrs.property) throwTagError("Tag [$name] is missing required attribute [property]")
 
 		def propertyAccessor = resolveProperty(attrs)
@@ -115,7 +129,12 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	private Object resolveBean(Map attrs) {
-		pageScope.variables[attrs.bean] ?: attrs.bean
+		def bean = pageScope.variables[BEAN_PAGE_SCOPE_VARIABLE]
+		if (!bean) {
+			if (!attrs.bean) throwTagError("Tag is missing required attribute [bean]")
+			bean = pageScope.variables[attrs.bean] ?: attrs.bean
+		}
+		bean
 	}
 
 	private GrailsDomainClass resolveDomainClass(bean) {

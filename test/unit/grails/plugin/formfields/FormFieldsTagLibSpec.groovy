@@ -299,6 +299,7 @@ class FormFieldsTagLibSpec extends Specification {
 		property << ['id', 'version', 'onLoad', 'lastUpdated', 'excludedProperty']
 	}
 
+	@Issue('https://github.com/robfletcher/grails-form-fields/issues/12')
 	void 'all tag skips properties listed with the except attribute'() {
 		given:
 		views["/forms/default/_field.gsp"] = '${property} '
@@ -309,6 +310,21 @@ class FormFieldsTagLibSpec extends Specification {
 		then:
 		!output.contains('password')
 		!output.contains('minor')
+	}
+
+	@Issue('https://github.com/robfletcher/grails-form-fields/issues/13')
+	void 'bean attribute does not have to be specified if it is in scope from f:with'() {
+		given:
+		views["/forms/default/_field.gsp"] = '${property} '
+
+		expect:
+		applyTemplate('<f:with bean="personInstance"><f:field property="name"/></f:with>', [personInstance: personInstance]) == 'name '
+	}
+
+	@Issue('https://github.com/robfletcher/grails-form-fields/issues/13')
+	void 'scoped bean attribute does not linger around after f:with tag'() {
+		expect:
+		applyTemplate('<f:with bean="personInstance">${pageScope.getVariable("f:with:bean")}</f:with>${pageScope.getVariable("f:with:bean")}', [personInstance: personInstance]) == 'Bart Simpson'
 	}
 
 }

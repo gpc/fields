@@ -1,8 +1,7 @@
 package grails.plugin.formfields
 
-import grails.util.Environment
 import grails.plugin.formfields.mock.Person
-
+import grails.util.Environment
 import grails.test.mixin.*
 import org.codehaus.groovy.grails.commons.*
 import spock.lang.*

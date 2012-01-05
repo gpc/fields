@@ -2,8 +2,8 @@ package grails.plugin.formfields
 
 import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
 import spock.lang.Specification
-import grails.test.mixin.*
 import grails.plugin.formfields.mock.*
+import grails.test.mixin.*
 
 @TestFor(FormFieldsTagLib)
 @Mock(Person)

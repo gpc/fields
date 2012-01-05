@@ -1,7 +1,6 @@
 package test
 
-import spock.lang.*
-import grails.plugin.spock.*
+import grails.plugin.spock.ControllerSpec
 
 class CommandControllerSpec extends ControllerSpec {
 

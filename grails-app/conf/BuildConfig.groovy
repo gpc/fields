@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-grails.servlet.version = "2.5"
-grails.project.work.dir = "target"
-grails.project.class.dir = "target/classes"
-grails.project.test.class.dir = "target/test-classes"
-grails.project.test.reports.dir = "target/test-reports"
+grails.servlet.version = '2.5'
+grails.project.work.dir = 'target'
+grails.project.class.dir = 'target/classes'
+grails.project.test.class.dir = 'target/test-classes'
+grails.project.test.reports.dir = 'target/test-reports'
 grails.project.source.level = 1.6
 grails.project.target.level = 1.6
 
 grails.project.dependency.resolution = {
 
-    inherits "global"
-    log "warn"
+    inherits 'global'
+    log 'warn'
 
     repositories {
 		inherits true
@@ -42,8 +42,8 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        build(":release:1.0.0") { export = false }
-		test(":spock:0.6-SNAPSHOT") { export = false }
+        build(':release:1.0.0') { export = false }
+		test(':spock:0.6-SNAPSHOT') { export = false }
     }
 
 }

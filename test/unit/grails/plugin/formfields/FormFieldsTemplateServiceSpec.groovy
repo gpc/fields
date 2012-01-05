@@ -3,8 +3,8 @@ package grails.plugin.formfields
 import grails.test.mixin.web.GroovyPageUnitTestMixin
 import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
 import spock.lang.Specification
-import grails.test.mixin.*
 import grails.plugin.formfields.mock.*
+import grails.test.mixin.*
 
 @TestMixin(GroovyPageUnitTestMixin)
 @TestFor(FormFieldsTemplateService)

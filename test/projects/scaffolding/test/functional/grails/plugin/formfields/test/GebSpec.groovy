@@ -1,8 +1,7 @@
 package grails.plugin.formfields.test
 
-import spock.lang.*
 import geb.*
-import org.openqa.selenium.WebDriver
+import spock.lang.*
 
 class GebSpec extends Specification {
 

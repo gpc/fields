@@ -2,8 +2,8 @@ package grails.plugin.formfields
 
 import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
 import org.springframework.beans.NotReadablePropertyException
-import grails.test.mixin.*
 import grails.plugin.formfields.mock.*
+import grails.test.mixin.*
 import spock.lang.*
 
 @TestFor(FormFieldsTagLib)

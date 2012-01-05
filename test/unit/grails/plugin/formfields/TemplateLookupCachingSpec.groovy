@@ -1,8 +1,8 @@
 package grails.plugin.formfields
 
+import grails.plugin.formfields.mock.Person
 import grails.test.mixin.TestMixin
 import grails.test.mixin.support.GrailsUnitTestMixin
-import grails.plugin.formfields.mock.Person
 import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
 import org.springframework.core.io.ByteArrayResource
 import org.codehaus.groovy.grails.web.pages.discovery.*

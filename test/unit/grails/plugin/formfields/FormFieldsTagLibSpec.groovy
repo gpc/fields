@@ -2,8 +2,8 @@ package grails.plugin.formfields
 
 import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
 import org.codehaus.groovy.grails.web.taglib.exceptions.GrailsTagException
-import grails.test.mixin.*
 import grails.plugin.formfields.mock.*
+import grails.test.mixin.*
 import spock.lang.*
 
 @TestFor(FormFieldsTagLib)

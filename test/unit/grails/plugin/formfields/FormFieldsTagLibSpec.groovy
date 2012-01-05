@@ -247,7 +247,7 @@ class FormFieldsTagLibSpec extends Specification {
 		applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == '<input type="text" name="name" value="Bart Simpson" required="" id="name" />'
 	}
 
-	void "bean tag renders fields for all properties"() {
+	void "all tag renders fields for all properties"() {
 		given:
 		views["/forms/default/_field.gsp"] = '${property} '
 
@@ -262,7 +262,7 @@ class FormFieldsTagLibSpec extends Specification {
 		output =~ /\bminor\b/
 	}
 
-	void "bean tag renders individual fields for embedded properties"() {
+	void "all tag renders individual fields for embedded properties"() {
 		given:
 		views["/forms/default/_field.gsp"] = '${property} '
 
@@ -273,7 +273,7 @@ class FormFieldsTagLibSpec extends Specification {
 		output.contains('address.street address.city address.country')
 	}
 
-	void "bean tag wraps embedded properties in a container"() {
+	void "all tag wraps embedded properties in a container"() {
 		given:
 		views["/forms/default/_field.gsp"] = '${property} '
 
@@ -285,7 +285,7 @@ class FormFieldsTagLibSpec extends Specification {
 	}
 
 	@Unroll({"all tag skips $property property"})
-	void 'bean tag skips excluded properties'() {
+	void 'all tag skips excluded properties'() {
 		given:
 		views["/forms/default/_field.gsp"] = '${property} '
 

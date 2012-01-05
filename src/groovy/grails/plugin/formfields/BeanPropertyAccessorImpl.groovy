@@ -11,9 +11,9 @@ import org.codehaus.groovy.grails.commons.*
 class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
 	
 	Object rootBean
-	GrailsDomainClass rootBeanClass // TODO: not required on interface
+	GrailsDomainClass rootBeanClass
 	Class rootBeanType
-	GrailsDomainClass beanClass // TODO: not required on interface
+	GrailsDomainClass beanClass
 	Class beanType
 	String pathFromRoot
 	String propertyName

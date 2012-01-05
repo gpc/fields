@@ -4,10 +4,9 @@ import grails.util.GrailsNameUtils
 import org.apache.commons.lang.StringUtils
 import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
 import org.codehaus.groovy.grails.scaffolding.DomainClassPropertyComparator
+import static FormFieldsTemplateService.toPropertyNameFormat
 import org.codehaus.groovy.grails.commons.*
 import static org.codehaus.groovy.grails.commons.GrailsClassUtils.getStaticPropertyValue
-
-import static FormFieldsTemplateService.toPropertyNameFormat
 
 class FormFieldsTagLib implements GrailsApplicationAware {
 
@@ -17,11 +16,11 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	GrailsApplication grailsApplication
 	BeanPropertyAccessorFactory beanPropertyAccessorFactory
 
-	Closure bean = { attrs ->
-		if (!attrs.bean) throwTagError("Tag [bean] is missing required attribute [bean]")
+	Closure all = { attrs ->
+		if (!attrs.bean) throwTagError("Tag [all] is missing required attribute [bean]")
 		def bean = resolveBean(attrs)
 		def domainClass = resolveDomainClass(bean)
-		def fieldTemplateName = attrs.template ?: "field"
+		def fieldTemplateName = attrs.template ?: 'field'
 
 		if (domainClass) {
 			for (property in resolvePersistentProperties(domainClass)) {
@@ -45,12 +44,12 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	Closure field = { attrs ->
 		if (!attrs.bean) throwTagError("Tag [field] is missing required attribute [bean]")
 		if (!attrs.property) throwTagError("Tag [field] is missing required attribute [property]")
-		def templateName = attrs.template ?: "field"
+		def templateName = attrs.template ?: 'field'
 
 		def propertyAccessor = resolveProperty(attrs)
 		def model = buildModel(propertyAccessor, attrs)
 
-		model.widget = renderWidget("input", propertyAccessor, model)
+		model.widget = renderWidget('input', propertyAccessor, model)
 
 		def template = formFieldsTemplateService.findTemplate(propertyAccessor, templateName)
 		out << render(template: template.path, plugin: template.plugin, model: model)
@@ -99,7 +98,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 	}
 
-	private resolveBean(Map attrs) {
+	private Object resolveBean(Map attrs) {
 		pageScope.variables[attrs.bean] ?: attrs.bean
 	}
 

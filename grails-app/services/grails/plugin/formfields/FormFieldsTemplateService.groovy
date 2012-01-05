@@ -48,7 +48,7 @@ class FormFieldsTemplateService {
 	private List<String> candidateTemplatePaths(BeanPropertyAccessor propertyAccessor, String controllerName, String templateName) {
 		// order of priority for template resolution
 		// 1: grails-app/views/controller/<property>/_field.gsp
-		// 2: grails-app/views/forms/<class>.<property>/_field.gsp
+		// 2: grails-app/views/forms/<class>/<property>/_field.gsp
 		// 3: grails-app/views/forms/<anysuperclassclass>.<property>/_field.gsp
 		// 4: grails-app/views/forms/<type>/_field.gsp, type is class' simpleName
 		// 5: grails-app/views/forms/<anysupertype>/_field.gsp, type is class' simpleName

@@ -252,7 +252,7 @@ class FormFieldsTagLibSpec extends Specification {
 		views["/forms/default/_field.gsp"] = '${property} '
 
 		when:
-		def output = applyTemplate('<form:bean bean="personInstance"/>', [personInstance: personInstance])
+		def output = applyTemplate('<form:all bean="personInstance"/>', [personInstance: personInstance])
 
 		then:
 		output =~ /\bname\b/
@@ -267,7 +267,7 @@ class FormFieldsTagLibSpec extends Specification {
 		views["/forms/default/_field.gsp"] = '${property} '
 
 		when:
-		def output = applyTemplate('<form:bean bean="personInstance"/>', [personInstance: personInstance])
+		def output = applyTemplate('<form:all bean="personInstance"/>', [personInstance: personInstance])
 
 		then:
 		output.contains('address.street address.city address.country')
@@ -278,19 +278,19 @@ class FormFieldsTagLibSpec extends Specification {
 		views["/forms/default/_field.gsp"] = '${property} '
 
 		when:
-		def output = applyTemplate('<form:bean bean="personInstance"/>', [personInstance: personInstance])
+		def output = applyTemplate('<form:all bean="personInstance"/>', [personInstance: personInstance])
 
 		then:
 		output.contains('<fieldset class="address"><legend>Address</legend>address.street address.city address.country </fieldset>')
 	}
 
-	@Unroll({"bean tag skips $property property"})
+	@Unroll({"all tag skips $property property"})
 	void 'bean tag skips excluded properties'() {
 		given:
 		views["/forms/default/_field.gsp"] = '${property} '
 
 		when:
-		def output = applyTemplate('<form:bean bean="personInstance"/>', [personInstance: personInstance])
+		def output = applyTemplate('<form:all bean="personInstance"/>', [personInstance: personInstance])
 
 		then:
 		!output.contains('excludedProperty')

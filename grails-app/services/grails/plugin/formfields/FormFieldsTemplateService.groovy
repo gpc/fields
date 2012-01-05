@@ -64,24 +64,24 @@ class FormFieldsTemplateService {
 	private List<String> candidateTemplatePaths(BeanPropertyAccessor propertyAccessor, String controllerName, String templateName) {
 		// order of priority for template resolution
 		// 1: grails-app/views/controller/<property>/_field.gsp
-		// 2: grails-app/views/forms/<class>/<property>/_field.gsp
-		// 3: grails-app/views/forms/<anysuperclassclass>.<property>/_field.gsp
-		// 4: grails-app/views/forms/<type>/_field.gsp, type is class' simpleName
-		// 5: grails-app/views/forms/<anysupertype>/_field.gsp, type is class' simpleName
-		// 6: grails-app/views/forms/default/_field.gsp
+		// 2: grails-app/views/fields/<class>/<property>/_field.gsp
+		// 3: grails-app/views/fields/<anysuperclassclass>.<property>/_field.gsp
+		// 4: grails-app/views/fields/<type>/_field.gsp, type is class' simpleName
+		// 5: grails-app/views/fields/<anysupertype>/_field.gsp, type is class' simpleName
+		// 6: grails-app/views/fields/default/_field.gsp
 		def templateResolveOrder = []
 		if (controllerName) {
 			templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/", controllerName, propertyAccessor.propertyName, templateName)
 		}
-		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(propertyAccessor.beanType), propertyAccessor.propertyName, templateName)
+		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/fields", toPropertyNameFormat(propertyAccessor.beanType), propertyAccessor.propertyName, templateName)
 		for (superclass in propertyAccessor.beanSuperclasses) {
-			templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(superclass), propertyAccessor.propertyName, templateName)
+			templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/fields", toPropertyNameFormat(superclass), propertyAccessor.propertyName, templateName)
 		}
-		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(propertyAccessor.propertyType), templateName)
+		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/fields", toPropertyNameFormat(propertyAccessor.propertyType), templateName)
 		for (propertySuperClass in ClassUtils.getAllSuperclasses(propertyAccessor.propertyType)) {
-			templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/forms", toPropertyNameFormat(propertySuperClass), templateName)
+			templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/fields", toPropertyNameFormat(propertySuperClass), templateName)
 		}
-		templateResolveOrder << "/forms/default/$templateName"
+		templateResolveOrder << "/fields/default/$templateName"
 		templateResolveOrder
 	}
 

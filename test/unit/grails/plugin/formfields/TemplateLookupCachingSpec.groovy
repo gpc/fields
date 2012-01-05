@@ -31,7 +31,7 @@ class TemplateLookupCachingSpec extends Specification {
 
 	void 'a template is looked up the first time it is required'() {
 		given:
-		def templateResource = new GroovyPageResourceScriptSource('/forms/person/name/_input.gsp', new ByteArrayResource('PERSON NAME TEMPLATE'.getBytes('UTF-8')))
+		def templateResource = new GroovyPageResourceScriptSource('/fields/person/name/_input.gsp', new ByteArrayResource('PERSON NAME TEMPLATE'.getBytes('UTF-8')))
 
 		and:
 		def property = beanPropertyAccessorFactory.accessorFor(person, 'name')
@@ -40,7 +40,7 @@ class TemplateLookupCachingSpec extends Specification {
 		def template = service.findTemplate(property, 'input')
 
 		then:
-		template.path == '/forms/person/name/input'
+		template.path == '/fields/person/name/input'
 		template.source.scriptAsString == 'PERSON NAME TEMPLATE'
 
 		and:
@@ -55,7 +55,7 @@ class TemplateLookupCachingSpec extends Specification {
 		def template = service.findTemplate(property, 'input')
 
 		then:
-		template.path == '/forms/person/name/input'
+		template.path == '/fields/person/name/input'
 		template.source.scriptAsString == 'PERSON NAME TEMPLATE'
 
 		and:
@@ -64,7 +64,7 @@ class TemplateLookupCachingSpec extends Specification {
 
 	void 'a template for a different property is cached separately'() {
 		given:
-		def templateResource = new GroovyPageResourceScriptSource('/forms/person/password/_input.gsp', new ByteArrayResource('PERSON PASSWORD TEMPLATE'.getBytes('UTF-8')))
+		def templateResource = new GroovyPageResourceScriptSource('/fields/person/password/_input.gsp', new ByteArrayResource('PERSON PASSWORD TEMPLATE'.getBytes('UTF-8')))
 
 		and:
 		def property = beanPropertyAccessorFactory.accessorFor(person, 'password')
@@ -73,7 +73,7 @@ class TemplateLookupCachingSpec extends Specification {
 		def template = service.findTemplate(property, 'input')
 
 		then:
-		template.path == '/forms/person/password/input'
+		template.path == '/fields/person/password/input'
 		template.source.scriptAsString == 'PERSON PASSWORD TEMPLATE'
 
 		and:
@@ -82,7 +82,7 @@ class TemplateLookupCachingSpec extends Specification {
 
 	void 'a different template for the same property is cached separately'() {
 		given:
-		def templateResource = new GroovyPageResourceScriptSource('/forms/person/name/_input.gsp', new ByteArrayResource('PERSON NAME TEMPLATE 2'.getBytes('UTF-8')))
+		def templateResource = new GroovyPageResourceScriptSource('/fields/person/name/_input.gsp', new ByteArrayResource('PERSON NAME TEMPLATE 2'.getBytes('UTF-8')))
 
 		and:
 		def property = beanPropertyAccessorFactory.accessorFor(person, 'name')
@@ -91,7 +91,7 @@ class TemplateLookupCachingSpec extends Specification {
 		def template = service.findTemplate(property, 'field')
 		
 		then:
-		template.path == '/forms/person/name/field'
+		template.path == '/fields/person/name/field'
 		template.source.scriptAsString == 'PERSON NAME TEMPLATE 2'
 
 		and:

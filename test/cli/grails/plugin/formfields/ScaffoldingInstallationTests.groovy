@@ -47,11 +47,11 @@ class ScaffoldingInstallationTests extends AbstractTemporaryProjectTest {
 
 	@Override
 	String getPluginName() {
-		'form-fields'
+		'fields'
 	}
 
 	@Override
 	String getPluginVersion() {
-		getClass().classLoader.loadClass("FormFieldsGrailsPlugin").newInstance().version
+		getClass().classLoader.loadClass("FieldsGrailsPlugin").newInstance().version
 	}
 }

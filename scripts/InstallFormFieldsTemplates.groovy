@@ -16,15 +16,15 @@
 
 includeTargets << grailsScript("_GrailsInit")
 
-target(installScaffoldingTemplates: "Installs scaffolding templates that use form fields tags to render properties") {
+target(installScaffoldingTemplates: "Installs scaffolding templates that use f:all to render properties") {
 
-	def srcdir = new File("$formFieldsPluginDir/src/templates/scaffolding")
+	def srcdir = new File("$fieldsPluginDir/src/templates/scaffolding")
 	def destdir = new File("$basedir/src/templates/scaffolding/")
 
 	if (srcdir?.isDirectory()) {
-		event "StatusUpdate", ["Copying templates from $formFieldsPluginDir"]
+		event "StatusUpdate", ["Copying templates from $fieldsPluginDir"]
 
-		for (name in formFieldsPluginDir.listFiles()) {
+		for (name in fieldsPluginDir.listFiles()) {
 			ant.copy(todir: destdir, overwrite: true, failonerror: false) {
 				fileset dir: srcdir, includes: '*.gsp'
 			}

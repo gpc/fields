@@ -1,0 +1,73 @@
+The plugin resolves the GSP template used for each property according to conventions. You can override the rendering based on the class and property name or the property type. The _f:field_ tag looks for a template called @\_field.gsp@ and the _f:input_ tag looks for a template called @\_input.gsp@. Both tags will look in the following locations in decreasing order of preference:
+
+# @grails-app/views/@_controllerName_@/@_propertyName_@/@
+# @grails-app/views/fields/@_class_@/@_propertyName_@/@
+# @grails-app/views/fields/@_superclass_@/@_propertyName_@/@
+# @grails-app/views/fields/@_propertyType_@/@
+# @grails-app/views/fields/@_propertySuperclass_@/@
+# @grails-app/views/fields/default/@
+
+The variables referenced in these paths are:
+
+{table}
+*Name* | *Description*
+*controllerName* | The name of the current controller (if any).
+*class* | The bean class. For simple properties this is the class of the object passed to the _bean_ attribute of the _f:field_ or _f:input_ tag but when the _property_ attribute was nested this is the class at the end of the chain. For example, if the property path was _employees[0].address.street_ this will be the class of _address_.
+*superclass* | Any superclass of _class_ up to but not including _java.lang.Object_.
+*propertyName* | The property name at the end of the chain passed to the _property_ attribute of the _f:field_ or _f:input_ tag. For example, if the property path was _employees[0].address.street_ then this will be _street_.
+*propertyType* | The type of the property at the end of the chain passed to the _property_ attribute of the _f:field_ or _f:input_ tag. For example, for a _java.lang.String_ property this would be _string_.
+*propertySuperclass* | Any superclass of _propertyType_ up to but not including _java.lang.Object_.
+{table}
+
+All class names are camel-cased simple forms. For example _java.lang.String_ = _string_, _com.project.HomeAddress_ = _homeAddress_.
+
+Templates are resolved in this order so that you can override in the more specific circumstance and fall back to successively more general defaults. For example, you can define a field template for all _java.lang.String_ properties but override a specific property of a particular class to use more specialized rendering.
+
+Templates in plugins are resolved as well. This means plugins such as _Joda Time_ can provide default rendering for special property types. A template in your application will take precedence over a template in a plugin at the same 'level'. For example if a plugin provides a @grails-app/views/fields/string/\_input.gsp@ the same template in your application will override it but if the plugin provides @grails-app/views/fields/person/name/\_input.gsp@ it would be used in preference to the more general template in your application.
+
+For most properties the out-of-the-box defaults should provide a good starting point.
+
+h2. Example
+
+Imagine an object of class _Employee_ that extends the class _Person_ and has a a String _name_ property.
+
+You can override the template _f:field_ uses with any of these:
+
+# @grails-app/views/@_controllerName_@/name/\_field.gsp@
+# @grails-app/views/fields/employee/name/\_field.gsp@
+# @grails-app/views/fields/person/name/\_field.gsp@
+# @grails-app/views/fields/string/\_field.gsp@
+# @grails-app/views/fields/default/\_field.gsp@
+
+and override the template _f:input_ uses with any of these:
+
+# @grails-app/views/@_controllerName_@/name/\_input.gsp@
+# @grails-app/views/fields/employee/name/\_input.gsp@
+# @grails-app/views/fields/person/name/\_input.gsp@
+# @grails-app/views/fields/string/\_input.gsp@
+# @grails-app/views/fields/default/\_input.gsp@
+
+h2. Template parameters
+
+The _f:field_ and _f:input_ tags will pass the following parameters to your templates:
+
+{table}
+*Name* | *Type* | *Description*
+*bean* | Object | The _bean_ attribute as passed to the _f:field_ or _f:input_ tag.
+*property* | String | The _property_ attribute as passed to the _f:field_ or _f:input_ tag. This would generally be useful for the _name_ attribute of a form input.
+*type* | Class | The property type.
+*label* | String | The field label text. This is based on the _label_ or _labelKey_ attribute passed to the _f:field_ or _f:input_ tag. If those attributes were not used the label is resolved using '_class_._propertyName_@.label@' or defaulted to the natural property name.
+*value* | Object | the property value. This can also be overridden or defaulted if the _value_ or _default_ attribute was passed to _f:field_ or _f:input_.
+*constraints* | ConstrainedProperty | The constraints for the property if the bean is a domain or command object.
+*persistentProperty* | GrailsDomainClassProperty | The persistent property object if the bean is a domain object.
+*errors* | List<String> | The error messages for any field errors present on the property. If there are no errors this will be an empty _List_.
+*required* | boolean | _true_ if the field is required, i.e. has a @nullable: false@ or @blank: false@ constraint.
+*invalid* | boolean | _true_ if the property has any field errors.
+{table}
+
+In addition _f:field_ passes the following parameters:
+
+{table}
+*Name* | *Type* | *Description*
+*widget* | String | The output of _f:input_ for the current bean and property.
+{table}

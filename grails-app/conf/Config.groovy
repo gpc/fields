@@ -1,0 +1,1 @@
+grails.doc.css = new File(basedir, 'src/docs/css')

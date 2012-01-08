@@ -17,6 +17,7 @@
 package grails.plugin.formfields
 
 import grails.util.GrailsNameUtils
+import grails.util.Environment
 import org.apache.commons.lang.ClassUtils
 import org.codehaus.groovy.grails.io.support.GrailsResourceUtils
 import org.codehaus.groovy.grails.plugins.GrailsPluginManager
@@ -34,7 +35,7 @@ class FormFieldsTemplateService {
 		findTemplateCached(propertyAccessor, controllerName, templateName)
 	}
 
-	private final Closure findTemplateCached = this.&findTemplateCacheable.memoize()
+	private final Closure findTemplateCached = Environment.current == Environment.DEVELOPMENT ? this.&findTemplateCacheable : this.&findTemplateCacheable.memoize()
 
 	private Map findTemplateCacheable(BeanPropertyAccessor propertyAccessor, String controllerName, String templateName) {
 		def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerName, templateName)

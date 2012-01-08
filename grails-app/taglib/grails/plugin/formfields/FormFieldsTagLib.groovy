@@ -79,6 +79,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 		def propertyAccessor = resolveProperty(attrs)
 		def model = buildModel(propertyAccessor, attrs)
+		if (attrs.model instanceof Map) model += attrs.model
 
 		model.widget = renderWidget('input', propertyAccessor, model)
 

@@ -73,6 +73,17 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 	}
 
+	Closure customField = { attrs, body ->
+		if (!attrs.property) throwTagError("Tag [field] is missing required attribute [property]")
+		def templateName = attrs.template ?: 'field'
+
+		def model = attrs
+		model.widget = body()
+
+		def template = formFieldsTemplateService.findTemplate(null, templateName, attrs.property)
+		out << render(template: template.path, plugin: template.plugin, model: model)
+	}
+
 	Closure field = { attrs ->
 		if (!attrs.property) throwTagError("Tag [field] is missing required attribute [property]")
 		def templateName = attrs.template ?: 'field'

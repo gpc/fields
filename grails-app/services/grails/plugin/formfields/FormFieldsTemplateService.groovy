@@ -31,14 +31,14 @@ class FormFieldsTemplateService {
 	GrailsConventionGroovyPageLocator groovyPageLocator
 	GrailsPluginManager pluginManager
 
-	Map findTemplate(BeanPropertyAccessor propertyAccessor, String templateName) {
-		findTemplateCached(propertyAccessor, controllerName, templateName)
+	Map findTemplate(BeanPropertyAccessor propertyAccessor, String templateName, String propertyName = null) {
+		findTemplateCached(propertyAccessor, controllerName, templateName, propertyName)
 	}
 
 	private final Closure findTemplateCached = Environment.current == Environment.DEVELOPMENT ? this.&findTemplateCacheable : this.&findTemplateCacheable.memoize()
 
-	private Map findTemplateCacheable(BeanPropertyAccessor propertyAccessor, String controllerName, String templateName) {
-		def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerName, templateName)
+	private Map findTemplateCacheable(BeanPropertyAccessor propertyAccessor, String controllerName, String templateName, String propertyName) {
+		def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerName, templateName, propertyName)
 
 		def template = candidatePaths.findResult { path ->
 			log.debug "looking for template with path $path"
@@ -62,7 +62,7 @@ class FormFieldsTemplateService {
 		GrailsNameUtils.getLogicalPropertyName(type.name, '')
 	}
 
-	private List<String> candidateTemplatePaths(BeanPropertyAccessor propertyAccessor, String controllerName, String templateName) {
+	private List<String> candidateTemplatePaths(BeanPropertyAccessor propertyAccessor, String controllerName, String templateName, String propertyName) {
 		// order of priority for template resolution
 		// 1: grails-app/views/controller/<property>/_field.gsp
 		// 2: grails-app/views/fields/<class>/<property>/_field.gsp
@@ -70,17 +70,20 @@ class FormFieldsTemplateService {
 		// 4: grails-app/views/fields/<type>/_field.gsp, type is class' simpleName
 		// 5: grails-app/views/fields/<anysupertype>/_field.gsp, type is class' simpleName
 		// 6: grails-app/views/fields/default/_field.gsp
+		// only 1 and 6 are used when no bean has been provided (hence no propertyAccessor)
 		def templateResolveOrder = []
 		if (controllerName) {
-			templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/", controllerName, propertyAccessor.propertyName, templateName)
+			templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/", controllerName, propertyAccessor?.propertyName ?: propertyName, templateName)
 		}
-		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/fields", toPropertyNameFormat(propertyAccessor.beanType), propertyAccessor.propertyName, templateName)
-		for (superclass in propertyAccessor.beanSuperclasses) {
-			templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/fields", toPropertyNameFormat(superclass), propertyAccessor.propertyName, templateName)
-		}
-		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/fields", toPropertyNameFormat(propertyAccessor.propertyType), templateName)
-		for (propertySuperClass in ClassUtils.getAllSuperclasses(propertyAccessor.propertyType)) {
-			templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/fields", toPropertyNameFormat(propertySuperClass), templateName)
+		if(propertyAccessor) {
+			templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/fields", toPropertyNameFormat(propertyAccessor.beanType), propertyAccessor.propertyName, templateName)
+			for (superclass in propertyAccessor.beanSuperclasses) {
+				templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/fields", toPropertyNameFormat(superclass), propertyAccessor.propertyName, templateName)
+			}
+			templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/fields", toPropertyNameFormat(propertyAccessor.propertyType), templateName)
+			for (propertySuperClass in ClassUtils.getAllSuperclasses(propertyAccessor.propertyType)) {
+				templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/fields", toPropertyNameFormat(propertySuperClass), templateName)
+			}
 		}
 		templateResolveOrder << "/fields/default/$templateName"
 		templateResolveOrder

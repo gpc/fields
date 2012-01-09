@@ -16,13 +16,13 @@
 
 package grails.plugin.formfields
 
-import grails.util.GrailsNameUtils
-import grails.util.Environment
 import org.apache.commons.lang.ClassUtils
 import org.codehaus.groovy.grails.io.support.GrailsResourceUtils
 import org.codehaus.groovy.grails.plugins.GrailsPluginManager
 import org.codehaus.groovy.grails.web.pages.discovery.GrailsConventionGroovyPageLocator
 import org.springframework.web.context.request.RequestContextHolder
+import grails.util.*
+import static grails.util.Environment.DEVELOPMENT
 
 class FormFieldsTemplateService {
 
@@ -35,9 +35,9 @@ class FormFieldsTemplateService {
 		findTemplateCached(propertyAccessor, controllerName, templateName)
 	}
 
-	private final Closure findTemplateCached = Environment.current == Environment.DEVELOPMENT ? this.&findTemplateCacheable : this.&findTemplateCacheable.memoize()
+	private final Closure findTemplateCached = shouldCache() ? this.&findTemplateCacheable.memoize() : this.&findTemplateCacheable
 
-	private Map findTemplateCacheable(BeanPropertyAccessor propertyAccessor, String controllerName, String templateName) {
+    private Map findTemplateCacheable(BeanPropertyAccessor propertyAccessor, String controllerName, String templateName) {
 		def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerName, templateName)
 
 		def template = candidatePaths.findResult { path ->
@@ -89,5 +89,9 @@ class FormFieldsTemplateService {
 	private String getControllerName() {
 		RequestContextHolder.requestAttributes?.controllerName
 	}
+
+    private static boolean shouldCache() {
+        Environment.current != DEVELOPMENT
+    }
 
 }

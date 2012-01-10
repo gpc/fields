@@ -1,1 +1,1 @@
-grails.doc.css = new File(basedir, 'src/docs/css')
+grails.doc.css = new File('src/docs/css')

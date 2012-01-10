@@ -40,21 +40,20 @@ class FormFieldsTemplateService {
     private Map findTemplateCacheable(BeanPropertyAccessor propertyAccessor, String controllerName, String templateName) {
 		def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerName, templateName)
 
-		def template = candidatePaths.findResult { path ->
+		candidatePaths.findResult { path ->
 			log.debug "looking for template with path $path"
 			def source = groovyPageLocator.findTemplateByPath(path)
-			source ? [source: source, path: path] : null
-		}
-		if (template) {
-			def plugin = pluginManager.allPlugins.find {
-				template.source.URI.startsWith(it.pluginPath)
-			}
-			template.plugin = plugin?.name
-			log.info "found template $template.path ${plugin ? "in $template.plugin plugin" : ''}"
-			template
-		} else {
-			log.warn "could not find a template for any of $candidatePaths"
-			[:]
+			if (source) {
+                def template = [source: source, path: path]
+                def plugin = pluginManager.allPlugins.find {
+                    source.URI.startsWith(it.pluginPath)
+                }
+                template.plugin = plugin?.name
+                log.info "found template $template.path ${plugin ? "in $template.plugin plugin" : ''}"
+                template
+            } else {
+                null
+            }
 		}
 	}
 

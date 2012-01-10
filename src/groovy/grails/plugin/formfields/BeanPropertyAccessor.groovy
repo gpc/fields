@@ -18,6 +18,7 @@ package grails.plugin.formfields
 
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import org.springframework.validation.FieldError
+import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 
 interface BeanPropertyAccessor {
 	
@@ -29,6 +30,7 @@ interface BeanPropertyAccessor {
 	List<Class> getBeanSuperclasses()
 	Class getPropertyType()
 	Object getValue()
+	GrailsDomainClassProperty getPersistentProperty()
 	ConstrainedProperty getConstraints()
 	String getLabelKey()
 	String getDefaultLabel()

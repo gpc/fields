@@ -2,9 +2,9 @@ package grails.plugin.formfields
 
 import grails.test.mixin.web.GroovyPageUnitTestMixin
 import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
-import spock.lang.Specification
 import grails.plugin.formfields.mock.*
 import grails.test.mixin.*
+import spock.lang.*
 
 @TestMixin(GroovyPageUnitTestMixin)
 @TestFor(FormFieldsTemplateService)
@@ -15,7 +15,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 	def factory = new BeanPropertyAccessorFactory()
 	
 	void setup() {
-		webRequest.controllerName = "person"
+		webRequest.controllerName = 'foo'
 
 		personInstance = new Person(name: "Bart Simpson", password: "bartman", gender: Gender.Male, dateOfBirth: new Date(87, 3, 19), minor: true)
 		personInstance.address = new Address(street: "94 Evergreen Terrace", city: "Springfield", country: "USA")
@@ -82,14 +82,14 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		views["/fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
 		views["/fields/string/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
 		views["/fields/person/name/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
-		views["/person/name/_field.gsp"] = 'CONTROLLER FIELD TEMPLATE'
+		views["/$webRequest.controllerName/name/_field.gsp"] = 'CONTROLLER FIELD TEMPLATE'
 
 		and:
 		def property = factory.accessorFor(personInstance, 'name')
 
 		expect:
 		def template = service.findTemplate(property, 'field')
-		template.path == '/person/name/field'
+		template.path == "/$webRequest.controllerName/name/field"
 		template.plugin == null
 		template.source.scriptAsString == 'CONTROLLER FIELD TEMPLATE'
 	}
@@ -188,6 +188,37 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		template.path == '/fields/address/city/field'
 		template.plugin == null
 		template.source.scriptAsString == 'CLASS AND PROPERTY TEMPLATE'
+	}
+
+	@Issue('https://github.com/robfletcher/grails-fields/pull/16')
+	void 'resolves template without a bean just based on property path'() {
+		given:
+		views["/fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+
+		and:
+		def property = factory.accessorFor(null, 'name')
+
+		expect:
+		def template = service.findTemplate(property, 'field')
+		template.path == '/fields/default/field'
+		template.plugin == null
+		template.source.scriptAsString == 'DEFAULT FIELD TEMPLATE'
+	}
+
+	@Issue('https://github.com/robfletcher/grails-fields/pull/16')
+	void 'resolves controller template without a bean just based on property path'() {
+		given:
+		views["/fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/$webRequest.controllerName/name/_field.gsp"] = 'CONTROLLER FIELD TEMPLATE'
+
+		and:
+		def property = factory.accessorFor(null, 'name')
+
+		expect:
+		def template = service.findTemplate(property, 'field')
+		template.path == "/$webRequest.controllerName/name/field"
+		template.plugin == null
+		template.source.scriptAsString == 'CONTROLLER FIELD TEMPLATE'
 	}
 
 }

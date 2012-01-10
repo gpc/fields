@@ -38,9 +38,9 @@ class FormFieldsTagLibSpec extends Specification {
 		messageSource.@messages.clear() // bit of a hack but messages don't get torn down otherwise
 	}
 
-	void "bean attribute is required"() {
+	void 'f:input requires a bean attribute'() {
 		when:
-		applyTemplate('<f:field property="name"/>')
+		applyTemplate('<f:input property="name"/>')
 
 		then:
 		thrown GrailsTagException
@@ -54,7 +54,7 @@ class FormFieldsTagLibSpec extends Specification {
 		thrown GrailsTagException
 	}
 
-	void "bean attribute must not be null"() {
+	void 'if f:field is supplied a bean attribute it must not be null'() {
 		when:
 		applyTemplate('<f:field bean="${personInstance}" property="name"/>', [personInstance: null])
 
@@ -247,6 +247,24 @@ class FormFieldsTagLibSpec extends Specification {
 		applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == '<input type="text" name="name" value="Bart Simpson" required="" id="name" />'
 	}
 
+    @Issue('https://github.com/robfletcher/grails-fields/pull/16')
+    void 'tag body can be used instead of the input'() {
+        given:
+        views['/fields/default/_field.gsp'] = '${widget}'
+
+        expect:
+        applyTemplate('<f:field bean="personInstance" property="name">BODY</f:field>', [personInstance: personInstance]) == 'BODY'
+    }
+
+    @Issue('https://github.com/robfletcher/grails-fields/pull/16')
+    void 'the model is passed to a tag body if there is one'() {
+        given:
+        views['/fields/default/_field.gsp'] = '${widget}'
+
+        expect:
+        applyTemplate('<f:field bean="personInstance" property="name">bean: ${bean.getClass().simpleName}, property: ${property}, type: ${type.simpleName}, label: ${label}, value: ${value}</f:field>', [personInstance: personInstance]) == 'bean: Person, property: name, type: String, label: Name, value: Bart Simpson'
+    }
+
 	void "all tag renders fields for all properties"() {
 		given:
 		views["/fields/default/_field.gsp"] = '${property} '
@@ -325,6 +343,15 @@ class FormFieldsTagLibSpec extends Specification {
 	void 'scoped bean attribute does not linger around after f:with tag'() {
 		expect:
 		applyTemplate('<f:with bean="personInstance">${pageScope.getVariable("f:with:bean")}</f:with>${pageScope.getVariable("f:with:bean")}', [personInstance: personInstance]) == 'Bart Simpson'
+	}
+
+	@Issue('https://github.com/robfletcher/grails-form-fields/pull/16')
+	void 'f:field can work without a bean attribute'() {
+		given:
+		views["/fields/default/_field.gsp"] = '${property} '
+
+		expect:
+		applyTemplate('<f:field property="name"/>') == 'name '
 	}
 
 }

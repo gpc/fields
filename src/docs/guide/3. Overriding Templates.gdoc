@@ -49,7 +49,7 @@ and override the template _f:input_ uses with any of these:
 
 h2. Template parameters
 
-The _f:field_ and _f:input_ tags will pass the following parameters to your templates:
+The _f:field_ and _f:input_ tags will pass the following parameters to your templates or to the body of _f:field_ if you use one:
 
 {table}
 *Name* | *Type* | *Description*
@@ -69,5 +69,9 @@ In addition _f:field_ passes the following parameters:
 
 {table}
 *Name* | *Type* | *Description*
-*widget* | String | The output of _f:input_ for the current bean and property.
+*widget* | String | The output of _f:input_ for the current bean and property if _f:field_ was used without a tag body, otherwise the output of the tag body.
 {table}
+
+{note}
+If the _bean_ attribute was not supplied to _f:field_ then _bean_, _type_, _value_ and _persistentProperty_ will all be _null_.
+{note}

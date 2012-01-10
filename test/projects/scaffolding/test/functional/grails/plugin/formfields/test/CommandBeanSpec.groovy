@@ -1,5 +1,7 @@
 package grails.plugin.formfields.test
 
+import geb.spock.GebSpec
+
 class CommandBeanSpec extends GebSpec {
 
 	void 'a form using a command object renders correctly'() {

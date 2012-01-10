@@ -1,5 +1,6 @@
 package grails.plugin.formfields.test
 
+import geb.spock.GebSpec
 import spock.lang.Stepwise
 
 @Stepwise

@@ -12,7 +12,7 @@ grails.project.dependency.resolution = {
     checksums true
 
 	def seleniumVersion = "2.15.0"
-	def gebVersion = "0.6.1"
+	def gebVersion = "0.6.2"
 
     repositories {
         inherits true

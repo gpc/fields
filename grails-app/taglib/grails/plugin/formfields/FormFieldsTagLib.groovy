@@ -171,7 +171,13 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		if (!label && attrs.labelKey) {
 			label = message(code: attrs.labelKey)
 		}
-		label ?: message(code: propertyAccessor.labelKey, default: propertyAccessor.defaultLabel)
+        if (!label && propertyAccessor.labelKey) {
+            label = message(code: propertyAccessor.labelKey, default: propertyAccessor.defaultLabel)
+        }
+        if (!label) {
+            label = propertyAccessor.defaultLabel
+        }
+		label
 	}
 
 	private String renderDefaultInput(Map attrs) {

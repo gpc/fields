@@ -348,10 +348,19 @@ class FormFieldsTagLibSpec extends Specification {
 	@Issue('https://github.com/robfletcher/grails-form-fields/pull/16')
 	void 'f:field can work without a bean attribute'() {
 		given:
-		views["/fields/default/_field.gsp"] = '${property} '
+		views["/fields/default/_field.gsp"] = '${property}'
 
 		expect:
-		applyTemplate('<f:field property="name"/>') == 'name '
+		applyTemplate('<f:field property="name"/>') == 'name'
+	}
+
+	@Issue('https://github.com/robfletcher/grails-form-fields/pull/16')
+	void 'label is the natural property name if there is no bean attribute'() {
+		given:
+		views["/fields/default/_field.gsp"] = '${label}'
+
+		expect:
+		applyTemplate('<f:field property="name"/>') == 'Name'
 	}
 
 }

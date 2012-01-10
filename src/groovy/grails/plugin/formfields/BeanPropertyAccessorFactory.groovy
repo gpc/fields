@@ -16,6 +16,7 @@
 
 package grails.plugin.formfields
 
+import groovy.transform.PackageScope
 import java.lang.reflect.ParameterizedType
 import java.util.regex.Pattern
 import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
@@ -29,12 +30,16 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 	ConstraintsEvaluator constraintsEvaluator
 
 	BeanPropertyAccessor accessorFor(bean, String propertyPath) {
-		def params = [rootBean: bean, rootBeanType: bean.getClass(), pathFromRoot: propertyPath]
-		params.rootBeanClass = resolveDomainClass(bean.getClass())
+		if (bean == null) {
+			new PropertyPathAccessor(propertyPath)
+		} else {
+			def params = [rootBean: bean, rootBeanType: bean.getClass(), pathFromRoot: propertyPath]
+			params.rootBeanClass = resolveDomainClass(bean.getClass())
 
-		resolvePropertyFromPath(bean, propertyPath, params)
+			resolvePropertyFromPath(bean, propertyPath, params)
 
-		new BeanPropertyAccessorImpl(params)
+			new BeanPropertyAccessorImpl(params)
+		}
 	}
 
 	private GrailsDomainClass resolveDomainClass(Class beanClass) {
@@ -131,7 +136,8 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 
 	private static final Pattern INDEXED_PROPERTY_PATTERN = ~/^(\w+)\[(.+)\]$/
 
-	private final String stripIndex(String propertyName) {
+	@PackageScope
+	static String stripIndex(String propertyName) {
 		def matcher = propertyName =~ INDEXED_PROPERTY_PATTERN
 		matcher.matches() ? matcher[0][1] : propertyName
 	}

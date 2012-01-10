@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-
-
-
-
 package grails.plugin.formfields
 
 import grails.util.GrailsNameUtils
@@ -27,6 +23,7 @@ import org.codehaus.groovy.grails.scaffolding.DomainClassPropertyComparator
 import static FormFieldsTemplateService.toPropertyNameFormat
 import org.codehaus.groovy.grails.commons.*
 import static org.codehaus.groovy.grails.commons.GrailsClassUtils.getStaticPropertyValue
+import org.codehaus.groovy.grails.web.pages.GroovyPage
 
 class FormFieldsTagLib implements GrailsApplicationAware {
 
@@ -73,20 +70,26 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 	}
 
-	Closure field = { attrs ->
+	Closure field = { attrs, body ->
+		if (attrs.containsKey('bean') && !attrs.bean) throwTagError("Tag [field] requires a non-null value for attribute [bean]")
 		if (!attrs.property) throwTagError("Tag [field] is missing required attribute [property]")
 		def templateName = attrs.template ?: 'field'
 
 		def propertyAccessor = resolveProperty(attrs)
 		def model = buildModel(propertyAccessor, attrs)
 
-		model.widget = renderWidget('input', propertyAccessor, model)
+		if (hasBody(body)) {
+			model.widget = body(model)
+		} else {
+			model.widget = renderWidget('input', propertyAccessor, model)
+		}
 
 		def template = formFieldsTemplateService.findTemplate(propertyAccessor, templateName)
 		out << render(template: template.path, plugin: template.plugin, model: model)
 	}
 
 	Closure widget = { String name, attrs ->
+		if (!attrs.bean) throwTagError("Tag [$name] is missing required attribute [bean]")
 		if (!attrs.property) throwTagError("Tag [$name] is missing required attribute [property]")
 
 		def propertyAccessor = resolveProperty(attrs)
@@ -131,7 +134,6 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	private Object resolveBean(Map attrs) {
 		def bean = pageScope.variables[BEAN_PAGE_SCOPE_VARIABLE]
 		if (!bean) {
-			if (!attrs.bean) throwTagError("Tag is missing required attribute [bean]")
 			bean = pageScope.variables[attrs.bean] ?: attrs.bean
 		}
 		bean
@@ -160,6 +162,10 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		properties
 	}
 
+	private boolean hasBody(Closure body) {
+		return !body.is(GroovyPage.EMPTY_BODY_CLOSURE)
+	}
+
 	private String resolveLabelText(BeanPropertyAccessor propertyAccessor, Map attrs) {
 		def label = attrs.label
 		if (!label && attrs.labelKey) {
@@ -176,7 +182,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		if (attrs.invalid) model.invalid = ""
 		if (!attrs.constraints.editable) model.readonly = ""
 
-		if (attrs.type in String) {
+		if (attrs.type in [String, null]) {
 			return renderStringInput(model, attrs)
 		} else if (attrs.type in [boolean, Boolean]) {
 			return g.checkBox(model)

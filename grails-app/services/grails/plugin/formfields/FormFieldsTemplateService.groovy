@@ -17,12 +17,12 @@
 package grails.plugin.formfields
 
 import org.apache.commons.lang.ClassUtils
-import org.codehaus.groovy.grails.io.support.GrailsResourceUtils
 import org.codehaus.groovy.grails.plugins.GrailsPluginManager
 import org.codehaus.groovy.grails.web.pages.discovery.GrailsConventionGroovyPageLocator
 import org.springframework.web.context.request.RequestContextHolder
 import grails.util.*
 import static grails.util.Environment.DEVELOPMENT
+import static org.codehaus.groovy.grails.io.support.GrailsResourceUtils.appendPiecesForUri
 
 class FormFieldsTemplateService {
 
@@ -37,7 +37,7 @@ class FormFieldsTemplateService {
 
 	private final Closure findTemplateCached = shouldCache() ? this.&findTemplateCacheable.memoize() : this.&findTemplateCacheable
 
-    private Map findTemplateCacheable(BeanPropertyAccessor propertyAccessor, String controllerName, String templateName) {
+	private Map findTemplateCacheable(BeanPropertyAccessor propertyAccessor, String controllerName, String templateName) {
 		def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerName, templateName)
 
 		def template = candidatePaths.findResult { path ->
@@ -63,26 +63,32 @@ class FormFieldsTemplateService {
 	}
 
 	private List<String> candidateTemplatePaths(BeanPropertyAccessor propertyAccessor, String controllerName, String templateName) {
-		// order of priority for template resolution
-		// 1: grails-app/views/controller/<property>/_field.gsp
-		// 2: grails-app/views/fields/<class>/<property>/_field.gsp
-		// 3: grails-app/views/fields/<anysuperclassclass>.<property>/_field.gsp
-		// 4: grails-app/views/fields/<type>/_field.gsp, type is class' simpleName
-		// 5: grails-app/views/fields/<anysupertype>/_field.gsp, type is class' simpleName
-		// 6: grails-app/views/fields/default/_field.gsp
 		def templateResolveOrder = []
+
+		// if there is a controller for the current request any template in its views directory takes priority
 		if (controllerName) {
-			templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/", controllerName, propertyAccessor.propertyName, templateName)
+			templateResolveOrder << appendPiecesForUri("/", controllerName, propertyAccessor.propertyName, templateName)
 		}
-		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/fields", toPropertyNameFormat(propertyAccessor.beanType), propertyAccessor.propertyName, templateName)
-		for (superclass in propertyAccessor.beanSuperclasses) {
-			templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/fields", toPropertyNameFormat(superclass), propertyAccessor.propertyName, templateName)
+
+		// if we have a bean type look in `grails-app/views/fields/<beanType>/<propertyName>/_field.gsp` and equivalent for superclasses
+		if (propertyAccessor.beanType) {
+			templateResolveOrder << appendPiecesForUri("/fields", toPropertyNameFormat(propertyAccessor.beanType), propertyAccessor.propertyName, templateName)
+			for (superclass in propertyAccessor.beanSuperclasses) {
+				templateResolveOrder << appendPiecesForUri("/fields", toPropertyNameFormat(superclass), propertyAccessor.propertyName, templateName)
+			}
 		}
-		templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/fields", toPropertyNameFormat(propertyAccessor.propertyType), templateName)
-		for (propertySuperClass in ClassUtils.getAllSuperclasses(propertyAccessor.propertyType)) {
-			templateResolveOrder << GrailsResourceUtils.appendPiecesForUri("/fields", toPropertyNameFormat(propertySuperClass), templateName)
+
+		// if we have a property type look in `grails-app/views/fields/<propertyType>/<propertyName>/_field.gsp` and equivalent for superclasses
+		if (propertyAccessor.propertyType) {
+			templateResolveOrder << appendPiecesForUri("/fields", toPropertyNameFormat(propertyAccessor.propertyType), templateName)
+			for (propertySuperClass in ClassUtils.getAllSuperclasses(propertyAccessor.propertyType)) {
+				templateResolveOrder << appendPiecesForUri("/fields", toPropertyNameFormat(propertySuperClass), templateName)
+			}
 		}
+
+		// if nothing else is found fall back to a default (even this may not exist for f:input)
 		templateResolveOrder << "/fields/default/$templateName"
+
 		templateResolveOrder
 	}
 
@@ -90,8 +96,8 @@ class FormFieldsTemplateService {
 		RequestContextHolder.requestAttributes?.controllerName
 	}
 
-    private static boolean shouldCache() {
-        Environment.current != DEVELOPMENT
-    }
+	private static boolean shouldCache() {
+		Environment.current != DEVELOPMENT
+	}
 
 }

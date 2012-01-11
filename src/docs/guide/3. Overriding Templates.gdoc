@@ -13,10 +13,10 @@ The variables referenced in these paths are:
 *Name* | *Description*
 *controllerName* | The name of the current controller (if any).
 *class* | The bean class. For simple properties this is the class of the object passed to the _bean_ attribute of the _f:field_ or _f:input_ tag but when the _property_ attribute was nested this is the class at the end of the chain. For example, if the property path was _employees\[0\].address.street_ this will be the class of _address_.
-*superclass* | Any superclass of _class_ up to but not including _java.lang.Object_.
+*superclass* | Any superclass or interface of _class_ excluding _Object_, _GroovyObject_, _Serializable_, _Comparable_ and _Cloneable_.
 *propertyName* | The property name at the end of the chain passed to the _property_ attribute of the _f:field_ or _f:input_ tag. For example, if the property path was _employees\[0\].address.street_ then this will be _street_.
 *propertyType* | The type of the property at the end of the chain passed to the _property_ attribute of the _f:field_ or _f:input_ tag. For example, for a _java.lang.String_ property this would be _string_.
-*propertySuperclass* | Any superclass of _propertyType_ up to but not including _java.lang.Object_.
+*propertySuperclass* | Any superclass or interface of _propertyType_ excluding _Object_, _GroovyObject_, _Serializable_, _Comparable_ and _Cloneable_.
 {table}
 
 All class names are camel-cased simple forms. For example _java.lang.String_ = _string_, _com.project.HomeAddress_ = _homeAddress_.

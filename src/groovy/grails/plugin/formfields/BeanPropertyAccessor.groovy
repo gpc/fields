@@ -29,6 +29,7 @@ interface BeanPropertyAccessor {
 	Class getBeanType()
 	List<Class> getBeanSuperclasses()
 	Class getPropertyType()
+	List<Class> getPropertyTypeSuperclasses()
 	Object getValue()
 	GrailsDomainClassProperty getPersistentProperty()
 	ConstrainedProperty getConstraints()

@@ -39,7 +39,11 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
 	Object value
 	
 	List<Class> getBeanSuperclasses() {
-		ClassUtils.getAllSuperclasses(beanType) - Object
+		getSuperclassesAndInterfaces(beanType)
+	}
+	
+	List<Class> getPropertyTypeSuperclasses() {
+		getSuperclassesAndInterfaces(propertyType)
 	}
 
 	String getLabelKey() {
@@ -66,5 +70,13 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
 
 	boolean isInvalid() {
 		!errors.isEmpty()
+	}
+	
+	private List<Class> getSuperclassesAndInterfaces(Class type) {
+		def superclasses = []
+		superclasses.addAll(ClassUtils.getAllSuperclasses(type))
+		superclasses.addAll(ClassUtils.getAllInterfaces(type))
+		superclasses.removeAll([Object, GroovyObject, Serializable, Cloneable, Comparable])
+		superclasses
 	}
 }

@@ -158,6 +158,22 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		template.source.scriptAsString == 'GENERIC ENUM TEMPLATE'
 	}
 
+	@Issue('https://github.com/robfletcher/grails-fields/issues/19')
+	def "property template gets resolved by the property's interface"() {
+		given:
+		views["/fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/fields/charSequence/_field.gsp"] = 'INTERFACE TEMPLATE'
+
+		and:
+		def property = factory.accessorFor(personInstance, 'name')
+
+		expect:
+		def template = service.findTemplate(property, 'field')
+		template.path == '/fields/charSequence/field'
+		template.plugin == null
+		template.source.scriptAsString == 'INTERFACE TEMPLATE'
+	}
+
 	def "property template overrides property's superclass template"() {
 		given:
 		views["/fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'

@@ -26,6 +26,7 @@ class PropertyPathAccessor implements BeanPropertyAccessor {
 	Class getBeanType() { null }
 	List<Class> getBeanSuperclasses() { EMPTY_LIST }
 	Class getPropertyType() { null }
+	List<Class> getPropertyTypeSuperclasses() { EMPTY_LIST }
 	Object getValue() { null }
 	ConstrainedProperty getConstraints() { new ConstrainedProperty(Object, propertyName, String) }
 	GrailsDomainClassProperty getPersistentProperty() { null }

@@ -16,7 +16,6 @@
 
 package grails.plugin.formfields
 
-import org.apache.commons.lang.ClassUtils
 import org.codehaus.groovy.grails.plugins.GrailsPluginManager
 import org.codehaus.groovy.grails.web.pages.discovery.GrailsConventionGroovyPageLocator
 import org.springframework.web.context.request.RequestContextHolder
@@ -80,7 +79,7 @@ class FormFieldsTemplateService {
 		// if we have a property type look in `grails-app/views/fields/<propertyType>/<propertyName>/_field.gsp` and equivalent for superclasses
 		if (propertyAccessor.propertyType) {
 			templateResolveOrder << appendPiecesForUri("/fields", toPropertyNameFormat(propertyAccessor.propertyType), templateName)
-			for (propertySuperClass in ClassUtils.getAllSuperclasses(propertyAccessor.propertyType)) {
+			for (propertySuperClass in propertyAccessor.propertyTypeSuperclasses) {
 				templateResolveOrder << appendPiecesForUri("/fields", toPropertyNameFormat(propertySuperClass), templateName)
 			}
 		}

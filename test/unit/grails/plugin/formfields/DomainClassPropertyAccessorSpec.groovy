@@ -291,4 +291,19 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		employee | 'name' | [Person]
 	}
 
+	@Unroll({"the superclasses of ${bean.getClass().simpleName}.$path are $expected"})
+	void 'can retrieve superclasses of the property type'() {
+		given:
+		def propertyAccessor = factory.accessorFor(bean, path)
+
+		expect:
+		propertyAccessor.propertyTypeSuperclasses == expected
+
+		where:
+		bean   | path          | expected
+		person | 'name'        | [CharSequence]
+		person | 'gender'      | [Enum]
+		person | 'dateOfBirth' | []
+	}
+
 }

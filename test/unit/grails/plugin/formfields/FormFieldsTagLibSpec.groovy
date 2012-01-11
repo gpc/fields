@@ -11,6 +11,7 @@ import spock.lang.*
 class FormFieldsTagLibSpec extends Specification {
 
 	def personInstance
+	def mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
 
 	def setupSpec() {
 		defineBeans {
@@ -22,7 +23,6 @@ class FormFieldsTagLibSpec extends Specification {
 	}
 
 	def setup() {
-		def mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
 		mockFormFieldsTemplateService.findTemplate(_, 'field') >> [path: '/fields/default/field']
 		applicationContext.getBean(FormFieldsTagLib).formFieldsTemplateService = mockFormFieldsTemplateService
 
@@ -362,5 +362,36 @@ class FormFieldsTagLibSpec extends Specification {
 		expect:
 		applyTemplate('<f:field property="name"/>') == 'Name'
 	}
+
+    @Issue('https://github.com/robfletcher/grails-form-fields/pull/17')
+    void 'arbitrary attributes can be passed to the field template'() {
+        given:
+        views["/fields/default/_field.gsp"] = '${foo}'
+
+        expect:
+        applyTemplate('<f:field bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == 'bar'
+    }
+
+    @Issue('https://github.com/robfletcher/grails-form-fields/pull/17')
+    void 'arbitrary attributes can be passed to the input template'() {
+        given:
+        views["/fields/default/_field.gsp"] = '${widget}'
+        views["/fields/person/name/_input.gsp"] = '${foo}'
+
+		and:
+		mockFormFieldsTemplateService.findTemplate(_, 'input') >> [path: '/fields/person/name/input']
+
+        expect:
+        applyTemplate('<f:field bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == 'bar'
+    }
+
+    @Issue('https://github.com/robfletcher/grails-form-fields/pull/17')
+    void 'arbitrary attributes can be passed to the default input'() {
+        given:
+        views["/fields/default/_field.gsp"] = '${widget}'
+
+        expect:
+        applyTemplate('<f:field bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == '<input type="text" name="name" value="Bart Simpson" required="" foo="bar" id="name" />'
+    }
 
 }

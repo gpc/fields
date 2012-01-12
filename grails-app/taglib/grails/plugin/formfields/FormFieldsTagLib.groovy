@@ -34,7 +34,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	GrailsApplication grailsApplication
 	BeanPropertyAccessorFactory beanPropertyAccessorFactory
 
-	Closure with = { attrs, body ->
+	def with = { attrs, body ->
 		if (!attrs.bean) throwTagError("Tag [with] is missing required attribute [bean]")
 		def bean = resolveBean(attrs.bean)
 		try {
@@ -45,24 +45,22 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 	}
 
-	Closure all = { attrs ->
+	def all = { attrs ->
 		if (!attrs.bean) throwTagError("Tag [all] is missing required attribute [bean]")
 		def bean = resolveBean(attrs.bean)
 		def domainClass = resolveDomainClass(bean)
-		def fieldTemplateName = attrs.template ?: 'field'
-
-		if (domainClass) {
+        if (domainClass) {
 			for (property in resolvePersistentProperties(domainClass, attrs)) {
 				if (property.embedded) {
 					out << '<fieldset class="' << toPropertyNameFormat(property.type) << '">'
 					out << '<legend>' << GrailsNameUtils.getNaturalName(property.type.simpleName) << '</legend>'
 					for (embeddedProp in resolvePersistentProperties(property.component, attrs)) {
 						def propertyPath = "${property.name}.${embeddedProp.name}"
-						out << field(bean: bean, property: propertyPath, template: fieldTemplateName)
+						out << field(bean: bean, property: propertyPath)
 					}
 					out << '</fieldset>'
 				} else {
-					out << field(bean: bean, property: property.name, template: fieldTemplateName)
+					out << field(bean: bean, property: property.name)
 				}
 			}
 		} else {
@@ -70,11 +68,10 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 	}
 
-	Closure field = { attrs, body ->
+	def field = { attrs, body ->
 		if (attrs.containsKey('bean') && !attrs.bean) throwTagError("Tag [field] requires a non-null value for attribute [bean]")
 		if (!attrs.property) throwTagError("Tag [field] is missing required attribute [property]")
 
-		def templateName = attrs.remove('template') ?: 'field'
 		def bean = attrs.remove('bean')
 		def property = attrs.remove('property')
 
@@ -87,14 +84,14 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		if (hasBody(body)) {
 			model.widget = body(model)
 		} else {
-			model.widget = renderWidget('input', propertyAccessor, model, attrs)
+			model.widget = renderWidget(propertyAccessor, model, attrs)
 		}
 
-		def template = formFieldsTemplateService.findTemplate(propertyAccessor, templateName)
+		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'field')
 		out << render(template: template.path, plugin: template.plugin, model: model)
 	}
 
-	Closure widget = { String name, attrs ->
+	def input = { attrs ->
 		if (!attrs.bean) throwTagError("Tag [$name] is missing required attribute [bean]")
 		if (!attrs.property) throwTagError("Tag [$name] is missing required attribute [property]")
 
@@ -103,11 +100,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 		def propertyAccessor = resolveProperty(bean, property)
 		def model = buildModel(propertyAccessor, attrs)
-		out << renderWidget(name, propertyAccessor, model, attrs)
+		out << renderWidget(propertyAccessor, model, attrs)
 	}
-
-	Closure input = widget.curry("input")
-	Closure show = widget.curry("show")
 
 	private BeanPropertyAccessor resolveProperty(beanAttribute, String propertyPath) {
 		def bean = resolveBean(beanAttribute)
@@ -132,8 +126,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		]
 	}
 
-	private String renderWidget(String name, BeanPropertyAccessor propertyAccessor, Map model, Map attrs) {
-		def template = formFieldsTemplateService.findTemplate(propertyAccessor, name)
+	private String renderWidget(BeanPropertyAccessor propertyAccessor, Map model, Map attrs) {
+		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'input')
 		if (template) {
 			return render(template: template.path, plugin: template.plugin, model: model + attrs)
 		} else {

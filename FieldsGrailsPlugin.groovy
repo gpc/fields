@@ -29,10 +29,10 @@ class FieldsGrailsPlugin {
 	def authorEmail = 'rfletcherEW@shortmail.com'
 	def description = ''
 
-	def documentation = 'http://robfletcher.github.com/grails-form-fields'
+	def documentation = 'http://robfletcher.github.com/grails-fields'
 	def license = 'APACHE'
-	def issueManagement = [system: 'GitHub', url: 'https://github.com/robfletcher/grails-form-fields/issues']
-	def scm = [url: 'https://github.com/robfletcher/grails-form-fields']
+	def issueManagement = [system: 'GitHub', url: 'https://github.com/robfletcher/grails-fields/issues']
+	def scm = [url: 'https://github.com/robfletcher/grails-fields']
 
 	def doWithSpring = {
 		beanPropertyAccessorFactory(BeanPropertyAccessorFactory) {

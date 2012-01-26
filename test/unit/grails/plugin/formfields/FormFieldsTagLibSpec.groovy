@@ -130,7 +130,7 @@ class FormFieldsTagLibSpec extends Specification {
 		messageSource.addMessage("custom.name.label", request.locale, "Name of person")
 
 		expect:
-		applyTemplate('<f:field bean="personInstance" property="name" labelKey="custom.name.label"/>', [personInstance: personInstance]) == "<label>Name of person</label>"
+		applyTemplate('<f:field bean="personInstance" property="name" label="custom.name.label"/>', [personInstance: personInstance]) == "<label>Name of person</label>"
 	}
 
 	void "value is defaulted to property value"() {

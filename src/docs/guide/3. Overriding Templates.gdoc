@@ -56,7 +56,7 @@ The _f:field_ and _f:input_ tags will pass the following parameters to your temp
 *bean* | Object | The _bean_ attribute as passed to the _f:field_ or _f:input_ tag.
 *property* | String | The _property_ attribute as passed to the _f:field_ or _f:input_ tag. This would generally be useful for the _name_ attribute of a form input.
 *type* | Class | The property type.
-*label* | String | The field label text. This is based on the _label_ or _labelKey_ attribute passed to the _f:field_ or _f:input_ tag. If those attributes were not used the label is resolved using '_class_._propertyName_@.label@' or defaulted to the natural property name.
+*label* | String | The field label text. This is based on the _label_ attribute passed to the _f:field_ or _f:input_ tag. If no _label_ attribute was used the label is resolved using '_class_._propertyName_@.label@' or defaulted to the natural property name.
 *value* | Object | the property value. This can also be overridden or defaulted if the _value_ or _default_ attribute was passed to _f:field_ or _f:input_.
 *constraints* | ConstrainedProperty | The constraints for the property if the bean is a domain or command object.
 *persistentProperty* | GrailsDomainClassProperty | The persistent property object if the bean is a domain object.

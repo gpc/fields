@@ -4,8 +4,9 @@ import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
 import spock.lang.Specification
 import grails.plugin.formfields.mock.*
 import grails.test.mixin.*
+import grails.test.mixin.web.ControllerUnitTestMixin
 
-@TestFor(FormFieldsTagLib)
+@TestMixin(ControllerUnitTestMixin)
 @Mock(Person)
 class CommandPropertyAccessorSpec extends Specification {
 

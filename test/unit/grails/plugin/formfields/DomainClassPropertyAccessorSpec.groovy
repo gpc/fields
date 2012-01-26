@@ -4,9 +4,10 @@ import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
 import org.springframework.beans.NotReadablePropertyException
 import grails.plugin.formfields.mock.*
 import grails.test.mixin.*
+import grails.test.mixin.web.ControllerUnitTestMixin
 import spock.lang.*
 
-@TestFor(FormFieldsTagLib)
+@TestMixin(ControllerUnitTestMixin)
 @Mock([Person, Author, Book, Employee])
 class DomainClassPropertyAccessorSpec extends Specification {
 

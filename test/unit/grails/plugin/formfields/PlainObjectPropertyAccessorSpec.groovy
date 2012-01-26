@@ -32,7 +32,7 @@ class PlainObjectPropertyAccessorSpec extends Specification {
 		!propertyAccessor.required
 		!propertyAccessor.persistentProperty
 		propertyAccessor.constraints.blank
-		!propertyAccessor.constraints.nullable
+		propertyAccessor.constraints.nullable
 	}
 
 	void 'resolves a basic property even when its value is null'() {

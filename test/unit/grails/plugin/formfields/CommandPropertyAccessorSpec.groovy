@@ -1,7 +1,7 @@
 package grails.plugin.formfields
 
 import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
-import spock.lang.Specification
+import spock.lang.*
 import grails.plugin.formfields.mock.*
 import grails.test.mixin.*
 import grails.test.mixin.web.ControllerUnitTestMixin
@@ -27,8 +27,27 @@ class CommandPropertyAccessorSpec extends Specification {
 		propertyAccessor.pathFromRoot == "password"
 		propertyAccessor.propertyName == "password"
 		propertyAccessor.propertyType == String
+		!propertyAccessor.invalid
+		propertyAccessor.required
 		!propertyAccessor.constraints.blank
 		propertyAccessor.constraints.password
+	}
+	
+	@Unroll({"property of $type.simpleName is nullable"})
+	void 'properties are nullable by default unlike domain class properties'() {
+		given:
+		def command = mockCommandObject(type)
+		
+		and:
+		def propertyAccessor = factory.accessorFor(command, 'stringProperty')
+		
+		expect:
+		propertyAccessor.constraints.nullable
+		!propertyAccessor.required
+		!propertyAccessor.invalid
+		
+		where:
+		type << [TestCommand, UnconstrainedCommand]
 	}
 
 	void 'resolves a basic property even when its value is null'() {
@@ -216,7 +235,7 @@ class CommandPropertyAccessorSpec extends Specification {
 
 		expect:
 		propertyAccessor.constraints
-		!propertyAccessor.constraints.nullable
+		propertyAccessor.constraints.nullable
 		propertyAccessor.constraints.blank
 	}
 
@@ -226,6 +245,7 @@ class TestCommand {
 
 	String username
 	String password
+	String stringProperty
 	List<String> listOfStrings
 	List untypedList
 	Map<String, Date> mapOfDates

@@ -43,7 +43,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def template = service.findTemplate(property, 'field')
 		template.path == '/_fields/default/field'
 		template.plugin == null
-		template.source.scriptAsString == 'DEFAULT FIELD TEMPLATE'
+		render(template: template.path) == 'DEFAULT FIELD TEMPLATE'
 	}
 
 	void "resolves template for property type"() {
@@ -58,7 +58,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def template = service.findTemplate(property, 'field')
 		template.path == '/_fields/string/field'
 		template.plugin == null
-		template.source.scriptAsString == 'PROPERTY TYPE TEMPLATE'
+		render(template: template.path) == 'PROPERTY TYPE TEMPLATE'
 	}
 
 	void "resolves template for domain class property"() {
@@ -74,7 +74,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def template = service.findTemplate(property, 'field')
 		template.path == '/_fields/person/name/field'
 		template.plugin == null
-		template.source.scriptAsString == 'CLASS AND PROPERTY TEMPLATE'
+		render(template: template.path) == 'CLASS AND PROPERTY TEMPLATE'
 	}
 
 	void "resolves template from controller views directory"() {
@@ -91,7 +91,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def template = service.findTemplate(property, 'field')
 		template.path == "/$webRequest.controllerName/name/field"
 		template.plugin == null
-		template.source.scriptAsString == 'CONTROLLER FIELD TEMPLATE'
+		render(template: template.path) == 'CONTROLLER FIELD TEMPLATE'
 	}
 
 	void "does not use controller if there isn't one in the current request"() {
@@ -109,7 +109,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def template = service.findTemplate(property, 'field')
 		template.path == '/_fields/default/field'
 		template.plugin == null
-		template.source.scriptAsString == 'DEFAULT FIELD TEMPLATE'
+		render(template: template.path) == 'DEFAULT FIELD TEMPLATE'
 	}
 
 	def "resolves template for superclass property"() {
@@ -124,7 +124,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def template = service.findTemplate(property, 'field')
 		template.path == '/_fields/person/name/field'
 		template.plugin == null
-		template.source.scriptAsString == 'SUPERCLASS TEMPLATE'
+		render(template: template.path) == 'SUPERCLASS TEMPLATE'
 	}
 
 	def "subclass property template overrides superclass property template"() {
@@ -140,7 +140,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def template = service.findTemplate(property, 'field')
 		template.path == '/_fields/employee/name/field'
 		template.plugin == null
-		template.source.scriptAsString == 'SUBCLASS TEMPLATE'
+		render(template: template.path) == 'SUBCLASS TEMPLATE'
 	}
 
 	def "property template gets resolved by the property's superclass"() {
@@ -155,7 +155,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def template = service.findTemplate(property, 'field')
 		template.path == '/_fields/enum/field'
 		template.plugin == null
-		template.source.scriptAsString == 'GENERIC ENUM TEMPLATE'
+		render(template: template.path) == 'GENERIC ENUM TEMPLATE'
 	}
 
 	@Issue('https://github.com/robfletcher/grails-fields/issues/19')
@@ -171,7 +171,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def template = service.findTemplate(property, 'field')
 		template.path == '/_fields/charSequence/field'
 		template.plugin == null
-		template.source.scriptAsString == 'INTERFACE TEMPLATE'
+		render(template: template.path) == 'INTERFACE TEMPLATE'
 	}
 
 	def "property template overrides property's superclass template"() {
@@ -187,7 +187,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def template = service.findTemplate(property, 'field')
 		template.path == '/_fields/salutation/field'
 		template.plugin == null
-		template.source.scriptAsString == 'SALUTATION TEMPLATE'
+		render(template: template.path) == 'SALUTATION TEMPLATE'
 	}
 
 	void "resolves template for embedded class property"() {
@@ -203,7 +203,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def template = service.findTemplate(property, 'field')
 		template.path == '/_fields/address/city/field'
 		template.plugin == null
-		template.source.scriptAsString == 'CLASS AND PROPERTY TEMPLATE'
+		render(template: template.path) == 'CLASS AND PROPERTY TEMPLATE'
 	}
 
 	@Issue('https://github.com/robfletcher/grails-fields/pull/16')
@@ -218,7 +218,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def template = service.findTemplate(property, 'field')
 		template.path == '/_fields/default/field'
 		template.plugin == null
-		template.source.scriptAsString == 'DEFAULT FIELD TEMPLATE'
+		render(template: template.path) == 'DEFAULT FIELD TEMPLATE'
 	}
 
 	@Issue('https://github.com/robfletcher/grails-fields/pull/16')
@@ -234,7 +234,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def template = service.findTemplate(property, 'field')
 		template.path == "/$webRequest.controllerName/name/field"
 		template.plugin == null
-		template.source.scriptAsString == 'CONTROLLER FIELD TEMPLATE'
+		render(template: template.path) == 'CONTROLLER FIELD TEMPLATE'
 	}
 
 }

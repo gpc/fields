@@ -41,7 +41,6 @@ class TemplateLookupCachingSpec extends Specification {
 
 		then:
 		template.path == '/_fields/person/name/input'
-		template.source.scriptAsString == 'PERSON NAME TEMPLATE'
 
 		and:
 		1 * mockGroovyPageLocator.findTemplateByPath(_) >> templateResource
@@ -56,7 +55,6 @@ class TemplateLookupCachingSpec extends Specification {
 
 		then:
 		template.path == '/_fields/person/name/input'
-		template.source.scriptAsString == 'PERSON NAME TEMPLATE'
 
 		and:
 		0 * mockGroovyPageLocator.findTemplateByPath(_)
@@ -74,7 +72,6 @@ class TemplateLookupCachingSpec extends Specification {
 
 		then:
 		template.path == '/_fields/person/password/input'
-		template.source.scriptAsString == 'PERSON PASSWORD TEMPLATE'
 
 		and:
 		1 * mockGroovyPageLocator.findTemplateByPath(_) >> templateResource
@@ -92,7 +89,6 @@ class TemplateLookupCachingSpec extends Specification {
 		
 		then:
 		template.path == '/_fields/person/name/field'
-		template.source.scriptAsString == 'PERSON NAME TEMPLATE 2'
 
 		and:
 		1 * mockGroovyPageLocator.findTemplateByPath(_) >> templateResource

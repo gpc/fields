@@ -205,9 +205,9 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			model.from = attrs.type.values()
 			if (!attrs.required) model.noSelection = ["": ""]
 			return g.select(model + extraAttrs)
-		} else if (attrs.persistentProperty.oneToOne || attrs.persistentProperty.manyToOne || attrs.persistentProperty.manyToMany) {
+		} else if (attrs.persistentProperty?.oneToOne || attrs.persistentProperty?.manyToOne || attrs.persistentProperty?.manyToMany) {
 			return renderAssociationInput(model, attrs, extraAttrs)
-		} else if (attrs.persistentProperty.oneToMany) {
+		} else if (attrs.persistentProperty?.oneToMany) {
 			return renderOneToManyInput(model, attrs)
 		} else if (attrs.type in [Date, Calendar, java.sql.Date, java.sql.Time]) {
 			return renderDateTimeInput(model, attrs, extraAttrs)

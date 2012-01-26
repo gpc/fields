@@ -23,7 +23,7 @@ class FormFieldsTagLibSpec extends Specification {
 	}
 
 	def setup() {
-		mockFormFieldsTemplateService.findTemplate(_, 'field') >> [path: '/fields/default/field']
+		mockFormFieldsTemplateService.findTemplate(_, 'field') >> [path: '/_fields/default/field']
 		applicationContext.getBean(FormFieldsTagLib).formFieldsTemplateService = mockFormFieldsTemplateService
 
 		personInstance = new Person(name: "Bart Simpson", password: "bartman", gender: Gender.Male, dateOfBirth: new Date(87, 3, 19), minor: true)
@@ -64,7 +64,7 @@ class FormFieldsTagLibSpec extends Specification {
 
 	void "bean attribute can be a String"() {
 		given:
-		views["/fields/default/_field.gsp"] = '${bean.getClass().simpleName}'
+		views["/_fields/default/_field.gsp"] = '${bean.getClass().simpleName}'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "Person"
@@ -80,7 +80,7 @@ class FormFieldsTagLibSpec extends Specification {
 
 	void "bean and property attributes are passed to template"() {
 		given:
-		views["/fields/default/_field.gsp"] = '${bean.getClass().simpleName}.${property}'
+		views["/_fields/default/_field.gsp"] = '${bean.getClass().simpleName}.${property}'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "Person.name"
@@ -88,7 +88,7 @@ class FormFieldsTagLibSpec extends Specification {
 
 	void "constraints are passed to template"() {
 		given:
-		views["/fields/default/_field.gsp"] = 'nullable=${constraints.nullable}, blank=${constraints.blank}'
+		views["/_fields/default/_field.gsp"] = 'nullable=${constraints.nullable}, blank=${constraints.blank}'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "nullable=false, blank=false"
@@ -96,7 +96,7 @@ class FormFieldsTagLibSpec extends Specification {
 
 	void "label is resolved by convention and passed to template"() {
 		given:
-		views["/fields/default/_field.gsp"] = '<label>${label}</label>'
+		views["/_fields/default/_field.gsp"] = '<label>${label}</label>'
 
 		and:
 		messageSource.addMessage("Person.name.label", request.locale, "Name of person")
@@ -107,7 +107,7 @@ class FormFieldsTagLibSpec extends Specification {
 
 	void "label is defaulted to natural property name"() {
 		given:
-		views["/fields/default/_field.gsp"] = '<label>${label}</label>'
+		views["/_fields/default/_field.gsp"] = '<label>${label}</label>'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "<label>Name</label>"
@@ -116,7 +116,7 @@ class FormFieldsTagLibSpec extends Specification {
 
 	void "label can be overridden by label attribute"() {
 		given:
-		views["/fields/default/_field.gsp"] = '<label>${label}</label>'
+		views["/_fields/default/_field.gsp"] = '<label>${label}</label>'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name" label="Name of person"/>', [personInstance: personInstance]) == "<label>Name of person</label>"
@@ -124,7 +124,7 @@ class FormFieldsTagLibSpec extends Specification {
 
 	void "label can be overridden by label key attribute"() {
 		given:
-		views["/fields/default/_field.gsp"] = '<label>${label}</label>'
+		views["/_fields/default/_field.gsp"] = '<label>${label}</label>'
 
 		and:
 		messageSource.addMessage("custom.name.label", request.locale, "Name of person")
@@ -135,7 +135,7 @@ class FormFieldsTagLibSpec extends Specification {
 
 	void "value is defaulted to property value"() {
 		given:
-		views["/fields/default/_field.gsp"] = '<g:formatDate date="${value}" format="yyyy-MM-dd"/>'
+		views["/_fields/default/_field.gsp"] = '<g:formatDate date="${value}" format="yyyy-MM-dd"/>'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="dateOfBirth"/>', [personInstance: personInstance]) == "1987-04-19"
@@ -143,7 +143,7 @@ class FormFieldsTagLibSpec extends Specification {
 
 	void "value is overridden by value attribute"() {
 		given:
-		views["/fields/default/_field.gsp"] = '${value}'
+		views["/_fields/default/_field.gsp"] = '${value}'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name" value="Bartholomew J. Simpson"/>', [personInstance: personInstance]) == "Bartholomew J. Simpson"
@@ -151,7 +151,7 @@ class FormFieldsTagLibSpec extends Specification {
 
 	void "value falls back to default"() {
 		given:
-		views["/fields/default/_field.gsp"] = '${value}'
+		views["/_fields/default/_field.gsp"] = '${value}'
 
 		and:
 		personInstance.name = null
@@ -162,7 +162,7 @@ class FormFieldsTagLibSpec extends Specification {
 
 	void "default attribute is ignored if property has non-null value"() {
 		given:
-		views["/fields/default/_field.gsp"] = '${value}'
+		views["/_fields/default/_field.gsp"] = '${value}'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name" default="A. N. Other"/>', [personInstance: personInstance]) == "Bart Simpson"
@@ -170,7 +170,7 @@ class FormFieldsTagLibSpec extends Specification {
 
 	void "errors passed to template is an empty collection for valid bean"() {
 		given:
-		views["/fields/default/_field.gsp"] = '<g:each var="error" in="${errors}"><em>${error}</em></g:each>'
+		views["/_fields/default/_field.gsp"] = '<g:each var="error" in="${errors}"><em>${error}</em></g:each>'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == ""
@@ -178,7 +178,7 @@ class FormFieldsTagLibSpec extends Specification {
 
 	void "errors passed to template is a collection of strings"() {
 		given:
-		views["/fields/default/_field.gsp"] = '<g:each var="error" in="${errors}"><em>${error}</em></g:each>'
+		views["/_fields/default/_field.gsp"] = '<g:each var="error" in="${errors}"><em>${error}</em></g:each>'
 
 		and:
 		personInstance.errors.rejectValue("name", "blank")
@@ -190,7 +190,7 @@ class FormFieldsTagLibSpec extends Specification {
 
 	void "required flag is passed to template"() {
 		given:
-		views["/fields/default/_field.gsp"] = 'required=${required}'
+		views["/_fields/default/_field.gsp"] = 'required=${required}'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "required=true"
@@ -198,7 +198,7 @@ class FormFieldsTagLibSpec extends Specification {
 
 	void "required flag can be forced with attribute"() {
 		given:
-		views["/fields/default/_field.gsp"] = 'required=${required}'
+		views["/_fields/default/_field.gsp"] = 'required=${required}'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="minor" required="true"/>', [personInstance: personInstance]) == "required=true"
@@ -206,7 +206,7 @@ class FormFieldsTagLibSpec extends Specification {
 
 	void "required flag can be forced off with attribute"() {
 		given:
-		views["/fields/default/_field.gsp"] = 'required=${required}'
+		views["/_fields/default/_field.gsp"] = 'required=${required}'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name" required="false"/>', [personInstance: personInstance]) == "required=false"
@@ -214,7 +214,7 @@ class FormFieldsTagLibSpec extends Specification {
 
 	void "invalid flag is passed to template if bean has errors"() {
 		given:
-		views["/fields/default/_field.gsp"] = 'invalid=${invalid}'
+		views["/_fields/default/_field.gsp"] = 'invalid=${invalid}'
 
 		and:
 		personInstance.errors.rejectValue("name", "blank")
@@ -225,7 +225,7 @@ class FormFieldsTagLibSpec extends Specification {
 
 	void "invalid flag is not passed to template if bean has no errors"() {
 		given:
-		views["/fields/default/_field.gsp"] = 'invalid=${invalid}'
+		views["/_fields/default/_field.gsp"] = 'invalid=${invalid}'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "invalid=false"
@@ -233,7 +233,7 @@ class FormFieldsTagLibSpec extends Specification {
 
 	void "invalid flag can be overridden with attribute"() {
 		given:
-		views["/fields/default/_field.gsp"] = 'invalid=${invalid}'
+		views["/_fields/default/_field.gsp"] = 'invalid=${invalid}'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name" invalid="true"/>', [personInstance: personInstance]) == "invalid=true"
@@ -241,7 +241,7 @@ class FormFieldsTagLibSpec extends Specification {
 
 	void "rendered input is passed to template"() {
 		given:
-		views["/fields/default/_field.gsp"] = '${widget}'
+		views["/_fields/default/_field.gsp"] = '${widget}'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == '<input type="text" name="name" value="Bart Simpson" required="" id="name" />'
@@ -250,7 +250,7 @@ class FormFieldsTagLibSpec extends Specification {
     @Issue('https://github.com/robfletcher/grails-fields/pull/16')
     void 'tag body can be used instead of the input'() {
         given:
-        views['/fields/default/_field.gsp'] = '${widget}'
+        views['/_fields/default/_field.gsp'] = '${widget}'
 
         expect:
         applyTemplate('<f:field bean="personInstance" property="name">BODY</f:field>', [personInstance: personInstance]) == 'BODY'
@@ -259,7 +259,7 @@ class FormFieldsTagLibSpec extends Specification {
     @Issue('https://github.com/robfletcher/grails-fields/pull/16')
     void 'the model is passed to a tag body if there is one'() {
         given:
-        views['/fields/default/_field.gsp'] = '${widget}'
+        views['/_fields/default/_field.gsp'] = '${widget}'
 
         expect:
         applyTemplate('<f:field bean="personInstance" property="name">bean: ${bean.getClass().simpleName}, property: ${property}, type: ${type.simpleName}, label: ${label}, value: ${value}</f:field>', [personInstance: personInstance]) == 'bean: Person, property: name, type: String, label: Name, value: Bart Simpson'
@@ -267,7 +267,7 @@ class FormFieldsTagLibSpec extends Specification {
 
 	void "all tag renders fields for all properties"() {
 		given:
-		views["/fields/default/_field.gsp"] = '${property} '
+		views["/_fields/default/_field.gsp"] = '${property} '
 
 		when:
 		def output = applyTemplate('<f:all bean="personInstance"/>', [personInstance: personInstance])
@@ -282,7 +282,7 @@ class FormFieldsTagLibSpec extends Specification {
 
 	void "all tag renders individual fields for embedded properties"() {
 		given:
-		views["/fields/default/_field.gsp"] = '${property} '
+		views["/_fields/default/_field.gsp"] = '${property} '
 
 		when:
 		def output = applyTemplate('<f:all bean="personInstance"/>', [personInstance: personInstance])
@@ -293,7 +293,7 @@ class FormFieldsTagLibSpec extends Specification {
 
 	void "all tag wraps embedded properties in a container"() {
 		given:
-		views["/fields/default/_field.gsp"] = '${property} '
+		views["/_fields/default/_field.gsp"] = '${property} '
 
 		when:
 		def output = applyTemplate('<f:all bean="personInstance"/>', [personInstance: personInstance])
@@ -305,7 +305,7 @@ class FormFieldsTagLibSpec extends Specification {
 	@Unroll({"all tag skips $property property"})
 	void 'all tag skips excluded properties'() {
 		given:
-		views["/fields/default/_field.gsp"] = '${property} '
+		views["/_fields/default/_field.gsp"] = '${property} '
 
 		when:
 		def output = applyTemplate('<f:all bean="personInstance"/>', [personInstance: personInstance])
@@ -320,7 +320,7 @@ class FormFieldsTagLibSpec extends Specification {
 	@Issue('https://github.com/robfletcher/grails-form-fields/issues/12')
 	void 'all tag skips properties listed with the except attribute'() {
 		given:
-		views["/fields/default/_field.gsp"] = '${property} '
+		views["/_fields/default/_field.gsp"] = '${property} '
 
 		when:
 		def output = applyTemplate('<f:all bean="personInstance" except="password, minor"/>', [personInstance: personInstance])
@@ -333,7 +333,7 @@ class FormFieldsTagLibSpec extends Specification {
 	@Issue('https://github.com/robfletcher/grails-form-fields/issues/13')
 	void 'bean attribute does not have to be specified if it is in scope from f:with'() {
 		given:
-		views["/fields/default/_field.gsp"] = '${property} '
+		views["/_fields/default/_field.gsp"] = '${property} '
 
 		expect:
 		applyTemplate('<f:with bean="personInstance"><f:field property="name"/></f:with>', [personInstance: personInstance]) == 'name '
@@ -348,7 +348,7 @@ class FormFieldsTagLibSpec extends Specification {
 	@Issue('https://github.com/robfletcher/grails-form-fields/pull/16')
 	void 'f:field can work without a bean attribute'() {
 		given:
-		views["/fields/default/_field.gsp"] = '${property}'
+		views["/_fields/default/_field.gsp"] = '${property}'
 
 		expect:
 		applyTemplate('<f:field property="name"/>') == 'name'
@@ -357,7 +357,7 @@ class FormFieldsTagLibSpec extends Specification {
 	@Issue('https://github.com/robfletcher/grails-form-fields/pull/16')
 	void 'label is the natural property name if there is no bean attribute'() {
 		given:
-		views["/fields/default/_field.gsp"] = '${label}'
+		views["/_fields/default/_field.gsp"] = '${label}'
 
 		expect:
 		applyTemplate('<f:field property="name"/>') == 'Name'
@@ -366,7 +366,7 @@ class FormFieldsTagLibSpec extends Specification {
     @Issue('https://github.com/robfletcher/grails-form-fields/pull/17')
     void 'arbitrary attributes can be passed to the field template'() {
         given:
-        views["/fields/default/_field.gsp"] = '${foo}'
+        views["/_fields/default/_field.gsp"] = '${foo}'
 
         expect:
         applyTemplate('<f:field bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == 'bar'
@@ -375,11 +375,11 @@ class FormFieldsTagLibSpec extends Specification {
     @Issue('https://github.com/robfletcher/grails-form-fields/pull/17')
     void 'arbitrary attributes can be passed to the input template'() {
         given:
-        views["/fields/default/_field.gsp"] = '${widget}'
-        views["/fields/person/name/_input.gsp"] = '${foo}'
+        views["/_fields/default/_field.gsp"] = '${widget}'
+        views["/_fields/person/name/_input.gsp"] = '${foo}'
 
 		and:
-		mockFormFieldsTemplateService.findTemplate(_, 'input') >> [path: '/fields/person/name/input']
+		mockFormFieldsTemplateService.findTemplate(_, 'input') >> [path: '/_fields/person/name/input']
 
         expect:
         applyTemplate('<f:field bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == 'bar'
@@ -388,7 +388,7 @@ class FormFieldsTagLibSpec extends Specification {
     @Issue('https://github.com/robfletcher/grails-form-fields/pull/17')
     void 'arbitrary attributes can be passed to the default input'() {
         given:
-        views["/fields/default/_field.gsp"] = '${widget}'
+        views["/_fields/default/_field.gsp"] = '${widget}'
 
         expect:
         applyTemplate('<f:field bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == '<input type="text" name="name" value="Bart Simpson" required="" foo="bar" id="name" />'

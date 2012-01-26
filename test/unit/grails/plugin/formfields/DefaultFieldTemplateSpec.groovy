@@ -25,7 +25,7 @@ class DefaultFieldTemplateSpec extends Specification {
 	
 	void "default rendering"() {
 		when:
-		def output = render(template: '/fields/default/field', model: model)
+		def output = render(template: '/_fields/default/field', model: model)
 		
 		then:
 		def root = $(output)
@@ -45,7 +45,7 @@ class DefaultFieldTemplateSpec extends Specification {
 		model.invalid = true
 
 		when:
-		def output = render(template: '/fields/default/field', model: model)
+		def output = render(template: '/_fields/default/field', model: model)
 		
 		then:
 		$(output).hasClass('error')
@@ -56,7 +56,7 @@ class DefaultFieldTemplateSpec extends Specification {
 		model.required = true
 
 		when:
-		def output = render(template: '/fields/default/field', model: model)
+		def output = render(template: '/_fields/default/field', model: model)
 		
 		then:
 		def root = $(output)

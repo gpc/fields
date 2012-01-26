@@ -34,54 +34,54 @@ class FormFieldsTemplateServiceSpec extends Specification {
 
 	void 'uses default template when no others exist'() {
 		given:
-		views["/fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
 
 		and:
 		def property = factory.accessorFor(personInstance, 'name')
 
 		expect:
 		def template = service.findTemplate(property, 'field')
-		template.path == '/fields/default/field'
+		template.path == '/_fields/default/field'
 		template.plugin == null
 		template.source.scriptAsString == 'DEFAULT FIELD TEMPLATE'
 	}
 
 	void "resolves template for property type"() {
 		given:
-		views["/fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
-		views["/fields/string/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
+		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/_fields/string/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
 
 		and:
 		def property = factory.accessorFor(personInstance, 'name')
 
 		expect:
 		def template = service.findTemplate(property, 'field')
-		template.path == '/fields/string/field'
+		template.path == '/_fields/string/field'
 		template.plugin == null
 		template.source.scriptAsString == 'PROPERTY TYPE TEMPLATE'
 	}
 
 	void "resolves template for domain class property"() {
 		given:
-		views["/fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
-		views["/fields/string/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
-		views["/fields/person/name/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
+		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/_fields/string/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
+		views["/_fields/person/name/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
 
 		and:
 		def property = factory.accessorFor(personInstance, 'name')
 
 		expect:
 		def template = service.findTemplate(property, 'field')
-		template.path == '/fields/person/name/field'
+		template.path == '/_fields/person/name/field'
 		template.plugin == null
 		template.source.scriptAsString == 'CLASS AND PROPERTY TEMPLATE'
 	}
 
 	void "resolves template from controller views directory"() {
 		given:
-		views["/fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
-		views["/fields/string/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
-		views["/fields/person/name/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
+		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/_fields/string/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
+		views["/_fields/person/name/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
 		views["/$webRequest.controllerName/name/_field.gsp"] = 'CONTROLLER FIELD TEMPLATE'
 
 		and:
@@ -96,7 +96,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 
 	void "does not use controller if there isn't one in the current request"() {
 		given:
-		views["/fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
 		views["/name/_field.gsp"] = 'STRANGE TEMPLATE'
 
 		and:
@@ -107,53 +107,53 @@ class FormFieldsTemplateServiceSpec extends Specification {
 
 		expect:
 		def template = service.findTemplate(property, 'field')
-		template.path == '/fields/default/field'
+		template.path == '/_fields/default/field'
 		template.plugin == null
 		template.source.scriptAsString == 'DEFAULT FIELD TEMPLATE'
 	}
 
 	def "resolves template for superclass property"() {
 		given:
-		views["/fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
-		views["/fields/person/name/_field.gsp"] = 'SUPERCLASS TEMPLATE'
+		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/_fields/person/name/_field.gsp"] = 'SUPERCLASS TEMPLATE'
 
 		and:
 		def property = factory.accessorFor(employeeInstance, 'name')
 
 		expect:
 		def template = service.findTemplate(property, 'field')
-		template.path == '/fields/person/name/field'
+		template.path == '/_fields/person/name/field'
 		template.plugin == null
 		template.source.scriptAsString == 'SUPERCLASS TEMPLATE'
 	}
 
 	def "subclass property template overrides superclass property template"() {
 		given:
-		views["/fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
-		views["/fields/person/name/_field.gsp"] = 'SUPERCLASS TEMPLATE'
-		views["/fields/employee/name/_field.gsp"] = 'SUBCLASS TEMPLATE'
+		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/_fields/person/name/_field.gsp"] = 'SUPERCLASS TEMPLATE'
+		views["/_fields/employee/name/_field.gsp"] = 'SUBCLASS TEMPLATE'
 
 		and:
 		def property = factory.accessorFor(employeeInstance, 'name')
 
 		expect:
 		def template = service.findTemplate(property, 'field')
-		template.path == '/fields/employee/name/field'
+		template.path == '/_fields/employee/name/field'
 		template.plugin == null
 		template.source.scriptAsString == 'SUBCLASS TEMPLATE'
 	}
 
 	def "property template gets resolved by the property's superclass"() {
 		given:
-		views["/fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
-		views["/fields/enum/_field.gsp"] = 'GENERIC ENUM TEMPLATE'
+		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/_fields/enum/_field.gsp"] = 'GENERIC ENUM TEMPLATE'
 
 		and:
 		def property = factory.accessorFor(employeeInstance, 'salutation')
 
 		expect:
 		def template = service.findTemplate(property, 'field')
-		template.path == '/fields/enum/field'
+		template.path == '/_fields/enum/field'
 		template.plugin == null
 		template.source.scriptAsString == 'GENERIC ENUM TEMPLATE'
 	}
@@ -161,47 +161,47 @@ class FormFieldsTemplateServiceSpec extends Specification {
 	@Issue('https://github.com/robfletcher/grails-fields/issues/19')
 	def "property template gets resolved by the property's interface"() {
 		given:
-		views["/fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
-		views["/fields/charSequence/_field.gsp"] = 'INTERFACE TEMPLATE'
+		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/_fields/charSequence/_field.gsp"] = 'INTERFACE TEMPLATE'
 
 		and:
 		def property = factory.accessorFor(personInstance, 'name')
 
 		expect:
 		def template = service.findTemplate(property, 'field')
-		template.path == '/fields/charSequence/field'
+		template.path == '/_fields/charSequence/field'
 		template.plugin == null
 		template.source.scriptAsString == 'INTERFACE TEMPLATE'
 	}
 
 	def "property template overrides property's superclass template"() {
 		given:
-		views["/fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
-		views["/fields/enum/_field.gsp"] = 'ENUM TEMPLATE'
-		views["/fields/salutation/_field.gsp"] = 'SALUTATION TEMPLATE'
+		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/_fields/enum/_field.gsp"] = 'ENUM TEMPLATE'
+		views["/_fields/salutation/_field.gsp"] = 'SALUTATION TEMPLATE'
 
 		and:
 		def property = factory.accessorFor(employeeInstance, 'salutation')
 
 		expect:
 		def template = service.findTemplate(property, 'field')
-		template.path == '/fields/salutation/field'
+		template.path == '/_fields/salutation/field'
 		template.plugin == null
 		template.source.scriptAsString == 'SALUTATION TEMPLATE'
 	}
 
 	void "resolves template for embedded class property"() {
 		given:
-		views["/fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
-		views["/fields/string/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
-		views["/fields/address/city/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
+		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/_fields/string/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
+		views["/_fields/address/city/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
 
 		and:
 		def property = factory.accessorFor(personInstance, 'address.city')
 
 		expect:
 		def template = service.findTemplate(property, 'field')
-		template.path == '/fields/address/city/field'
+		template.path == '/_fields/address/city/field'
 		template.plugin == null
 		template.source.scriptAsString == 'CLASS AND PROPERTY TEMPLATE'
 	}
@@ -209,14 +209,14 @@ class FormFieldsTemplateServiceSpec extends Specification {
 	@Issue('https://github.com/robfletcher/grails-fields/pull/16')
 	void 'resolves template without a bean just based on property path'() {
 		given:
-		views["/fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
 
 		and:
 		def property = factory.accessorFor(null, 'name')
 
 		expect:
 		def template = service.findTemplate(property, 'field')
-		template.path == '/fields/default/field'
+		template.path == '/_fields/default/field'
 		template.plugin == null
 		template.source.scriptAsString == 'DEFAULT FIELD TEMPLATE'
 	}
@@ -224,7 +224,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 	@Issue('https://github.com/robfletcher/grails-fields/pull/16')
 	void 'resolves controller template without a bean just based on property path'() {
 		given:
-		views["/fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
 		views["/$webRequest.controllerName/name/_field.gsp"] = 'CONTROLLER FIELD TEMPLATE'
 
 		and:

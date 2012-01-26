@@ -68,24 +68,24 @@ class FormFieldsTemplateService {
 			templateResolveOrder << appendPiecesForUri("/", controllerName, propertyAccessor.propertyName, templateName)
 		}
 
-		// if we have a bean type look in `grails-app/views/fields/<beanType>/<propertyName>/_field.gsp` and equivalent for superclasses
+		// if we have a bean type look in `grails-app/views/_fields/<beanType>/<propertyName>/_field.gsp` and equivalent for superclasses
 		if (propertyAccessor.beanType) {
-			templateResolveOrder << appendPiecesForUri("/fields", toPropertyNameFormat(propertyAccessor.beanType), propertyAccessor.propertyName, templateName)
+			templateResolveOrder << appendPiecesForUri("/_fields", toPropertyNameFormat(propertyAccessor.beanType), propertyAccessor.propertyName, templateName)
 			for (superclass in propertyAccessor.beanSuperclasses) {
-				templateResolveOrder << appendPiecesForUri("/fields", toPropertyNameFormat(superclass), propertyAccessor.propertyName, templateName)
+				templateResolveOrder << appendPiecesForUri("/_fields", toPropertyNameFormat(superclass), propertyAccessor.propertyName, templateName)
 			}
 		}
 
-		// if we have a property type look in `grails-app/views/fields/<propertyType>/<propertyName>/_field.gsp` and equivalent for superclasses
+		// if we have a property type look in `grails-app/views/_fields/<propertyType>/<propertyName>/_field.gsp` and equivalent for superclasses
 		if (propertyAccessor.propertyType) {
-			templateResolveOrder << appendPiecesForUri("/fields", toPropertyNameFormat(propertyAccessor.propertyType), templateName)
+			templateResolveOrder << appendPiecesForUri("/_fields", toPropertyNameFormat(propertyAccessor.propertyType), templateName)
 			for (propertySuperClass in propertyAccessor.propertyTypeSuperclasses) {
-				templateResolveOrder << appendPiecesForUri("/fields", toPropertyNameFormat(propertySuperClass), templateName)
+				templateResolveOrder << appendPiecesForUri("/_fields", toPropertyNameFormat(propertySuperClass), templateName)
 			}
 		}
 
 		// if nothing else is found fall back to a default (even this may not exist for f:input)
-		templateResolveOrder << "/fields/default/$templateName"
+		templateResolveOrder << "/_fields/default/$templateName"
 
 		templateResolveOrder
 	}

@@ -204,7 +204,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		} else if (attrs.type.isEnum()) {
 			model.from = attrs.type.values()
 			if (!attrs.required) model.noSelection = ["": ""]
-			return g.select(model + extraAttrs)
+			return g.select(model)
 		} else if (attrs.persistentProperty?.oneToOne || attrs.persistentProperty?.manyToOne || attrs.persistentProperty?.manyToMany) {
 			return renderAssociationInput(model, attrs)
 		} else if (attrs.persistentProperty?.oneToMany) {

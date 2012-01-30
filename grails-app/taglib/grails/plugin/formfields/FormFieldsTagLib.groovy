@@ -20,10 +20,10 @@ import grails.util.GrailsNameUtils
 import org.apache.commons.lang.StringUtils
 import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
 import org.codehaus.groovy.grails.scaffolding.DomainClassPropertyComparator
+import org.codehaus.groovy.grails.web.pages.GroovyPage
 import static FormFieldsTemplateService.toPropertyNameFormat
 import org.codehaus.groovy.grails.commons.*
 import static org.codehaus.groovy.grails.commons.GrailsClassUtils.getStaticPropertyValue
-import org.codehaus.groovy.grails.web.pages.GroovyPage
 
 class FormFieldsTagLib implements GrailsApplicationAware {
 
@@ -78,16 +78,17 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		def propertyAccessor = resolveProperty(bean, property)
 		def model = buildModel(propertyAccessor, attrs)
 
-		// any remaining attrs at this point are 'extras'
-		model += attrs
-
 		if (hasBody(body)) {
 			model.widget = body(model)
 		} else {
-			model.widget = renderWidget(propertyAccessor, model, attrs)
+			model.widget = renderWidget(propertyAccessor, model)
 		}
 
 		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'field')
+
+		// any remaining attrs at this point are 'extras'
+		model += attrs
+
 		out << render(template: template.path, plugin: template.plugin, model: model)
 	}
 
@@ -100,13 +101,12 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 		def propertyAccessor = resolveProperty(bean, property)
 		def model = buildModel(propertyAccessor, attrs)
-		out << renderWidget(propertyAccessor, model, attrs)
+		out << renderWidget(propertyAccessor, model)
 	}
 
 	private BeanPropertyAccessor resolveProperty(beanAttribute, String propertyPath) {
 		def bean = resolveBean(beanAttribute)
-		def propertyAccessor = beanPropertyAccessorFactory.accessorFor(bean, propertyPath)
-		return propertyAccessor
+		beanPropertyAccessorFactory.accessorFor(bean, propertyPath)
 	}
 
 	private Map buildModel(BeanPropertyAccessor propertyAccessor, Map attrs) {
@@ -126,12 +126,12 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		]
 	}
 
-	private String renderWidget(BeanPropertyAccessor propertyAccessor, Map model, Map attrs) {
+	private String renderWidget(BeanPropertyAccessor propertyAccessor, Map model) {
 		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'input')
 		if (template) {
-			return render(template: template.path, plugin: template.plugin, model: model + attrs)
+			return render(template: template.path, plugin: template.plugin, model: model)
 		} else {
-			return renderDefaultInput(model, attrs)
+			return renderDefaultInput(model)
 		}
 	}
 
@@ -185,7 +185,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		labelText
 	}
 
-	private String renderDefaultInput(Map attrs, Map extraAttrs = [:]) {
+	private String renderDefaultInput(Map attrs) {
 		def model = [:]
 		model.name = attrs.property
 		model.value = attrs.value
@@ -194,43 +194,43 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		if (!attrs.constraints.editable) model.readonly = ""
 
 		if (attrs.type in [String, null]) {
-			return renderStringInput(model, attrs, extraAttrs)
+			return renderStringInput(model, attrs)
 		} else if (attrs.type in [boolean, Boolean]) {
-			return g.checkBox(model + extraAttrs)
+			return g.checkBox(model)
 		} else if (attrs.type.isPrimitive() || attrs.type in Number) {
-			return renderNumericInput(model, attrs, extraAttrs)
+			return renderNumericInput(model, attrs)
 		} else if (attrs.type in URL) {
-			return g.field(model + [type: "url"] + extraAttrs)
+			return g.field(model + [type: "url"])
 		} else if (attrs.type.isEnum()) {
 			model.from = attrs.type.values()
 			if (!attrs.required) model.noSelection = ["": ""]
 			return g.select(model + extraAttrs)
 		} else if (attrs.persistentProperty?.oneToOne || attrs.persistentProperty?.manyToOne || attrs.persistentProperty?.manyToMany) {
-			return renderAssociationInput(model, attrs, extraAttrs)
+			return renderAssociationInput(model, attrs)
 		} else if (attrs.persistentProperty?.oneToMany) {
 			return renderOneToManyInput(model, attrs)
 		} else if (attrs.type in [Date, Calendar, java.sql.Date, java.sql.Time]) {
-			return renderDateTimeInput(model, attrs, extraAttrs)
+			return renderDateTimeInput(model, attrs)
 		} else if (attrs.type in [byte[], Byte[]]) {
-			return g.field(model + [type: "file"] + extraAttrs)
+			return g.field(model + [type: "file"])
 		} else if (attrs.type in [TimeZone, Currency, Locale]) {
 			if (!attrs.required) model.noSelection = ["": ""]
-			return g."${StringUtils.uncapitalize(attrs.type.simpleName)}Select"(model + extraAttrs)
+			return g."${StringUtils.uncapitalize(attrs.type.simpleName)}Select"(model)
 		} else {
 			return null
 		}
 	}
 
-	private String renderDateTimeInput(Map model, Map attrs, Map extraAttrs) {
+	private String renderDateTimeInput(Map model, Map attrs) {
 		model.precision = attrs.type == java.sql.Time ? "minute" : "day"
 		if (!attrs.required) {
 			model.noSelection = ["": ""]
 			model.default = "none"
 		}
-		return g.datePicker(model + extraAttrs)
+		return g.datePicker(model)
 	}
 
-	private String renderStringInput(Map model, Map attrs, Map extraAttrs) {
+	private String renderStringInput(Map model, Map attrs) {
 		if (attrs.constraints.inList) {
 			model.from = attrs.constraints.inList
 			if (!attrs.required) model.noSelection = ["": ""]
@@ -243,10 +243,10 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		if (attrs.constraints.matches) model.pattern = attrs.constraints.matches
 		if (attrs.constraints.maxSize) model.maxlength = attrs.constraints.maxSize
 
-		return g.field(model + extraAttrs)
+		return g.field(model)
 	}
 
-	private String renderNumericInput(Map model, Map attrs, Map extraAttrs) {
+	private String renderNumericInput(Map model, Map attrs) {
 		if (attrs.constraints.inList) {
 			model.from = attrs.constraints.inList
 			if (!attrs.required) model.noSelection = ["": ""]
@@ -260,10 +260,10 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			if (attrs.constraints.min != null) model.min = attrs.constraints.min
 			if (attrs.constraints.max != null) model.max = attrs.constraints.max
 		}
-		return g.field(model + extraAttrs)
+		return g.field(model)
 	}
 
-	private String renderAssociationInput(Map model, Map attrs, Map extraAttrs) {
+	private String renderAssociationInput(Map model, Map attrs) {
 		model.name = "${attrs.property}.id"
 		model.id = attrs.property
 		model.from = attrs.persistentProperty.referencedPropertyType.list()
@@ -275,7 +275,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			if (!attrs.required) model.noSelection = ["null": ""]
 			model.value = attrs.value?.id
 		}
-		return g.select(model + extraAttrs)
+		return g.select(model)
 	}
 
 	private String renderOneToManyInput(Map model, Map attrs) {

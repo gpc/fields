@@ -373,7 +373,7 @@ class FormFieldsTagLibSpec extends Specification {
     }
 
     @Issue('https://github.com/robfletcher/grails-form-fields/pull/17')
-    void 'arbitrary attributes can be passed to the input template'() {
+    void 'arbitrary attributes on f:field are not passed to the input template'() {
         given:
         views["/_fields/default/_field.gsp"] = '${widget}'
         views["/_fields/person/name/_input.gsp"] = '${foo}'
@@ -382,16 +382,16 @@ class FormFieldsTagLibSpec extends Specification {
 		mockFormFieldsTemplateService.findTemplate(_, 'input') >> [path: '/_fields/person/name/input']
 
         expect:
-        applyTemplate('<f:field bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == 'bar'
+        applyTemplate('<f:field bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == '<span></span>'
     }
 
     @Issue('https://github.com/robfletcher/grails-form-fields/pull/17')
-    void 'arbitrary attributes can be passed to the default input'() {
+    void 'arbitrary attributes on f:field are not passed to the default input'() {
         given:
         views["/_fields/default/_field.gsp"] = '${widget}'
 
         expect:
-        applyTemplate('<f:field bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == '<input type="text" name="name" value="Bart Simpson" required="" foo="bar" id="name" />'
+        applyTemplate('<f:field bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == '<input type="text" name="name" value="Bart Simpson" required="" id="name" />'
     }
 
 }

@@ -19,15 +19,15 @@ import org.codehaus.groovy.grails.validation.ConstraintsEvaluator
 
 class FieldsGrailsPlugin {
 
-	def version = '1.0-SNAPSHOT'
+	def version = '1.0'
 	def grailsVersion = '2.0 > *'
 	def dependsOn = [:]
 	def pluginExcludes = []
 
 	def title = 'Fields Plugin'
 	def author = 'Rob Fletcher'
-	def authorEmail = 'rfletcherEW@shortmail.com'
-	def description = ''
+	def authorEmail = 'rob@freeside.co'
+	def description = 'Customizable form-field rendering based on overrideable GSP templates'
 
 	def documentation = 'http://robfletcher.github.com/grails-fields'
 	def license = 'APACHE'

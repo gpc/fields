@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>1 Introduction 1.0-SNAPSHOT</title>
+    <title>6 Including Templates in Plugins 1.0-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -65,16 +65,16 @@ function addJsClass() {
             <div id="main" class="corner-all">
 
                 
+                    <div class="toc-item prev-left"><a href="../guide/5.%20Scaffolding.html">&lt;&lt; <strong>5</strong><span>Scaffolding</span></a></div>
+                
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../guide/2.%20Usage.html"><strong>2</strong><span>Usage</span> >></a></div>
-                
 
 
                 <div class="project">
-                    <h1>1 Introduction - Reference Documentation</h1>
+                    <h1>6 Including Templates in Plugins - Reference Documentation</h1>
 
                     <p><strong>Authors:</strong> Rob Fletcher</p>
 
@@ -87,21 +87,15 @@ function addJsClass() {
 
                 
 
-<h1 id="1. Introduction">1 Introduction</h1>
-The  <em class="italic">Fields plugin</em>  allows you to customize the rendering of input fields for properties of domain objects, command beans and POGOs based on their type, name, etc. The plugin aims to:
-<ul class="star">
-<li>Use good defaults for fields.</li>
-<li>Make it very easy to override the field rendering for particular properties or property types without having to replace entire form templates.</li>
-<li>Not require you to copy and paste markup for containers, labels and error messages just because you need a different input type.</li>
-<li>Support inputs for property paths of arbitrary depth and with indexing.</li>
-<li>Enable other plugins to provide field rendering for special property types that gets picked up automatically (e.g. the  <em class="italic">Joda Time</em>  plugin can provide templates for the various date/time types).</li>
-<li>Support embedded properties of  <em class="italic">GORM</em>  domain classes.</li>
-</ul><p class="paragraph"/>
+<h1 id="6. Including Templates in Plugins">6 Including Templates in Plugins</h1>
+Plugins can include field and/or input level templates to support special UI rendering or non-standard property types. Just include the templates in the plugin's <code>grails-app/views</code> directory as described in the <a href="../guide/single.html#3.%20Customizing%20Field%20Rendering" class="guide">Customizing Field Rendering</a> section.<p class="paragraph"/><blockquote class="warning">
+If you supply templates in a plugin you should consider declaring a <code>&#60;%&#64; page defaultCodec="html" %&#62;</code> directive so that any HTML unsafe property values are escaped properly regardless of the default codec used by client apps.
+</blockquote>
 
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item next-right"><a href="../guide/2.%20Usage.html"><strong>2</strong><span>Usage</span> >></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/5.%20Scaffolding.html">&lt;&lt; <strong>5</strong><span>Scaffolding</span></a></div>
                 
                 <div style="clear:both"></div>
             </div>

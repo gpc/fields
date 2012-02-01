@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>1 Introduction 1.0-SNAPSHOT</title>
+    <title>5 Scaffolding 1.0-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -65,16 +65,18 @@ function addJsClass() {
             <div id="main" class="corner-all">
 
                 
+                    <div class="toc-item prev-left"><a href="../guide/4.%20Embedded%20Properties.html">&lt;&lt; <strong>4</strong><span>Embedded Properties</span></a></div>
+                
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../guide/2.%20Usage.html"><strong>2</strong><span>Usage</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/6.%20Including%20Templates%20in%20Plugins.html"><strong>6</strong><span>Including Templates in Plugins</span> >></a></div>
                 
 
 
                 <div class="project">
-                    <h1>1 Introduction - Reference Documentation</h1>
+                    <h1>5 Scaffolding - Reference Documentation</h1>
 
                     <p><strong>Authors:</strong> Rob Fletcher</p>
 
@@ -87,21 +89,15 @@ function addJsClass() {
 
                 
 
-<h1 id="1. Introduction">1 Introduction</h1>
-The  <em class="italic">Fields plugin</em>  allows you to customize the rendering of input fields for properties of domain objects, command beans and POGOs based on their type, name, etc. The plugin aims to:
-<ul class="star">
-<li>Use good defaults for fields.</li>
-<li>Make it very easy to override the field rendering for particular properties or property types without having to replace entire form templates.</li>
-<li>Not require you to copy and paste markup for containers, labels and error messages just because you need a different input type.</li>
-<li>Support inputs for property paths of arbitrary depth and with indexing.</li>
-<li>Enable other plugins to provide field rendering for special property types that gets picked up automatically (e.g. the  <em class="italic">Joda Time</em>  plugin can provide templates for the various date/time types).</li>
-<li>Support embedded properties of  <em class="italic">GORM</em>  domain classes.</li>
-</ul><p class="paragraph"/>
+<h1 id="5. Scaffolding">5 Scaffolding</h1>
+Scaffolding templates based on the  <em class="italic">Fields</em>  plugin are quite powerful as they will pick up field and input rendering templates from your application and any plugins that provide them. This means that the useful life of scaffolding templates should be much longer as you do not need to replace the entire  <em class="italic">create.gsp</em>  and/or  <em class="italic">edit.gsp</em>  template just because you want to do something different with a certain property of one particular class.<p class="paragraph"/>The plugin makes the  <em class="italic">renderEditor.template</em>  file used by standard Grails scaffolding redundant. This template was very limited because it could not be extended by plugins or applications (only replaced) and was unable to support embedded properties of domain classes.<p class="paragraph"/>The  <em class="italic">Fields</em>  plugin includes scaffolding templates you can use in your application by running:<p class="paragraph"/><div class="code"><pre>grails install&#45;form&#45;fields&#45;templates</pre></div><p class="paragraph"/>This will overwrite any  <em class="italic">create.gsp</em>  and  <em class="italic">edit.gsp</em>  files you have in <code>src/templates/scaffolding</code>.<p class="paragraph"/>Alternatively, it's very easy to modify your existing scaffolding templates to use the  <em class="italic">f:all</em>  tag or multiple  <em class="italic">f:field</em>  tags.
 
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item next-right"><a href="../guide/2.%20Usage.html"><strong>2</strong><span>Usage</span> >></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/4.%20Embedded%20Properties.html">&lt;&lt; <strong>4</strong><span>Embedded Properties</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/6.%20Including%20Templates%20in%20Plugins.html"><strong>6</strong><span>Including Templates in Plugins</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>

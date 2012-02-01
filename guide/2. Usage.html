@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>1 Introduction 1.0-SNAPSHOT</title>
+    <title>2 Usage 1.0-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -65,16 +65,18 @@ function addJsClass() {
             <div id="main" class="corner-all">
 
                 
+                    <div class="toc-item prev-left"><a href="../guide/1.%20Introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../guide/2.%20Usage.html"><strong>2</strong><span>Usage</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/3.%20Customizing%20Field%20Rendering.html"><strong>3</strong><span>Customizing Field Rendering</span> >></a></div>
                 
 
 
                 <div class="project">
-                    <h1>1 Introduction - Reference Documentation</h1>
+                    <h1>2 Usage - Reference Documentation</h1>
 
                     <p><strong>Authors:</strong> Rob Fletcher</p>
 
@@ -87,21 +89,24 @@ function addJsClass() {
 
                 
 
-<h1 id="1. Introduction">1 Introduction</h1>
-The  <em class="italic">Fields plugin</em>  allows you to customize the rendering of input fields for properties of domain objects, command beans and POGOs based on their type, name, etc. The plugin aims to:
-<ul class="star">
-<li>Use good defaults for fields.</li>
-<li>Make it very easy to override the field rendering for particular properties or property types without having to replace entire form templates.</li>
-<li>Not require you to copy and paste markup for containers, labels and error messages just because you need a different input type.</li>
-<li>Support inputs for property paths of arbitrary depth and with indexing.</li>
-<li>Enable other plugins to provide field rendering for special property types that gets picked up automatically (e.g. the  <em class="italic">Joda Time</em>  plugin can provide templates for the various date/time types).</li>
-<li>Support embedded properties of  <em class="italic">GORM</em>  domain classes.</li>
-</ul><p class="paragraph"/>
+<h1 id="2. Usage">2 Usage</h1>
+The plugin provides a set of tags you can use to render forms.<p class="paragraph"/>In the simplest case you can use  <em class="italic">f:all</em>  to render a field for every property of a bean (the domain object or command the form will bind to):<p class="paragraph"/><div class="code"><pre>&#60;f:all bean=<span class="java&#45;quote">"person"</span>/&#62;</pre></div><p class="paragraph"/>To render individual fields you use the  <em class="italic">f:field</em>  tag:<p class="paragraph"/><div class="code"><pre>&#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"name"</span>/&#62;
+&#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"address"</span>/&#62;
+&#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"dateOfBirth"</span>/&#62;</pre></div><p class="paragraph"/>The  <em class="italic">f:field</em>  tag will automatically handle embedded domain properties recursively:<p class="paragraph"/><div class="code"><pre>&#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"address"</span>/&#62;</pre></div><p class="paragraph"/>If there is no bean object backing a form but you still want to render the surrounding field markup you can give  <em class="italic">f:field</em>  a body:<p class="paragraph"/><div class="code"><pre>&#60;f:field property=<span class="java&#45;quote">"password"</span>&#62;
+	&#60;g:password name=<span class="java&#45;quote">"password"</span>/&#62;
+&#60;/f:field&#62;</pre></div><p class="paragraph"/>It should be an unusual case but to render just the input without its surrounding container you can use the  <em class="italic">f:input</em>  tag:<p class="paragraph"/><div class="code"><pre>&#60;f:input bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"name"</span>/&#62;</pre></div><p class="paragraph"/>To make it more convenient when rendering lots of properties of the same  <em class="italic">bean</em>  you can use the  <em class="italic">f:with</em>  tag to avoid having to specify  <em class="italic">bean</em>  on any tags nested inside:<p class="paragraph"/><div class="code"><pre>&#60;f:with bean=<span class="java&#45;quote">"person"</span>&#62;
+	&#60;f:field property=<span class="java&#45;quote">"name"</span>/&#62;
+	&#60;f:field property=<span class="java&#45;quote">"address"</span>/&#62;
+	&#60;f:field property=<span class="java&#45;quote">"dateOfBirth"</span>/&#62;
+&#60;/f:with&#62;</pre></div>
+
 
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item next-right"><a href="../guide/2.%20Usage.html"><strong>2</strong><span>Usage</span> >></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/1.%20Introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/3.%20Customizing%20Field%20Rendering.html"><strong>3</strong><span>Customizing Field Rendering</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>

@@ -54,13 +54,15 @@ Embedded properties are included with a surrounding _fieldset_. For example if y
 
 {code}
 <f:field bean="person" property="name"/>
-<fieldset>
+<fieldset class="embedded address">
     <legend>Address</legend>
     <f:field bean="person" property="address.street"/>
     <f:field bean="person" property="address.city"/>
     <f:field bean="person" property="address.country"/>
 </fieldset>
 {code}
+
+You can customize how embedded properties are surrounded by providing a layout at @grails-app/views/layouts/_fields/embedded.gsp@ which will override the default layout provided by the plugin.
 
 h3. Attributes
 

@@ -101,10 +101,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		def propertyAccessor = resolveProperty(bean, property)
 		def model = buildModel(propertyAccessor, attrs)
 
-		// any remaining attrs at this point are 'extras'
-		model += attrs
-
-		out << renderWidget(propertyAccessor, model)
+		out << renderWidget(propertyAccessor, model, attrs)
 	}
 
 	private BeanPropertyAccessor resolveProperty(beanAttribute, String propertyPath) {
@@ -129,12 +126,12 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		]
 	}
 
-	private String renderWidget(BeanPropertyAccessor propertyAccessor, Map model) {
+	private String renderWidget(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:]) {
 		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'input')
 		if (template) {
-			return render(template: template.path, plugin: template.plugin, model: model)
+			render template: template.path, plugin: template.plugin, model: model + attrs
 		} else {
-			return renderDefaultInput(model)
+			renderDefaultInput model, attrs
 		}
 	}
 
@@ -188,105 +185,104 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		labelText
 	}
 
-	private String renderDefaultInput(Map attrs) {
-		def model = [:]
-		model.name = attrs.property
-		model.value = attrs.value
-		if (attrs.required) model.required = "" // TODO: configurable how this gets output? Some people prefer required="required"
-		if (attrs.invalid) model.invalid = ""
-		if (!attrs.constraints.editable) model.readonly = ""
+	private String renderDefaultInput(Map model, Map attrs = [:]) {
+		attrs.name = model.property
+		attrs.value = model.value
+		if (model.required) attrs.required = "" // TODO: configurable how this gets output? Some people prefer required="required"
+		if (model.invalid) attrs.invalid = ""
+		if (!model.constraints.editable) attrs.readonly = ""
 
-		if (attrs.type in [String, null]) {
+		if (model.type in [String, null]) {
 			return renderStringInput(model, attrs)
-		} else if (attrs.type in [boolean, Boolean]) {
-			return g.checkBox(model)
-		} else if (attrs.type.isPrimitive() || attrs.type in Number) {
+		} else if (model.type in [boolean, Boolean]) {
+			return g.checkBox(attrs)
+		} else if (model.type.isPrimitive() || model.type in Number) {
 			return renderNumericInput(model, attrs)
-		} else if (attrs.type in URL) {
-			return g.field(model + [type: "url"])
-		} else if (attrs.type.isEnum()) {
-			model.from = attrs.type.values()
-			if (!attrs.required) model.noSelection = ["": ""]
-			return g.select(model)
-		} else if (attrs.persistentProperty?.oneToOne || attrs.persistentProperty?.manyToOne || attrs.persistentProperty?.manyToMany) {
+		} else if (model.type in URL) {
+			return g.field(attrs + [type: "url"])
+		} else if (model.type.isEnum()) {
+			attrs.from = model.type.values()
+			if (!model.required) attrs.noSelection = ["": ""]
+			return g.select(attrs)
+		} else if (model.persistentProperty?.oneToOne || model.persistentProperty?.manyToOne || model.persistentProperty?.manyToMany) {
 			return renderAssociationInput(model, attrs)
-		} else if (attrs.persistentProperty?.oneToMany) {
+		} else if (model.persistentProperty?.oneToMany) {
 			return renderOneToManyInput(model, attrs)
-		} else if (attrs.type in [Date, Calendar, java.sql.Date, java.sql.Time]) {
+		} else if (model.type in [Date, Calendar, java.sql.Date, java.sql.Time]) {
 			return renderDateTimeInput(model, attrs)
-		} else if (attrs.type in [byte[], Byte[]]) {
-			return g.field(model + [type: "file"])
-		} else if (attrs.type in [TimeZone, Currency, Locale]) {
-			if (!attrs.required) model.noSelection = ["": ""]
-			return g."${StringUtils.uncapitalize(attrs.type.simpleName)}Select"(model)
+		} else if (model.type in [byte[], Byte[]]) {
+			return g.field(attrs + [type: "file"])
+		} else if (model.type in [TimeZone, Currency, Locale]) {
+			if (!model.required) attrs.noSelection = ["": ""]
+			return g."${StringUtils.uncapitalize(model.type.simpleName)}Select"(attrs)
 		} else {
 			return null
 		}
 	}
 
 	private String renderDateTimeInput(Map model, Map attrs) {
-		model.precision = attrs.type == java.sql.Time ? "minute" : "day"
-		if (!attrs.required) {
-			model.noSelection = ["": ""]
-			model.default = "none"
+		attrs.precision = model.type == java.sql.Time ? "minute" : "day"
+		if (!model.required) {
+			attrs.noSelection = ["": ""]
+			attrs.default = "none"
 		}
-		return g.datePicker(model)
+		return g.datePicker(attrs)
 	}
 
 	private String renderStringInput(Map model, Map attrs) {
-		if (attrs.constraints.inList) {
-			model.from = attrs.constraints.inList
-			if (!attrs.required) model.noSelection = ["": ""]
-			return g.select(model)
-		} else if (attrs.constraints.password) model.type = "password"
-		else if (attrs.constraints.email) model.type = "email"
-		else if (attrs.constraints.url) model.type = "url"
-		else model.type = "text"
+		if (model.constraints.inList) {
+			attrs.from = model.constraints.inList
+			if (!model.required) attrs.noSelection = ["": ""]
+			return g.select(attrs)
+		} else if (model.constraints.password) attrs.type = "password"
+		else if (model.constraints.email) attrs.type = "email"
+		else if (model.constraints.url) attrs.type = "url"
+		else attrs.type = "text"
 
-		if (attrs.constraints.matches) model.pattern = attrs.constraints.matches
-		if (attrs.constraints.maxSize) model.maxlength = attrs.constraints.maxSize
+		if (model.constraints.matches) attrs.pattern = model.constraints.matches
+		if (model.constraints.maxSize) attrs.maxlength = model.constraints.maxSize
 
-		return g.field(model)
+		return g.field(attrs)
 	}
 
 	private String renderNumericInput(Map model, Map attrs) {
-		if (attrs.constraints.inList) {
-			model.from = attrs.constraints.inList
-			if (!attrs.required) model.noSelection = ["": ""]
-			return g.select(model)
-		} else if (attrs.constraints.range) {
-			model.type = "range"
-			model.min = attrs.constraints.range.from
-			model.max = attrs.constraints.range.to
+		if (model.constraints.inList) {
+			attrs.from = model.constraints.inList
+			if (!model.required) attrs.noSelection = ["": ""]
+			return g.select(attrs)
+		} else if (model.constraints.range) {
+			attrs.type = "range"
+			attrs.min = model.constraints.range.from
+			attrs.max = model.constraints.range.to
 		} else {
-			model.type = "number"
-			if (attrs.constraints.min != null) model.min = attrs.constraints.min
-			if (attrs.constraints.max != null) model.max = attrs.constraints.max
+			attrs.type = "number"
+			if (model.constraints.min != null) attrs.min = model.constraints.min
+			if (model.constraints.max != null) attrs.max = model.constraints.max
 		}
-		return g.field(model)
+		return g.field(attrs)
 	}
 
 	private String renderAssociationInput(Map model, Map attrs) {
-		model.name = "${attrs.property}.id"
-		model.id = attrs.property
-		model.from = attrs.persistentProperty.referencedPropertyType.list()
-		model.optionKey = "id" // TODO: handle alternate id names
-		if (attrs.persistentProperty.manyToMany) {
-			model.multiple = ""
-			model.value = attrs.value*.id
+		attrs.name = "${model.property}.id"
+		attrs.id = model.property
+		attrs.from = model.persistentProperty.referencedPropertyType.list()
+		attrs.optionKey = "id" // TODO: handle alternate id names
+		if (model.persistentProperty.manyToMany) {
+			attrs.multiple = ""
+			attrs.value = model.value*.id
 		} else {
-			if (!attrs.required) model.noSelection = ["null": ""]
-			model.value = attrs.value?.id
+			if (!model.required) attrs.noSelection = ["null": ""]
+			attrs.value = model.value?.id
 		}
-		return g.select(model)
+		return g.select(attrs)
 	}
 
 	private String renderOneToManyInput(Map model, Map attrs) {
 		def buffer = new StringBuilder()
 		buffer << '<ul>'
-		def referencedDomainClass = attrs.persistentProperty.referencedDomainClass
+		def referencedDomainClass = model.persistentProperty.referencedDomainClass
 		def controllerName = referencedDomainClass.propertyName
-		model.value.each {
+		attrs.value.each {
 			buffer << '<li>'
 			buffer << g.link(controller: controllerName, action: "show", id: it.id, it.toString().encodeAsHTML())
 			buffer << '</li>'
@@ -294,7 +290,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		buffer << '</ul>'
 		def referencedTypeLabel = message(code: "${referencedDomainClass.propertyName}.label", default: referencedDomainClass.shortName)
 		def addLabel = g.message(code: 'default.add.label', args: [referencedTypeLabel])
-		buffer << g.link(controller: controllerName, action: "create", params: [("${attrs.beanDomainClass.propertyName}.id".toString()): attrs.bean.id], addLabel)
+		buffer << g.link(controller: controllerName, action: "create", params: [("${model.beanDomainClass.propertyName}.id".toString()): model.bean.id], addLabel)
 		buffer as String
 	}
 

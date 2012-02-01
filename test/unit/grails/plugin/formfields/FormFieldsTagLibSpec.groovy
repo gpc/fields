@@ -422,7 +422,7 @@ class FormFieldsTagLibSpec extends Specification {
 	@Issue('https://github.com/robfletcher/grails-form-fields/pull/17')
 	void 'arbitrary attributes on f:input are passed to the default input'() {
 		expect:
-		applyTemplate('<f:input bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == '<input type="text" name="name" value="Bart Simpson" required="" foo="bar" id="name" />'
+		applyTemplate('<f:input bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == '<input type="text" foo="bar" name="name" value="Bart Simpson" required="" id="name" />'
 	}
 
 }

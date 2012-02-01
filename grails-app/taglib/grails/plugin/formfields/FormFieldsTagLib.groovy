@@ -49,22 +49,21 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		if (!attrs.bean) throwTagError("Tag [all] is missing required attribute [bean]")
 		def bean = resolveBean(attrs.bean)
 		def domainClass = resolveDomainClass(bean)
-        if (domainClass) {
+		if (domainClass) {
 			for (property in resolvePersistentProperties(domainClass, attrs)) {
 				if (property.embedded) {
-					out << '<fieldset class="' << toPropertyNameFormat(property.type) << '">'
-					out << '<legend>' << GrailsNameUtils.getNaturalName(property.type.simpleName) << '</legend>'
-					for (embeddedProp in resolvePersistentProperties(property.component, attrs)) {
-						def propertyPath = "${property.name}.${embeddedProp.name}"
-						out << field(bean: bean, property: propertyPath)
+					out << applyLayout(name: '_fields/embedded', params: [type: toPropertyNameFormat(property.type), legend: GrailsNameUtils.getNaturalName(property.type.simpleName)]) {
+						for (embeddedProp in resolvePersistentProperties(property.component, attrs)) {
+							def propertyPath = "${property.name}.${embeddedProp.name}"
+							out << field(bean: bean, property: propertyPath)
+						}
 					}
-					out << '</fieldset>'
 				} else {
 					out << field(bean: bean, property: property.name)
 				}
 			}
 		} else {
-			// TODO: handle POGOs
+			throwTagError('Tag [all] currently only supports domain types')
 		}
 	}
 

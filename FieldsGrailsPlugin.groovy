@@ -27,9 +27,9 @@ class FieldsGrailsPlugin {
 	def title = 'Fields Plugin'
 	def author = 'Rob Fletcher'
 	def authorEmail = 'rob@freeside.co'
-	def description = 'Customizable form-field rendering based on overrideable GSP templates'
+	def description = 'Customizable form-field rendering based on overrideable GSP template'
 
-	def documentation = 'http://robfletcher.github.com/grails-fields'
+	def documentation = 'http://freeside.co/grails-fields'
 	def license = 'APACHE'
 	def issueManagement = [system: 'GitHub', url: 'https://github.com/robfletcher/grails-fields/issues']
 	def scm = [url: 'https://github.com/robfletcher/grails-fields']

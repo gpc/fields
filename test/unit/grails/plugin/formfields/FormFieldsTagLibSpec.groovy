@@ -36,6 +36,7 @@ class FormFieldsTagLibSpec extends Specification {
 				out << body()
 				out << '</fieldset>'
 			}
+			null // stops default return
 		}
 
 		personInstance = new Person(name: "Bart Simpson", password: "bartman", gender: Gender.Male, dateOfBirth: new Date(87, 3, 19), minor: true)
@@ -292,26 +293,40 @@ class FormFieldsTagLibSpec extends Specification {
 		output =~ /\bminor\b/
 	}
 
-	void "all tag renders individual fields for embedded properties"() {
+	@Issue('https://github.com/robfletcher/grails-fields/issues/30')
+	void "field tag renders individual fields for embedded properties"() {
 		given:
 		views["/_fields/default/_field.gsp"] = '${property} '
 
 		when:
-		def output = applyTemplate('<f:all bean="personInstance"/>', [personInstance: personInstance])
+		def output = applyTemplate('<f:field bean="personInstance" property="address"/>', [personInstance: personInstance])
 
 		then:
 		output.contains('address.street address.city address.country')
 	}
 
-	void "all tag wraps embedded properties in a container"() {
+	@Issue('https://github.com/robfletcher/grails-fields/issues/30')
+	void "field tag wraps embedded properties in a container"() {
 		given:
 		views["/_fields/default/_field.gsp"] = '${property} '
 
+		expect:
+		applyTemplate('<f:field bean="personInstance" property="address"/>', [personInstance: personInstance]) == '<fieldset class="embedded address"><legend>Address</legend>address.street address.city address.country </fieldset>'
+	}
+
+	@Issue('https://github.com/robfletcher/grails-fields/issues/30')
+	void "embedded property label is resolved from message bundle"() {
+		given:
+		views["/_fields/default/_field.gsp"] = '${property} '
+
+		and:
+		messageSource.addMessage('Person.address.label', request.locale, 'Address of person')
+
 		when:
-		def output = applyTemplate('<f:all bean="personInstance"/>', [personInstance: personInstance])
+		def output = applyTemplate('<f:field bean="personInstance" property="address"/>', [personInstance: personInstance])
 
 		then:
-		output.contains('<fieldset class="embedded address"><legend>Address</legend>address.street address.city address.country </fieldset>')
+		output.contains('<legend>Address of person</legend>')
 	}
 
 	@Unroll({"all tag skips $property property"})

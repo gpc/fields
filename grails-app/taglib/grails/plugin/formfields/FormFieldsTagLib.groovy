@@ -16,7 +16,6 @@
 
 package grails.plugin.formfields
 
-import grails.util.GrailsNameUtils
 import org.apache.commons.lang.StringUtils
 import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
 import org.codehaus.groovy.grails.scaffolding.DomainClassPropertyComparator
@@ -51,16 +50,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		def domainClass = resolveDomainClass(bean)
 		if (domainClass) {
 			for (property in resolvePersistentProperties(domainClass, attrs)) {
-				if (property.embedded) {
-					out << applyLayout(name: '_fields/embedded', params: [type: toPropertyNameFormat(property.type), legend: GrailsNameUtils.getNaturalName(property.type.simpleName)]) {
-						for (embeddedProp in resolvePersistentProperties(property.component, attrs)) {
-							def propertyPath = "${property.name}.${embeddedProp.name}"
-							out << field(bean: bean, property: propertyPath)
-						}
-					}
-				} else {
-					out << field(bean: bean, property: property.name)
-				}
+				out << field(bean: bean, property: property.name)
 			}
 		} else {
 			throwTagError('Tag [all] currently only supports domain types')
@@ -75,20 +65,34 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		def property = attrs.remove('property')
 
 		def propertyAccessor = resolveProperty(bean, property)
-		def model = buildModel(propertyAccessor, attrs)
-
-		if (hasBody(body)) {
-			model.widget = body(model)
+		if (propertyAccessor.persistentProperty?.embedded) {
+			renderEmbeddedProperties(bean, propertyAccessor, attrs)
 		} else {
-			model.widget = renderWidget(propertyAccessor, model)
+			def model = buildModel(propertyAccessor, attrs)
+
+			if (hasBody(body)) {
+				model.widget = body(model)
+			} else {
+				model.widget = renderWidget(propertyAccessor, model)
+			}
+
+			def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'field')
+
+			// any remaining attrs at this point are 'extras'
+			model += attrs
+
+			out << render(template: template.path, plugin: template.plugin, model: model)
 		}
+	}
 
-		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'field')
-
-		// any remaining attrs at this point are 'extras'
-		model += attrs
-
-		out << render(template: template.path, plugin: template.plugin, model: model)
+	private void renderEmbeddedProperties(bean, BeanPropertyAccessor propertyAccessor, attrs) {
+		def legend = message(code: propertyAccessor.labelKey, default: propertyAccessor.defaultLabel)
+		out << applyLayout(name: '_fields/embedded', params: [type: toPropertyNameFormat(propertyAccessor.propertyType), legend: legend]) {
+			for (embeddedProp in resolvePersistentProperties(propertyAccessor.persistentProperty.component, attrs)) {
+				def propertyPath = "${propertyAccessor.pathFromRoot}.${embeddedProp.name}"
+				out << field(bean: bean, property: propertyPath)
+			}
+		}
 	}
 
 	def input = { attrs ->

@@ -1,0 +1,21 @@
+h1. f:with
+
+h2. Description
+
+Places a bean in scope so that the bean attribute can be omitted on contained tags.
+
+h2. Example
+
+{code}
+<f:with bean="person">
+    <f:field property="name"/>
+    <f:field property="address.city"/>
+</f:with>
+{code}
+
+h3. Attributes
+
+{table}
+*Name* | *Required?* | *Description*
+*bean* | yes | The bean whose property is being rendered. This can be the object itself or the name of a page-scope variable.
+{table}

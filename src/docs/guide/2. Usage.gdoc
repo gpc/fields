@@ -1,0 +1,45 @@
+The plugin provides a set of tags you can use to render forms.
+
+In the simplest case you can use _f:all_ to render a field for every property of a bean (the domain object or command the form will bind to):
+
+{code}
+<f:all bean="person"/>
+{code}
+
+To render individual fields you use the _f:field_ tag:
+
+{code}
+<f:field bean="person" property="name"/>
+<f:field bean="person" property="address"/>
+<f:field bean="person" property="dateOfBirth"/>
+{code}
+
+The _f:field_ tag will automatically handle embedded domain properties recursively:
+
+{code}
+<f:field bean="person" property="address"/>
+{code}
+
+If there is no bean object backing a form but you still want to render the surrounding field markup you can give _f:field_ a body:
+
+{code}
+<f:field property="password">
+	<g:password name="password"/>
+</f:field>
+{code}
+
+It should be an unusual case but to render just the input without its surrounding container you can use the _f:input_ tag:
+
+{code}
+<f:input bean="person" property="name"/>
+{code}
+
+To make it more convenient when rendering lots of properties of the same _bean_ you can use the _f:with_ tag to avoid having to specify _bean_ on any tags nested inside:
+
+{code}
+<f:with bean="person">
+	<f:field property="name"/>
+	<f:field property="address"/>
+	<f:field property="dateOfBirth"/>
+</f:with>
+{code}

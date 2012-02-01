@@ -1,0 +1,14 @@
+Embedded properties are handled in a special way by the _f:field_ and _f:all_ tags. If the _property_ attribute you pass to _f:field_ is an embedded property then the tag recursively renders each individual property of the embedded class with a surrounding _fieldset_. For example if you have a _Person_ class with a _name_ property and an _Address_ embedded class with _street_, _city_ and _country_ properties @<f:field bean="person" property="address">@ will effectively do this:
+
+{code}
+<fieldset class="embedded address">
+    <legend>Address</legend>
+    <f:field bean="person" property="address.street"/>
+    <f:field bean="person" property="address.city"/>
+    <f:field bean="person" property="address.country"/>
+</fieldset>
+{code}
+
+You can customize how embedded properties are surrounded by providing a layout at @grails-app/views/layouts/\_fields/embedded.gsp@ which will override the default layout provided by the plugin.
+
+When you use the _f:all_ tag it will automatically handle embedded properties in this way.

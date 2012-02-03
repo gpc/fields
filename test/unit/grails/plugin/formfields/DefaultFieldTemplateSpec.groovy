@@ -1,12 +1,11 @@
 package grails.plugin.formfields
 
-import grails.test.mixin.TestMixin
-import grails.test.mixin.web.GroovyPageUnitTestMixin
+import grails.test.mixin.TestFor
 import jodd.lagarto.dom.jerry.Jerry
 import spock.lang.Specification
 import static jodd.lagarto.dom.jerry.Jerry.jerry
 
-@TestMixin(GroovyPageUnitTestMixin)
+@TestFor(FormFieldsTagLib)
 class DefaultFieldTemplateSpec extends Specification {
 	
 	Map model = [:]
@@ -25,7 +24,8 @@ class DefaultFieldTemplateSpec extends Specification {
 	
 	void "default rendering"() {
 		when:
-		def output = render(template: '/_fields/default/field', model: model)
+		def output = tagLib.renderDefaultField(model)
+		println output
 		
 		then:
 		def root = $(output)
@@ -45,7 +45,7 @@ class DefaultFieldTemplateSpec extends Specification {
 		model.invalid = true
 
 		when:
-		def output = render(template: '/_fields/default/field', model: model)
+		def output = tagLib.renderDefaultField(model)
 		
 		then:
 		$(output).hasClass('error')
@@ -56,8 +56,9 @@ class DefaultFieldTemplateSpec extends Specification {
 		model.required = true
 
 		when:
-		def output = render(template: '/_fields/default/field', model: model)
-		
+		def output = tagLib.renderDefaultField(model)
+		println output
+
 		then:
 		def root = $(output)
 		root.hasClass('required')

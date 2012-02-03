@@ -23,6 +23,7 @@ import org.codehaus.groovy.grails.web.pages.GroovyPage
 import static FormFieldsTemplateService.toPropertyNameFormat
 import org.codehaus.groovy.grails.commons.*
 import static org.codehaus.groovy.grails.commons.GrailsClassUtils.getStaticPropertyValue
+import groovy.xml.MarkupBuilder
 
 class FormFieldsTagLib implements GrailsApplicationAware {
 
@@ -76,12 +77,15 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 				model.widget = renderWidget(propertyAccessor, model)
 			}
 
-			def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'field')
-
 			// any remaining attrs at this point are 'extras'
 			model += attrs
 
-			out << render(template: template.path, plugin: template.plugin, model: model)
+			def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'field')
+			if (template) {
+				out << render(template: template.path, plugin: template.plugin, model: model)
+			} else {
+				out << renderDefaultField(model)
+			}
 		}
 	}
 
@@ -187,6 +191,23 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			labelText = propertyAccessor.defaultLabel
 		}
 		labelText
+	}
+
+	private String renderDefaultField(Map model) {
+		def classes = ['fieldcontain']
+		if (model.invalid) classes << 'error'
+		if (model.required) classes << 'required'
+
+		def writer = new StringWriter()
+		new MarkupBuilder(writer).div(class: classes.join(' ')) {
+			label(for: model.property, model.label) {
+				if (model.required) {
+					span(class: 'required-indicator', '*')
+				}
+			}
+			mkp.yieldUnescaped model.widget
+		}
+		writer.toString()
 	}
 
 	private String renderDefaultInput(Map model, Map attrs = [:]) {

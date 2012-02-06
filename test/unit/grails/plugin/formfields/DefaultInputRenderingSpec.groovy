@@ -394,7 +394,7 @@ class DefaultInputRenderingSpec extends Specification {
 		messageSource.addMessage("default.add.label", request.locale, "Add {0}")
 
 		and:
-		def model = [bean: [id: 1337], beanDomainClass: [propertyName: "thing"], type: Set, property: "prop", constraints: [:], persistentProperty: oneToManyProperty, value: people]
+		def model = [bean: [id: 1337], beanClass: [propertyName: "thing"], type: Set, property: "prop", constraints: [:], persistentProperty: oneToManyProperty, value: people]
 
 		when:
 		def output = tagLib.renderDefaultInput(model)

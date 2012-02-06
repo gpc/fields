@@ -315,7 +315,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		buffer << '</ul>'
 		def referencedTypeLabel = message(code: "${referencedDomainClass.propertyName}.label", default: referencedDomainClass.shortName)
 		def addLabel = g.message(code: 'default.add.label', args: [referencedTypeLabel])
-		buffer << g.link(controller: controllerName, action: "create", params: [("${model.beanDomainClass.propertyName}.id".toString()): model.bean.id], addLabel)
+		buffer << g.link(controller: controllerName, action: "create", params: [("${model.beanClass.propertyName}.id".toString()): model.bean.id], addLabel)
 		buffer as String
 	}
 

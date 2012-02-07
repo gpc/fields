@@ -124,6 +124,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 				bean: propertyAccessor.rootBean,
 				property: propertyAccessor.pathFromRoot,
 				type: propertyAccessor.propertyType,
+				beanClass: propertyAccessor.beanClass,
 				label: resolveLabelText(propertyAccessor, attrs),
 				value: valueOverride ?: propertyAccessor.value ?: valueDefault,
 				constraints: propertyAccessor.constraints,

@@ -6,7 +6,7 @@ import org.springframework.validation.FieldError
 import static grails.plugin.formfields.BeanPropertyAccessorFactory.stripIndex
 import static java.util.Collections.EMPTY_LIST
 import static org.apache.commons.lang.StringUtils.substringAfterLast
-import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
+import org.codehaus.groovy.grails.commons.*
 
 class PropertyPathAccessor implements BeanPropertyAccessor {
 
@@ -24,6 +24,7 @@ class PropertyPathAccessor implements BeanPropertyAccessor {
 	Object getRootBean() { null }
 	Class getRootBeanType() { null }
 	Class getBeanType() { null }
+	GrailsDomainClass getBeanClass() { null }
 	List<Class> getBeanSuperclasses() { EMPTY_LIST }
 	Class getPropertyType() { null }
 	List<Class> getPropertyTypeSuperclasses() { EMPTY_LIST }

@@ -1,6 +1,7 @@
 package grails.plugin.formfields
 
 import grails.test.mixin.web.GroovyPageUnitTestMixin
+import org.codehaus.groovy.grails.support.proxy.DefaultProxyHandler
 import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
 import grails.plugin.formfields.mock.*
 import grails.test.mixin.*
@@ -24,6 +25,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 
 		factory.grailsApplication = grailsApplication
 		factory.constraintsEvaluator = new DefaultConstraintEvaluator()
+		factory.proxyHandler = new DefaultProxyHandler()
 	}
 
 	void cleanup() {

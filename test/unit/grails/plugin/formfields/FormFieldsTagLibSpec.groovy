@@ -1,5 +1,6 @@
 package grails.plugin.formfields
 
+import org.codehaus.groovy.grails.support.proxy.DefaultProxyHandler
 import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
 import org.codehaus.groovy.grails.web.taglib.exceptions.GrailsTagException
 import grails.plugin.formfields.mock.*
@@ -18,6 +19,7 @@ class FormFieldsTagLibSpec extends Specification {
 			constraintsEvaluator(DefaultConstraintEvaluator)
 			beanPropertyAccessorFactory(BeanPropertyAccessorFactory) {
 				constraintsEvaluator = ref('constraintsEvaluator')
+				proxyHandler = new DefaultProxyHandler()
 			}
 		}
 	}

@@ -34,6 +34,7 @@ class HibernateProxyHandlingSpec extends Specification {
 		cocktail.ingredients[0] instanceof HibernateProxy
 
 		and:
+		propertyAccessor.beanType == Ingredient
 		propertyAccessor.labelKey == 'Ingredient.id.label'
 	}
 

@@ -1,17 +1,22 @@
 package grails.plugin.formfields
 
+import grails.test.mixin.web.ControllerUnitTestMixin
+import org.codehaus.groovy.grails.support.proxy.DefaultProxyHandler
 import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
 import org.springframework.beans.NotReadablePropertyException
 import grails.plugin.formfields.mock.*
 import grails.test.mixin.*
-import grails.test.mixin.web.ControllerUnitTestMixin
 import spock.lang.*
 
 @TestMixin(ControllerUnitTestMixin)
 @Mock([Person, Author, Book, Employee])
 class DomainClassPropertyAccessorSpec extends Specification {
 
-	BeanPropertyAccessorFactory factory = new BeanPropertyAccessorFactory(grailsApplication: grailsApplication, constraintsEvaluator: new DefaultConstraintEvaluator())
+	BeanPropertyAccessorFactory factory = new BeanPropertyAccessorFactory(
+			grailsApplication: grailsApplication,
+			constraintsEvaluator: new DefaultConstraintEvaluator(),
+			proxyHandler: new DefaultProxyHandler()
+	)
 	@Shared Address address
 	@Shared Person person
 	@Shared Employee employee
@@ -301,7 +306,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		propertyAccessor.beanSuperclasses == expected
 
 		where:
-		bean     | path   | expected
+		type     | path   | expected
 		Person   | 'name' | []
 		Employee | 'name' | [Person]
 	}

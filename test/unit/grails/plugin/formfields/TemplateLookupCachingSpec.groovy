@@ -3,6 +3,7 @@ package grails.plugin.formfields
 import grails.plugin.formfields.mock.Person
 import grails.test.mixin.TestMixin
 import grails.test.mixin.support.GrailsUnitTestMixin
+import org.codehaus.groovy.grails.support.proxy.DefaultProxyHandler
 import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
 import org.springframework.core.io.ByteArrayResource
 import org.codehaus.groovy.grails.web.pages.discovery.*
@@ -23,6 +24,7 @@ class TemplateLookupCachingSpec extends Specification {
 
 		beanPropertyAccessorFactory.grailsApplication = grailsApplication
 		beanPropertyAccessorFactory.constraintsEvaluator = new DefaultConstraintEvaluator()
+		beanPropertyAccessorFactory.proxyHandler = new DefaultProxyHandler()
 	}
 
 	def setup() {

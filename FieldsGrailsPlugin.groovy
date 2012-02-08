@@ -37,6 +37,7 @@ class FieldsGrailsPlugin {
 	def doWithSpring = {
 		beanPropertyAccessorFactory(BeanPropertyAccessorFactory) {
 			constraintsEvaluator = ref(ConstraintsEvaluator.BEAN_NAME)
+			proxyHandler = ref('proxyHandler')
 		}
 	}
 	

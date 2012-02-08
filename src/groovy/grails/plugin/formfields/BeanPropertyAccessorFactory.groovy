@@ -20,6 +20,7 @@ import groovy.transform.PackageScope
 import java.lang.reflect.ParameterizedType
 import java.util.regex.Pattern
 import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
+import org.codehaus.groovy.grails.support.proxy.ProxyHandler
 import org.codehaus.groovy.grails.commons.*
 import org.codehaus.groovy.grails.validation.*
 import org.springframework.beans.*
@@ -28,6 +29,7 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 
 	GrailsApplication grailsApplication
 	ConstraintsEvaluator constraintsEvaluator
+	ProxyHandler proxyHandler
 
 	BeanPropertyAccessor accessorFor(bean, String propertyPath) {
 		if (bean == null) {
@@ -132,7 +134,7 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 	}
 
 	private BeanWrapper beanWrapperFor(Class type, value) {
-		value ? PropertyAccessorFactory.forBeanPropertyAccess(value) : new BeanWrapperImpl(type)
+		value ? PropertyAccessorFactory.forBeanPropertyAccess(proxyHandler.unwrapIfProxy(value)) : new BeanWrapperImpl(type)
 	}
 
 	private static final Pattern INDEXED_PROPERTY_PATTERN = ~/^(\w+)\[(.+)\]$/

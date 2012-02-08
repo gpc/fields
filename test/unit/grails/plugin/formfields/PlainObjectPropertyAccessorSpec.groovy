@@ -1,16 +1,21 @@
 package grails.plugin.formfields
 
+import grails.test.mixin.support.GrailsUnitTestMixin
+import org.codehaus.groovy.grails.support.proxy.DefaultProxyHandler
 import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
 import spock.lang.Specification
 import grails.plugin.formfields.mock.*
 import grails.test.mixin.*
-import grails.test.mixin.support.*
 
 @TestMixin(GrailsUnitTestMixin)
 @Mock(Person)
 class PlainObjectPropertyAccessorSpec extends Specification {
 
-	BeanPropertyAccessorFactory factory = new BeanPropertyAccessorFactory(grailsApplication: grailsApplication, constraintsEvaluator: new DefaultConstraintEvaluator())
+	BeanPropertyAccessorFactory factory = new BeanPropertyAccessorFactory(
+			grailsApplication: grailsApplication,
+			constraintsEvaluator: new DefaultConstraintEvaluator(),
+			proxyHandler: new DefaultProxyHandler()
+	)
 
 	void 'resolves a basic property'() {
 		given:

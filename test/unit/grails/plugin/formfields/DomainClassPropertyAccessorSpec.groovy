@@ -278,33 +278,33 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		person | "minor"       | false // boolean properties are never considered required
 	}
 
-	@Unroll({"the superclasses of ${bean.getClass().simpleName} are $expected"})
+	@Unroll({"the superclasses of $type.simpleName are $expected"})
 	def 'can retrieve superclasses of the bean class'() {
 		given:
-		def propertyAccessor = factory.accessorFor(bean, path)
+		def propertyAccessor = factory.accessorFor(type.newInstance(), path)
 
 		expect:
 		propertyAccessor.beanSuperclasses == expected
 
 		where:
 		bean     | path   | expected
-		person   | 'name' | []
-		employee | 'name' | [Person]
+		Person   | 'name' | []
+		Employee | 'name' | [Person]
 	}
 
-	@Unroll({"the superclasses of ${bean.getClass().simpleName}.$path are $expected"})
+	@Unroll({"the superclasses of Person.$path are $expected"})
 	void 'can retrieve superclasses of the property type'() {
 		given:
-		def propertyAccessor = factory.accessorFor(bean, path)
+		def propertyAccessor = factory.accessorFor(person, path)
 
 		expect:
 		propertyAccessor.propertyTypeSuperclasses == expected
 
 		where:
-		bean   | path          | expected
-		person | 'name'        | [CharSequence]
-		person | 'gender'      | [Enum]
-		person | 'dateOfBirth' | []
+		path          | expected
+		'name'        | [CharSequence]
+		'gender'      | [Enum]
+		'dateOfBirth' | []
 	}
 
 }

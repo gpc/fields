@@ -332,6 +332,7 @@ class FormFieldsTagLibSpec extends Specification {
 	}
 
 	@Unroll({"all tag skips $property property"})
+	@Issue('https://github.com/robfletcher/grails-fields/issues/21')
 	void 'all tag skips excluded properties'() {
 		given:
 		views["/_fields/default/_field.gsp"] = '${property} '
@@ -340,10 +341,10 @@ class FormFieldsTagLibSpec extends Specification {
 		def output = applyTemplate('<f:all bean="personInstance"/>', [personInstance: personInstance])
 
 		then:
-		!output.contains('excludedProperty')
+		!output.contains(property)
 
 		where:
-		property << ['id', 'version', 'onLoad', 'lastUpdated', 'excludedProperty']
+		property << ['id', 'version', 'onLoad', 'lastUpdated', 'excludedProperty', 'displayFalseProperty']
 	}
 
 	@Issue('https://github.com/robfletcher/grails-form-fields/issues/12')

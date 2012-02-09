@@ -14,6 +14,7 @@ class Person {
 	boolean minor
 	Date lastUpdated
 	String excludedProperty
+	String displayFalseProperty
 
 	static hasMany = [emails: String]
 	static embedded = ['address']
@@ -24,6 +25,7 @@ class Person {
 		dateOfBirth nullable: true
 		address nullable: true
 		excludedProperty nullable: true
+		displayFalseProperty nullable: true, display: false
 	}
 
 	static scaffold = [exclude: ['excludedProperty']]

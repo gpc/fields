@@ -25,8 +25,7 @@ class DefaultFieldTemplateSpec extends Specification {
 	void "default rendering"() {
 		when:
 		def output = tagLib.renderDefaultField(model)
-		println output
-		
+
 		then:
 		def root = $(output)
 		root.is('div.fieldcontain')
@@ -57,7 +56,6 @@ class DefaultFieldTemplateSpec extends Specification {
 
 		when:
 		def output = tagLib.renderDefaultField(model)
-		println output
 
 		then:
 		def root = $(output)

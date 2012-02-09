@@ -66,9 +66,9 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
 		if (propertyType in [Boolean, boolean]) {
 			false
 		} else if (propertyType == String) {
-			!constraints.nullable && !constraints.blank
+			!constraints?.nullable && !constraints?.blank
 		} else {
-			!constraints.nullable
+			!constraints?.nullable
 		}
 	}
 

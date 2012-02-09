@@ -155,17 +155,24 @@ class DomainClassPropertyAccessorSpec extends Specification {
 	}
 
 	@Issue('https://github.com/robfletcher/grails-fields/issues/37')
+	@Unroll({"resolves constraints of the '$property' property when the intervening path is null"})
 	void 'resolves constraints of a property when the intervening path is null'() {
 		given:
 		def book = new Book()
 
 		and:
-		def propertyAccessor = factory.accessorFor(book, "author.name")
+		def propertyAccessor = factory.accessorFor(book, property)
 
 		expect:
-		!propertyAccessor.constraints.nullable
-		!propertyAccessor.constraints.blank
-		propertyAccessor.isRequired()
+		propertyAccessor.isRequired() || !isRequired
+		propertyAccessor.constraints?.nullable || isRequired
+		propertyAccessor.constraints?.blank || isRequired
+
+		where:
+		property              | isRequired
+		'author.name'         | true
+		'author.id'           | true
+		'author.placeOfBirth' | false
 	}
 
 	void "resolves constraints of basic domain class property"() {

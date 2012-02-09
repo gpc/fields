@@ -37,20 +37,20 @@ class CommandPropertyAccessorSpec extends Specification {
 		!propertyAccessor.constraints.blank
 		propertyAccessor.constraints.password
 	}
-	
+
 	@Unroll({"property of $type.simpleName is nullable"})
 	void 'properties are nullable by default unlike domain class properties'() {
 		given:
 		def command = mockCommandObject(type)
-		
+
 		and:
 		def propertyAccessor = factory.accessorFor(command, 'stringProperty')
-		
+
 		expect:
 		propertyAccessor.constraints.nullable
 		!propertyAccessor.required
 		!propertyAccessor.invalid
-		
+
 		where:
 		type << [TestCommand, UnconstrainedCommand]
 	}
@@ -124,7 +124,7 @@ class CommandPropertyAccessorSpec extends Specification {
 		given:
 		TestCommand command = mockCommandObject(TestCommand)
 		def today = new Date()
-		command.mapOfDates = [yesterday: today -1, today: today, tomorrow: today + 1]
+		command.mapOfDates = [yesterday: today - 1, today: today, tomorrow: today + 1]
 
 		and:
 		def propertyAccessor = factory.accessorFor(command, 'mapOfDates[today]')
@@ -142,7 +142,7 @@ class CommandPropertyAccessorSpec extends Specification {
 		given:
 		TestCommand command = mockCommandObject(TestCommand)
 		def today = new Date()
-		command.mapOfDates = [yesterday: today -1, today: null, tomorrow: today + 1]
+		command.mapOfDates = [yesterday: today - 1, today: null, tomorrow: today + 1]
 
 		and:
 		def propertyAccessor = factory.accessorFor(command, 'mapOfDates[today]')
@@ -158,7 +158,7 @@ class CommandPropertyAccessorSpec extends Specification {
 		given:
 		TestCommand command = mockCommandObject(TestCommand)
 		def today = new Date()
-		command.untypedMap = [yesterday: today -1, today: null, tomorrow: today + 1]
+		command.untypedMap = [yesterday: today - 1, today: null, tomorrow: today + 1]
 
 		and:
 		def propertyAccessor = factory.accessorFor(command, 'untypedMap[today]')
@@ -216,6 +216,27 @@ class CommandPropertyAccessorSpec extends Specification {
 		propertyAccessor.pathFromRoot == "person.name"
 		propertyAccessor.propertyName == "name"
 		propertyAccessor.propertyType == String
+	}
+
+	@Issue('https://github.com/robfletcher/grails-fields/issues/37')
+	@Unroll({"resolves constraints of the '$property' property even when the intervening object is null"})
+	void 'resolves constraints of a nested property even when the intervening object is null'() {
+		given:
+		TestCommand command = mockCommandObject(TestCommand)
+
+		and:
+		def propertyAccessor = factory.accessorFor(command, property)
+
+		expect:
+		propertyAccessor.isRequired() || !isRequired
+		propertyAccessor.constraints?.nullable || isRequired
+		propertyAccessor.constraints?.blank || isRequired
+
+		where:
+		property             | isRequired
+		'person.name'        | true
+		'person.id'          | true
+		'person.dateOfBirth' | false
 	}
 
 	void 'if a nested property is a domain class then it is handled as one'() {

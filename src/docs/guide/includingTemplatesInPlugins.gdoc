@@ -1,0 +1,5 @@
+Plugins can include field and/or input level templates to support special UI rendering or non-standard property types. Just include the templates in the plugin's @grails-app/views@ directory as described in the [Customizing Field Rendering|guide:customizingFieldRendering] section.
+
+{warning}
+If you supply templates in a plugin you should consider declaring a @<%\@ page defaultCodec="html" %>@ directive so that any HTML unsafe property values are escaped properly regardless of the default codec used by client apps.
+{warning}

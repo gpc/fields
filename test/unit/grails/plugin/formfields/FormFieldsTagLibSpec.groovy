@@ -114,7 +114,7 @@ class FormFieldsTagLibSpec extends Specification {
 		views["/_fields/default/_field.gsp"] = '<label>${label}</label>'
 
 		and:
-		messageSource.addMessage("Person.name.label", request.locale, "Name of person")
+		messageSource.addMessage('person.name.label', request.locale, "Name of person")
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "<label>Name of person</label>"
@@ -322,7 +322,7 @@ class FormFieldsTagLibSpec extends Specification {
 		views["/_fields/default/_field.gsp"] = '${property} '
 
 		and:
-		messageSource.addMessage('Person.address.label', request.locale, 'Address of person')
+		messageSource.addMessage('person.address.label', request.locale, 'Address of person')
 
 		when:
 		def output = applyTemplate('<f:field bean="personInstance" property="address"/>', [personInstance: personInstance])

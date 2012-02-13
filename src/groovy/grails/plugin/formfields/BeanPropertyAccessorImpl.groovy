@@ -47,7 +47,7 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
 	}
 
 	String getLabelKey() {
-		"${beanType.simpleName}.${propertyName}.label"
+		"${beanType.simpleName}.${propertyName}.label".toLowerCase()
 	}
 
 	String getDefaultLabel() {

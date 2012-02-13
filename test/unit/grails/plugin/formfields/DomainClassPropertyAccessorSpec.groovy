@@ -22,7 +22,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 	@Shared Employee employee
 	@Shared Author author
 
-	def setup() {
+	void setup() {
 		address = new Address(street: "94 Evergreen Terrace", city: "Springfield", country: "USA")
 		person = new Person(name: "Bart Simpson", password: "bartman", gender: Gender.Male, dateOfBirth: new Date(87, 3, 19), address: address)
 		person.emails = [home: "bart@thesimpsons.net", school: "bart.simpson@springfieldelementary.edu"]
@@ -221,10 +221,10 @@ class DomainClassPropertyAccessorSpec extends Specification {
 
 		where:
 		bean   | property         | label
-		person | "name"           | "Person.name.label"
-		person | "address"        | "Person.address.label"
-		person | "address.city"   | "Address.city.label"
-		author | "books[0].title" | "Book.title.label"
+		person | 'name'           | 'person.name.label'
+		person | 'address'        | 'person.address.label'
+		person | 'address.city'   | 'address.city.label'
+		author | 'books[0].title' | 'book.title.label'
 	}
 
 	@Unroll({ "default label for '$property' is '$label'" })
@@ -290,18 +290,18 @@ class DomainClassPropertyAccessorSpec extends Specification {
 	@Unroll({ "the $path property is ${expected ? '' : 'not '}required" })
 	void "correctly identifies required properties"() {
 		given:
-		def propertyAccessor = factory.accessorFor(bean, path)
+		def propertyAccessor = factory.accessorFor(person, path)
 
 		expect:
 		propertyAccessor.required == expected
 
 		where:
-		bean   | path          | expected
-		person | "name"        | true // non-blank string
-		person | "dateOfBirth" | false // nullable object
-		person | "password"    | false // blank string
-		person | "gender"      | true // non-nullable string
-		person | "minor"       | false // boolean properties are never considered required
+		path          | expected
+		"name"        | true // non-blank string
+		"dateOfBirth" | false // nullable object
+		"password"    | false // blank string
+		"gender"      | true // non-nullable string
+		"minor"       | false // boolean properties are never considered required
 	}
 
 	@Unroll({"the superclasses of $type.simpleName are $expected"})

@@ -118,7 +118,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	private Map buildModel(BeanPropertyAccessor propertyAccessor, Map attrs) {
-		def valueOverride = attrs.remove('value')
+		def value = attrs.containsKey('value') ? attrs.remove('value') : propertyAccessor.value
 		def valueDefault = attrs.remove('default')
 		[
 				bean: propertyAccessor.rootBean,
@@ -126,7 +126,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 				type: propertyAccessor.propertyType,
 				beanClass: propertyAccessor.beanClass,
 				label: resolveLabelText(propertyAccessor, attrs),
-				value: valueOverride ?: propertyAccessor.value ?: valueDefault,
+				value: value ?: valueDefault,
 				constraints: propertyAccessor.constraints,
 				persistentProperty: propertyAccessor.persistentProperty,
 				errors: propertyAccessor.errors.collect { message(error: it) },

@@ -164,6 +164,19 @@ class FormFieldsTagLibSpec extends Specification {
 		applyTemplate('<f:field bean="personInstance" property="name" value="Bartholomew J. Simpson"/>', [personInstance: personInstance]) == "Bartholomew J. Simpson"
 	}
 
+	@Issue('https://github.com/robfletcher/grails-fields/issues/46')
+	@Unroll({"value is overridden by ${value == null ? 'null' : 'empty'} value attribute"})
+	void "value is overridden by falsy value attribute"() {
+		given:
+		views["/_fields/default/_field.gsp"] = '<em>${value}</em>'
+
+		expect:
+		applyTemplate('<f:field bean="personInstance" property="name" value="${value}"/>', [personInstance: personInstance, value: value]) == '<em></em>'
+		
+		where:
+		value << [null, '']
+	}
+
 	void "value falls back to default"() {
 		given:
 		views["/_fields/default/_field.gsp"] = '${value}'
@@ -181,6 +194,28 @@ class FormFieldsTagLibSpec extends Specification {
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name" default="A. N. Other"/>', [personInstance: personInstance]) == "Bart Simpson"
+	}
+
+	@Issue('https://github.com/robfletcher/grails-fields/issues/46')
+	void "default attribute is ignored if a non-null value override is specified"() {
+		given:
+		views["/_fields/default/_field.gsp"] = '${value}'
+
+		expect:
+		applyTemplate('<f:field bean="personInstance" property="name" value="Bartholomew J. Simpson" default="A. N. Other"/>', [personInstance: personInstance]) == 'Bartholomew J. Simpson'
+	}
+
+	@Issue('https://github.com/robfletcher/grails-fields/issues/46')
+	@Unroll({"default attribute is ignored if a value override of '${value == null ? 'null' : value}' is specified"})
+	void "default attribute is used if a falsy value override is specified"() {
+		given:
+		views["/_fields/default/_field.gsp"] = '${value}'
+
+		expect:
+		applyTemplate('<f:field bean="personInstance" property="name" value="${value}" default="A. N. Other"/>', [personInstance: personInstance, value: value]) == 'A. N. Other'
+
+		where:
+		value << [null, '']
 	}
 
 	void "errors passed to template is an empty collection for valid bean"() {

@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
     <head>
-        <title>Fields Plugin 1.0.3</title>
+        <title>Fields Plugin 1.0.4</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
         <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8" />
@@ -23,17 +23,17 @@ function addJsClass(el) {
                         <a href="../guide/index.html" class="button">Table of contents</a>
                         <div id="nav-summary-childs" style="display:none;">
                             
-                            <div class="toc-item" style="margin-left:0"><a href="#1.%20Introduction"><strong>1</strong><span>Introduction</span></a></div>
+                            <div class="toc-item" style="margin-left:0"><a href="#introduction"><strong>1</strong><span>Introduction</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:0"><a href="#2.%20Usage"><strong>2</strong><span>Usage</span></a></div>
+                            <div class="toc-item" style="margin-left:0"><a href="#usage"><strong>2</strong><span>Usage</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:0"><a href="#3.%20Customizing%20Field%20Rendering"><strong>3</strong><span>Customizing Field Rendering</span></a></div>
+                            <div class="toc-item" style="margin-left:0"><a href="#customizingFieldRendering"><strong>3</strong><span>Customizing Field Rendering</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:0"><a href="#4.%20Embedded%20Properties"><strong>4</strong><span>Embedded Properties</span></a></div>
+                            <div class="toc-item" style="margin-left:0"><a href="#embeddedProperties"><strong>4</strong><span>Embedded Properties</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:0"><a href="#5.%20Scaffolding"><strong>5</strong><span>Scaffolding</span></a></div>
+                            <div class="toc-item" style="margin-left:0"><a href="#scaffolding"><strong>5</strong><span>Scaffolding</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:0"><a href="#6.%20Including%20Templates%20in%20Plugins"><strong>6</strong><span>Including Templates in Plugins</span></a></div>
+                            <div class="toc-item" style="margin-left:0"><a href="#includingTemplatesInPlugins"><strong>6</strong><span>Including Templates in Plugins</span></a></div>
                             
                         </div>
                     </div>
@@ -62,7 +62,7 @@ function addJsClass(el) {
                         <div class="project">
                             <h1>Fields Plugin - Reference Documentation</h1>
                             <p><strong>Authors:</strong> Rob Fletcher</p>
-                            <p><strong>Version:</strong> 1.0.3</p>
+                            <p><strong>Version:</strong> 1.0.4</p>
                             
                         </div>
 
@@ -70,24 +70,24 @@ function addJsClass(el) {
                         <div id="table-of-content">
                             <h2>Table of Contents</h2>
                             
-                            <div class="toc-item" style="margin-left:0px"><a href="#1.%20Introduction"><strong>1</strong><span>Introduction</span></a></div>
+                            <div class="toc-item" style="margin-left:0px"><a href="#introduction"><strong>1</strong><span>Introduction</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:0px"><a href="#2.%20Usage"><strong>2</strong><span>Usage</span></a></div>
+                            <div class="toc-item" style="margin-left:0px"><a href="#usage"><strong>2</strong><span>Usage</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:0px"><a href="#3.%20Customizing%20Field%20Rendering"><strong>3</strong><span>Customizing Field Rendering</span></a></div>
+                            <div class="toc-item" style="margin-left:0px"><a href="#customizingFieldRendering"><strong>3</strong><span>Customizing Field Rendering</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:0px"><a href="#4.%20Embedded%20Properties"><strong>4</strong><span>Embedded Properties</span></a></div>
+                            <div class="toc-item" style="margin-left:0px"><a href="#embeddedProperties"><strong>4</strong><span>Embedded Properties</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:0px"><a href="#5.%20Scaffolding"><strong>5</strong><span>Scaffolding</span></a></div>
+                            <div class="toc-item" style="margin-left:0px"><a href="#scaffolding"><strong>5</strong><span>Scaffolding</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:0px"><a href="#6.%20Including%20Templates%20in%20Plugins"><strong>6</strong><span>Including Templates in Plugins</span></a></div>
+                            <div class="toc-item" style="margin-left:0px"><a href="#includingTemplatesInPlugins"><strong>6</strong><span>Including Templates in Plugins</span></a></div>
                             
                             <div style="clear:both" ></div>
                         </div>
                         
                         
-
-<h1 id="1. Introduction">1 Introduction</h1>
+<a name="1. Introduction"><!-- Legacy link --></a>
+<h1 id="introduction">1 Introduction</h1>
 The  <em class="italic">Fields plugin</em>  allows you to customize the rendering of input fields for properties of domain objects, command beans and POGOs based on their type, name, etc. The plugin aims to:
 <ul class="star">
 <li>Use good defaults for fields.</li>
@@ -96,11 +96,11 @@ The  <em class="italic">Fields plugin</em>  allows you to customize the renderin
 <li>Support inputs for property paths of arbitrary depth and with indexing.</li>
 <li>Enable other plugins to provide field rendering for special property types that gets picked up automatically (e.g. the  <em class="italic">Joda Time</em>  plugin can provide templates for the various date/time types).</li>
 <li>Support embedded properties of  <em class="italic">GORM</em>  domain classes.</li>
-</ul><p class="paragraph"/><h2>Changelog</h2><p class="paragraph"/><h3>Version 1.0.3</h3><p class="paragraph"/> <em class="italic">2012-02-09</em> : Bugfix release.<p class="paragraph"/><a href="https://github.com/robfletcher/grails-fields/issues?milestone=4&#38;state=closed" target="blank">Browse issues</a><p class="paragraph"/><h3>Version 1.0.2</h3><p class="paragraph"/> <em class="italic">2012-02-07</em> : Bugfix release.<p class="paragraph"/><a href="https://github.com/robfletcher/grails-fields/issues?milestone=3&#38;state=closed" target="blank">Browse issues</a><p class="paragraph"/><h3>Version 1.0.1</h3><p class="paragraph"/> <em class="italic">2012-02-03</em> : Bugfix release.<p class="paragraph"/><a href="https://github.com/robfletcher/grails-fields/issues?milestone=2&#38;state=closed" target="blank">Browse issues</a><p class="paragraph"/><h3>Version 1</h3><p class="paragraph"/> <em class="italic">2012-02-01</em> : Initial release.<p class="paragraph"/><a href="https://github.com/robfletcher/grails-fields/issues?milestone=1&#38;state=closed" target="blank">Browse issues</a>
+</ul><p class="paragraph"/><h2>Changelog</h2><p class="paragraph"/><h3>Version 1.0.4</h3><p class="paragraph"/> <em class="italic">2012-02-13</em> : Bugfix release.<p class="paragraph"/><a href="https://github.com/robfletcher/grails-fields/issues?milestone=5&#38;state=closed" target="blank">Browse issues</a><p class="paragraph"/><h3>Version 1.0.3</h3><p class="paragraph"/> <em class="italic">2012-02-09</em> : Bugfix release.<p class="paragraph"/><a href="https://github.com/robfletcher/grails-fields/issues?milestone=4&#38;state=closed" target="blank">Browse issues</a><p class="paragraph"/><h3>Version 1.0.2</h3><p class="paragraph"/> <em class="italic">2012-02-07</em> : Bugfix release.<p class="paragraph"/><a href="https://github.com/robfletcher/grails-fields/issues?milestone=3&#38;state=closed" target="blank">Browse issues</a><p class="paragraph"/><h3>Version 1.0.1</h3><p class="paragraph"/> <em class="italic">2012-02-03</em> : Bugfix release.<p class="paragraph"/><a href="https://github.com/robfletcher/grails-fields/issues?milestone=2&#38;state=closed" target="blank">Browse issues</a><p class="paragraph"/><h3>Version 1</h3><p class="paragraph"/> <em class="italic">2012-02-01</em> : Initial release.<p class="paragraph"/><a href="https://github.com/robfletcher/grails-fields/issues?milestone=1&#38;state=closed" target="blank">Browse issues</a>
 
 
-
-<h1 id="2. Usage">2 Usage</h1>
+<a name="2. Usage"><!-- Legacy link --></a>
+<h1 id="usage">2 Usage</h1>
 The plugin provides a set of tags you can use to render forms.<p class="paragraph"/>In the simplest case you can use  <em class="italic">f:all</em>  to render a field for every property of a bean (the domain object or command the form will bind to):<p class="paragraph"/><div class="code"><pre>&#60;f:all bean=<span class="java&#45;quote">"person"</span>/&#62;</pre></div><p class="paragraph"/>To render individual fields you use the  <em class="italic">f:field</em>  tag:<p class="paragraph"/><div class="code"><pre>&#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"name"</span>/&#62;
 &#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"address"</span>/&#62;
 &#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"dateOfBirth"</span>/&#62;</pre></div><p class="paragraph"/>The  <em class="italic">f:field</em>  tag will automatically handle embedded domain properties recursively:<p class="paragraph"/><div class="code"><pre>&#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"address"</span>/&#62;</pre></div><p class="paragraph"/>If there is no bean object backing a form but you still want to render the surrounding field markup you can give  <em class="italic">f:field</em>  a body:<p class="paragraph"/><div class="code"><pre>&#60;f:field property=<span class="java&#45;quote">"password"</span>&#62;
@@ -112,17 +112,18 @@ The plugin provides a set of tags you can use to render forms.<p class="paragrap
 &#60;/f:with&#62;</pre></div>
 
 
-
-<h1 id="3. Customizing Field Rendering">3 Customizing Field Rendering</h1>
+<a name="3. Customizing Field Rendering"><!-- Legacy link --></a>
+<h1 id="customizingFieldRendering">3 Customizing Field Rendering</h1>
 The plugin resolves the GSP template used for each property according to conventions. You can override the rendering based on the class and property name or the property type. The  <em class="italic">f:field</em>  tag looks for a template called <code>&#95;field.gsp</code> and the  <em class="italic">f:input</em>  tag looks for a template called <code>&#95;input.gsp</code>. Both tags will look in the following locations in decreasing order of preference:
 <ol>
+<li><code>grails-app/views/<strong class="bold">controllerName</strong>/<strong class="bold">actionName</strong>/<strong class="bold">propertyName</strong>/</code></li>
 <li><code>grails-app/views/<strong class="bold">controllerName</strong>/<strong class="bold">propertyName</strong>/</code></li>
 <li><code>grails-app/views/&#95;fields/<strong class="bold">class</strong>/<strong class="bold">propertyName</strong>/</code></li>
 <li><code>grails-app/views/&#95;fields/<strong class="bold">superclass</strong>/<strong class="bold">propertyName</strong>/</code></li>
 <li><code>grails-app/views/&#95;fields/<strong class="bold">propertyType</strong>/</code></li>
 <li><code>grails-app/views/&#95;fields/<strong class="bold">propertySuperclass</strong>/</code></li>
 <li><code>grails-app/views/&#95;fields/default/</code></li>
-</ol><p class="paragraph"/>The variables referenced in these paths are:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Name</strong></th><th><strong class="bold">Description</strong></th></tr><tr class="table-odd"><td><strong class="bold">controllerName</strong></td><td>The name of the current controller (if any).</td></tr><tr class="table-even"><td><strong class="bold">class</strong></td><td>The bean class. For simple properties this is the class of the object passed to the  <em class="italic">bean</em>  attribute of the  <em class="italic">f:field</em>  or  <em class="italic">f:input</em>  tag but when the  <em class="italic">property</em>  attribute was nested this is the class at the end of the chain. For example, if the property path was  <em class="italic">employees&#91;0&#93;.address.street</em>  this will be the class of  <em class="italic">address</em> .</td></tr><tr class="table-odd"><td><strong class="bold">superclass</strong></td><td>Any superclass or interface of  <em class="italic">class</em>  excluding  <em class="italic">Object</em> ,  <em class="italic">GroovyObject</em> ,  <em class="italic">Serializable</em> ,  <em class="italic">Comparable</em>  and  <em class="italic">Cloneable</em> .</td></tr><tr class="table-even"><td><strong class="bold">propertyName</strong></td><td>The property name at the end of the chain passed to the  <em class="italic">property</em>  attribute of the  <em class="italic">f:field</em>  or  <em class="italic">f:input</em>  tag. For example, if the property path was  <em class="italic">employees&#91;0&#93;.address.street</em>  then this will be  <em class="italic">street</em> .</td></tr><tr class="table-odd"><td><strong class="bold">propertyType</strong></td><td>The type of the property at the end of the chain passed to the  <em class="italic">property</em>  attribute of the  <em class="italic">f:field</em>  or  <em class="italic">f:input</em>  tag. For example, for a  <em class="italic">java.lang.String</em>  property this would be  <em class="italic">string</em> .</td></tr><tr class="table-even"><td><strong class="bold">propertySuperclass</strong></td><td>Any superclass or interface of  <em class="italic">propertyType</em>  excluding  <em class="italic">Object</em> ,  <em class="italic">GroovyObject</em> ,  <em class="italic">Serializable</em> ,  <em class="italic">Comparable</em>  and  <em class="italic">Cloneable</em> .</td></tr></table><p class="paragraph"/>All class names are camel-cased simple forms. For example  <em class="italic">java.lang.String</em>  =  <em class="italic">string</em> ,  <em class="italic">com.project.HomeAddress</em>  =  <em class="italic">homeAddress</em> .<p class="paragraph"/>Templates are resolved in this order so that you can override in the more specific circumstance and fall back to successively more general defaults. For example, you can define a field template for all  <em class="italic">java.lang.String</em>  properties but override a specific property of a particular class to use more specialized rendering.<p class="paragraph"/>Templates in plugins are resolved as well. This means plugins such as  <em class="italic">Joda Time</em>  can provide default rendering for special property types. A template in your application will take precedence over a template in a plugin at the same 'level'. For example if a plugin provides a <code>grails-app/views/&#95;fields/string/&#95;input.gsp</code> the same template in your application will override it but if the plugin provides <code>grails-app/views/&#95;fields/person/name/&#95;input.gsp</code> it would be used in preference to the more general template in your application.<p class="paragraph"/>For most properties the out-of-the-box defaults should provide a good starting point.<p class="paragraph"/><h2>Example</h2><p class="paragraph"/>Imagine an object of class  <em class="italic">Employee</em>  that extends the class  <em class="italic">Person</em>  and has a a String  <em class="italic">name</em>  property.<p class="paragraph"/>You can override the template  <em class="italic">f:field</em>  uses with any of these:
+</ol><p class="paragraph"/>The variables referenced in these paths are:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Name</strong></th><th><strong class="bold">Description</strong></th></tr><tr class="table-odd"><td><strong class="bold">controllerName</strong></td><td>The name of the current controller (if any).</td></tr><tr class="table-even"><td><strong class="bold">actionName</strong></td><td>The name of the current action (if any).</td></tr><tr class="table-odd"><td><strong class="bold">class</strong></td><td>The bean class. For simple properties this is the class of the object passed to the  <em class="italic">bean</em>  attribute of the  <em class="italic">f:field</em>  or  <em class="italic">f:input</em>  tag but when the  <em class="italic">property</em>  attribute was nested this is the class at the end of the chain. For example, if the property path was  <em class="italic">employees&#91;0&#93;.address.street</em>  this will be the class of  <em class="italic">address</em> .</td></tr><tr class="table-even"><td><strong class="bold">superclass</strong></td><td>Any superclass or interface of  <em class="italic">class</em>  excluding  <em class="italic">Object</em> ,  <em class="italic">GroovyObject</em> ,  <em class="italic">Serializable</em> ,  <em class="italic">Comparable</em>  and  <em class="italic">Cloneable</em> .</td></tr><tr class="table-odd"><td><strong class="bold">propertyName</strong></td><td>The property name at the end of the chain passed to the  <em class="italic">property</em>  attribute of the  <em class="italic">f:field</em>  or  <em class="italic">f:input</em>  tag. For example, if the property path was  <em class="italic">employees&#91;0&#93;.address.street</em>  then this will be  <em class="italic">street</em> .</td></tr><tr class="table-even"><td><strong class="bold">propertyType</strong></td><td>The type of the property at the end of the chain passed to the  <em class="italic">property</em>  attribute of the  <em class="italic">f:field</em>  or  <em class="italic">f:input</em>  tag. For example, for a  <em class="italic">java.lang.String</em>  property this would be  <em class="italic">string</em> .</td></tr><tr class="table-odd"><td><strong class="bold">propertySuperclass</strong></td><td>Any superclass or interface of  <em class="italic">propertyType</em>  excluding  <em class="italic">Object</em> ,  <em class="italic">GroovyObject</em> ,  <em class="italic">Serializable</em> ,  <em class="italic">Comparable</em>  and  <em class="italic">Cloneable</em> .</td></tr></table><p class="paragraph"/>All class names are camel-cased simple forms. For example  <em class="italic">java.lang.String</em>  =  <em class="italic">string</em> ,  <em class="italic">com.project.HomeAddress</em>  =  <em class="italic">homeAddress</em> .<p class="paragraph"/>Templates are resolved in this order so that you can override in the more specific circumstance and fall back to successively more general defaults. For example, you can define a field template for all  <em class="italic">java.lang.String</em>  properties but override a specific property of a particular class to use more specialized rendering.<p class="paragraph"/>Templates in plugins are resolved as well. This means plugins such as  <em class="italic">Joda Time</em>  can provide default rendering for special property types. A template in your application will take precedence over a template in a plugin at the same 'level'. For example if a plugin provides a <code>grails-app/views/&#95;fields/string/&#95;input.gsp</code> the same template in your application will override it but if the plugin provides <code>grails-app/views/&#95;fields/person/name/&#95;input.gsp</code> it would be used in preference to the more general template in your application.<p class="paragraph"/>For most properties the out-of-the-box defaults should provide a good starting point.<p class="paragraph"/><h2>Example</h2><p class="paragraph"/>Imagine an object of class  <em class="italic">Employee</em>  that extends the class  <em class="italic">Person</em>  and has a a String  <em class="italic">name</em>  property.<p class="paragraph"/>You can override the template  <em class="italic">f:field</em>  uses with any of these:
 <ol>
 <li><code>grails-app/views/<strong class="bold">controllerName</strong>/name/&#95;field.gsp</code></li>
 <li><code>grails-app/views/&#95;fields/employee/name/&#95;field.gsp</code></li>
@@ -141,8 +142,8 @@ If the  <em class="italic">bean</em>  attribute was not supplied to  <em class="
 </blockquote>
 
 
-
-<h1 id="4. Embedded Properties">4 Embedded Properties</h1>
+<a name="4. Embedded Properties"><!-- Legacy link --></a>
+<h1 id="embeddedProperties">4 Embedded Properties</h1>
 Embedded properties are handled in a special way by the  <em class="italic">f:field</em>  and  <em class="italic">f:all</em>  tags. If the  <em class="italic">property</em>  attribute you pass to  <em class="italic">f:field</em>  is an embedded property then the tag recursively renders each individual property of the embedded class with a surrounding  <em class="italic">fieldset</em> . For example if you have a  <em class="italic">Person</em>  class with a  <em class="italic">name</em>  property and an  <em class="italic">Address</em>  embedded class with  <em class="italic">street</em> ,  <em class="italic">city</em>  and  <em class="italic">country</em>  properties <code>&#60;f:field bean="person" property="address"&#62;</code> will effectively do this:<p class="paragraph"/><div class="code"><pre>&#60;fieldset class=<span class="java&#45;quote">"embedded address"</span>&#62;
     &#60;legend&#62;Address&#60;/legend&#62;
     &#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"address.street"</span>/&#62;
@@ -151,13 +152,13 @@ Embedded properties are handled in a special way by the  <em class="italic">f:fi
 &#60;/fieldset&#62;</pre></div><p class="paragraph"/>You can customize how embedded properties are surrounded by providing a layout at <code>grails-app/views/layouts/&#95;fields/embedded.gsp</code> which will override the default layout provided by the plugin.<p class="paragraph"/>When you use the  <em class="italic">f:all</em>  tag it will automatically handle embedded properties in this way.
 
 
-
-<h1 id="5. Scaffolding">5 Scaffolding</h1>
+<a name="5. Scaffolding"><!-- Legacy link --></a>
+<h1 id="scaffolding">5 Scaffolding</h1>
 Scaffolding templates based on the  <em class="italic">Fields</em>  plugin are quite powerful as they will pick up field and input rendering templates from your application and any plugins that provide them. This means that the useful life of scaffolding templates should be much longer as you do not need to replace the entire  <em class="italic">create.gsp</em>  and/or  <em class="italic">edit.gsp</em>  template just because you want to do something different with a certain property of one particular class.<p class="paragraph"/>The plugin makes the  <em class="italic">renderEditor.template</em>  file used by standard Grails scaffolding redundant. This template was very limited because it could not be extended by plugins or applications (only replaced) and was unable to support embedded properties of domain classes.<p class="paragraph"/>The  <em class="italic">Fields</em>  plugin includes scaffolding templates you can use in your application by running:<p class="paragraph"/><div class="code"><pre>grails install&#45;form&#45;fields&#45;templates</pre></div><p class="paragraph"/>This will overwrite any  <em class="italic">create.gsp</em>  and  <em class="italic">edit.gsp</em>  files you have in <code>src/templates/scaffolding</code>.<p class="paragraph"/>Alternatively, it's very easy to modify your existing scaffolding templates to use the  <em class="italic">f:all</em>  tag or multiple  <em class="italic">f:field</em>  tags.
 
-
-<h1 id="6. Including Templates in Plugins">6 Including Templates in Plugins</h1>
-Plugins can include field and/or input level templates to support special UI rendering or non-standard property types. Just include the templates in the plugin's <code>grails-app/views</code> directory as described in the <a href="../guide/single.html#3.%20Customizing%20Field%20Rendering" class="guide">Customizing Field Rendering</a> section.<p class="paragraph"/><blockquote class="warning">
+<a name="6. Including Templates in Plugins"><!-- Legacy link --></a>
+<h1 id="includingTemplatesInPlugins">6 Including Templates in Plugins</h1>
+Plugins can include field and/or input level templates to support special UI rendering or non-standard property types. Just include the templates in the plugin's <code>grails-app/views</code> directory as described in the <a href="../guide/single.html#customizingFieldRendering" class="guide">Customizing Field Rendering</a> section.<p class="paragraph"/><blockquote class="warning">
 If you supply templates in a plugin you should consider declaring a <code>&#60;%&#64; page defaultCodec="html" %&#62;</code> directive so that any HTML unsafe property values are escaped properly regardless of the default codec used by client apps.
 </blockquote>
 

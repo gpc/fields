@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>6 Including Templates in Plugins 1.0.3</title>
+    <title>4 Embedded Properties 1.0.4</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -24,22 +24,22 @@ function addJsClass() {
 
                 <div id="nav-summary-childs" style="display:none;">
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/1.%20Introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/2.%20Usage.html"><strong>2</strong><span>Usage</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/usage.html"><strong>2</strong><span>Usage</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/3.%20Customizing%20Field%20Rendering.html"><strong>3</strong><span>Customizing Field Rendering</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/customizingFieldRendering.html"><strong>3</strong><span>Customizing Field Rendering</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/4.%20Embedded%20Properties.html"><strong>4</strong><span>Embedded Properties</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/embeddedProperties.html"><strong>4</strong><span>Embedded Properties</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/5.%20Scaffolding.html"><strong>5</strong><span>Scaffolding</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/scaffolding.html"><strong>5</strong><span>Scaffolding</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/6.%20Including%20Templates%20in%20Plugins.html"><strong>6</strong><span>Including Templates in Plugins</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/includingTemplatesInPlugins.html"><strong>6</strong><span>Including Templates in Plugins</span></a>
                     </div>
                     
                 </div>
@@ -65,20 +65,22 @@ function addJsClass() {
             <div id="main" class="corner-all">
 
                 
-                    <div class="toc-item prev-left"><a href="../guide/5.%20Scaffolding.html">&lt;&lt; <strong>5</strong><span>Scaffolding</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/customizingFieldRendering.html">&lt;&lt; <strong>3</strong><span>Customizing Field Rendering</span></a></div>
                 
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
+                    <div class="toc-item next-right"><a href="../guide/scaffolding.html"><strong>5</strong><span>Scaffolding</span> >></a></div>
+                
 
 
                 <div class="project">
-                    <h1>6 Including Templates in Plugins - Reference Documentation</h1>
+                    <h1>4 Embedded Properties - Reference Documentation</h1>
 
                     <p><strong>Authors:</strong> Rob Fletcher</p>
 
-                    <p><strong>Version:</strong> 1.0.3</p>
+                    <p><strong>Version:</strong> 1.0.4</p>
 
                     
                 </div>
@@ -86,16 +88,22 @@ function addJsClass() {
                 
 
                 
+<a name="4. Embedded Properties"><!-- Legacy link --></a>
+<h1 id="embeddedProperties">4 Embedded Properties</h1>
+Embedded properties are handled in a special way by the  <em class="italic">f:field</em>  and  <em class="italic">f:all</em>  tags. If the  <em class="italic">property</em>  attribute you pass to  <em class="italic">f:field</em>  is an embedded property then the tag recursively renders each individual property of the embedded class with a surrounding  <em class="italic">fieldset</em> . For example if you have a  <em class="italic">Person</em>  class with a  <em class="italic">name</em>  property and an  <em class="italic">Address</em>  embedded class with  <em class="italic">street</em> ,  <em class="italic">city</em>  and  <em class="italic">country</em>  properties <code>&#60;f:field bean="person" property="address"&#62;</code> will effectively do this:<p class="paragraph"/><div class="code"><pre>&#60;fieldset class=<span class="java&#45;quote">"embedded address"</span>&#62;
+    &#60;legend&#62;Address&#60;/legend&#62;
+    &#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"address.street"</span>/&#62;
+    &#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"address.city"</span>/&#62;
+    &#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"address.country"</span>/&#62;
+&#60;/fieldset&#62;</pre></div><p class="paragraph"/>You can customize how embedded properties are surrounded by providing a layout at <code>grails-app/views/layouts/&#95;fields/embedded.gsp</code> which will override the default layout provided by the plugin.<p class="paragraph"/>When you use the  <em class="italic">f:all</em>  tag it will automatically handle embedded properties in this way.
 
-<h1 id="6. Including Templates in Plugins">6 Including Templates in Plugins</h1>
-Plugins can include field and/or input level templates to support special UI rendering or non-standard property types. Just include the templates in the plugin's <code>grails-app/views</code> directory as described in the <a href="../guide/single.html#3.%20Customizing%20Field%20Rendering" class="guide">Customizing Field Rendering</a> section.<p class="paragraph"/><blockquote class="warning">
-If you supply templates in a plugin you should consider declaring a <code>&#60;%&#64; page defaultCodec="html" %&#62;</code> directive so that any HTML unsafe property values are escaped properly regardless of the default codec used by client apps.
-</blockquote>
 
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item prev-left"><a href="../guide/5.%20Scaffolding.html">&lt;&lt; <strong>5</strong><span>Scaffolding</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/customizingFieldRendering.html">&lt;&lt; <strong>3</strong><span>Customizing Field Rendering</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/scaffolding.html"><strong>5</strong><span>Scaffolding</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>

@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>2 Usage 1.0.3</title>
+    <title>2 Usage 1.0.4</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -24,22 +24,22 @@ function addJsClass() {
 
                 <div id="nav-summary-childs" style="display:none;">
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/1.%20Introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/2.%20Usage.html"><strong>2</strong><span>Usage</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/usage.html"><strong>2</strong><span>Usage</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/3.%20Customizing%20Field%20Rendering.html"><strong>3</strong><span>Customizing Field Rendering</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/customizingFieldRendering.html"><strong>3</strong><span>Customizing Field Rendering</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/4.%20Embedded%20Properties.html"><strong>4</strong><span>Embedded Properties</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/embeddedProperties.html"><strong>4</strong><span>Embedded Properties</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/5.%20Scaffolding.html"><strong>5</strong><span>Scaffolding</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/scaffolding.html"><strong>5</strong><span>Scaffolding</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/6.%20Including%20Templates%20in%20Plugins.html"><strong>6</strong><span>Including Templates in Plugins</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/includingTemplatesInPlugins.html"><strong>6</strong><span>Including Templates in Plugins</span></a>
                     </div>
                     
                 </div>
@@ -65,13 +65,13 @@ function addJsClass() {
             <div id="main" class="corner-all">
 
                 
-                    <div class="toc-item prev-left"><a href="../guide/1.%20Introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
                 
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../guide/3.%20Customizing%20Field%20Rendering.html"><strong>3</strong><span>Customizing Field Rendering</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/customizingFieldRendering.html"><strong>3</strong><span>Customizing Field Rendering</span> >></a></div>
                 
 
 
@@ -80,7 +80,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> Rob Fletcher</p>
 
-                    <p><strong>Version:</strong> 1.0.3</p>
+                    <p><strong>Version:</strong> 1.0.4</p>
 
                     
                 </div>
@@ -88,8 +88,8 @@ function addJsClass() {
                 
 
                 
-
-<h1 id="2. Usage">2 Usage</h1>
+<a name="2. Usage"><!-- Legacy link --></a>
+<h1 id="usage">2 Usage</h1>
 The plugin provides a set of tags you can use to render forms.<p class="paragraph"/>In the simplest case you can use  <em class="italic">f:all</em>  to render a field for every property of a bean (the domain object or command the form will bind to):<p class="paragraph"/><div class="code"><pre>&#60;f:all bean=<span class="java&#45;quote">"person"</span>/&#62;</pre></div><p class="paragraph"/>To render individual fields you use the  <em class="italic">f:field</em>  tag:<p class="paragraph"/><div class="code"><pre>&#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"name"</span>/&#62;
 &#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"address"</span>/&#62;
 &#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"dateOfBirth"</span>/&#62;</pre></div><p class="paragraph"/>The  <em class="italic">f:field</em>  tag will automatically handle embedded domain properties recursively:<p class="paragraph"/><div class="code"><pre>&#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"address"</span>/&#62;</pre></div><p class="paragraph"/>If there is no bean object backing a form but you still want to render the surrounding field markup you can give  <em class="italic">f:field</em>  a body:<p class="paragraph"/><div class="code"><pre>&#60;f:field property=<span class="java&#45;quote">"password"</span>&#62;
@@ -104,9 +104,9 @@ The plugin provides a set of tags you can use to render forms.<p class="paragrap
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item prev-left"><a href="../guide/1.%20Introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
                 
-                    <div class="toc-item next-right"><a href="../guide/3.%20Customizing%20Field%20Rendering.html"><strong>3</strong><span>Customizing Field Rendering</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/customizingFieldRendering.html"><strong>3</strong><span>Customizing Field Rendering</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>

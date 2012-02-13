@@ -31,13 +31,13 @@ class FormFieldsTemplateService {
 	GrailsPluginManager pluginManager
 
 	Map findTemplate(BeanPropertyAccessor propertyAccessor, String templateName) {
-		findTemplateCached(propertyAccessor, controllerName, templateName)
+		findTemplateCached(propertyAccessor, controllerName, actionName, templateName)
 	}
 
 	private final Closure findTemplateCached = shouldCache() ? this.&findTemplateCacheable.memoize() : this.&findTemplateCacheable
 
-	private Map findTemplateCacheable(BeanPropertyAccessor propertyAccessor, String controllerName, String templateName) {
-		def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerName, templateName)
+	private Map findTemplateCacheable(BeanPropertyAccessor propertyAccessor, String controllerName, String actionName, String templateName) {
+		def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerName, actionName, templateName)
 
 		candidatePaths.findResult { path ->
 			log.debug "looking for template with path $path"
@@ -60,11 +60,12 @@ class FormFieldsTemplateService {
 		GrailsNameUtils.getLogicalPropertyName(type.name, '')
 	}
 
-	private List<String> candidateTemplatePaths(BeanPropertyAccessor propertyAccessor, String controllerName, String templateName) {
+	private List<String> candidateTemplatePaths(BeanPropertyAccessor propertyAccessor, String controllerName, String actionName, String templateName) {
 		def templateResolveOrder = []
 
 		// if there is a controller for the current request any template in its views directory takes priority
 		if (controllerName) {
+			templateResolveOrder << appendPiecesForUri("/", controllerName, actionName, propertyAccessor.propertyName, templateName)
 			templateResolveOrder << appendPiecesForUri("/", controllerName, propertyAccessor.propertyName, templateName)
 		}
 
@@ -92,6 +93,10 @@ class FormFieldsTemplateService {
 
 	private String getControllerName() {
 		RequestContextHolder.requestAttributes?.controllerName
+	}
+
+	private String getActionName() {
+		RequestContextHolder.requestAttributes?.actionName
 	}
 
 	private static boolean shouldCache() {

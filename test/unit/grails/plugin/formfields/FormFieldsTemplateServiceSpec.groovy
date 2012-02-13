@@ -17,6 +17,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 	
 	void setup() {
 		webRequest.controllerName = 'foo'
+		webRequest.actionName = 'bar'
 
 		personInstance = new Person(name: "Bart Simpson", password: "bartman", gender: Gender.Male, dateOfBirth: new Date(87, 3, 19), minor: true)
 		personInstance.address = new Address(street: "94 Evergreen Terrace", city: "Springfield", country: "USA")
@@ -94,6 +95,25 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		template.path == "/$webRequest.controllerName/name/field"
 		template.plugin == null
 		render(template: template.path) == 'CONTROLLER FIELD TEMPLATE'
+	}
+
+	@Issue('https://github.com/robfletcher/grails-fields/issues/33')
+	void "resolves template from controller and action views directory"() {
+		given:
+		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/_fields/string/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
+		views["/_fields/person/name/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
+		views["/$webRequest.controllerName/name/_field.gsp"] = 'CONTROLLER FIELD TEMPLATE'
+		views["/$webRequest.controllerName/$webRequest.actionName/name/_field.gsp"] = 'ACTION FIELD TEMPLATE'
+
+		and:
+		def property = factory.accessorFor(personInstance, 'name')
+
+		expect:
+		def template = service.findTemplate(property, 'field')
+		template.path == "/$webRequest.controllerName/$webRequest.actionName/name/field"
+		template.plugin == null
+		render(template: template.path) == 'ACTION FIELD TEMPLATE'
 	}
 
 	void "does not use controller if there isn't one in the current request"() {
@@ -237,6 +257,23 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		template.path == "/$webRequest.controllerName/name/field"
 		template.plugin == null
 		render(template: template.path) == 'CONTROLLER FIELD TEMPLATE'
+	}
+
+	@Issue('https://github.com/robfletcher/grails-fields/pull/33')
+	void 'resolves controller action template without a bean just based on property path'() {
+		given:
+		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/$webRequest.controllerName/name/_field.gsp"] = 'CONTROLLER FIELD TEMPLATE'
+		views["/$webRequest.controllerName/$webRequest.actionName/name/_field.gsp"] = 'ACTION FIELD TEMPLATE'
+
+		and:
+		def property = factory.accessorFor(null, 'name')
+
+		expect:
+		def template = service.findTemplate(property, 'field')
+		template.path == "/$webRequest.controllerName/$webRequest.actionName/name/field"
+		template.plugin == null
+		render(template: template.path) == 'ACTION FIELD TEMPLATE'
 	}
 
 }

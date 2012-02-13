@@ -1,5 +1,6 @@
 The plugin resolves the GSP template used for each property according to conventions. You can override the rendering based on the class and property name or the property type. The _f:field_ tag looks for a template called @\_field.gsp@ and the _f:input_ tag looks for a template called @\_input.gsp@. Both tags will look in the following locations in decreasing order of preference:
 
+# @grails-app/views/*controllerName*/*actionName*/*propertyName*/@
 # @grails-app/views/*controllerName*/*propertyName*/@
 # @grails-app/views/\_fields/*class*/*propertyName*/@
 # @grails-app/views/\_fields/*superclass*/*propertyName*/@
@@ -12,6 +13,7 @@ The variables referenced in these paths are:
 {table}
 *Name* | *Description*
 *controllerName* | The name of the current controller (if any).
+*actionName* | The name of the current action (if any).
 *class* | The bean class. For simple properties this is the class of the object passed to the _bean_ attribute of the _f:field_ or _f:input_ tag but when the _property_ attribute was nested this is the class at the end of the chain. For example, if the property path was _employees\[0\].address.street_ this will be the class of _address_.
 *superclass* | Any superclass or interface of _class_ excluding _Object_, _GroovyObject_, _Serializable_, _Comparable_ and _Cloneable_.
 *propertyName* | The property name at the end of the chain passed to the _property_ attribute of the _f:field_ or _f:input_ tag. For example, if the property path was _employees\[0\].address.street_ then this will be _street_.

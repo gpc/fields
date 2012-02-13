@@ -47,7 +47,7 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
 	}
 
 	String getLabelKey() {
-		"${beanType.simpleName}.${propertyName}.label".toLowerCase()
+		"${GrailsNameUtils.getPropertyName(beanType.simpleName)}.${propertyName}.label"
 	}
 
 	String getDefaultLabel() {

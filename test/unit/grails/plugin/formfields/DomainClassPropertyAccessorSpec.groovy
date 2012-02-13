@@ -28,14 +28,14 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		person.emails = [home: "bart@thesimpsons.net", school: "bart.simpson@springfieldelementary.edu"]
 		person.save(failOnError: true)
 
+		employee = new Employee(name: 'Homer J Simpson', jobTitle: 'Safety officer', password: 'mmmdonuts', gender: Gender.Male, address: address)
+		employee.save(failOnError: true)
+
 		author = new Author(name: "William Gibson")
 		author.addToBooks new Book(title: "Pattern Recognition")
 		author.addToBooks new Book(title: "Spook Country")
 		author.addToBooks new Book(title: "Zero History")
 		author.save(failOnError: true)
-
-		employee = new Employee(name: 'Homer J Simpson', jobTitle: 'Safety officer', password: 'barbie', gender: Gender.Male, address: address)
-		employee.save(failOnError: true)
 	}
 
 	void "fails sensibly when given an invalid property path"() {
@@ -187,19 +187,20 @@ class DomainClassPropertyAccessorSpec extends Specification {
 	@Unroll({ "type of '$property' is $type.name" })
 	void "resolves type of property"() {
 		given:
+		def bean = beanType.list().first()
 		def propertyAccessor = factory.accessorFor(bean, property)
 
 		expect:
 		propertyAccessor.propertyType == type
 
 		where:
-		bean   | property         | type
-		person | "dateOfBirth"    | Date
-		person | "address"        | Address
-		person | "address.city"   | String
-		author | "books"          | List
-		author | "books[0]"       | Book
-		author | "books[0].title" | String
+		beanType | property         | type
+		Person   | "dateOfBirth"    | Date
+		Person   | "address"        | Address
+		Person   | "address.city"   | String
+		Author   | "books"          | List
+		Author   | "books[0]"       | Book
+		Author   | "books[0].title" | String
 	}
 
 	void "resolves constraints of embedded property"() {
@@ -214,34 +215,37 @@ class DomainClassPropertyAccessorSpec extends Specification {
 	@Unroll({ "label key for '$property' is '$label'" })
 	void "label key is the same as the scaffolding convention"() {
 		given:
+		def bean = beanType.list().first()
 		def propertyAccessor = factory.accessorFor(bean, property)
 
 		expect:
 		propertyAccessor.labelKey == label
 
 		where:
-		bean   | property         | label
-		person | 'name'           | 'person.name.label'
-		person | 'address'        | 'person.address.label'
-		person | 'address.city'   | 'address.city.label'
-		author | 'books[0].title' | 'book.title.label'
+		beanType | property         | label
+		Person   | 'name'           | 'person.name.label'
+		Person   | 'dateOfBirth'    | 'person.dateOfBirth.label'
+		Person   | 'address'        | 'person.address.label'
+		Person   | 'address.city'   | 'address.city.label'
+		Author   | 'books[0].title' | 'book.title.label'
 	}
 
 	@Unroll({ "default label for '$property' is '$label'" })
 	void "default label is the property's natural name"() {
 		given:
+		def bean = beanType.list().first()
 		def propertyAccessor = factory.accessorFor(bean, property)
 
 		expect:
 		propertyAccessor.defaultLabel == label
 
 		where:
-		bean   | property         | label
-		person | "name"           | "Name"
-		person | "dateOfBirth"    | "Date Of Birth"
-		person | "address"        | "Address"
-		person | "address.city"   | "City"
-		author | "books[0].title" | "Title"
+		beanType | property         | label
+		Person   | "name"           | "Name"
+		Person   | "dateOfBirth"    | "Date Of Birth"
+		Person   | "address"        | "Address"
+		Person   | "address.city"   | "City"
+		Author   | "books[0].title" | "Title"
 	}
 
 	void "resolves errors for a basic property"() {

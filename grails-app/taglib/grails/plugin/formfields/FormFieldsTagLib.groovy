@@ -74,7 +74,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			if (hasBody(body)) {
 				model.widget = body(model)
 			} else {
-				model.widget = renderWidget(propertyAccessor, model)
+				def inputAttrs = attrs.remove('inputAttrs') ?: [:]
+				model.widget = renderWidget(propertyAccessor, model, inputAttrs)
 			}
 
 			// any remaining attrs at this point are 'extras'

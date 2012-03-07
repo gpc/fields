@@ -51,7 +51,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		def domainClass = resolveDomainClass(bean)
 		if (domainClass) {
 			for (property in resolvePersistentProperties(domainClass, attrs)) {
-				out << field(bean: bean, property: property.name)
+				out << field(bean: bean, property: property.name, prefix:attrs.prefix)
 			}
 		} else {
 			throwTagError('Tag [all] currently only supports domain types')
@@ -132,6 +132,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 				errors: propertyAccessor.errors.collect { message(error: it) },
 				required: attrs.containsKey("required") ? Boolean.valueOf(attrs.remove('required')) : propertyAccessor.required,
 				invalid: attrs.containsKey("invalid") ? Boolean.valueOf(attrs.remove('invalid')) : propertyAccessor.invalid,
+				prefix: attrs.prefix,
 		]
 	}
 
@@ -206,7 +207,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 		def writer = new StringWriter()
 		new MarkupBuilder(writer).div(class: classes.join(' ')) {
-			label(for: model.property, model.label) {
+			label(for: getFieldName(model), model.label) {
 				if (model.required) {
 					span(class: 'required-indicator', '*')
 				}
@@ -215,9 +216,13 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 		writer.toString()
 	}
+	
+	private String getFieldName(Map model) {
+		return (model.prefix?model.prefix+'.':'')+model.property
+	}
 
 	private String renderDefaultInput(Map model, Map attrs = [:]) {
-		attrs.name = model.property
+		attrs.name = getFieldName(model)
 		attrs.value = model.value
 		if (model.required) attrs.required = "" // TODO: configurable how this gets output? Some people prefer required="required"
 		if (model.invalid) attrs.invalid = ""

@@ -9,7 +9,7 @@ import org.springframework.core.io.ByteArrayResource
 import org.codehaus.groovy.grails.web.pages.discovery.*
 import spock.lang.*
 
-@Issue('https://github.com/robfletcher/grails-form-fields/issues/5')
+@Issue('https://github.com/robfletcher/grails-fields/issues/5')
 @TestMixin(GrailsUnitTestMixin)
 @Stepwise
 class TemplateLookupCachingSpec extends Specification {

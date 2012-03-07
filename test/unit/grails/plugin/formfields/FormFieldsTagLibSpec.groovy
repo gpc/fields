@@ -380,7 +380,7 @@ class FormFieldsTagLibSpec extends Specification {
 		property << ['id', 'version', 'onLoad', 'lastUpdated', 'excludedProperty', 'displayFalseProperty']
 	}
 
-	@Issue('https://github.com/robfletcher/grails-form-fields/issues/12')
+	@Issue('https://github.com/robfletcher/grails-fields/issues/12')
 	void 'all tag skips properties listed with the except attribute'() {
 		given:
 		views["/_fields/default/_field.gsp"] = '${property} '
@@ -393,7 +393,7 @@ class FormFieldsTagLibSpec extends Specification {
 		!output.contains('minor')
 	}
 
-	@Issue('https://github.com/robfletcher/grails-form-fields/issues/13')
+	@Issue('https://github.com/robfletcher/grails-fields/issues/13')
 	void 'bean attribute does not have to be specified if it is in scope from f:with'() {
 		given:
 		views["/_fields/default/_field.gsp"] = '${property} '
@@ -402,13 +402,13 @@ class FormFieldsTagLibSpec extends Specification {
 		applyTemplate('<f:with bean="personInstance"><f:field property="name"/></f:with>', [personInstance: personInstance]) == 'name '
 	}
 
-	@Issue('https://github.com/robfletcher/grails-form-fields/issues/13')
+	@Issue('https://github.com/robfletcher/grails-fields/issues/13')
 	void 'scoped bean attribute does not linger around after f:with tag'() {
 		expect:
 		applyTemplate('<f:with bean="personInstance">${pageScope.getVariable("f:with:bean")}</f:with>${pageScope.getVariable("f:with:bean")}', [personInstance: personInstance]) == 'Bart Simpson'
 	}
 
-	@Issue('https://github.com/robfletcher/grails-form-fields/pull/16')
+	@Issue('https://github.com/robfletcher/grails-fields/pull/16')
 	void 'f:field can work without a bean attribute'() {
 		given:
 		views["/_fields/default/_field.gsp"] = '${property}'
@@ -417,7 +417,7 @@ class FormFieldsTagLibSpec extends Specification {
 		applyTemplate('<f:field property="name"/>') == 'name'
 	}
 
-	@Issue('https://github.com/robfletcher/grails-form-fields/pull/16')
+	@Issue('https://github.com/robfletcher/grails-fields/pull/16')
 	void 'label is the natural property name if there is no bean attribute'() {
 		given:
 		views["/_fields/default/_field.gsp"] = '${label}'
@@ -426,7 +426,7 @@ class FormFieldsTagLibSpec extends Specification {
 		applyTemplate('<f:field property="name"/>') == 'Name'
 	}
 
-    @Issue('https://github.com/robfletcher/grails-form-fields/pull/17')
+    @Issue('https://github.com/robfletcher/grails-fields/pull/17')
     void 'arbitrary attributes can be passed to the field template'() {
         given:
         views["/_fields/default/_field.gsp"] = '${foo}'
@@ -435,7 +435,7 @@ class FormFieldsTagLibSpec extends Specification {
         applyTemplate('<f:field bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == 'bar'
     }
 
-    @Issue('https://github.com/robfletcher/grails-form-fields/pull/17')
+    @Issue('https://github.com/robfletcher/grails-fields/pull/17')
     void 'arbitrary attributes on f:field are not passed to the input template'() {
         given:
         views["/_fields/default/_field.gsp"] = '${widget}'
@@ -448,7 +448,7 @@ class FormFieldsTagLibSpec extends Specification {
         applyTemplate('<f:field bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == '<span></span>'
     }
 
-    @Issue('https://github.com/robfletcher/grails-form-fields/pull/17')
+    @Issue('https://github.com/robfletcher/grails-fields/pull/17')
     void 'arbitrary attributes on f:field are not passed to the default input'() {
         given:
         views["/_fields/default/_field.gsp"] = '${widget}'
@@ -457,7 +457,7 @@ class FormFieldsTagLibSpec extends Specification {
         applyTemplate('<f:field bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == '<input type="text" name="name" value="Bart Simpson" required="" id="name" />'
     }
 
-	@Issue('https://github.com/robfletcher/grails-form-fields/pull/17')
+	@Issue('https://github.com/robfletcher/grails-fields/pull/17')
 	void 'arbitrary attributes on f:input are passed to the input template'() {
 		given:
 		views["/_fields/person/name/_input.gsp"] = '${foo}'
@@ -469,7 +469,7 @@ class FormFieldsTagLibSpec extends Specification {
 		applyTemplate('<f:input bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == 'bar'
 	}
 
-	@Issue('https://github.com/robfletcher/grails-form-fields/pull/17')
+	@Issue('https://github.com/robfletcher/grails-fields/pull/17')
 	void 'arbitrary attributes on f:input are passed to the default input'() {
 		expect:
 		applyTemplate('<f:input bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == '<input type="text" foo="bar" name="name" value="Bart Simpson" required="" id="name" />'

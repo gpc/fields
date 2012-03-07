@@ -435,7 +435,6 @@ class FormFieldsTagLibSpec extends Specification {
         applyTemplate('<f:field bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == 'bar'
     }
 
-    @Ignore // breaks because of GRAILS-8700
     @Issue('https://github.com/robfletcher/grails-form-fields/pull/17')
     void 'arbitrary attributes on f:field are not passed to the input template'() {
         given:

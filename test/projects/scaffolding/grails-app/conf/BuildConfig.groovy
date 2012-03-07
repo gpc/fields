@@ -11,8 +11,8 @@ grails.project.dependency.resolution = {
     log "error"
     checksums true
 
-	def seleniumVersion = "2.15.0"
-	def gebVersion = "0.6.2"
+	def seleniumVersion = "2.20.0"
+	def gebVersion = "0.6.3"
 
     repositories {
         inherits true
@@ -28,10 +28,10 @@ grails.project.dependency.resolution = {
     }
     plugins {
         compile ":hibernate:$grailsVersion"
-        compile ":jquery:1.7"
-        compile ":resources:1.1.3"
+        compile ":jquery:1.7.1"
+        compile ":resources:1.1.6"
         build ":tomcat:$grailsVersion"
-		test ":spock:0.6-SNAPSHOT"
+		test ":spock:0.6"
 		test ":geb:$gebVersion"
     }
 }

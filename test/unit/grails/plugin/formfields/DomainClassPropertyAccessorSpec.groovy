@@ -10,6 +10,7 @@ import spock.lang.*
 
 @TestMixin(ControllerUnitTestMixin)
 @Mock([Person, Author, Book, Employee])
+@Unroll
 class DomainClassPropertyAccessorSpec extends Specification {
 
 	BeanPropertyAccessorFactory factory = new BeanPropertyAccessorFactory(
@@ -155,8 +156,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 	}
 
 	@Issue('https://github.com/robfletcher/grails-fields/issues/37')
-	@Unroll({"resolves constraints of the '$property' property when the intervening path is null"})
-	void 'resolves constraints of a property when the intervening path is null'() {
+	void "resolves constraints of the '#property' property when the intervening path is null"() {
 		given:
 		def book = new Book()
 
@@ -184,8 +184,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		!propertyAccessor.constraints.blank
 	}
 
-	@Unroll({ "type of '$property' is $type.name" })
-	void "resolves type of property"() {
+	void "type of '#property' is #type.name"() {
 		given:
 		def bean = beanType.list().first()
 		def propertyAccessor = factory.accessorFor(bean, property)
@@ -212,8 +211,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		propertyAccessor.constraints.inList == ["USA", "UK", "Canada"]
 	}
 
-	@Unroll({ "label key for '$property' is '$label'" })
-	void "label key is the same as the scaffolding convention"() {
+	void "label key for '#property' is '#label'"() {
 		given:
 		def bean = beanType.list().first()
 		def propertyAccessor = factory.accessorFor(bean, property)
@@ -230,8 +228,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		Author   | 'books[0].title' | 'book.title.label'
 	}
 
-	@Unroll({ "default label for '$property' is '$label'" })
-	void "default label is the property's natural name"() {
+	void "default label for '#property' is '#label'"() {
 		given:
 		def bean = beanType.list().first()
 		def propertyAccessor = factory.accessorFor(bean, property)
@@ -291,8 +288,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		propertyAccessor.invalid
 	}
 
-	@Unroll({ "the $path property is ${expected ? '' : 'not '}required" })
-	void "correctly identifies required properties"() {
+	void "the #path property is required:#expected"() {
 		given:
 		def propertyAccessor = factory.accessorFor(person, path)
 
@@ -308,8 +304,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		"minor"       | false // boolean properties are never considered required
 	}
 
-	@Unroll({"the superclasses of $type.simpleName are $expected"})
-	def 'can retrieve superclasses of the bean class'() {
+	def 'the superclasses of #type.simpleName are #expected'() {
 		given:
 		def propertyAccessor = factory.accessorFor(type.newInstance(), path)
 
@@ -322,8 +317,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		Employee | 'name' | [Person]
 	}
 
-	@Unroll({"the superclasses of Person.$path are $expected"})
-	void 'can retrieve superclasses of the property type'() {
+	void 'the superclasses of Person.#path are #expected'() {
 		given:
 		def propertyAccessor = factory.accessorFor(person, path)
 

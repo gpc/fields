@@ -9,6 +9,7 @@ import spock.lang.*
 
 @TestFor(FormFieldsTagLib)
 @Mock([Person, Employee])
+@Unroll
 class FormFieldsTagLibSpec extends Specification {
 
 	def personInstance
@@ -165,8 +166,7 @@ class FormFieldsTagLibSpec extends Specification {
 	}
 
 	@Issue('https://github.com/robfletcher/grails-fields/issues/46')
-	@Unroll({"value is overridden by ${value == null ? 'null' : 'empty'} value attribute"})
-	void "value is overridden by falsy value attribute"() {
+	void "value is overridden by #{value == null ? 'null' : 'empty'} value attribute"() {
 		given:
 		views["/_fields/default/_field.gsp"] = '<em>${value}</em>'
 
@@ -206,8 +206,7 @@ class FormFieldsTagLibSpec extends Specification {
 	}
 
 	@Issue('https://github.com/robfletcher/grails-fields/issues/46')
-	@Unroll({"default attribute is ignored if a value override of '${value == null ? 'null' : value}' is specified"})
-	void "default attribute is used if a falsy value override is specified"() {
+	void "default attribute is ignored if a value override of '#value' is specified"() {
 		given:
 		views["/_fields/default/_field.gsp"] = '${value}'
 
@@ -366,9 +365,8 @@ class FormFieldsTagLibSpec extends Specification {
 		output.contains('<legend>Address of person</legend>')
 	}
 
-	@Unroll({"all tag skips $property property"})
 	@Issue('https://github.com/robfletcher/grails-fields/issues/21')
-	void 'all tag skips excluded properties'() {
+	void 'all tag skips #property property'() {
 		given:
 		views["/_fields/default/_field.gsp"] = '${property} '
 

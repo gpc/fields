@@ -8,6 +8,7 @@ import spock.lang.*
 
 @TestFor(FormFieldsTagLib)
 @Mock(Person)
+@Unroll
 class DefaultInputRenderingSpec extends Specification {
 
 	@Shared def personDomainClass = new DefaultGrailsDomainClass(Person)
@@ -28,8 +29,7 @@ class DefaultInputRenderingSpec extends Specification {
 		people*.save(validate: false)
 	}
 
-	@Unroll({"input for a $type.simpleName property matches '$outputPattern'"})
-	def "input types"() {
+	def "input for a #type.simpleName property matches '#outputPattern'"() {
 		given:
 		def model = [type: type, property: "prop", constraints: [:], persistentProperty: basicProperty]
 
@@ -48,8 +48,7 @@ class DefaultInputRenderingSpec extends Specification {
 		byte[]  | /input type="file"/
 	}
 
-	@Unroll({"input for a $type.simpleName property with a value of '$value' matches '$outputPattern'"})
-	def "input values"() {
+	def "input for a #type.simpleName property with a value of '#value' matches '#outputPattern'"() {
 		given:
 		def model = [type: type, property: "prop", constraints: [:], persistentProperty: basicProperty, value: value]
 
@@ -66,8 +65,7 @@ class DefaultInputRenderingSpec extends Specification {
 		URL     | "http://grails.org/" | /value="http:\/\/grails.org\/"/
 	}
 
-	@Unroll({"input for ${required ? 'a required' : 'an optional'} property ${required ? 'has' : 'does not have'} the required attribute"})
-	def "required attribute"() {
+	def "input for a #{required ? 'a required' : 'an optional'} property #{required ? 'has' : 'does not have'} the required attribute"() {
 		given:
 		def model = [type: String, property: "prop", required: required, constraints: [:], persistentProperty: basicProperty]
 
@@ -78,8 +76,7 @@ class DefaultInputRenderingSpec extends Specification {
 		required << [true, false]
 	}
 
-	@Unroll({"input for ${invalid ? 'an invalid' : 'a valid'} property ${invalid ? 'has' : 'does not have'} the invalid attribute"})
-	def "invalid attribute"() {
+	def "input for #{invalid ? 'an invalid' : 'a valid'} property #{invalid ? 'has' : 'does not have'} the invalid attribute"() {
 		given:
 		def model = [type: String, property: "prop", invalid: invalid, constraints: [:], persistentProperty: basicProperty]
 
@@ -115,8 +112,7 @@ class DefaultInputRenderingSpec extends Specification {
 		output =~ /<option value="PRODUCTION" selected="selected"/
 	}
 
-	@Unroll({"input for a $type.simpleName property is a special select type"})
-	def "special select types"() {
+	def "input for a #type.simpleName property is a special select type"() {
 		given:
 		def model = [type: type, property: "prop", constraints: [:], persistentProperty: basicProperty]
 
@@ -134,8 +130,7 @@ class DefaultInputRenderingSpec extends Specification {
 		Currency      | /<option value="GBP"/
 	}
 
-	@Unroll({"input for a $type.simpleName property has the correct option(s) selected"})
-	def "special select values"() {
+	def "input for a #type.simpleName property has the correct option(s) selected"() {
 		given:
 		def model = [type: type, property: "prop", constraints: [:], persistentProperty: basicProperty, value: value]
 
@@ -153,8 +148,7 @@ class DefaultInputRenderingSpec extends Specification {
 		Currency      | Currency.getInstance("USD")           | /<option value="USD" selected="selected"/
 	}
 
-	@Unroll({"select for ${required ? 'a required' : 'an optional'} $type.simpleName property ${required ? 'does not have' : 'has'} a no-selection option"})
-	def "optional date and time select types"() {
+	def "select for #{required ? 'a required' : 'an optional'} #type.simpleName property #{required ? 'does not have' : 'has'} a no-selection option"() {
 		given:
 		def model = [type: type, property: "prop", constraints: [:], persistentProperty: basicProperty, required: required]
 
@@ -176,8 +170,7 @@ class DefaultInputRenderingSpec extends Specification {
 		java.sql.Time | false
 	}
 
-	@Unroll({"select for a $type.simpleName property has a precision of 'day'"})
-	def "date and time precision"() {
+	def "select for a #type.simpleName property has a precision of 'day'"() {
 		given:
 		def model = [type: type, property: "prop", constraints: [:], persistentProperty: basicProperty]
 
@@ -210,8 +203,7 @@ class DefaultInputRenderingSpec extends Specification {
 		output.contains('select name="prop_minute"')
 	}
 
-	@Unroll({"select for ${required ? 'a required' : 'an optional'} $type.simpleName property ${required ? 'does not have' : 'has'} a no-selection option"})
-	def "optional special select types"() {
+	def "select for #{required ? 'a required' : 'an optional'} #type.simpleName property #{required ? 'does not have' : 'has'} a no-selection option"() {
 		given:
 		def model = [type: type, property: "prop", constraints: [:], persistentProperty: basicProperty, required: required]
 
@@ -228,8 +220,7 @@ class DefaultInputRenderingSpec extends Specification {
 		Currency | false
 	}
 
-	@Unroll({"input for a String property with $constraints constraints matches $outputPattern"})
-	def "input types for String properties are appropriate for constraints"() {
+	def "input for a String property with #constraints constraints matches #outputPattern"() {
 		given:
 		def model = [type: String, property: "prop", constraints: constraints, persistentProperty: basicProperty]
 
@@ -256,8 +247,7 @@ class DefaultInputRenderingSpec extends Specification {
 		output =~ /max="10"/
 	}
 
-	@Unroll({"input for a $type.simpleName property with $constraints constraints matches $outputPattern"})
-	def "inputs have constraint-driven attributes where appropriate"() {
+	def "input for a #type.simpleName property with #constraints constraints matches #outputPattern"() {
 		given:
 		def model = [type: type, property: "prop", constraints: constraints, persistentProperty: basicProperty]
 
@@ -275,8 +265,7 @@ class DefaultInputRenderingSpec extends Specification {
 		String | [editable: false] | /readonly=""/
 	}
 
-	@Unroll({"input for a $type.simpleName property with an inList constraint of $inListConstraint is a select"})
-	def "inputs for properties with inList constraint are selects"() {
+	def "input for a #type.simpleName property with an inList constraint of #inListConstraint is a select"() {
 		given:
 		def model = [type: type, property: "prop", constraints: [inList: inListConstraint], persistentProperty: basicProperty]
 
@@ -295,8 +284,7 @@ class DefaultInputRenderingSpec extends Specification {
 		String | ["catflap", "rubberplant", "marzipan"]
 	}
 
-	@Unroll({"input for an optional $type.simpleName property ${constraints ? "with $constraints constraints " : ''}has a no-selection option"})
-	def "optional properties with select inputs have a no-selection option"() {
+	def "input for an optional #type.simpleName property #{constraints ? 'with #constraints constraints ' : ''}has a no-selection option"() {
 		given:
 		def model = [type: type, property: "prop", constraints: constraints, persistentProperty: basicProperty]
 
@@ -310,8 +298,7 @@ class DefaultInputRenderingSpec extends Specification {
 		String      | [inList: ["catflap", "rubberplant", "marzipan"]]
 	}
 
-	@Unroll({"input for a required $type.simpleName property ${constraints ? "with $constraints constraints " : ''}has a no-selection option"})
-	def "required properties with select inputs have a no-selection option"() {
+	def "input for a required #type.simpleName property #{constraints ? 'with #constraints constraints ' : ''}has a no-selection option"() {
 		given:
 		def model = [type: type, property: "prop", constraints: constraints, required: true, persistentProperty: basicProperty]
 
@@ -325,8 +312,7 @@ class DefaultInputRenderingSpec extends Specification {
 		String      | [inList: ["catflap", "rubberplant", "marzipan"]]
 	}
 
-	@Unroll({"input for a $description property is a select"})
-	def "inputs for n-to-n associations are selects"() {
+	def "input for a #description property is a select"() {
 		given:
 		def model = [type: type, property: "prop", constraints: [:], persistentProperty: persistentProperty]
 
@@ -347,8 +333,7 @@ class DefaultInputRenderingSpec extends Specification {
 		Set    | manyToManyProperty | "many-to-many"
 	}
 
-	@Unroll({"select for a $description property with a value of $value has the correct option selected"})
-	def "inputs for n-to-n associations set selected value"() {
+	def "select for a #description property with a value of #value has the correct option selected"() {
 		given:
 		def model = [type: type, property: "prop", constraints: [:], persistentProperty: persistentProperty, value: value]
 
@@ -365,8 +350,7 @@ class DefaultInputRenderingSpec extends Specification {
 		Set    | manyToManyProperty | "many-to-many" | [people[1]]
 	}
 
-	@Unroll({"input for ${required ? 'a required' : 'an optional'} $description property ${required ? 'has' : 'does not have'} a no-selection option"})
-	def "optional inputs for n-to-n associations have no-selection options"() {
+	def "input for #{required ? 'a required' : 'an optional'} #description property #{required ? 'has' : 'does not have'} a no-selection option"() {
 		given:
 		def model = [type: type, property: "prop", constraints: [:], persistentProperty: persistentProperty, required: required]
 

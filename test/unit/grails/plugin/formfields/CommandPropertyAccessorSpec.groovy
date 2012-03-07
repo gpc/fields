@@ -9,6 +9,7 @@ import spock.lang.*
 
 @TestMixin(ControllerUnitTestMixin)
 @Mock(Person)
+@Unroll
 class CommandPropertyAccessorSpec extends Specification {
 
 	BeanPropertyAccessorFactory factory = new BeanPropertyAccessorFactory(
@@ -38,8 +39,7 @@ class CommandPropertyAccessorSpec extends Specification {
 		propertyAccessor.constraints.password
 	}
 
-	@Unroll({"property of $type.simpleName is nullable"})
-	void 'properties are nullable by default unlike domain class properties'() {
+	void 'property of #type.simpleName is nullable'() {
 		given:
 		def command = mockCommandObject(type)
 
@@ -219,8 +219,7 @@ class CommandPropertyAccessorSpec extends Specification {
 	}
 
 	@Issue('https://github.com/robfletcher/grails-fields/issues/37')
-	@Unroll({"resolves constraints of the '$property' property even when the intervening object is null"})
-	void 'resolves constraints of a nested property even when the intervening object is null'() {
+	void "resolves constraints of the '#property' property even when the intervening object is null"() {
 		given:
 		TestCommand command = mockCommandObject(TestCommand)
 

@@ -29,6 +29,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 	static final namespace = 'f'
 	static final String BEAN_PAGE_SCOPE_VARIABLE = 'f:with:bean'
+	static final String PREFIX_PAGE_SCOPE_VARIABLE = 'f:with:prefix'
 
 	FormFieldsTemplateService formFieldsTemplateService
 	GrailsApplication grailsApplication
@@ -37,21 +38,25 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	def with = { attrs, body ->
 		if (!attrs.bean) throwTagError("Tag [with] is missing required attribute [bean]")
 		def bean = resolveBean(attrs.bean)
+		def prefix = resolvePrefix(attrs.prefix)
 		try {
 			pageScope.variables[BEAN_PAGE_SCOPE_VARIABLE] = bean
+			pageScope.variables[PREFIX_PAGE_SCOPE_VARIABLE] = prefix
 			out << body()
 		} finally {
 			pageScope.variables.remove(BEAN_PAGE_SCOPE_VARIABLE)
+			pageScope.variables.remove(PREFIX_PAGE_SCOPE_VARIABLE)
 		}
 	}
 
 	def all = { attrs ->
 		if (!attrs.bean) throwTagError("Tag [all] is missing required attribute [bean]")
 		def bean = resolveBean(attrs.bean)
+		def prefix = resolvePrefix(attrs.prefix)
 		def domainClass = resolveDomainClass(bean)
 		if (domainClass) {
 			for (property in resolvePersistentProperties(domainClass, attrs)) {
-				out << field(bean: bean, property: property.name, prefix:attrs.prefix)
+				out << field(bean: bean, property: property.name, prefix:prefix)
 			}
 		} else {
 			throwTagError('Tag [all] currently only supports domain types')
@@ -94,7 +99,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		out << applyLayout(name: '_fields/embedded', params: [type: toPropertyNameFormat(propertyAccessor.propertyType), legend: legend]) {
 			for (embeddedProp in resolvePersistentProperties(propertyAccessor.persistentProperty.component, attrs)) {
 				def propertyPath = "${propertyAccessor.pathFromRoot}.${embeddedProp.name}"
-				out << field(bean: bean, property: propertyPath)
+				out << field(bean: bean, property: propertyPath, prefix:attrs.prefix)
 			}
 		}
 	}
@@ -132,7 +137,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 				errors: propertyAccessor.errors.collect { message(error: it) },
 				required: attrs.containsKey("required") ? Boolean.valueOf(attrs.remove('required')) : propertyAccessor.required,
 				invalid: attrs.containsKey("invalid") ? Boolean.valueOf(attrs.remove('invalid')) : propertyAccessor.invalid,
-				prefix: attrs.prefix,
+				prefix: resolvePrefix(attrs.remove('prefix')),
 		]
 	}
 
@@ -155,6 +160,18 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 		if (!bean) bean = beanAttribute
 		bean
+	}
+	
+	private String resolvePrefix(prefixAttribute) {
+		def prefix = pageScope.variables[PREFIX_PAGE_SCOPE_VARIABLE]
+		// Tomcat throws NPE if you query pageScope for null/empty values
+		if (prefixAttribute?.toString()) {
+			prefix = pageScope.variables[prefixAttribute]
+		}
+		if (!prefix) prefix = prefixAttribute
+		if (prefix && !prefix.endsWith('.'))
+			prefix = prefix+'.'
+		prefix ?: ''
 	}
 
 	private GrailsDomainClass resolveDomainClass(bean) {
@@ -207,7 +224,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 		def writer = new StringWriter()
 		new MarkupBuilder(writer).div(class: classes.join(' ')) {
-			label(for: getFieldName(model), model.label) {
+			label(for: (model.prefix?:'')+model.property, model.label) {
 				if (model.required) {
 					span(class: 'required-indicator', '*')
 				}
@@ -216,13 +233,9 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 		writer.toString()
 	}
-	
-	private String getFieldName(Map model) {
-		return (model.prefix?model.prefix+'.':'')+model.property
-	}
 
 	private String renderDefaultInput(Map model, Map attrs = [:]) {
-		attrs.name = getFieldName(model)
+		attrs.name = (model.prefix?:'')+model.property
 		attrs.value = model.value
 		if (model.required) attrs.required = "" // TODO: configurable how this gets output? Some people prefer required="required"
 		if (model.invalid) attrs.invalid = ""
@@ -299,8 +312,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	private String renderAssociationInput(Map model, Map attrs) {
-		attrs.name = "${model.property}.id"
-		attrs.id = model.property
+		attrs.name = "${model.prefix?:''}${model.property}.id"
+		attrs.id = (model.prefix?:'')+model.property
 		attrs.from = model.persistentProperty.referencedPropertyType.list()
 		attrs.optionKey = "id" // TODO: handle alternate id names
 		if (model.persistentProperty.manyToMany) {

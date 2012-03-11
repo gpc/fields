@@ -250,6 +250,9 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		} else if (model.type in URL) {
 			return g.field(attrs + [type: "url"])
 		} else if (model.type.isEnum()) {
+			if (attrs.value instanceof Enum)
+				attrs.value = attrs.value.name()
+			attrs.keys = model.type.values()*.name()
 			attrs.from = model.type.values()
 			if (!model.required) attrs.noSelection = ["": ""]
 			return g.select(attrs)

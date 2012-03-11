@@ -391,6 +391,38 @@ class DefaultInputRenderingSpec extends Specification {
 		and:
 		output.contains("""<a href="/person/create?thing.id=1337">Add Person</a>""")
 	}
+	
+	@Issue('https://github.com/robfletcher/grails-fields/issues/56')
+	def 'an enum with a toString method uses name instead of toString for the keys'() {
+		given:
+		def model = [type: EnumWithToString, property: "prop", constraints: [:], persistentProperty: basicProperty]
+
+		when:
+		def output = tagLib.renderDefaultInput(model)
+
+		then:
+		output =~ /select name="prop"/
+		EnumWithToString.values().every {
+			assert output =~ /option value="${it.name()}"/
+			assert output =~ />${it.toString()}</
+			true
+		}
+	}
+
+	@Issue('https://github.com/robfletcher/grails-fields/issues/56')
+	def "enum with toString select and #type value has correct selected option"() {
+		when:
+		def model = [type: EnumWithToString, property: "prop", constraints: [:], persistentProperty: basicProperty, value: value]
+		def output = tagLib.renderDefaultInput(model)
+
+		then:
+		output =~ /<option value="FIRST" selected="selected"/
+		
+		where:
+		type 	| value
+		"String"| EnumWithToString.FIRST
+		"Enum"	| "FIRST"
+	}
 
 }
 
@@ -426,4 +458,20 @@ class MockPersistentProperty implements GrailsDomainClassProperty {
 	boolean isEnum
 
 	boolean isEnum() { isEnum }
+}
+
+enum EnumWithToString {
+	FIRST("first"),
+	SECOND("second"),
+	THIRD("third")
+	
+	private String str
+	
+	private EnumWithToString(String str) {
+		this.str = str
+	}
+	
+	public String toString() {
+		return str
+	}
 }

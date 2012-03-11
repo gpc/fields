@@ -156,6 +156,18 @@ class FormFieldsTagLibSpec extends Specification {
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="dateOfBirth"/>', [personInstance: personInstance]) == "1987-04-19"
 	}
+	
+	@Issue('https://github.com/robfletcher/grails-fields/issues/55')
+	void "numeric value of zero is not overridden by default"() {
+		given:
+		views["/_fields/default/_field.gsp"] = '<span>${value}</span>'
+		
+		and:
+		def employee = new Employee(name: 'Monica Lewinsky', jobTitle: 'Intern', salary: 0)
+
+		expect:
+		applyTemplate('<f:field bean="personInstance" property="salary" default="50000"/>', [personInstance: employee]) == "<span>0</span>"
+	}
 
 	void "value is overridden by value attribute"() {
 		given:
@@ -177,15 +189,18 @@ class FormFieldsTagLibSpec extends Specification {
 		value << [null, '']
 	}
 
-	void "value falls back to default"() {
+	void "falsy string property value of '#value' falls back to default"() {
 		given:
 		views["/_fields/default/_field.gsp"] = '${value}'
 
 		and:
-		personInstance.name = null
+		personInstance.name = value
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name" default="A. N. Other"/>', [personInstance: personInstance]) == "A. N. Other"
+		
+		where:
+		value << [null, '']
 	}
 
 	void "default attribute is ignored if property has non-null value"() {

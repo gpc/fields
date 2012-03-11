@@ -403,9 +403,7 @@ class DefaultInputRenderingSpec extends Specification {
 		then:
 		output =~ /select name="prop"/
 		EnumWithToString.values().every {
-			assert output =~ /option value="${it.name()}"/
-			assert output =~ />${it.toString()}</
-			true
+			output =~ /option value="${it.name()}" >${it.toString()}</
 		}
 	}
 

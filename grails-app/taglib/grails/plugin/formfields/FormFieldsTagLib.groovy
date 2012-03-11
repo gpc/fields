@@ -277,7 +277,11 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 		if (model.constraints.matches) attrs.pattern = model.constraints.matches
 		if (model.constraints.maxSize) attrs.maxlength = model.constraints.maxSize
-
+		
+		if (model.constraints.widget=='textarea') {
+			attrs.remove('type')
+			return g.textArea(attrs)
+		}
 		return g.field(attrs)
 	}
 

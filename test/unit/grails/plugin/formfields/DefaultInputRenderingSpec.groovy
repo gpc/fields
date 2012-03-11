@@ -391,6 +391,19 @@ class DefaultInputRenderingSpec extends Specification {
 		and:
 		output.contains("""<a href="/person/create?thing.id=1337">Add Person</a>""")
 	}
+	
+	@Issue("https://github.com/robfletcher/grails-fields/issues/50")
+	def "string property with a widget type of textarea is rendered as a textArea"() {
+		given:
+		def model = [type: String, property: "prop", constraints: [widget:'textarea'], persistentProperty: basicProperty]
+
+		expect:
+		tagLib.renderDefaultInput(model) =~ outputPattern
+
+		where:
+		type    | outputPattern
+		String  | /textarea name="prop"/
+	}
 
 }
 

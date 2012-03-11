@@ -422,6 +422,15 @@ class DefaultInputRenderingSpec extends Specification {
 		"Enum"	| "FIRST"
 	}
 
+	@Issue("https://github.com/robfletcher/grails-fields/issues/50")
+	def "string property with a widget type of textarea is rendered as a textArea"() {
+		given:
+		def model = [type: String, property: "prop", constraints: [widget:'textarea'], persistentProperty: basicProperty]
+
+		expect:
+		tagLib.renderDefaultInput(model) =~ /textarea name="prop"/
+	}
+
 }
 
 class MockPersistentProperty implements GrailsDomainClassProperty {

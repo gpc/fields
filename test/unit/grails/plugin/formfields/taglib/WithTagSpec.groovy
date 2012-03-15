@@ -16,13 +16,7 @@ class WithTagSpec extends AbstractFormFieldsTagLibSpec {
 	def mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
 
 	def setupSpec() {
-		defineBeans {
-			constraintsEvaluator(DefaultConstraintEvaluator)
-			beanPropertyAccessorFactory(BeanPropertyAccessorFactory) {
-				constraintsEvaluator = ref('constraintsEvaluator')
-				proxyHandler = new DefaultProxyHandler()
-			}
-		}
+		configurePropertyAccessorSpringBean()
 	}
 
 	def setup() {

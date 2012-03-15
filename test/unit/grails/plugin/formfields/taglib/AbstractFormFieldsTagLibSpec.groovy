@@ -24,5 +24,27 @@ abstract class AbstractFormFieldsTagLibSpec extends Specification {
 
 		messageSource.@messages.clear() // bit of a hack but messages don't get torn down otherwise
 	}
+	
+	protected void configurePropertyAccessorSpringBean() {
+		defineBeans {
+			constraintsEvaluator(DefaultConstraintEvaluator)
+			beanPropertyAccessorFactory(BeanPropertyAccessorFactory) {
+				constraintsEvaluator = ref('constraintsEvaluator')
+				proxyHandler = new DefaultProxyHandler()
+			}
+		}
+	}
+	
+	protected void mockEmbeddedSitemeshLayout(taglib) {
+	 	taglib.metaClass.applyLayout = { Map attrs, Closure body ->
+	 		if (attrs.name == '_fields/embedded') {
+	 			out << '<fieldset class="embedded ' << attrs.params.type << '">'
+	 			out << '<legend>' << attrs.params.legend << '</legend>'
+	 			out << body()
+	 			out << '</fieldset>'
+	 		}
+	 		null // stops default return
+	 	}
+	}
 
 }

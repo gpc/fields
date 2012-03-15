@@ -16,13 +16,7 @@ class AllTagSpec extends AbstractFormFieldsTagLibSpec {
 	def mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
 
 	def setupSpec() {
-		defineBeans {
-			constraintsEvaluator(DefaultConstraintEvaluator)
-			beanPropertyAccessorFactory(BeanPropertyAccessorFactory) {
-				constraintsEvaluator = ref('constraintsEvaluator')
-				proxyHandler = new DefaultProxyHandler()
-			}
-		}
+		configurePropertyAccessorSpringBean()
 	}
 
 	def setup() {
@@ -31,16 +25,7 @@ class AllTagSpec extends AbstractFormFieldsTagLibSpec {
 		mockFormFieldsTemplateService.findTemplate(_, 'field') >> [path: '/_fields/default/field']
 		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 
-		// mock up a sitemesh layout call
-	 	taglib.metaClass.applyLayout = { Map attrs, Closure body ->
-	 		if (attrs.name == '_fields/embedded') {
-	 			out << '<fieldset class="embedded ' << attrs.params.type << '">'
-	 			out << '<legend>' << attrs.params.legend << '</legend>'
-	 			out << body()
-	 			out << '</fieldset>'
-	 		}
-	 		null // stops default return
-	 	}
+		mockEmbeddedSitemeshLayout(taglib)
 	}
 
 	void "all tag renders fields for all properties"() {

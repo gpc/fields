@@ -101,7 +101,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	private void renderEmbeddedProperties(bean, BeanPropertyAccessor propertyAccessor, attrs) {
-		def legend = message(code: propertyAccessor.labelKey, default: propertyAccessor.defaultLabel)
+		def legend = resolveMessage(propertyAccessor.labelKeys, propertyAccessor.defaultLabel)
 		out << applyLayout(name: '_fields/embedded', params: [type: toPropertyNameFormat(propertyAccessor.propertyType), legend: legend]) {
 			for (embeddedProp in resolvePersistentProperties(propertyAccessor.persistentProperty.component, attrs)) {
 				def propertyPath = "${propertyAccessor.pathFromRoot}.${embeddedProp.name}"
@@ -214,13 +214,20 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		if (label) {
 			labelText = message(code: label, default: label)
 		}
-		if (!labelText && propertyAccessor.labelKey) {
-			labelText = message(code: propertyAccessor.labelKey, default: propertyAccessor.defaultLabel)
+		if (!labelText && propertyAccessor.labelKeys) {
+			labelText = resolveMessage(propertyAccessor.labelKeys, propertyAccessor.defaultLabel)
 		}
 		if (!labelText) {
 			labelText = propertyAccessor.defaultLabel
 		}
 		labelText
+	}
+	
+	private String resolveMessage(List<String> keysInPreferenceOrder, String defaultMessage) {
+		def message = keysInPreferenceOrder.findResult { key ->
+			message code: key, default: null
+		}
+		message ?: defaultMessage
 	}
 
 	private String renderDefaultField(Map model) {

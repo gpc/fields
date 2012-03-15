@@ -46,8 +46,11 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
 		getSuperclassesAndInterfaces(propertyType)
 	}
 
-	String getLabelKey() {
-		"${GrailsNameUtils.getPropertyName(beanType.simpleName)}.${propertyName}.label"
+	List<String> getLabelKeys() {
+		[
+			"${GrailsNameUtils.getPropertyName(rootBeanType.simpleName)}.${pathFromRoot}.label".replaceAll(/\[(.+)\]/, ''),
+			"${GrailsNameUtils.getPropertyName(beanType.simpleName)}.${propertyName}.label"
+		].unique()
 	}
 
 	String getDefaultLabel() {

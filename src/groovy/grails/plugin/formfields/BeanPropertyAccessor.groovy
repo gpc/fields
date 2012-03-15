@@ -83,9 +83,9 @@ interface BeanPropertyAccessor {
 	ConstrainedProperty getConstraints()
 
 	/**
-	 * @return the i18n key used to resolve a label for the property at the end of the path.
+	 * @return the i18n keys used to resolve a label for the property at the end of the path in order of preference.
 	 */
-	String getLabelKey()
+	List<String> getLabelKeys()
 
 	/**
 	 * @return default label text for the property at the end of the path.

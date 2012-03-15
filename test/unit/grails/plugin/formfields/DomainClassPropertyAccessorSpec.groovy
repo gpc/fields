@@ -211,21 +211,22 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		propertyAccessor.constraints.inList == ["USA", "UK", "Canada"]
 	}
 
-	void "label key for '#property' is '#label'"() {
+	@Issue('https://github.com/robfletcher/grails-fields/issues/38')
+	void "label keys for '#property' are '#labels'"() {
 		given:
 		def bean = beanType.list().first()
 		def propertyAccessor = factory.accessorFor(bean, property)
 
 		expect:
-		propertyAccessor.labelKey == label
+		propertyAccessor.labelKeys == labels
 
 		where:
-		beanType | property         | label
-		Person   | 'name'           | 'person.name.label'
-		Person   | 'dateOfBirth'    | 'person.dateOfBirth.label'
-		Person   | 'address'        | 'person.address.label'
-		Person   | 'address.city'   | 'address.city.label'
-		Author   | 'books[0].title' | 'book.title.label'
+		beanType | property         | labels
+		Person   | 'name'           | ['person.name.label']
+		Person   | 'dateOfBirth'    | ['person.dateOfBirth.label']
+		Person   | 'address'        | ['person.address.label']
+		Person   | 'address.city'   | ['person.address.city.label', 'address.city.label']
+		Author   | 'books[0].title' | ['author.books.title.label', 'book.title.label']
 	}
 
 	void "default label for '#property' is '#label'"() {

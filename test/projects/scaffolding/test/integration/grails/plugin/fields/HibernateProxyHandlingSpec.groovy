@@ -35,7 +35,7 @@ class HibernateProxyHandlingSpec extends Specification {
 
 		and:
 		propertyAccessor.beanType == Ingredient
-		propertyAccessor.labelKey == 'ingredient.id.label'
+		propertyAccessor.labelKeys == ['cocktail.ingredients.id.label', 'ingredient.id.label']
 	}
 
 }

@@ -42,4 +42,13 @@ class FieldTagWithBodySpec extends AbstractFormFieldsTagLibSpec {
         applyTemplate('<f:field bean="personInstance" property="name">bean: ${bean.getClass().simpleName}, property: ${property}, type: ${type.simpleName}, label: ${label}, value: ${value}</f:field>', [personInstance: personInstance]) == 'bean: Person, property: name, type: String, label: Name, value: Bart Simpson'
     }
 
+	@Issue("https://github.com/robfletcher/grails-fields/pull/49")
+    void 'extra attributes prefixed with input- are passed to the tag body'() {
+        given:
+        views['/_fields/default/_field.gsp'] = '${widget}'
+
+        expect:
+        applyTemplate('<f:field bean="personInstance" property="name" input-foo="bar">${foo}</f:field>', [personInstance: personInstance]) == 'bar'
+    }
+
 }

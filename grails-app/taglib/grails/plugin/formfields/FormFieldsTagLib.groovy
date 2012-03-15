@@ -75,19 +75,25 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			renderEmbeddedProperties(bean, propertyAccessor, attrs)
 		} else {
 			def model = buildModel(propertyAccessor, attrs)
-
-			if (hasBody(body)) {
-				model.widget = body(model)
-			} else {
-				model.widget = renderWidget(propertyAccessor, model)
+			def fieldAttrs = [:]
+			def inputAttrs = [:]
+			
+			attrs.each { k, v ->
+				if (k?.startsWith("input-"))
+					inputAttrs[k.replace("input-", '')] = v
+				else
+					fieldAttrs[k] = v
 			}
 
-			// any remaining attrs at this point are 'extras'
-			model += attrs
+			if (hasBody(body)) {
+				model.widget = body(model+inputAttrs)
+			} else {
+				model.widget = renderWidget(propertyAccessor, model, inputAttrs)
+			}
 
 			def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'field')
 			if (template) {
-				out << render(template: template.path, plugin: template.plugin, model: model)
+				out << render(template: template.path, plugin: template.plugin, model: model+fieldAttrs)
 			} else {
 				out << renderDefaultField(model)
 			}
@@ -142,6 +148,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	private String renderWidget(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:]) {
+		println "render widget: ${attrs}"
 		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'input')
 		if (template) {
 			render template: template.path, plugin: template.plugin, model: model + attrs

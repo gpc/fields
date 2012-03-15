@@ -148,7 +148,6 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	private String renderWidget(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:]) {
-		println "render widget: ${attrs}"
 		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'input')
 		if (template) {
 			render template: template.path, plugin: template.plugin, model: model + attrs

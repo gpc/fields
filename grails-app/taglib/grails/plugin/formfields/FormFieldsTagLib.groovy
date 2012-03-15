@@ -288,19 +288,22 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	private String renderStringInput(Map model, Map attrs) {
-		if (model.constraints.inList) {
-			attrs.from = model.constraints.inList
-			if (!model.required) attrs.noSelection = ["": ""]
-			return g.select(attrs)
-		} else if (model.constraints.password) attrs.type = "password"
-		else if (model.constraints.email) attrs.type = "email"
-		else if (model.constraints.url) attrs.type = "url"
-		else attrs.type = "text"
+		if (!attrs.type) {
+			if (model.constraints.inList) {
+				attrs.from = model.constraints.inList
+				if (!model.required) attrs.noSelection = ["": ""]
+				return g.select(attrs)
+			}
+			else if (model.constraints.password) attrs.type = "password"
+			else if (model.constraints.email) attrs.type = "email"
+			else if (model.constraints.url) attrs.type = "url"
+			else attrs.type = "text"
+		}
 
 		if (model.constraints.matches) attrs.pattern = model.constraints.matches
 		if (model.constraints.maxSize) attrs.maxlength = model.constraints.maxSize
 		
-		if (model.constraints.widget=='textarea') {
+		if (model.constraints.widget == 'textarea') {
 			attrs.remove('type')
 			return g.textArea(attrs)
 		}
@@ -308,16 +311,16 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	private String renderNumericInput(Map model, Map attrs) {
-		if (model.constraints.inList) {
+		if (!attrs.type && model.constraints.inList) {
 			attrs.from = model.constraints.inList
 			if (!model.required) attrs.noSelection = ["": ""]
 			return g.select(attrs)
 		} else if (model.constraints.range) {
-			attrs.type = "range"
+			attrs.type = attrs.type ?: "range"
 			attrs.min = model.constraints.range.from
 			attrs.max = model.constraints.range.to
 		} else {
-			attrs.type = "number"
+			attrs.type = attrs.type ?: "number"
 			if (model.constraints.min != null) attrs.min = model.constraints.min
 			if (model.constraints.max != null) attrs.max = model.constraints.max
 		}

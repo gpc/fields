@@ -431,6 +431,21 @@ class DefaultInputRenderingSpec extends Specification {
 		tagLib.renderDefaultInput(model) =~ /textarea name="prop"/
 	}
 
+	@Issue('https://github.com/robfletcher/grails-fields/issues/43')
+	void 'input type can be overridden by supplying input-type parameter'() {
+		given:
+		def model = [type: propertyType, property: "prop", constraints: [:], persistentProperty: basicProperty]
+
+		expect:
+		tagLib.renderDefaultInput(model, [type: typeAttribute]) =~ outputPattern
+
+		where:
+		propertyType | typeAttribute | outputPattern
+		String       | 'search'      | /input type="search"/
+		int          | 'range'       | /input type="range"/
+		Integer      | 'range'       | /input type="range"/
+	}
+
 }
 
 class MockPersistentProperty implements GrailsDomainClassProperty {

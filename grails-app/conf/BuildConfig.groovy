@@ -31,6 +31,7 @@ grails.project.dependency.resolution = {
 		inherits true
 		grailsHome()
         grailsCentral()
+		grailsRepo "http://grails.org/plugins"
 		grailsPlugins()
         mavenCentral()
         mavenLocal()
@@ -42,7 +43,6 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        build(':release:1.0.1') { export = false }
 		test(':spock:0.6') { export = false }
     }
 

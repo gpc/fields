@@ -301,7 +301,10 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 				if (!model.required) attrs.noSelection = ["": ""]
 				return g.select(attrs)
 			}
-			else if (model.constraints.password) attrs.type = "password"
+			else if (model.constraints.password) {
+				attrs.type = "password"
+				attrs.remove('value')
+			}
 			else if (model.constraints.email) attrs.type = "email"
 			else if (model.constraints.url) attrs.type = "url"
 			else attrs.type = "text"

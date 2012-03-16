@@ -65,6 +65,15 @@ class DefaultInputRenderingSpec extends Specification {
 		URL     | "http://grails.org/" | /value="http:\/\/grails.org\/"/
 	}
 
+	@Issue('https://github.com/robfletcher/grails-fields/issues/60')
+	void "input for a property with a password constraint does not include the value"() {
+		given:
+		def model = [type: String, property: "prop", constraints: [password: true], persistentProperty: basicProperty, value: 'correct horse battery staple']
+
+		expect:
+		tagLib.renderDefaultInput(model).contains('value=""')
+	}
+
 	def "input for a #{required ? 'a required' : 'an optional'} property #{required ? 'has' : 'does not have'} the required attribute"() {
 		given:
 		def model = [type: String, property: "prop", required: required, constraints: [:], persistentProperty: basicProperty]

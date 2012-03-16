@@ -12,15 +12,17 @@ grails.project.dependency.resolution = {
     checksums true
 
 	def seleniumVersion = "2.20.0"
-	def gebVersion = "0.6.3"
+	def gebVersion = "0.7.0-SNAPSHOT"
 
     repositories {
         inherits true
         grailsPlugins()
         grailsHome()
         grailsCentral()
+		grailsRepo "http://grails.org/plugins"
         mavenLocal()
         mavenCentral()
+		mavenRepo "https://nexus.codehaus.org/content/repositories/snapshots"
     }
     dependencies {
 		test "org.codehaus.geb:geb-spock:$gebVersion"

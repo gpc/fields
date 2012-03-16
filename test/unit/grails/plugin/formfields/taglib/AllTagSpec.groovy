@@ -1,10 +1,7 @@
 package grails.plugin.formfields.taglib
 
-import org.codehaus.groovy.grails.support.proxy.DefaultProxyHandler
-import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
-import org.codehaus.groovy.grails.web.taglib.exceptions.GrailsTagException
+import grails.plugin.formfields.mock.Person
 import grails.plugin.formfields.*
-import grails.plugin.formfields.mock.*
 import grails.test.mixin.*
 import spock.lang.*
 

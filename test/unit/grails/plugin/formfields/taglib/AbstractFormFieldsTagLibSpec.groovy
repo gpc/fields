@@ -1,12 +1,10 @@
 package grails.plugin.formfields.taglib
 
+import grails.plugin.formfields.BeanPropertyAccessorFactory
 import org.codehaus.groovy.grails.support.proxy.DefaultProxyHandler
 import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
-import org.codehaus.groovy.grails.web.taglib.exceptions.GrailsTagException
-import grails.plugin.formfields.*
+import spock.lang.Specification
 import grails.plugin.formfields.mock.*
-import grails.test.mixin.*
-import spock.lang.*
 
 abstract class AbstractFormFieldsTagLibSpec extends Specification {
 

@@ -49,6 +49,15 @@ and override the template _f:input_ uses with any of these:
 # @grails-app/views/\_fields/string/\_input.gsp@
 # @grails-app/views/\_fields/default/\_input.gsp@
 
+h2. Default Behaviour - Using Grails Input Tags
+
+If no template override is found the plugin will use the standard grails input tags (e.g. _g:select_, _g:checkbox_, _g:field_) for rendering input controls.
+Using _f:field_ you can pass extra arguments (e.g. _optionKey_, _optionValue_) through to these tags by prefixing them with @input-@, e.g.
+
+{code}
+<f:field bean="person" property="gender" input-optionValue="name"/>
+{code}
+
 h2. Template parameters
 
 The _f:field_ and _f:input_ tags will pass the following parameters to your templates or to the body of _f:field_ if you use one:

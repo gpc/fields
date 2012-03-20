@@ -26,7 +26,9 @@ grails.project.dependency.resolution = {
     }
     dependencies {
 		test "org.codehaus.geb:geb-spock:$gebVersion"
+		test "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
 		test "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
+//        test "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
     }
     plugins {
         compile ":hibernate:$grailsVersion"

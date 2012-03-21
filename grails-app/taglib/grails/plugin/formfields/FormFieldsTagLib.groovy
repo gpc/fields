@@ -340,7 +340,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	private String renderAssociationInput(Map model, Map attrs) {
 		attrs.name = "${model.prefix?:''}${model.property}.id"
 		attrs.id = (model.prefix?:'')+model.property
-		attrs.from = model.persistentProperty.referencedPropertyType.list()
+		attrs.from = attrs.from ?: model.persistentProperty.referencedPropertyType.list()
 		attrs.optionKey = "id" // TODO: handle alternate id names
 		if (model.persistentProperty.manyToMany) {
 			attrs.multiple = ""

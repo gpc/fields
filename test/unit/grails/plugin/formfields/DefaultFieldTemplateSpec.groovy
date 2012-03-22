@@ -13,6 +13,8 @@ class DefaultFieldTemplateSpec extends Specification {
 	void setup() {
 		model.invalid = false
 		model.label = 'label'
+		model.unitLabel = 'unit label'
+		model.helpLabel = 'help label'
 		model.property = 'property'
 		model.required = false
 		model.widget = '<input name="property">'
@@ -34,9 +36,17 @@ class DefaultFieldTemplateSpec extends Specification {
 		def label = root.find('label')
 		label.text() == 'label'
 		label.attr('for') == 'property'
-		
+
 		and:
 		label.next().is('input[name=property]')
+
+    and:
+    def unitLabel = root.find('span[class=unit-label]')
+    unitLabel.text() == 'unit label'
+
+    and:
+    def helpLabel = root.find('div[class=help-label]')
+    helpLabel.text() == 'help label'
 	}
 
 	void "container marked as invalid"() {

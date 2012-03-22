@@ -77,7 +77,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			def model = buildModel(propertyAccessor, attrs)
 			def fieldAttrs = [:]
 			def inputAttrs = [:]
-			
+
 			attrs.each { k, v ->
 				if (k?.startsWith("input-"))
 					inputAttrs[k.replace("input-", '')] = v
@@ -136,7 +136,9 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 				property: propertyAccessor.pathFromRoot,
 				type: propertyAccessor.propertyType,
 				beanClass: propertyAccessor.beanClass,
-				label: resolveLabelText(propertyAccessor, attrs),
+				label: resolveLabelText(propertyAccessor, 'label', attrs),
+				helpLabel: resolveLabelText(propertyAccessor, 'helpLabel', attrs),
+				unitLabel: resolveLabelText(propertyAccessor, 'unitLabel', attrs),
 				value: (value instanceof Number || value) ? value : valueDefault,
 				constraints: propertyAccessor.constraints,
 				persistentProperty: propertyAccessor.persistentProperty,
@@ -167,7 +169,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		if (!bean) bean = beanAttribute
 		bean
 	}
-	
+
 	private String resolvePrefix(prefixAttribute) {
 		def prefix = pageScope.variables[PREFIX_PAGE_SCOPE_VARIABLE]
 		// Tomcat throws NPE if you query pageScope for null/empty values
@@ -208,21 +210,39 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		return !body.is(GroovyPage.EMPTY_BODY_CLOSURE)
 	}
 
-	private String resolveLabelText(BeanPropertyAccessor propertyAccessor, Map attrs) {
+	private String resolveLabelText(BeanPropertyAccessor propertyAccessor, String labelType, Map attrs) {
 		def labelText
-		def label = attrs.remove('label')
+		def label = attrs.remove(labelType)
 		if (label) {
 			labelText = message(code: label, default: label)
 		}
-		if (!labelText && propertyAccessor.labelKeys) {
-			labelText = resolveMessage(propertyAccessor.labelKeys, propertyAccessor.defaultLabel)
-		}
-		if (!labelText) {
-			labelText = propertyAccessor.defaultLabel
-		}
+    if (!labelText) {
+      switch (labelType) {
+        case 'label':
+          if (!labelText && propertyAccessor.labelKeys) {
+            labelText = resolveMessage(propertyAccessor.labelKeys, propertyAccessor.defaultLabel)
+          }
+          if (!labelText) {
+            labelText = propertyAccessor.defaultLabel
+          }
+          break
+
+        case 'unitLabel':
+          if (!labelText && propertyAccessor.unitLabelKeys) {
+            labelText = resolveMessage(propertyAccessor.unitLabelKeys, '')
+          }
+          break
+
+        case 'helpLabel':
+          if (!labelText && propertyAccessor.helpLabelKeys) {
+            labelText = resolveMessage(propertyAccessor.helpLabelKeys, '')
+          }
+          break
+      }
+    }
 		labelText
 	}
-	
+
 	private String resolveMessage(List<String> keysInPreferenceOrder, String defaultMessage) {
 		def message = keysInPreferenceOrder.findResult { key ->
 			message code: key, default: null
@@ -243,6 +263,12 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 				}
 			}
 			mkp.yieldUnescaped model.widget
+      if (model.unitLabel) {
+        span(class: 'unit-label', model.unitLabel)
+      }
+      if (model.helpLabel) {
+        div(class: 'help-label', model.helpLabel)
+      }
 		}
 		writer.toString()
 	}
@@ -312,7 +338,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 		if (model.constraints.matches) attrs.pattern = model.constraints.matches
 		if (model.constraints.maxSize) attrs.maxlength = model.constraints.maxSize
-		
+
 		if (model.constraints.widget == 'textarea') {
 			attrs.remove('type')
 			return g.textArea(attrs)

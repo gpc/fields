@@ -32,7 +32,9 @@ class PropertyPathAccessor implements BeanPropertyAccessor {
 	ConstrainedProperty getConstraints() { new ConstrainedProperty(Object, propertyName, String) }
 	GrailsDomainClassProperty getPersistentProperty() { null }
 	List<String> getLabelKeys() { EMPTY_LIST }
-	List<FieldError> getErrors() { EMPTY_LIST }
+  List<String> getHelpLabelKeys() { EMPTY_LIST }
+  List<String> getUnitLabelKeys() { EMPTY_LIST }
+  List<FieldError> getErrors() { EMPTY_LIST }
 	boolean isRequired() { false }
 	boolean isInvalid() { false }
 }

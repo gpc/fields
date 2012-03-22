@@ -29,6 +29,8 @@ class DefaultInputRenderingSpec extends Specification {
 		people*.save(validate: false)
 	}
 
+    private List<Person> getSimpsons() { people.findAll { it.name.contains("Simpson")} }
+
 	def "input for a #type.simpleName property matches '#outputPattern'"() {
 		given:
 		def model = [type: type, property: "prop", constraints: [:], persistentProperty: basicProperty]
@@ -341,6 +343,28 @@ class DefaultInputRenderingSpec extends Specification {
 		Person | manyToOneProperty  | "many-to-one"
 		Set    | manyToManyProperty | "many-to-many"
 	}
+
+    def "input for a #description property is a select containing only entries specified in from parameter"() {
+        given:
+        def model = [type: type, property: "prop", constraints: [:], persistentProperty: persistentProperty]
+
+        when:
+        def output = tagLib.renderDefaultInput(model, [from: simpsons])
+
+        then:
+        output =~ /select name="prop.id"/
+        output =~ /id="prop"/
+        simpsons.every {
+            output =~ /option value="$it.id" >$it.name/
+        }
+        !output.contains("Monty Burns")
+
+        where:
+        type   | persistentProperty | description
+        Person | oneToOneProperty   | "one-to-one"
+        Person | manyToOneProperty  | "many-to-one"
+        Set    | manyToManyProperty | "many-to-many"
+    }
 
 	def "select for a #description property with a value of #value has the correct option selected"() {
 		given:

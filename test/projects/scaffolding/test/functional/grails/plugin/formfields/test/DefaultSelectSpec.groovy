@@ -30,7 +30,7 @@ class DefaultSelectSpec extends GebSpec {
         def options = $('select option')
 
         then:
-        options*.text() == ["Khan", "Kirk"]
+        options*.text().sort() == ["Khan", "Kirk"]
     }
 
     void 'kirk is captain of the enterprise'() {

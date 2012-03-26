@@ -214,7 +214,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 	@Issue('https://github.com/robfletcher/grails-fields/issues/38')
 	void "label keys for '#property' are '#labels'"() {
 		given:
-		def bean = beanType.list().first()
+		def bean = beanType.list().find { it.class == beanType}
 		def propertyAccessor = factory.accessorFor(bean, property)
 
 		expect:

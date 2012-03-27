@@ -6,12 +6,23 @@ In the simplest case you can use _f:all_ to render a field for every property of
 <f:all bean="person"/>
 {code}
 
+If you want to render the read-only version (like the default @show@ action does) use:
+
+{code}
+<f:all bean="person" fieldTemplateName="showField" widgetTemplateName="show"/>
+{code}
+
 To render individual fields you use the _f:field_ tag:
 
 {code}
 <f:field bean="person" property="name"/>
 <f:field bean="person" property="address"/>
 <f:field bean="person" property="dateOfBirth"/>
+{code}
+
+When render individual fields in read-only mode:
+{code}
+<f:all bean="person" property="name" fieldTemplateName="showField" widgetTemplateName="show"/>
 {code}
 
 The _f:field_ tag will automatically handle embedded domain properties recursively:

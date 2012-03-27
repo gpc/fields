@@ -15,7 +15,7 @@ class DefaultFieldTemplateSpec extends Specification {
 		model.label = 'label'
 		model.property = 'property'
 		model.required = false
-		model.widget = '<input name="property">'
+		model.widget = '<input name="property"/>'
 	}
 	
 	static Jerry $(String html) {
@@ -39,7 +39,25 @@ class DefaultFieldTemplateSpec extends Specification {
 		label.next().is('input[name=property]')
 	}
 
-	void "container marked as invalid"() {
+    void "default rendering of showField"() {
+        when:
+        def output = tagLib.renderDefaultField(model, 'showField')
+
+        then:
+        def root = $(output)
+        root.is('li.fieldcontain')
+
+        and:
+        def label = root.find('.property-label')
+        label.text() == 'label'
+        label.attr('class') == 'property-label'
+
+        and:
+        def value = root.find('.property-value')
+        value.html() == model.widget
+    }
+
+    void "container marked as invalid"() {
 		given:
 		model.invalid = true
 

@@ -65,4 +65,13 @@ class FormFieldsScaffoldingSpec extends GebSpec {
 		form.'address.country' == 'USA'
 	}
 
+    void 'show view displays fields correctly'() {
+        given:
+        go 'person/show/1'
+
+        expect:
+        $('.property-list input').size() == 0
+        $('.buttons input').size() == 2
+    }
+
 }

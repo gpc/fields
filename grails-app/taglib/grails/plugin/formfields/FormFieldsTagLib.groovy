@@ -25,6 +25,12 @@ import static FormFieldsTemplateService.toPropertyNameFormat
 import org.codehaus.groovy.grails.commons.*
 import static org.codehaus.groovy.grails.commons.GrailsClassUtils.getStaticPropertyValue
 
+import org.grails.datastore.mapping.model.types.OneToMany
+import org.grails.datastore.mapping.model.types.ManyToMany
+import org.grails.datastore.mapping.model.types.ManyToOne
+import org.grails.datastore.mapping.model.types.OneToOne
+import org.grails.datastore.mapping.model.PersistentProperty
+
 class FormFieldsTagLib implements GrailsApplicationAware {
 
 	static final namespace = 'f'
@@ -54,9 +60,12 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		def bean = resolveBean(attrs.bean)
 		def prefix = resolvePrefix(attrs.prefix)
 		def domainClass = resolveDomainClass(bean)
+        def fieldTemplateName = attrs.remove('fieldTemplateName')
+        def widgetTemplateName = attrs.remove('widgetTemplateName')
 		if (domainClass) {
 			for (property in resolvePersistentProperties(domainClass, attrs)) {
-				out << field(bean: bean, property: property.name, prefix:prefix)
+				out << field(bean: bean, property: property.name, prefix:prefix,
+                        fieldTemplateName: fieldTemplateName, widgetTemplateName: widgetTemplateName)
 			}
 		} else {
 			throwTagError('Tag [all] currently only supports domain types')
@@ -69,43 +78,46 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 		def bean = attrs.remove('bean')
 		def property = attrs.remove('property')
+		def fieldTemplateName = attrs.remove('fieldTemplateName') ?: 'field'
+        def widgetTemplateName = attrs.remove('widgetTemplateName') ?: 'input'
 
-		def propertyAccessor = resolveProperty(bean, property)
-		if (propertyAccessor.persistentProperty?.embedded) {
-			renderEmbeddedProperties(bean, propertyAccessor, attrs)
-		} else {
-			def model = buildModel(propertyAccessor, attrs)
-			def fieldAttrs = [:]
-			def inputAttrs = [:]
-			
-			attrs.each { k, v ->
-				if (k?.startsWith("input-"))
+        def propertyAccessor = resolveProperty(bean, property)
+        if (propertyAccessor.persistentProperty?.embedded) {
+            renderEmbeddedProperties(bean, propertyAccessor, attrs, fieldTemplateName, widgetTemplateName)
+        } else {
+            def model = buildModel(propertyAccessor, attrs)
+            def fieldAttrs = [:]
+            def inputAttrs = [:]
+
+            attrs.each { k, v ->
+                if (k?.startsWith("input-"))
 					inputAttrs[k.replace("input-", '')] = v
 				else
 					fieldAttrs[k] = v
-			}
+            }
 
 			if (hasBody(body)) {
 				model.widget = body(model+inputAttrs)
 			} else {
-				model.widget = renderWidget(propertyAccessor, model, inputAttrs)
+				model.widget = renderWidget(propertyAccessor, model, inputAttrs, widgetTemplateName)
 			}
 
-			def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'field')
+			def template = formFieldsTemplateService.findTemplate(propertyAccessor, fieldTemplateName)
 			if (template) {
 				out << render(template: template.path, plugin: template.plugin, model: model+fieldAttrs)
 			} else {
-				out << renderDefaultField(model)
+				out << renderDefaultField(model, fieldTemplateName)
 			}
 		}
 	}
 
-	private void renderEmbeddedProperties(bean, BeanPropertyAccessor propertyAccessor, attrs) {
+	private void renderEmbeddedProperties(bean, BeanPropertyAccessor propertyAccessor, attrs, fieldTemplateName, widgetTemplateName) {
 		def legend = resolveMessage(propertyAccessor.labelKeys, propertyAccessor.defaultLabel)
 		out << applyLayout(name: '_fields/embedded', params: [type: toPropertyNameFormat(propertyAccessor.propertyType), legend: legend]) {
 			for (embeddedProp in resolvePersistentProperties(propertyAccessor.persistentProperty.component, attrs)) {
 				def propertyPath = "${propertyAccessor.pathFromRoot}.${embeddedProp.name}"
-				out << field(bean: bean, property: propertyPath, prefix:attrs.prefix)
+				out << field(bean: bean, property: propertyPath, prefix:attrs.prefix,
+                        fieldTemplateName: fieldTemplateName, widgetTemplateName: widgetTemplateName)
 			}
 		}
 	}
@@ -147,12 +159,18 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		]
 	}
 
-	private String renderWidget(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:]) {
-		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'input')
+	private String renderWidget(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:], String templateName='input') {
+        def template = formFieldsTemplateService.findTemplate(propertyAccessor, templateName)
 		if (template) {
 			render template: template.path, plugin: template.plugin, model: model + attrs
 		} else {
-			renderDefaultInput model, attrs
+
+            switch (templateName) {
+                case 'show':
+                    return renderDefaultShow(model, attrs)
+                default:
+                    return renderDefaultInput(model, attrs)
+            }
 		}
 	}
 
@@ -230,20 +248,34 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		message ?: defaultMessage
 	}
 
-	private String renderDefaultField(Map model) {
+	private String renderDefaultField(Map model, String templateName='field') {
 		def classes = ['fieldcontain']
 		if (model.invalid) classes << 'error'
 		if (model.required) classes << 'required'
 
 		def writer = new StringWriter()
-		new MarkupBuilder(writer).div(class: classes.join(' ')) {
-			label(for: (model.prefix?:'')+model.property, model.label) {
-				if (model.required) {
-					span(class: 'required-indicator', '*')
-				}
-			}
-			mkp.yieldUnescaped model.widget
-		}
+        def builder = new MarkupBuilder(writer)
+
+        switch (templateName) {
+            case 'showField':
+                builder.li(class: classes.join(' ')) {
+                    span(id: "${model.property}-label", class: 'property-label', model.label)
+                    span(class:'property-value', 'aria-labelledby': "${model.property}-label") {
+                        //"HURZ"
+                        mkp.yieldUnescaped model.widget
+                    }
+                }
+                break
+            default:
+                builder.div(class: classes.join(' ')) {
+                    label(for: (model.prefix?:'')+model.property, model.label) {
+                        if (model.required) {
+                            span(class: 'required-indicator', '*')
+                        }
+                    }
+                    mkp.yieldUnescaped model.widget
+                }
+        }
 		writer.toString()
 	}
 
@@ -285,7 +317,62 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 	}
 
-	private String renderDateTimeInput(Map model, Map attrs) {
+    private String renderDefaultShow(Map model, Map attrs = [:]) {
+        def name = (model.prefix ?: '') + model.property
+        def value = model.value
+        GrailsDomainClassProperty persistentProperty = model.persistentProperty
+        def bean = model.bean
+
+        if (persistentProperty?.oneToMany || persistentProperty?.manyToMany) {
+            def buffer = new StringBuilder()
+            def controllerName = persistentProperty.referencedDomainClass.propertyName
+            buffer << '<ul>'
+            value.each {
+                buffer << '<li>'
+                buffer << g.link(controller: controllerName, action: "show", id: it.id, it.toString().encodeAsHTML())
+                buffer << '</li>'
+            }
+            buffer << '</ul>'
+            return buffer.toString()
+        } else if (persistentProperty?.manyToOne || persistentProperty?.oneToOne) {
+            def controllerName = persistentProperty.referencedDomainClass.propertyName
+            return g.link(controller: controllerName, action: 'show', id: value.id, value.toString().encodeAsHTML());
+        } else {
+            return g.fieldValue(bean: bean, field: name)
+        }
+
+        /*
+        snippet from Grails' orig src/templates/scaffolding/show.gsp
+                           <span id="${p.name}-label" class="property-label"><g:message
+                        code="${domainClass.propertyName}.${p.name}.label" default="${p.naturalName}"/></span>
+                <% if (p.isEnum()) { %>
+                <span class="property-value" aria-labelledby="${p.name}-label"><g:fieldValue bean="\${${propertyName}}"
+                                                                                             field="${p.name}"/></span>
+                <% } else if (p.oneToMany || p.manyToMany) { %>
+                <g:each in="\${${propertyName}.${p.name}}" var="${p.name[0]}">
+                    <span class="property-value" aria-labelledby="${p.name}-label"><g:link
+                            controller="${p.referencedDomainClass?.propertyName}" action="show"
+                            id="\${${p.name[0]}.id}">\${${p.name[0]}?.encodeAsHTML()}</g:link></span>
+                </g:each>
+                <% } else if (p.manyToOne || p.oneToOne) { %>
+                <span class="property-value" aria-labelledby="${p.name}-label"><g:link
+                        controller="${p.referencedDomainClass?.propertyName}" action="show"
+                        id="\${${propertyName}?.${p.name}?.id}">\${${propertyName}?.${p.name}?.encodeAsHTML()}</g:link></span>
+                <% } else if (p.type == Boolean || p.type == boolean) { %>
+                <span class="property-value" aria-labelledby="${p.name}-label"><g:formatBoolean
+                        boolean="\${${propertyName}?.${p.name}}"/></span>
+                <% } else if (p.type == Date || p.type == java.sql.Date || p.type == java.sql.Time || p.type == Calendar) { %>
+                <span class="property-value" aria-labelledby="${p.name}-label"><g:formatDate
+                        date="\${${propertyName}?.${p.name}}"/></span>
+                <% } else if (!p.type.isArray()) { %>
+                <span class="property-value" aria-labelledby="${p.name}-label"><g:fieldValue bean="\${${propertyName}}"
+                                                                                             field="${p.name}"/></span>
+                <% } %>
+        */
+
+    }
+
+    private String renderDateTimeInput(Map model, Map attrs) {
 		attrs.precision = model.type == java.sql.Time ? "minute" : "day"
 		if (!model.required) {
 			attrs.noSelection = ["": ""]

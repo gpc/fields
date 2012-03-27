@@ -43,6 +43,8 @@ h2. Attributes
 *invalid* | | Overrides the validity of the property. By default this is worked out using the bean's _errors_ property for domain and command objects.
 *label* | | Overrides the field label passed to the template. This value may either be an i18n key or a literal string.
 *prefix* | String | A string (including the trailing period) that should be appended before the input name such as @name="${prefix}propertyName"@.  The label is also modified.
+*fieldTemplateName* | String | defaults to 'field', use 'showField' when rendering the read-only 'show' action.
+*widgetTemplateName* | String | defaults to 'input', use to customize the gsp template name for the widget
 {table}
 
 Any additional attributes are passed to the rendered template. Any additional attributes prefixed with @input-@ are instead passed to the input template or rendered on the default input.

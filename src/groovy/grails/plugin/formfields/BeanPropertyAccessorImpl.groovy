@@ -53,6 +53,20 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
 		].unique()
 	}
 
+  List<String> getHelpLabelKeys() {
+    [
+      "${GrailsNameUtils.getPropertyName(rootBeanType.simpleName)}.${pathFromRoot}.help.label".replaceAll(/\[(.+)\]/, ''),
+      "${GrailsNameUtils.getPropertyName(beanType.simpleName)}.${propertyName}.help.label"
+    ].unique()
+  }
+
+  List<String> getUnitLabelKeys() {
+    [
+      "${GrailsNameUtils.getPropertyName(rootBeanType.simpleName)}.${pathFromRoot}.unit.label".replaceAll(/\[(.+)\]/, ''),
+      "${GrailsNameUtils.getPropertyName(beanType.simpleName)}.${propertyName}.unit.label"
+    ].unique()
+  }
+
 	String getDefaultLabel() {
 		GrailsNameUtils.getNaturalName(propertyName)
 	}

@@ -87,6 +87,16 @@ interface BeanPropertyAccessor {
 	 */
 	List<String> getLabelKeys()
 
+  /**
+   * @return the i18n keys used to resolve a help label for the property at the end of the path in order of preference.
+   */
+  List<String> getHelpLabelKeys()
+
+  /**
+   * @return the i18n keys used to resolve a help label for the property at the end of the path in order of preference.
+   */
+  List<String> getUnitLabelKeys()
+
 	/**
 	 * @return default label text for the property at the end of the path.
 	 */

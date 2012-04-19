@@ -68,6 +68,8 @@ The _f:field_ and _f:input_ tags will pass the following parameters to your temp
 *property* | String | The _property_ attribute as passed to the _f:field_ or _f:input_ tag. This would generally be useful for the _name_ attribute of a form input.
 *type* | Class | The property type.
 *label* | String | The field label text. This is based on the _label_ attribute passed to the _f:field_ or _f:input_ tag. If no _label_ attribute was used the label is resolved by convention - see below.
+*helpLabel* | String | The field's help label text. This is based on the _helpLabel_ attribute passed to the _f:field_ tag. If no _helpLabel_ attribute was used the help label is resolved by convention - see below.
+*unitLabel* | String | The field's unit label text. This is based on the _unitLabel_ attribute passed to the _f:field_ tag. If no _unitLabel_ attribute was used the unit label is resolved by convention - see below.
 *value* | Object | the property value. This can also be overridden or defaulted if the _value_ or _default_ attribute was passed to _f:field_ or _f:input_.
 *constraints* | ConstrainedProperty | The constraints for the property if the bean is a domain or command object.
 *persistentProperty* | GrailsDomainClassProperty | The persistent property object if the bean is a domain object.
@@ -90,8 +92,10 @@ If the _bean_ attribute was not supplied to _f:field_ then _bean_, _type_, _valu
 
 h3. Field labels
 
-If the _label_ attribute is not supplied to the _f:field_ tag then the label string passed to the field template is resolved by convention. The plugin uses the following order of preference for the label:
+If the _label_, _unitLabel_, or _helpLabel_ attribute is not supplied to the _f:field_ tag then the label string passed to the field template is resolved by convention. The plugin uses the following order of preference for the label:
 
-# An i18n message using the key '_beanClass_._path_@.label@'. For example when using @<f:field bean="personInstance" property="address.city"/>@ the plugin will try the i18n key @person.address.city.label@. If the property path contains any index it is removed so @<f:field bean="authorInstance" property="books[0].title"/>@ would use the key @author.books.title.label@.
+# An i18n message using the key '_beanClass_._path_@.label@' ('_beanClass_._path_@.help.label@' and '_beanClass_._path_@.unit.label@' respectively). For example when using @<f:field bean="personInstance" property="address.city"/>@ the plugin will try the i18n key @person.address.city.label@ (and @person.address.city.help.label@ / @person.address.city.unit.label@ respectively). If the property path contains any index it is removed so @<f:field bean="authorInstance" property="books[0].title"/>@ would use the key @author.books.title.label@.
 # An i18n message using the key '_objectType_._propertyName_@.label@'. For example when using @<f:field bean="personInstance" property="address.city"/>@ the plugin will try the i18n key @address.city.label@.
 # The natural property name. For example when using @<f:field bean="personInstance" property="dateOfBirth"/>@ the plugin will use the label @"Date Of Birth"@.
+
+# The default for help and unit labels is an empty string. Help and unit labels are not rendered if they are not defined.

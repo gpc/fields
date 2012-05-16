@@ -331,7 +331,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def output = tagLib.renderDefaultInput(model)
 
 		then:
-		output =~ /select name="prop.id"/
+		output =~ /select name="prop/
 		output =~ /id="prop"/
 		people.every {
 			output =~ /option value="$it.id" >$it.name/
@@ -391,7 +391,7 @@ class DefaultInputRenderingSpec extends Specification {
         def output = tagLib.renderDefaultInput(model, [from: simpsons])
 
         then:
-        output =~ /select name="prop.id"/
+        output =~ /select name="prop/
         output =~ /id="prop"/
         simpsons.every {
             output =~ /option value="$it.id" >$it.name/

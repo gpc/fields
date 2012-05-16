@@ -331,7 +331,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def output = tagLib.renderDefaultInput(model)
 
 		then:
-		output =~ /select name="prop.id"/
+		output =~ /select name="prop/
 		output =~ /id="prop"/
 		people.every {
 			output =~ /option value="$it.id" >$it.name/
@@ -344,6 +344,45 @@ class DefaultInputRenderingSpec extends Specification {
 		Set    | manyToManyProperty | "many-to-many"
 	}
 
+	def "input for a #description property doesn't have `.id` at the end of the name"() {
+		given:
+		def model = [type: type, property: "prop", constraints: [:], persistentProperty: persistentProperty]
+
+		when:
+		def output = tagLib.renderDefaultInput(model)
+
+		then:
+		output =~ /select name="prop"/
+		output =~ /id="prop"/
+		people.every {
+			output =~ /option value="$it.id" >$it.name/
+		}
+
+		where:
+		type   | persistentProperty | description
+		Set    | manyToManyProperty | "many-to-many"
+	}
+
+	def "input for a #description property does have `.id` at the end of the name"() {
+		given:
+		def model = [type: type, property: "prop", constraints: [:], persistentProperty: persistentProperty]
+
+		when:
+		def output = tagLib.renderDefaultInput(model)
+
+		then:
+		output =~ /select name="prop.id"/
+		output =~ /id="prop"/
+		people.every {
+			output =~ /option value="$it.id" >$it.name/
+		}
+
+		where:
+		type   | persistentProperty | description
+		Person | oneToOneProperty   | "one-to-one"
+		Person | manyToOneProperty  | "many-to-one"
+	}
+
     def "input for a #description property is a select containing only entries specified in from parameter"() {
         given:
         def model = [type: type, property: "prop", constraints: [:], persistentProperty: persistentProperty]
@@ -352,7 +391,7 @@ class DefaultInputRenderingSpec extends Specification {
         def output = tagLib.renderDefaultInput(model, [from: simpsons])
 
         then:
-        output =~ /select name="prop.id"/
+        output =~ /select name="prop/
         output =~ /id="prop"/
         simpsons.every {
             output =~ /option value="$it.id" >$it.name/

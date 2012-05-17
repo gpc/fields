@@ -330,6 +330,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			attrs.max = model.constraints.range.to
 		} else {
 			attrs.type = attrs.type ?: "number"
+			if (model.constraints.scale != null) attrs.step = "0.${'0' * (model.constraints.scale - 1)}1"
 			if (model.constraints.min != null) attrs.min = model.constraints.min
 			if (model.constraints.max != null) attrs.max = model.constraints.max
 		}

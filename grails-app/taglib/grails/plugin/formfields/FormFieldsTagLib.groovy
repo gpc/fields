@@ -225,7 +225,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	
 	private String resolveMessage(List<String> keysInPreferenceOrder, String defaultMessage) {
 		def message = keysInPreferenceOrder.findResult { key ->
-			message code: key, default: null
+			message(code: key, default: null) ?: null
 		}
 		message ?: defaultMessage
 	}

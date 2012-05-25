@@ -63,6 +63,31 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 		applyTemplate('<f:field bean="personInstance" property="address.city"/>', [personInstance: personInstance]) == "<label>Label for property path</label>"
 	}
 
+    @Issue('https://github.com/robfletcher/grails-fields/issues/76')
+	void "label is resolved by property type when property path message code does not exist"() {
+		given:
+		views["/_fields/default/_field.gsp"] = '<label>${label}</label>'
+
+		and:
+		messageSource.addMessage('address.city.label', request.locale, "Label for property type")
+
+		expect:
+		applyTemplate('<f:field bean="personInstance" property="address.city"/>', [personInstance: personInstance]) == "<label>Label for property type</label>"
+	}
+
+    @Issue('https://github.com/robfletcher/grails-fields/issues/76')
+	void "label is not resolved by property type when property path label same as default label"() {
+		given:
+		views["/_fields/default/_field.gsp"] = '<label>${label}</label>'
+
+		and:
+		messageSource.addMessage('person.address.city.label', request.locale, "City")
+		messageSource.addMessage('address.city.label', request.locale, "Label for property type")
+
+		expect:
+		applyTemplate('<f:field bean="personInstance" property="address.city"/>', [personInstance: personInstance]) == "<label>City</label>"
+	}
+
 	void "label is defaulted to natural property name"() {
 		given:
 		views["/_fields/default/_field.gsp"] = '<label>${label}</label>'

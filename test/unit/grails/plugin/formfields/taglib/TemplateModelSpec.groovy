@@ -278,4 +278,34 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 		applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == '<input type="text" name="name" value="Bart Simpson" required="" id="name" />'
 	}
 
+    @Issue('https://github.com/robfletcher/grails-fields/issues/80')
+	def "correct value for Boolean"() {
+		given:
+    	views["/_fields/default/_field.gsp"] = 'value=${value}'
+	    def personWithBoolean = { personInstance.grailsDeveloper = it ; personInstance }
+
+		expect:
+		output == applyTemplate('<f:field bean="personInstance" property="grailsDeveloper"/>', [personInstance: personWithBoolean(value)])
+        
+        where:
+        value | output
+        null  | 'value='
+        false | 'value=false'
+        true  | 'value=true'
+	}
+
+    @Issue('https://github.com/robfletcher/grails-fields/issues/80')
+	def "correct value for boolean"() {
+		given:
+    	views["/_fields/default/_field.gsp"] = 'value=${value}'
+	    def personWith_boolean = { personInstance.minor = it ; personInstance }
+
+		expect:
+		output == applyTemplate('<f:field bean="personInstance" property="minor"/>', [personInstance: personWith_boolean(value)])
+        
+        where:
+        value | output
+        false | 'value=false'
+        true  | 'value=true'
+	}
 }

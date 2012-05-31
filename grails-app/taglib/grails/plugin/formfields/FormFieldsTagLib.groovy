@@ -136,7 +136,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 				type: propertyAccessor.propertyType,
 				beanClass: propertyAccessor.beanClass,
 				label: resolveLabelText(propertyAccessor, attrs),
-				value: (value instanceof Number || value) ? value : valueDefault,
+				value: (value instanceof Number || value instanceof Boolean || value) ? value : valueDefault,
 				constraints: propertyAccessor.constraints,
 				persistentProperty: propertyAccessor.persistentProperty,
 				errors: propertyAccessor.errors.collect { message(error: it) },

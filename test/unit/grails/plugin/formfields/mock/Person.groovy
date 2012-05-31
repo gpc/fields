@@ -15,6 +15,7 @@ class Person {
 	Date lastUpdated
 	String excludedProperty
 	String displayFalseProperty
+	Boolean grailsDeveloper
 
 	static hasMany = [emails: String]
 	static embedded = ['address']
@@ -26,6 +27,7 @@ class Person {
 		address nullable: true
 		excludedProperty nullable: true
 		displayFalseProperty nullable: true, display: false
+		grailsDeveloper nullable: true
 	}
 
 	static scaffold = [exclude: ['excludedProperty']]

@@ -39,11 +39,15 @@ grails.project.dependency.resolution = {
 
     dependencies {
 		test 'javassist:javassist:3.12.0.GA'
-		test 'org.jodd:jodd-wot:3.3.1'
+		test 'org.jodd:jodd-wot:3.3.4'
     }
 
     plugins {
 		test(':spock:0.6') { export = false }
+        build(":release:2.0.3",
+              ":rest-client-builder:1.0.2") {
+            export = false
+        }
     }
 
 }

@@ -19,10 +19,7 @@ class DefaultInputRenderingSpec extends Specification {
 	@Shared def oneToManyProperty = new MockPersistentProperty(oneToMany: true, referencedPropertyType: Person, referencedDomainClass: personDomainClass)
 	@Shared List<Person> people
 
-	@Shared FormFieldsTagLib formFieldsTagLib
-	
 	void setupSpec() {
-		formFieldsTagLib = tagLib
 		people = ["Bart Simpson", "Homer Simpson", "Monty Burns"].collect {
 			new Person(name: it)
 		}
@@ -39,7 +36,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: type, property: "prop", constraints: [:], persistentProperty: basicProperty]
 
 		expect:
-		formFieldsTagLib.renderDefaultInput(model) =~ outputPattern
+		tagLib.renderDefaultInput(model) =~ outputPattern
 
 		where:
 		type    | outputPattern
@@ -58,7 +55,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: type, property: "prop", constraints: [:], persistentProperty: basicProperty, value: value]
 
 		expect:
-		formFieldsTagLib.renderDefaultInput(model) =~ outputPattern
+		tagLib.renderDefaultInput(model) =~ outputPattern
 
 		where:
 		type    | value                | outputPattern
@@ -76,7 +73,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: String, property: "prop", constraints: [password: true], persistentProperty: basicProperty, value: 'correct horse battery staple']
 
 		expect:
-		formFieldsTagLib.renderDefaultInput(model).contains('value=""')
+		tagLib.renderDefaultInput(model).contains('value=""')
 	}
 
 	def "input for a #{required ? 'a required' : 'an optional'} property #{required ? 'has' : 'does not have'} the required attribute"() {
@@ -84,7 +81,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: String, property: "prop", required: required, constraints: [:], persistentProperty: basicProperty]
 
 		expect:
-		formFieldsTagLib.renderDefaultInput(model).contains('required=""') ^ !required
+		tagLib.renderDefaultInput(model).contains('required=""') ^ !required
 
 		where:
 		required << [true, false]
@@ -95,7 +92,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: String, property: "prop", invalid: invalid, constraints: [:], persistentProperty: basicProperty]
 
 		expect:
-		formFieldsTagLib.renderDefaultInput(model).contains('invalid=""') ^ !invalid
+		tagLib.renderDefaultInput(model).contains('invalid=""') ^ !invalid
 
 		where:
 		invalid << [true, false]
@@ -106,7 +103,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: Environment, property: "prop", constraints: [:], persistentProperty: basicProperty]
 
 		when:
-		def output = formFieldsTagLib.renderDefaultInput(model)
+		def output = tagLib.renderDefaultInput(model)
 
 		then:
 		output =~ /select name="prop"/
@@ -120,7 +117,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: Environment, property: "prop", constraints: [:], persistentProperty: basicProperty, value: Environment.PRODUCTION]
 
 		when:
-		def output = formFieldsTagLib.renderDefaultInput(model)
+		def output = tagLib.renderDefaultInput(model)
 
 		then:
 		output =~ /<option value="PRODUCTION" selected="selected"/
@@ -131,7 +128,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: type, property: "prop", constraints: [:], persistentProperty: basicProperty]
 
 		expect:
-		formFieldsTagLib.renderDefaultInput(model) =~ outputPattern
+		tagLib.renderDefaultInput(model) =~ outputPattern
 
 		where:
 		type          | outputPattern
@@ -149,7 +146,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: type, property: "prop", constraints: [:], persistentProperty: basicProperty, value: value]
 
 		expect:
-		formFieldsTagLib.renderDefaultInput(model) =~ outputPattern
+		tagLib.renderDefaultInput(model) =~ outputPattern
 
 		where:
 		type          | value                                 | outputPattern
@@ -167,7 +164,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: type, property: "prop", constraints: [:], persistentProperty: basicProperty, required: required]
 
 		when:
-		def output = formFieldsTagLib.renderDefaultInput(model)
+		def output = tagLib.renderDefaultInput(model)
 
 		then:
 		output.contains('<option value=""') ^ required
@@ -189,7 +186,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: type, property: "prop", constraints: [:], persistentProperty: basicProperty]
 
 		when:
-		def output = formFieldsTagLib.renderDefaultInput(model)
+		def output = tagLib.renderDefaultInput(model)
 
 		then:
 		output.contains('select name="prop_year"')
@@ -207,7 +204,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: java.sql.Time, property: "prop", constraints: [:], persistentProperty: basicProperty]
 
 		when:
-		def output = formFieldsTagLib.renderDefaultInput(model)
+		def output = tagLib.renderDefaultInput(model)
 
 		then:
 		output.contains('select name="prop_year"')
@@ -222,7 +219,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: type, property: "prop", constraints: [:], persistentProperty: basicProperty, required: required]
 
 		expect:
-		formFieldsTagLib.renderDefaultInput(model).contains('<option value=""></option>') ^ required
+		tagLib.renderDefaultInput(model).contains('<option value=""></option>') ^ required
 
 		where:
 		type     | required
@@ -239,7 +236,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: String, property: "prop", constraints: constraints, persistentProperty: basicProperty]
 
 		expect:
-		formFieldsTagLib.renderDefaultInput(model) =~ outputPattern
+		tagLib.renderDefaultInput(model) =~ outputPattern
 
 		where:
 		constraints      | outputPattern
@@ -253,7 +250,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: Integer, property: "prop", constraints: [range: (0..10)], persistentProperty: basicProperty]
 
 		when:
-		def output = formFieldsTagLib.renderDefaultInput(model)
+		def output = tagLib.renderDefaultInput(model)
 
 		then:
 		output =~ /input type="range"/
@@ -266,7 +263,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: BigDecimal, property: "prop", constraints: constraints, persistentProperty: basicProperty]
 
 		expect:
-		formFieldsTagLib.renderDefaultInput(model) =~ outputPattern
+		tagLib.renderDefaultInput(model) =~ outputPattern
 
 		where:
 		constraints   | outputPattern
@@ -280,7 +277,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: type, property: "prop", constraints: constraints, persistentProperty: basicProperty]
 
 		expect:
-		formFieldsTagLib.renderDefaultInput(model) =~ outputPattern
+		tagLib.renderDefaultInput(model) =~ outputPattern
 
 		where:
 		type   | constraints       | outputPattern
@@ -298,7 +295,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: type, property: "prop", constraints: [inList: inListConstraint], persistentProperty: basicProperty]
 
 		when:
-		def output = formFieldsTagLib.renderDefaultInput(model)
+		def output = tagLib.renderDefaultInput(model)
 
 		then:
 		output =~ /select name="prop"/
@@ -317,7 +314,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: type, property: "prop", constraints: constraints, persistentProperty: basicProperty]
 
 		expect:
-		formFieldsTagLib.renderDefaultInput(model) =~ /<option value=""><\/option>/
+		tagLib.renderDefaultInput(model) =~ /<option value=""><\/option>/
 
 		where:
 		type        | constraints
@@ -331,7 +328,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: type, property: "prop", constraints: constraints, required: true, persistentProperty: basicProperty]
 
 		expect:
-		!(formFieldsTagLib.renderDefaultInput(model) =~ /<option value=""><\/option>/)
+		!(tagLib.renderDefaultInput(model) =~ /<option value=""><\/option>/)
 
 		where:
 		type        | constraints
@@ -345,7 +342,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: type, property: "prop", constraints: [:], persistentProperty: persistentProperty]
 
 		when:
-		def output = formFieldsTagLib.renderDefaultInput(model)
+		def output = tagLib.renderDefaultInput(model)
 
 		then:
 		output =~ /select name="prop/
@@ -366,7 +363,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: type, property: "prop", constraints: [:], persistentProperty: persistentProperty]
 
 		when:
-		def output = formFieldsTagLib.renderDefaultInput(model)
+		def output = tagLib.renderDefaultInput(model)
 
 		then:
 		output =~ /select name="prop"/
@@ -385,7 +382,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: type, property: "prop", constraints: [:], persistentProperty: persistentProperty]
 
 		when:
-		def output = formFieldsTagLib.renderDefaultInput(model)
+		def output = tagLib.renderDefaultInput(model)
 
 		then:
 		output =~ /select name="prop.id"/
@@ -405,7 +402,7 @@ class DefaultInputRenderingSpec extends Specification {
         def model = [type: type, property: "prop", constraints: [:], persistentProperty: persistentProperty]
 
         when:
-        def output = formFieldsTagLib.renderDefaultInput(model, [from: simpsons])
+        def output = tagLib.renderDefaultInput(model, [from: simpsons])
 
         then:
         output =~ /select name="prop/
@@ -427,7 +424,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: type, property: "prop", constraints: [:], persistentProperty: persistentProperty, value: value]
 
 		when:
-		def output = formFieldsTagLib.renderDefaultInput(model)
+		def output = tagLib.renderDefaultInput(model)
 
 		then:
 		output =~ /option value="${people[1].id}" selected="selected" >${people[1].name}/
@@ -444,7 +441,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: type, property: "prop", constraints: [:], persistentProperty: persistentProperty, required: required]
 
 		expect:
-		formFieldsTagLib.renderDefaultInput(model).contains('<option value="null"></option>') ^ required
+		tagLib.renderDefaultInput(model).contains('<option value="null"></option>') ^ required
 
 		where:
 		type   | persistentProperty | required | description
@@ -459,7 +456,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: Set, property: "prop", constraints: [:], persistentProperty: manyToManyProperty]
 
 		expect:
-		formFieldsTagLib.renderDefaultInput(model) =~ /multiple=""/
+		tagLib.renderDefaultInput(model) =~ /multiple=""/
 	}
 
 	def "a one-to-many property has a list of links instead of an input"() {
@@ -470,7 +467,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [bean: [id: 1337], beanClass: [propertyName: "thing"], type: Set, property: "prop", constraints: [:], persistentProperty: oneToManyProperty, value: people]
 
 		when:
-		def output = formFieldsTagLib.renderDefaultInput(model)
+		def output = tagLib.renderDefaultInput(model)
 
 		then:
 		people.every {
@@ -487,7 +484,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: EnumWithToString, property: "prop", constraints: [:], persistentProperty: basicProperty]
 
 		when:
-		def output = formFieldsTagLib.renderDefaultInput(model)
+		def output = tagLib.renderDefaultInput(model)
 
 		then:
 		output =~ /select name="prop"/
@@ -500,7 +497,7 @@ class DefaultInputRenderingSpec extends Specification {
 	def "enum with toString select and #type value has correct selected option"() {
 		when:
 		def model = [type: EnumWithToString, property: "prop", constraints: [:], persistentProperty: basicProperty, value: value]
-		def output = formFieldsTagLib.renderDefaultInput(model)
+		def output = tagLib.renderDefaultInput(model)
 
 		then:
 		output =~ /<option value="FIRST" selected="selected"/
@@ -517,7 +514,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: String, property: "prop", constraints: [widget:'textarea'], persistentProperty: basicProperty]
 
 		expect:
-		formFieldsTagLib.renderDefaultInput(model) =~ /textarea name="prop"/
+		tagLib.renderDefaultInput(model) =~ /textarea name="prop"/
 	}
 
 	@Issue('https://github.com/robfletcher/grails-fields/issues/43')
@@ -526,7 +523,7 @@ class DefaultInputRenderingSpec extends Specification {
 		def model = [type: propertyType, property: "prop", constraints: [:], persistentProperty: basicProperty]
 
 		expect:
-		formFieldsTagLib.renderDefaultInput(model, [type: typeAttribute]) =~ outputPattern
+		tagLib.renderDefaultInput(model, [type: typeAttribute]) =~ outputPattern
 
 		where:
 		propertyType | typeAttribute | outputPattern

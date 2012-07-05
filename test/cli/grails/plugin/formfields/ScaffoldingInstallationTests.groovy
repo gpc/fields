@@ -5,11 +5,13 @@ import static org.apache.commons.io.FileUtils.checksumCRC32
 
 class ScaffoldingInstallationTests extends AbstractTemporaryProjectTest {
 
-	@Test
+    static TEMPLATES = ['create.gsp', 'edit.gsp', 'show.gsp']
+
+    @Test
 	void installTemplatesCopiesTemplatesToTargetApp() {
 		runGrailsCommand "install-form-fields-templates"
 
-		for (filename in ['create.gsp', 'edit.gsp']) {
+		for (filename in TEMPLATES) {
 			def srcFile = new File(pluginDir, "src/templates/scaffolding/$filename")
 			def targetFile = new File(workDir, "src/templates/scaffolding/$filename")
 
@@ -17,7 +19,7 @@ class ScaffoldingInstallationTests extends AbstractTemporaryProjectTest {
 			assert checksumCRC32(srcFile) == checksumCRC32(targetFile)
 		}
 		
-		for (filename in ['show.gsp', 'list.gsp', 'renderEditor.template']) {
+		for (filename in ['list.gsp', 'renderEditor.template']) {
 			assert !new File(workDir, "src/templates/scaffolding/$filename").exists()
 		}
 	}
@@ -26,7 +28,7 @@ class ScaffoldingInstallationTests extends AbstractTemporaryProjectTest {
 	void installTemplatesOverwritesDefaultScaffoldingTemplates() {
 		runGrailsCommand "install-templates"
 
-		for (filename in ['create.gsp', 'edit.gsp']) {
+		for (filename in TEMPLATES) {
 			def srcFile = new File(pluginDir, "src/templates/scaffolding/$filename")
 			def targetFile = new File(workDir, "src/templates/scaffolding/$filename")
 
@@ -36,7 +38,7 @@ class ScaffoldingInstallationTests extends AbstractTemporaryProjectTest {
 
 		runGrailsCommand "install-form-fields-templates"
 
-		for (filename in ['create.gsp', 'edit.gsp']) {
+		for (filename in TEMPLATES) {
 			def srcFile = new File(pluginDir, "src/templates/scaffolding/$filename")
 			def targetFile = new File(workDir, "src/templates/scaffolding/$filename")
 

@@ -22,8 +22,8 @@ class EmbeddedPropertiesSpec extends AbstractFormFieldsTagLibSpec {
 		mockFormFieldsTemplateService.findTemplate(_, 'field') >> [path: '/_fields/default/field']
 		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 
-		mockEmbeddedSitemeshLayout(taglib)
-	}
+        mockEmbeddedSitemeshLayout taglib
+    }
 
 	void "field tag renders individual fields for embedded properties"() {
 		given:

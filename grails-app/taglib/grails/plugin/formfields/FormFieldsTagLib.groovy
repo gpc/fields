@@ -67,8 +67,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		if (attrs.containsKey('bean') && !attrs.bean) throwTagError("Tag [field] requires a non-null value for attribute [bean]")
 		if (!attrs.property) throwTagError("Tag [field] is missing required attribute [property]")
 
-		def bean = attrs.remove('bean')
-		def property = attrs.remove('property')
+        def bean = resolveBean(attrs.remove('bean'))
+        def property = attrs.remove('property')
 
 		def propertyAccessor = resolveProperty(bean, property)
 		if (propertyAccessor.persistentProperty?.embedded) {
@@ -111,10 +111,10 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	def input = { attrs ->
-		if (!attrs.bean) throwTagError("Tag [$name] is missing required attribute [bean]")
+        def bean = resolveBean(attrs.remove('bean'))
+		if (!bean) throwTagError("Tag [$name] is missing required attribute [bean]")
 		if (!attrs.property) throwTagError("Tag [$name] is missing required attribute [property]")
 
-		def bean = attrs.remove('bean')
 		def property = attrs.remove('property')
 
 		def propertyAccessor = resolveProperty(bean, property)
@@ -123,8 +123,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		out << renderWidget(propertyAccessor, model, attrs)
 	}
 
-	private BeanPropertyAccessor resolveProperty(beanAttribute, String propertyPath) {
-		def bean = resolveBean(beanAttribute)
+	private BeanPropertyAccessor resolveProperty(bean, String propertyPath) {
 		beanPropertyAccessorFactory.accessorFor(bean, propertyPath)
 	}
 

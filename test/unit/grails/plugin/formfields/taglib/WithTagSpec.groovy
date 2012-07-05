@@ -21,7 +21,9 @@ class WithTagSpec extends AbstractFormFieldsTagLibSpec {
 
 		mockFormFieldsTemplateService.findTemplate(_, 'field') >> [path: '/_fields/default/field']
 		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
-	}
+
+        mockEmbeddedSitemeshLayout taglib
+    }
 
 	void 'bean attribute does not have to be specified if it is in scope from f:with'() {
 		given:
@@ -35,5 +37,16 @@ class WithTagSpec extends AbstractFormFieldsTagLibSpec {
 		expect:
 		applyTemplate('<f:with bean="personInstance">${pageScope.getVariable("f:with:bean")}</f:with>${pageScope.getVariable("f:with:bean")}', [personInstance: personInstance]) == 'Bart Simpson'
 	}
+
+    void 'embedded attributes work if in scope from f:with'() {
+        given:
+        views['/_fields/default/_field.gsp'] = '${property} '
+
+        when:
+        def output = applyTemplate('<f:with bean="personInstance"><f:field property="address"/></f:with>', [personInstance: personInstance])
+
+        then:
+        output.contains('address.street address.city address.country')
+    }
 
 }

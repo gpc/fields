@@ -19,14 +19,14 @@ class HibernateProxyHandlingSpec extends Specification {
 			cocktail.addToIngredients new Ingredient(name: 'Bourbon')
 			cocktail.addToIngredients new Ingredient(name: 'Angostura bitters')
 			cocktail.addToIngredients new Ingredient(name: 'Brown sugar')
-			cocktail.save(failOnError: true)
+			cocktail.save(failOnError: true, flush: true)
 		}
 	}
 
 	void 'hibernate proxy gets resolved'() {
 		given:
 		def cocktail = Cocktail.findByName('Old Fashioned')
-		
+
 		and:
 		def propertyAccessor = beanPropertyAccessorFactory.accessorFor(cocktail, 'ingredients[0].id')
 

@@ -1,9 +1,12 @@
 The plugin resolves the GSP template used for each property according to conventions. You can override the rendering based on the class and property name or the property type. The _f:field_ tag looks for a template called @\_field.gsp@ and the _f:input_ tag looks for a template called @\_input.gsp@. Both tags will look in the following locations in decreasing order of preference:
 
 # @grails-app/views/*controllerName*/*actionName*/*propertyName*/@
+# @grails-app/views/*controllerName*/*actionName*/*propertyType*/@
 # @grails-app/views/*controllerName*/*propertyName*/@
+# @grails-app/views/*controllerName*/*propertyType*/@
 # @grails-app/views/\_fields/*class*/*propertyName*/@
 # @grails-app/views/\_fields/*superclass*/*propertyName*/@
+# @grails-app/views/\_fields/*associationType*/@
 # @grails-app/views/\_fields/*propertyType*/@
 # @grails-app/views/\_fields/*propertySuperclass*/@
 # @grails-app/views/\_fields/default/@
@@ -19,6 +22,7 @@ The variables referenced in these paths are:
 *propertyName* | The property name at the end of the chain passed to the _property_ attribute of the _f:field_ or _f:input_ tag. For example, if the property path was _employees\[0\].address.street_ then this will be _street_.
 *propertyType* | The type of the property at the end of the chain passed to the _property_ attribute of the _f:field_ or _f:input_ tag. For example, for a _java.lang.String_ property this would be _string_.
 *propertySuperclass* | Any superclass or interface of _propertyType_ excluding _Object_, _GroovyObject_, _Serializable_, _Comparable_ and _Cloneable_.
+*associationType* | One of _'oneToOne'_, _'oneToMany'_, _'manyToMany'_ or _'manyToOne'_. Only relevant if the property is a domain class association.
 {table}
 
 All class names are camel-cased simple forms. For example _java.lang.String_ = _string_, _com.project.HomeAddress_ = _homeAddress_.
@@ -35,7 +39,10 @@ Imagine an object of class _Employee_ that extends the class _Person_ and has a 
 
 You can override the template _f:field_ uses with any of these:
 
+# @grails-app/views/*controllerName*/*actionName*/name/\_field.gsp@
+# @grails-app/views/*controllerName*/*actionName*/string/\_field.gsp@
 # @grails-app/views/*controllerName*/name/\_field.gsp@
+# @grails-app/views/*controllerName*/string/\_field.gsp@
 # @grails-app/views/\_fields/employee/name/\_field.gsp@
 # @grails-app/views/\_fields/person/name/\_field.gsp@
 # @grails-app/views/\_fields/string/\_field.gsp@
@@ -43,7 +50,10 @@ You can override the template _f:field_ uses with any of these:
 
 and override the template _f:input_ uses with any of these:
 
+# @grails-app/views/*controllerName*/*actionName*/name/\_input.gsp@
+# @grails-app/views/*controllerName*/*actionName*/string/\_input.gsp@
 # @grails-app/views/*controllerName*/name/\_input.gsp@
+# @grails-app/views/*controllerName*/string/\_input.gsp@
 # @grails-app/views/\_fields/employee/name/\_input.gsp@
 # @grails-app/views/\_fields/person/name/\_input.gsp@
 # @grails-app/views/\_fields/string/\_input.gsp@

@@ -14,9 +14,9 @@ import spock.lang.*
 class DomainClassPropertyAccessorSpec extends Specification {
 
 	BeanPropertyAccessorFactory factory = new BeanPropertyAccessorFactory(
-			grailsApplication: grailsApplication,
-			constraintsEvaluator: new DefaultConstraintEvaluator(),
-			proxyHandler: new DefaultProxyHandler()
+		grailsApplication: grailsApplication,
+		constraintsEvaluator: new DefaultConstraintEvaluator(),
+		proxyHandler: new DefaultProxyHandler()
 	)
 	@Shared Address address
 	@Shared Person person
@@ -164,9 +164,9 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		def propertyAccessor = factory.accessorFor(book, property)
 
 		expect:
-		propertyAccessor.isRequired() || !isRequired
+		propertyAccessor.isRequired()          || !isRequired
 		propertyAccessor.constraints?.nullable || isRequired
-		propertyAccessor.constraints?.blank || isRequired
+		propertyAccessor.constraints?.blank    || isRequired
 
 		where:
 		property              | isRequired
@@ -330,6 +330,21 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		'name'        | [CharSequence]
 		'gender'      | [Enum]
 		'dateOfBirth' | []
+	}
+
+	void 'correctly reports association status of Author.#path'() {
+		given:
+		def propertyAccessor = factory.accessorFor(author, path)
+
+		expect:
+		propertyAccessor.association ^ !isAssociation
+
+		where:
+		path              | isAssociation
+		'name'            | false
+		'books'           | true
+		'books[0].title'  | false
+		'books[0].author' | true
 	}
 
 }

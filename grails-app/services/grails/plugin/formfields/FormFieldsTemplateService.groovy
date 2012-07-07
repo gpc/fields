@@ -79,7 +79,12 @@ class FormFieldsTemplateService {
 			}
 		}
 
-		// if we have a property type look in `grails-app/views/_fields/<propertyType>/<propertyName>/_field.gsp` and equivalent for superclasses
+		// if this is an association property look in `grails-app/views/_fields/<associationType>/_field.gsp`
+		if (propertyAccessor.association) {
+			templateResolveOrder << appendPiecesForUri('/_fields', propertyAccessor.associationType.name(), templateName)
+		}
+
+		// if we have a property type look in `grails-app/views/_fields/<propertyType>/_field.gsp` and equivalent for superclasses
 		if (propertyAccessor.propertyType) {
 			templateResolveOrder << appendPiecesForUri("/_fields", toPropertyNameFormat(propertyAccessor.propertyType), templateName)
 			for (propertySuperClass in propertyAccessor.propertyTypeSuperclasses) {

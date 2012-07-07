@@ -35,4 +35,6 @@ class PropertyPathAccessor implements BeanPropertyAccessor {
 	List<FieldError> getErrors() { EMPTY_LIST }
 	boolean isRequired() { false }
 	boolean isInvalid() { false }
+	boolean isAssociation() { false }
+	AssociationType getAssociationType() { null }
 }

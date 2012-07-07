@@ -78,7 +78,15 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
 	boolean isInvalid() {
 		!errors.isEmpty()
 	}
-	
+
+	boolean isAssociation() {
+		persistentProperty.association
+	}
+
+	AssociationType getAssociationType() {
+		AssociationType.forProperty(persistentProperty)
+	}
+
 	private List<Class> getSuperclassesAndInterfaces(Class type) {
 		def superclasses = []
 		superclasses.addAll(ClassUtils.getAllSuperclasses(type))

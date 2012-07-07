@@ -98,6 +98,16 @@ interface BeanPropertyAccessor {
 	List<FieldError> getErrors()
 
 	/**
+	 * @return whether or not the property is a domain association.
+	 */
+	boolean isAssociation()
+
+	/**
+	 * @return the type of association this property represents. This will always be `null` if `isAssociation()` returns `false`.
+	 */
+	AssociationType getAssociationType()
+
+	/**
 	 * @return whether or not the property is required as determined by constraints. This will always be false for non-validateable types.
 	 */
 	boolean isRequired()
@@ -108,3 +118,4 @@ interface BeanPropertyAccessor {
 	boolean isInvalid()
 
 }
+

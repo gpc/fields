@@ -80,11 +80,12 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
 	}
 
 	boolean isAssociation() {
-		persistentProperty.association
+		persistentProperty?.association
 	}
 
 	AssociationType getAssociationType() {
-		AssociationType.forProperty(persistentProperty)
+		if (persistentProperty) AssociationType.forProperty(persistentProperty)
+		else null
 	}
 
 	private List<Class> getSuperclassesAndInterfaces(Class type) {

@@ -80,12 +80,31 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		render(template: template.path) == 'CLASS AND PROPERTY TEMPLATE'
 	}
 
-	void "resolves template from controller views directory"() {
+	@Issue('https://github.com/robfletcher/grails-fields/issues/39')
+	void "resolves template by property type from controller views directory"() {
 		given:
 		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
 		views["/_fields/string/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
 		views["/_fields/person/name/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
-		views["/$webRequest.controllerName/name/_field.gsp"] = 'CONTROLLER FIELD TEMPLATE'
+		views["/$webRequest.controllerName/string/_field.gsp"] = 'CONTROLLER FIELD TYPE TEMPLATE'
+
+		and:
+		def property = factory.accessorFor(personInstance, 'name')
+
+		expect:
+		def template = service.findTemplate(property, 'field')
+		template.path == "/$webRequest.controllerName/string/field"
+		template.plugin == null
+		render(template: template.path) == 'CONTROLLER FIELD TYPE TEMPLATE'
+	}
+
+	void "resolves template by property name from controller views directory"() {
+		given:
+		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/_fields/string/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
+		views["/_fields/person/name/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
+		views["/$webRequest.controllerName/string/_field.gsp"] = 'CONTROLLER FIELD TYPE TEMPLATE'
+		views["/$webRequest.controllerName/name/_field.gsp"] = 'CONTROLLER FIELD NAME TEMPLATE'
 
 		and:
 		def property = factory.accessorFor(personInstance, 'name')
@@ -94,17 +113,39 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def template = service.findTemplate(property, 'field')
 		template.path == "/$webRequest.controllerName/name/field"
 		template.plugin == null
-		render(template: template.path) == 'CONTROLLER FIELD TEMPLATE'
+		render(template: template.path) == 'CONTROLLER FIELD NAME TEMPLATE'
 	}
 
-	@Issue('https://github.com/robfletcher/grails-fields/issues/33')
-	void "resolves template from controller and action views directory"() {
+	@Issue('https://github.com/robfletcher/grails-fields/issues/39')
+	void "resolves template by property type from controller and action views directory"() {
 		given:
 		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
 		views["/_fields/string/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
 		views["/_fields/person/name/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
-		views["/$webRequest.controllerName/name/_field.gsp"] = 'CONTROLLER FIELD TEMPLATE'
-		views["/$webRequest.controllerName/$webRequest.actionName/name/_field.gsp"] = 'ACTION FIELD TEMPLATE'
+		views["/$webRequest.controllerName/string/_field.gsp"] = 'CONTROLLER FIELD TYPE TEMPLATE'
+		views["/$webRequest.controllerName/name/_field.gsp"] = 'CONTROLLER FIELD NAME TEMPLATE'
+		views["/$webRequest.controllerName/$webRequest.actionName/string/_field.gsp"] = 'ACTION FIELD TYPE TEMPLATE'
+
+		and:
+		def property = factory.accessorFor(personInstance, 'name')
+
+		expect:
+		def template = service.findTemplate(property, 'field')
+		template.path == "/$webRequest.controllerName/$webRequest.actionName/string/field"
+		template.plugin == null
+		render(template: template.path) == 'ACTION FIELD TYPE TEMPLATE'
+	}
+
+	@Issue('https://github.com/robfletcher/grails-fields/issues/33')
+	void "resolves template by property name from controller and action views directory"() {
+		given:
+		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/_fields/string/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
+		views["/_fields/person/name/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
+		views["/$webRequest.controllerName/string/_field.gsp"] = 'CONTROLLER FIELD TYPE TEMPLATE'
+		views["/$webRequest.controllerName/name/_field.gsp"] = 'CONTROLLER FIELD NAME TEMPLATE'
+		views["/$webRequest.controllerName/$webRequest.actionName/string/_field.gsp"] = 'ACTION FIELD TYPE TEMPLATE'
+		views["/$webRequest.controllerName/$webRequest.actionName/name/_field.gsp"] = 'ACTION FIELD NAME TEMPLATE'
 
 		and:
 		def property = factory.accessorFor(personInstance, 'name')
@@ -113,7 +154,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def template = service.findTemplate(property, 'field')
 		template.path == "/$webRequest.controllerName/$webRequest.actionName/name/field"
 		template.plugin == null
-		render(template: template.path) == 'ACTION FIELD TEMPLATE'
+		render(template: template.path) == 'ACTION FIELD NAME TEMPLATE'
 	}
 
 	void "does not use controller if there isn't one in the current request"() {

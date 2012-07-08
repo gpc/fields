@@ -56,7 +56,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		def domainClass = resolveDomainClass(bean)
 		if (domainClass) {
 			for (property in resolvePersistentProperties(domainClass, attrs)) {
-				out << field(bean: bean, property: property.name, prefix:prefix)
+				out << field(bean: bean, property: property.name, prefix: prefix)
 			}
 		} else {
 			throwTagError('Tag [all] currently only supports domain types')
@@ -67,8 +67,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		if (attrs.containsKey('bean') && !attrs.bean) throwTagError("Tag [field] requires a non-null value for attribute [bean]")
 		if (!attrs.property) throwTagError("Tag [field] is missing required attribute [property]")
 
-        def bean = resolveBean(attrs.remove('bean'))
-        def property = attrs.remove('property')
+		def bean = resolveBean(attrs.remove('bean'))
+		def property = attrs.remove('property')
 
 		def propertyAccessor = resolveProperty(bean, property)
 		if (propertyAccessor.persistentProperty?.embedded) {
@@ -77,7 +77,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			def model = buildModel(propertyAccessor, attrs)
 			def fieldAttrs = [:]
 			def inputAttrs = [:]
-			
+
 			attrs.each { k, v ->
 				if (k?.startsWith("input-"))
 					inputAttrs[k.replace("input-", '')] = v
@@ -86,32 +86,22 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			}
 
 			if (hasBody(body)) {
-				model.widget = body(model+inputAttrs)
+				model.widget = body(model + inputAttrs)
 			} else {
 				model.widget = renderWidget(propertyAccessor, model, inputAttrs)
 			}
 
 			def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'field')
 			if (template) {
-				out << render(template: template.path, plugin: template.plugin, model: model+fieldAttrs)
+				out << render(template: template.path, plugin: template.plugin, model: model + fieldAttrs)
 			} else {
 				out << renderDefaultField(model)
 			}
 		}
 	}
 
-	private void renderEmbeddedProperties(bean, BeanPropertyAccessor propertyAccessor, attrs) {
-		def legend = resolveMessage(propertyAccessor.labelKeys, propertyAccessor.defaultLabel)
-		out << applyLayout(name: '_fields/embedded', params: [type: toPropertyNameFormat(propertyAccessor.propertyType), legend: legend]) {
-			for (embeddedProp in resolvePersistentProperties(propertyAccessor.persistentProperty.component, attrs)) {
-				def propertyPath = "${propertyAccessor.pathFromRoot}.${embeddedProp.name}"
-				out << field(bean: bean, property: propertyPath, prefix:attrs.prefix)
-			}
-		}
-	}
-
 	def input = { attrs ->
-        def bean = resolveBean(attrs.remove('bean'))
+		def bean = resolveBean(attrs.remove('bean'))
 		if (!bean) throwTagError("Tag [$name] is missing required attribute [bean]")
 		if (!attrs.property) throwTagError("Tag [$name] is missing required attribute [property]")
 
@@ -123,6 +113,29 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		out << renderWidget(propertyAccessor, model, attrs)
 	}
 
+	def display = { attrs ->
+		def bean = resolveBean(attrs.remove('bean'))
+		if (!bean) throwTagError("Tag [$name] is missing required attribute [bean]")
+		if (!attrs.property) throwTagError("Tag [$name] is missing required attribute [property]")
+
+		def property = attrs.remove('property')
+
+		def propertyAccessor = resolveProperty(bean, property)
+		def model = buildModel(propertyAccessor, attrs)
+
+		out << renderForDisplay(propertyAccessor, model, attrs)
+	}
+
+	private void renderEmbeddedProperties(bean, BeanPropertyAccessor propertyAccessor, attrs) {
+		def legend = resolveMessage(propertyAccessor.labelKeys, propertyAccessor.defaultLabel)
+		out << applyLayout(name: '_fields/embedded', params: [type: toPropertyNameFormat(propertyAccessor.propertyType), legend: legend]) {
+			for (embeddedProp in resolvePersistentProperties(propertyAccessor.persistentProperty.component, attrs)) {
+				def propertyPath = "${propertyAccessor.pathFromRoot}.${embeddedProp.name}"
+				out << field(bean: bean, property: propertyPath, prefix: attrs.prefix)
+			}
+		}
+	}
+
 	private BeanPropertyAccessor resolveProperty(bean, String propertyPath) {
 		beanPropertyAccessorFactory.accessorFor(bean, propertyPath)
 	}
@@ -131,18 +144,18 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		def value = attrs.containsKey('value') ? attrs.remove('value') : propertyAccessor.value
 		def valueDefault = attrs.remove('default')
 		[
-				bean: propertyAccessor.rootBean,
-				property: propertyAccessor.pathFromRoot,
-				type: propertyAccessor.propertyType,
-				beanClass: propertyAccessor.beanClass,
-				label: resolveLabelText(propertyAccessor, attrs),
-				value: (value instanceof Number || value instanceof Boolean || value) ? value : valueDefault,
-				constraints: propertyAccessor.constraints,
-				persistentProperty: propertyAccessor.persistentProperty,
-				errors: propertyAccessor.errors.collect { message(error: it) },
-				required: attrs.containsKey("required") ? Boolean.valueOf(attrs.remove('required')) : propertyAccessor.required,
-				invalid: attrs.containsKey("invalid") ? Boolean.valueOf(attrs.remove('invalid')) : propertyAccessor.invalid,
-				prefix: resolvePrefix(attrs.remove('prefix')),
+			bean: propertyAccessor.rootBean,
+			property: propertyAccessor.pathFromRoot,
+			type: propertyAccessor.propertyType,
+			beanClass: propertyAccessor.beanClass,
+			label: resolveLabelText(propertyAccessor, attrs),
+			value: (value instanceof Number || value instanceof Boolean || value) ? value : valueDefault,
+			constraints: propertyAccessor.constraints,
+			persistentProperty: propertyAccessor.persistentProperty,
+			errors: propertyAccessor.errors.collect { message(error: it) },
+			required: attrs.containsKey("required") ? Boolean.valueOf(attrs.remove('required')) : propertyAccessor.required,
+			invalid: attrs.containsKey("invalid") ? Boolean.valueOf(attrs.remove('invalid')) : propertyAccessor.invalid,
+			prefix: resolvePrefix(attrs.remove('prefix')),
 		]
 	}
 
@@ -152,6 +165,15 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			render template: template.path, plugin: template.plugin, model: model + attrs
 		} else {
 			renderDefaultInput model, attrs
+		}
+	}
+
+	private String renderForDisplay(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:]) {
+		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'display')
+		if (template) {
+			render template: template.path, plugin: template.plugin, model: model + attrs
+		} else {
+			renderDefaultDisplay model, attrs
 		}
 	}
 
@@ -166,7 +188,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		if (!bean) bean = beanAttribute
 		bean
 	}
-	
+
 	private String resolvePrefix(prefixAttribute) {
 		def prefix = pageScope.variables[PREFIX_PAGE_SCOPE_VARIABLE]
 		// Tomcat throws NPE if you query pageScope for null/empty values
@@ -175,7 +197,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 		if (!prefix) prefix = prefixAttribute
 		if (prefix && !prefix.endsWith('.'))
-			prefix = prefix+'.'
+			prefix = prefix + '.'
 		prefix ?: ''
 	}
 
@@ -221,7 +243,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 		labelText
 	}
-	
+
 	private String resolveMessage(List<String> keysInPreferenceOrder, String defaultMessage) {
 		def message = keysInPreferenceOrder.findResult { key ->
 			message(code: key, default: null) ?: null
@@ -236,7 +258,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 		def writer = new StringWriter()
 		new MarkupBuilder(writer).div(class: classes.join(' ')) {
-			label(for: (model.prefix?:'')+model.property, model.label) {
+			label(for: (model.prefix ?: '') + model.property, model.label) {
 				if (model.required) {
 					span(class: 'required-indicator', '*')
 				}
@@ -247,7 +269,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	private String renderDefaultInput(Map model, Map attrs = [:]) {
-		attrs.name = (model.prefix?:'')+model.property
+		attrs.name = (model.prefix ?: '') + model.property
 		attrs.value = model.value
 		if (model.required) attrs.required = "" // TODO: configurable how this gets output? Some people prefer required="required"
 		if (model.invalid) attrs.invalid = ""
@@ -311,7 +333,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 		if (model.constraints.matches) attrs.pattern = model.constraints.matches
 		if (model.constraints.maxSize) attrs.maxlength = model.constraints.maxSize
-		
+
 		if (model.constraints.widget == 'textarea') {
 			attrs.remove('type')
 			return g.textArea(attrs)
@@ -338,17 +360,17 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	private String renderAssociationInput(Map model, Map attrs) {
-		attrs.id = (model.prefix?:'')+model.property
+		attrs.id = (model.prefix ?: '') + model.property
 		attrs.from = attrs.from ?: model.persistentProperty.referencedPropertyType.list()
 		attrs.optionKey = "id" // TODO: handle alternate id names
 		if (model.persistentProperty.manyToMany) {
 			attrs.multiple = ""
 			attrs.value = model.value*.id
-			attrs.name = "${model.prefix?:''}${model.property}"
+			attrs.name = "${model.prefix ?: ''}${model.property}"
 		} else {
 			if (!model.required) attrs.noSelection = ["null": ""]
 			attrs.value = model.value?.id
-			attrs.name = "${model.prefix?:''}${model.property}.id"
+			attrs.name = "${model.prefix ?: ''}${model.property}.id"
 		}
 		return g.select(attrs)
 	}
@@ -370,4 +392,20 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		buffer as String
 	}
 
+	private String renderDefaultDisplay(Map model, Map attrs = [:]) {
+		switch (model.type) {
+			case Boolean.TYPE:
+			case Boolean:
+				g.formatBoolean(boolean: model.value)
+				break
+			case Calendar:
+			case Date:
+			case java.sql.Date:
+			case java.sql.Time:
+				g.formatDate(date: model.value)
+				break
+			default:
+				g.fieldValue bean: model.bean, field: model.property
+		}
+	}
 }

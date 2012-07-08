@@ -8,7 +8,7 @@ import grails.plugin.formfields.mock.*
 
 abstract class AbstractFormFieldsTagLibSpec extends Specification {
 
-	def personInstance
+	Person personInstance
 
 	def setup() {
 		personInstance = new Person(name: "Bart Simpson", password: "bartman", gender: Gender.Male, dateOfBirth: new Date(87, 3, 19), minor: true)

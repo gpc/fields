@@ -19,7 +19,7 @@ import org.codehaus.groovy.grails.validation.ConstraintsEvaluator
 
 class FieldsGrailsPlugin {
 
-	def version = '1.2'
+	def version = '1.2-SNAPSHOT'
 	def grailsVersion = '2.0 > *'
 	def dependsOn = [:]
 	def pluginExcludes = []

@@ -332,19 +332,4 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		'dateOfBirth' | []
 	}
 
-	void 'correctly reports association status of Author.#path'() {
-		given:
-		def propertyAccessor = factory.accessorFor(author, path)
-
-		expect:
-		propertyAccessor.association ^ !isAssociation
-
-		where:
-		path              | isAssociation
-		'name'            | false
-		'books'           | true
-		'books[0].title'  | false
-		'books[0].author' | true
-	}
-
 }

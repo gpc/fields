@@ -44,7 +44,7 @@
 						<td><g:link action="show" id="\${${propertyName}.id}"><f:display bean="${propertyName}" property="${p.name}"/></g:link></td>
 						<%  } else if (i < 6) { %>
 						<td><f:display bean="${propertyName}" property="${p.name}"/></td>
-						<%  }   }   } %>
+						<%  }   } %>
 					</tr>
 				</g:each>
 			</tbody>

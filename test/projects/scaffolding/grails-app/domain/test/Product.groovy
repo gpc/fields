@@ -20,8 +20,7 @@ class Product {
 
 	static transients = ['total']
 
-	void onLoad() {
-		println "onLoad price: $price, tax: $tax"
+	void afterLoad() {
 		total = price + tax
 	}
 }

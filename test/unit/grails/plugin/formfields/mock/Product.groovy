@@ -24,7 +24,7 @@ class Product {
         tax formula: 'NET_PRICE * TAX_RATE'
     }
 
-    def onLoad() {
+    def afterLoad() {
         grossPrice = netPrice + tax
     }
 

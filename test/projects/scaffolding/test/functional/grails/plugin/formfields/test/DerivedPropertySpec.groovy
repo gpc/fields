@@ -3,10 +3,7 @@ package grails.plugin.formfields.test
 import geb.spock.GebSpec
 import spock.lang.Issue
 
-@Issue([
-	'https://github.com/robfletcher/grails-fields/issues/85',
-	'https://github.com/robfletcher/grails-fields/issues/87'
-])
+@Issue('https://github.com/robfletcher/grails-fields/issues/85')
 class DerivedPropertySpec extends GebSpec {
 
 	void 'derived property fields are not displayed'() {
@@ -15,7 +12,6 @@ class DerivedPropertySpec extends GebSpec {
 
 		expect:
 		!$('input[name=tax]')
-		!$('input[name=total]')
 	}
 
 }

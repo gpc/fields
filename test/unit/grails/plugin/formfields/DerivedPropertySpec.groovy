@@ -4,8 +4,9 @@ import grails.plugin.formfields.mock.Product
 import grails.plugin.formfields.taglib.AbstractFormFieldsTagLibSpec
 import grails.test.mixin.*
 import spock.lang.*
+import org.codehaus.groovy.grails.commons.GrailsDomainClass
 
-@Issue(['https://github.com/robfletcher/grails-fields/issues/85', 'https://github.com/robfletcher/grails-fields/issues/87'])
+@Issue('https://github.com/robfletcher/grails-fields/issues/85')
 @TestFor(FormFieldsTagLib)
 @Mock(Product)
 @Unroll
@@ -24,10 +25,13 @@ class DerivedPropertySpec extends AbstractFormFieldsTagLibSpec {
         mockFormFieldsTemplateService.findTemplate(_, 'field') >> [path: '/_fields/default/field']
         taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 
+        // @Mock isn't aware of formulae so we need to set this manually
+        grailsApplication.getDomainClass(Product.name).getPersistentProperty('tax').derived = true
+
         productInstance = new Product(name: 'MacBook Pro', netPrice: 1499, taxRate: 0.2).save(failOnError: true)
     }
 
-    void '#reason properties are ignored by f:all'() {
+    void 'derived properties are ignored by f:all'() {
         given:
         views["/_fields/default/_field.gsp"] = '${property} '
 
@@ -35,12 +39,7 @@ class DerivedPropertySpec extends AbstractFormFieldsTagLibSpec {
         def output = applyTemplate('<f:all bean="productInstance"/>', [productInstance: productInstance])
 
         then:
-        !output.contains(property)
-
-        where:
-        property     | reason
-        'tax'        | 'derived'
-        'grossPrice' | 'transient'
+        !(output =~ /\btax\b/)
     }
 
 }

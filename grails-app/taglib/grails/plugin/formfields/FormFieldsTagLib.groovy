@@ -219,7 +219,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			blacklist.addAll(scaffoldProp.exclude)
 		}
 		properties.removeAll { it.name in blacklist }
-		properties.removeAll { !it.domainClass.constrainedProperties[it.name].display }
+		properties.removeAll { !it.domainClass.constrainedProperties[it.name]?.display }
 
 		Collections.sort(properties, new DomainClassPropertyComparator(domainClass))
 		properties

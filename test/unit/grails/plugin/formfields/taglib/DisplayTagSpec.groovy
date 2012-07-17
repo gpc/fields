@@ -46,7 +46,7 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
 
 	void 'displays date values using g:formatDate'() {
 		expect:
-		applyTemplate('<f:display bean="personInstance" property="dateOfBirth"/>', [personInstance: personInstance]) == '1987-04-19 00:00:00 BST'
+		applyTemplate('<f:display bean="personInstance" property="dateOfBirth"/>', [personInstance: personInstance]) ==~ /1987-04-19 00:00:00 [A-Z]{3}/
 	}
 
 }

@@ -21,10 +21,10 @@ import org.apache.commons.lang.StringUtils
 import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
 import org.codehaus.groovy.grails.scaffolding.DomainClassPropertyComparator
 import org.codehaus.groovy.grails.web.pages.GroovyPage
-import static FormFieldsTemplateService.toPropertyNameFormat
 import org.codehaus.groovy.grails.commons.*
+
+import static FormFieldsTemplateService.toPropertyNameFormat
 import static org.codehaus.groovy.grails.commons.GrailsClassUtils.getStaticPropertyValue
-import org.codehaus.groovy.grails.validation.ConstrainedProperty
 
 class FormFieldsTagLib implements GrailsApplicationAware {
 
@@ -114,7 +114,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		out << renderWidget(propertyAccessor, model, attrs)
 	}
 
-	def display = { attrs ->
+	def display = { attrs, body ->
 		def bean = resolveBean(attrs.remove('bean'))
 		if (!bean) throwTagError("Tag [$name] is missing required attribute [bean]")
 		if (!attrs.property) throwTagError("Tag [$name] is missing required attribute [property]")
@@ -123,6 +123,12 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 		def propertyAccessor = resolveProperty(bean, property)
 		def model = buildModel(propertyAccessor, attrs)
+
+		if (hasBody(body)) {
+			model.value = body(model)
+		} else {
+			model.value = renderDefaultDisplay(model, attrs)
+		}
 
 		out << renderForDisplay(propertyAccessor, model, attrs)
 	}
@@ -174,7 +180,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		if (template) {
 			render template: template.path, plugin: template.plugin, model: model + attrs
 		} else {
-			renderDefaultDisplay model, attrs
+			model.value
 		}
 	}
 

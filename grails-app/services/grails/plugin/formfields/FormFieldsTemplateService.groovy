@@ -25,24 +25,24 @@ import static org.codehaus.groovy.grails.io.support.GrailsResourceUtils.appendPi
 
 class FormFieldsTemplateService {
 
-	static transactional = false
+    static transactional = false
 
-	GrailsConventionGroovyPageLocator groovyPageLocator
-	GrailsPluginManager pluginManager
+    GrailsConventionGroovyPageLocator groovyPageLocator
+    GrailsPluginManager pluginManager
 
-	Map findTemplate(BeanPropertyAccessor propertyAccessor, String templateName) {
-		findTemplateCached(propertyAccessor, controllerName, actionName, templateName)
-	}
+    Map findTemplate(BeanPropertyAccessor propertyAccessor, String templateName) {
+        findTemplateCached(propertyAccessor, controllerName, actionName, templateName)
+    }
 
-	private final Closure findTemplateCached = shouldCache() ? this.&findTemplateCacheable.memoize() : this.&findTemplateCacheable
+    private final Closure findTemplateCached = shouldCache() ? this.&findTemplateCacheable.memoize() : this.&findTemplateCacheable
 
-	private Map findTemplateCacheable(BeanPropertyAccessor propertyAccessor, String controllerName, String actionName, String templateName) {
-		def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerName, actionName, templateName)
+    private Map findTemplateCacheable(BeanPropertyAccessor propertyAccessor, String controllerName, String actionName, String templateName) {
+        def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerName, actionName, templateName)
 
-		candidatePaths.findResult { path ->
-			log.debug "looking for template with path $path"
-			def source = groovyPageLocator.findTemplateByPath(path)
-			if (source) {
+        candidatePaths.findResult { path ->
+            log.debug "looking for template with path $path"
+            def source = groovyPageLocator.findTemplateByPath(path)
+            if (source) {
                 def template = [path: path]
                 def plugin = pluginManager.allPlugins.find {
                     source.URI.startsWith(it.pluginPath)
@@ -53,61 +53,71 @@ class FormFieldsTemplateService {
             } else {
                 null
             }
-		}
-	}
+        }
+    }
 
-	static String toPropertyNameFormat(Class type) {
-		GrailsNameUtils.getLogicalPropertyName(type.name, '')
-	}
+    static String toPropertyNameFormat(Class type) {
+        GrailsNameUtils.getLogicalPropertyName(type.name, '')
+    }
 
-	private List<String> candidateTemplatePaths(BeanPropertyAccessor propertyAccessor, String controllerName, String actionName, String templateName) {
-		def templateResolveOrder = []
+    private List<String> candidateTemplatePaths(BeanPropertyAccessor propertyAccessor, String controllerName, String actionName, String templateName) {
+        def templateResolveOrder = []
 
-		// if there is a controller for the current request any template in its views directory takes priority
-		if (controllerName) {
-			templateResolveOrder << appendPiecesForUri("/", controllerName, actionName, propertyAccessor.propertyName, templateName)
-			if (propertyAccessor.propertyType) templateResolveOrder << appendPiecesForUri("/", controllerName, actionName, toPropertyNameFormat(propertyAccessor.propertyType), templateName)
-			templateResolveOrder << appendPiecesForUri("/", controllerName, propertyAccessor.propertyName, templateName)
-			if (propertyAccessor.propertyType) templateResolveOrder << appendPiecesForUri("/", controllerName, toPropertyNameFormat(propertyAccessor.propertyType), templateName)
-		}
+        // if there is a controller for the current request any template in its views directory takes priority
+        if (controllerName) {
+            templateResolveOrder << appendPiecesForUri("/", controllerName, actionName, propertyAccessor.propertyName, templateName)
+            if (propertyAccessor.propertyType) templateResolveOrder << appendPiecesForUri("/", controllerName, actionName, toPropertyNameFormat(propertyAccessor.propertyType), templateName)
+            templateResolveOrder << appendPiecesForUri("/", controllerName, propertyAccessor.propertyName, templateName)
+            if (propertyAccessor.propertyType) templateResolveOrder << appendPiecesForUri("/", controllerName, toPropertyNameFormat(propertyAccessor.propertyType), templateName)
+        }
 
-		// if we have a bean type look in `grails-app/views/_fields/<beanType>/<propertyName>/_field.gsp` and equivalent for superclasses
-		if (propertyAccessor.beanType) {
-			templateResolveOrder << appendPiecesForUri("/_fields", toPropertyNameFormat(propertyAccessor.beanType), propertyAccessor.propertyName, templateName)
-			for (superclass in propertyAccessor.beanSuperclasses) {
-				templateResolveOrder << appendPiecesForUri("/_fields", toPropertyNameFormat(superclass), propertyAccessor.propertyName, templateName)
-			}
-		}
+        // if we have a bean type look in `grails-app/views/_fields/<beanType>/<propertyName>/_field.gsp` and equivalent for superclasses
+        if (propertyAccessor.beanType) {
+            templateResolveOrder << appendPiecesForUri("/_fields", toPropertyNameFormat(propertyAccessor.beanType), propertyAccessor.propertyName, templateName)
+            for (superclass in propertyAccessor.beanSuperclasses) {
+                templateResolveOrder << appendPiecesForUri("/_fields", toPropertyNameFormat(superclass), propertyAccessor.propertyName, templateName)
+            }
+        }
 
-		// if this is an association property look in `grails-app/views/_fields/<associationType>/_field.gsp`
-		if (propertyAccessor.association) {
-			templateResolveOrder << appendPiecesForUri('/_fields', propertyAccessor.associationType.name(), templateName)
-		}
+        // if this is an association property look in `grails-app/views/_fields/<associationType>/_field.gsp`
+        def associationPath = getAssociationPath(propertyAccessor)
+        if (associationPath) {
+            templateResolveOrder << appendPiecesForUri('/_fields', associationPath, templateName)
+        }
 
-		// if we have a property type look in `grails-app/views/_fields/<propertyType>/_field.gsp` and equivalent for superclasses
-		if (propertyAccessor.propertyType) {
-			templateResolveOrder << appendPiecesForUri("/_fields", toPropertyNameFormat(propertyAccessor.propertyType), templateName)
-			for (propertySuperClass in propertyAccessor.propertyTypeSuperclasses) {
-				templateResolveOrder << appendPiecesForUri("/_fields", toPropertyNameFormat(propertySuperClass), templateName)
-			}
-		}
+        // if we have a property type look in `grails-app/views/_fields/<propertyType>/_field.gsp` and equivalent for superclasses
+        if (propertyAccessor.propertyType) {
+            templateResolveOrder << appendPiecesForUri("/_fields", toPropertyNameFormat(propertyAccessor.propertyType), templateName)
+            for (propertySuperClass in propertyAccessor.propertyTypeSuperclasses) {
+                templateResolveOrder << appendPiecesForUri("/_fields", toPropertyNameFormat(propertySuperClass), templateName)
+            }
+        }
 
-		// if nothing else is found fall back to a default (even this may not exist for f:input)
-		templateResolveOrder << "/_fields/default/$templateName"
+        // if nothing else is found fall back to a default (even this may not exist for f:input)
+        templateResolveOrder << "/_fields/default/$templateName"
 
-		templateResolveOrder
-	}
+        templateResolveOrder
+    }
 
-	private String getControllerName() {
-		RequestContextHolder.requestAttributes?.controllerName
-	}
+    private String getAssociationPath(BeanPropertyAccessor propertyAccessor) {
+        def associationPath = null
+        if (propertyAccessor.persistentProperty?.oneToOne) associationPath = 'oneToOne'
+        if (propertyAccessor.persistentProperty?.oneToMany) associationPath = 'oneToMany'
+        if (propertyAccessor.persistentProperty?.manyToMany) associationPath = 'manyToMany'
+        if (propertyAccessor.persistentProperty?.manyToOne) associationPath = 'manyToOne'
+        associationPath
+    }
 
-	private String getActionName() {
-		RequestContextHolder.requestAttributes?.actionName
-	}
+    private String getControllerName() {
+        RequestContextHolder.requestAttributes?.controllerName
+    }
 
-	private static boolean shouldCache() {
-		Environment.current != DEVELOPMENT
-	}
+    private String getActionName() {
+        RequestContextHolder.requestAttributes?.actionName
+    }
+
+    private static boolean shouldCache() {
+        Environment.current != DEVELOPMENT
+    }
 
 }

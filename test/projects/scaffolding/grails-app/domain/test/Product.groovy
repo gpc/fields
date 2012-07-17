@@ -6,7 +6,6 @@ class Product {
 	Double price
 	Double taxRate
 	Double tax
-	Double total
 
 	static constraints = {
 		name blank: false
@@ -16,11 +15,5 @@ class Product {
 
 	static mapping = {
 		tax formula: 'price * tax_rate'
-	}
-
-	static transients = ['total']
-
-	void afterLoad() {
-		total = price + tax
 	}
 }

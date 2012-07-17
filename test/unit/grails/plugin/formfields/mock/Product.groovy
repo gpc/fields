@@ -9,9 +9,6 @@ class Product {
     Double netPrice
     Double taxRate
     Double tax
-    Double grossPrice
-
-    static transients = ['grossPrice']
 
     static constraints = {
         name blank: false, unique: true
@@ -22,10 +19,6 @@ class Product {
 
     static mapping = {
         tax formula: 'NET_PRICE * TAX_RATE'
-    }
-
-    def afterLoad() {
-        grossPrice = netPrice + tax
     }
 
 }

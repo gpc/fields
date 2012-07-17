@@ -4,12 +4,10 @@ import grails.plugin.formfields.mock.Product
 import grails.plugin.formfields.taglib.AbstractFormFieldsTagLibSpec
 import grails.test.mixin.*
 import spock.lang.*
-import org.codehaus.groovy.grails.commons.GrailsDomainClass
 
 @Issue('https://github.com/robfletcher/grails-fields/issues/85')
 @TestFor(FormFieldsTagLib)
 @Mock(Product)
-@Unroll
 class DerivedPropertySpec extends AbstractFormFieldsTagLibSpec {
 
     def mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)

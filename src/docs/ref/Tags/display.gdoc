@@ -2,7 +2,19 @@ h1. f:input
 
 h2. Description
 
-_f:display_ renders an a property for display.
+_f:display_ renders an a property for display. If there is no _\_display_ template in scope the tag will simply render the property value.
+
+If the _f:display_ tag has a body its output is used as the value passed as the _value_ model to the _\_display_ template. If there is no body then the 'raw' property value is passed to _g:fieldValue_, _g:formatDate_ or _g:formatBoolean_ depending on its type and the result is passed as the _value_ model to the _\_display_ template.
+
+h2. Examples
+
+{code}
+<f:display bean="person" property="name"/>
+
+<f:display bean="person" property="dateOfBirth">
+	<g:formatDate format="dd MMM yyyy" date="${value}"/>
+</f:display>
+{code}
 
 h2. Attributes
 

@@ -69,6 +69,8 @@ class FormFieldsTemplateService {
             if (propertyAccessor.propertyType) templateResolveOrder << appendPiecesForUri("/", controllerName, actionName, toPropertyNameFormat(propertyAccessor.propertyType), templateName)
             templateResolveOrder << appendPiecesForUri("/", controllerName, propertyAccessor.propertyName, templateName)
             if (propertyAccessor.propertyType) templateResolveOrder << appendPiecesForUri("/", controllerName, toPropertyNameFormat(propertyAccessor.propertyType), templateName)
+            templateResolveOrder << appendPiecesForUri("/", controllerName, actionName, templateName)
+            templateResolveOrder << appendPiecesForUri("/", controllerName, templateName)
         }
 
         // if we have a bean type look in `grails-app/views/_fields/<beanType>/<propertyName>/_field.gsp` and equivalent for superclasses

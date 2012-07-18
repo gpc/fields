@@ -9,8 +9,8 @@ class Product {
 
 	static constraints = {
 		name blank: false
-		price min: 0.0d
-		taxRate min: 0.0d
+		price min: 0.0d, scale: 2
+		taxRate min: 0.0d, scale: 2
 	}
 
 	static mapping = {

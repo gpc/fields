@@ -65,11 +65,14 @@ class FormFieldsTemplateService {
 
         // if there is a controller for the current request any template in its views directory takes priority
         if (controllerName) {
+            // first try action-specific templates
             templateResolveOrder << appendPiecesForUri("/", controllerName, actionName, propertyAccessor.propertyName, templateName)
             if (propertyAccessor.propertyType) templateResolveOrder << appendPiecesForUri("/", controllerName, actionName, toPropertyNameFormat(propertyAccessor.propertyType), templateName)
+            templateResolveOrder << appendPiecesForUri("/", controllerName, actionName, templateName)
+
+            // then general templates for the controller
             templateResolveOrder << appendPiecesForUri("/", controllerName, propertyAccessor.propertyName, templateName)
             if (propertyAccessor.propertyType) templateResolveOrder << appendPiecesForUri("/", controllerName, toPropertyNameFormat(propertyAccessor.propertyType), templateName)
-            templateResolveOrder << appendPiecesForUri("/", controllerName, actionName, templateName)
             templateResolveOrder << appendPiecesForUri("/", controllerName, templateName)
         }
 

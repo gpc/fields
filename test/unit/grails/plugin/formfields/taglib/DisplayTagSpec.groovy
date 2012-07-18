@@ -61,4 +61,9 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
 		applyTemplate('<f:display bean="personInstance" property="name">${value.reverse()}</f:display>', [personInstance: personInstance]) == '<dt>Name</dt><dd>nospmiS traB</dd>'
 	}
 
+    void 'can nest f:display inside f:with'() {
+        expect:
+        applyTemplate('<f:with bean="personInstance"><f:display property="name"/></f:with>', [personInstance: personInstance]) == personInstance.name
+    }
+
 }

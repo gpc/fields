@@ -43,3 +43,24 @@ To make it more convenient when rendering lots of properties of the same _bean_ 
 	<f:field property="dateOfBirth"/>
 </f:with>
 {code}
+
+If you need to render a property for display purposes you can use _f:display_. It will internally use _g:fieldValue_, _g:formatBoolean_ or _g:formatDate_ to format the value.
+
+{code}
+<f:display bean="person" property="name"/>
+{code}
+
+If you need to render the value in a different way you can use the body of _f:display_ instead.
+
+{code}
+<f:display bean="person" property="dateOfBirth">
+	<g:formatDate format="dd MMM yyyy" date="${value}"/>
+</f:display>
+{code}
+
+By default _f:display_ simply renders the property value but if you supply a _\_display.gsp_ template you can render the value in some structured markup, e.g. a table cell or list item. See the [Customizing Field Rendering|guide:customizingFieldRendering] section for how to override templates. For example to render values in a definition list you could use a template like this:
+
+{code}
+<dt>${label}</dt>
+<dd>${value}</dd>
+{code}

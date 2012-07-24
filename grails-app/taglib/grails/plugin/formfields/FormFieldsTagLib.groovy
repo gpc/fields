@@ -36,6 +36,10 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	GrailsApplication grailsApplication
 	BeanPropertyAccessorFactory beanPropertyAccessorFactory
 
+	/**
+	 * @attr bean REQUIRED Name of the source bean in the GSP model.
+	 * @attr prefix Prefix to add to input element names.
+	 */
 	def with = { attrs, body ->
 		if (!attrs.bean) throwTagError("Tag [with] is missing required attribute [bean]")
 		def bean = resolveBean(attrs.bean)
@@ -50,6 +54,12 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 	}
 
+	/**
+	 * @attr bean REQUIRED Name of the source bean in the GSP model.
+	 * @attr except A comma-separated list of properties to exclude from
+	 * the generated list of input fields.
+	 * @attr prefix Prefix to add to input element names.
+	 */
 	def all = { attrs ->
 		if (!attrs.bean) throwTagError("Tag [all] is missing required attribute [bean]")
 		def bean = resolveBean(attrs.bean)
@@ -64,6 +74,21 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 	}
 
+	/**
+	 * @attr bean Name of the source bean in the GSP model.
+	 * @attr property REQUIRED The name of the property to display. This is resolved
+	 * against the specified bean or the bean in the current scope.
+	 * @attr value Specifies the initial value to display in the field. The default is
+	 * the current value of the property.
+	 * @attr default A default initial value to display if the actual property value
+	 * evaluates to {@code false}.
+	 * @attr required Specifies whether the user is required to enter a value for this
+	 * property. By default, this is determined by the constraints of the property.
+	 * @attr invalid Specifies whether this property is invalid or not. By default, this
+	 * is determined by whether there are any errors associated with it.
+	 * @attr label Overrides the default label displayed next to the input field.
+	 * @attr prefix Prefix to add to input element names.
+	 */
 	def field = { attrs, body ->
 		if (attrs.containsKey('bean') && !attrs.bean) throwTagError("Tag [field] requires a non-null value for attribute [bean]")
 		if (!attrs.property) throwTagError("Tag [field] is missing required attribute [property]")
@@ -101,6 +126,11 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 	}
 
+	/**
+	 * @attr bean REQUIRED Name of the source bean in the GSP model.
+	 * @attr property REQUIRED The name of the property to display. This is resolved
+	 * against the specified bean or the bean in the current scope.
+	 */
 	def input = { attrs ->
 		def bean = resolveBean(attrs.remove('bean'))
 		if (!bean) throwTagError("Tag [$name] is missing required attribute [bean]")

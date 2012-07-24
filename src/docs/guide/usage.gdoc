@@ -1,17 +1,21 @@
-The plugin provides a set of tags you can use to render forms.
+The plugin provides a set of tags you can use to render the fields in a form.
 
 In the simplest case you can use _f:all_ to render a field for every property of a bean (the domain object or command the form will bind to):
 
 {code}
-<f:all bean="person"/>
+<g:form…>
+    <f:all bean="person"/>
+</g:form>
 {code}
 
 To render individual fields you use the _f:field_ tag:
 
 {code}
-<f:field bean="person" property="name"/>
-<f:field bean="person" property="address"/>
-<f:field bean="person" property="dateOfBirth"/>
+<g:form…>
+    <f:field bean="person" property="name"/>
+    <f:field bean="person" property="address"/>
+    <f:field bean="person" property="dateOfBirth"/>
+</g:form>
 {code}
 
 The _f:field_ tag will automatically handle embedded domain properties recursively:
@@ -24,7 +28,7 @@ If there is no bean object backing a form but you still want to render the surro
 
 {code}
 <f:field property="password">
-	<g:password name="password"/>
+    <g:password name="password"/>
 </f:field>
 {code}
 
@@ -37,11 +41,13 @@ It should be an unusual case but to render just the input without its surroundin
 To make it more convenient when rendering lots of properties of the same _bean_ you can use the _f:with_ tag to avoid having to specify _bean_ on any tags nested inside:
 
 {code}
-<f:with bean="person">
-	<f:field property="name"/>
-	<f:field property="address"/>
-	<f:field property="dateOfBirth"/>
-</f:with>
+<g:form…>
+    <f:with bean="person">
+        <f:field property="name"/>
+        <f:field property="address"/>
+        <f:field property="dateOfBirth"/>
+    </f:with>
+</g:form>
 {code}
 
 If you need to render a property for display purposes you can use _f:display_. It will internally use _g:fieldValue_, _g:formatBoolean_ or _g:formatDate_ to format the value.
@@ -50,11 +56,11 @@ If you need to render a property for display purposes you can use _f:display_. I
 <f:display bean="person" property="name"/>
 {code}
 
-If you need to render the value in a different way you can use the body of _f:display_ instead.
+If you need to render the value in a different way you can give _f:display_ a body instead.
 
 {code}
 <f:display bean="person" property="dateOfBirth">
-	<g:formatDate format="dd MMM yyyy" date="${value}"/>
+    <g:formatDate format="dd MMM yyyy" date="${value}"/>
 </f:display>
 {code}
 

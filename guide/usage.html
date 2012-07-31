@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>2 Usage 1.2</title>
+    <title>2 Usage 1.3</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -80,7 +80,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> Rob Fletcher</p>
 
-                    <p><strong>Version:</strong> 1.2</p>
+                    <p><strong>Version:</strong> 1.3</p>
 
                     
                 </div>
@@ -90,15 +90,24 @@ function addJsClass() {
                 
 <a name="2. Usage"><!-- Legacy link --></a>
 <h1 id="usage">2 Usage</h1>
-The plugin provides a set of tags you can use to render forms.<p class="paragraph"/>In the simplest case you can use  <em class="italic">f:all</em>  to render a field for every property of a bean (the domain object or command the form will bind to):<p class="paragraph"/><div class="code"><pre>&#60;f:all bean=<span class="java&#45;quote">"person"</span>/&#62;</pre></div><p class="paragraph"/>To render individual fields you use the  <em class="italic">f:field</em>  tag:<p class="paragraph"/><div class="code"><pre>&#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"name"</span>/&#62;
-&#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"address"</span>/&#62;
-&#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"dateOfBirth"</span>/&#62;</pre></div><p class="paragraph"/>The  <em class="italic">f:field</em>  tag will automatically handle embedded domain properties recursively:<p class="paragraph"/><div class="code"><pre>&#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"address"</span>/&#62;</pre></div><p class="paragraph"/>If there is no bean object backing a form but you still want to render the surrounding field markup you can give  <em class="italic">f:field</em>  a body:<p class="paragraph"/><div class="code"><pre>&#60;f:field property=<span class="java&#45;quote">"password"</span>&#62;
-	&#60;g:password name=<span class="java&#45;quote">"password"</span>/&#62;
-&#60;/f:field&#62;</pre></div><p class="paragraph"/>It should be an unusual case but to render just the input without its surrounding container you can use the  <em class="italic">f:input</em>  tag:<p class="paragraph"/><div class="code"><pre>&#60;f:input bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"name"</span>/&#62;</pre></div><p class="paragraph"/>To make it more convenient when rendering lots of properties of the same  <em class="italic">bean</em>  you can use the  <em class="italic">f:with</em>  tag to avoid having to specify  <em class="italic">bean</em>  on any tags nested inside:<p class="paragraph"/><div class="code"><pre>&#60;f:with bean=<span class="java&#45;quote">"person"</span>&#62;
-	&#60;f:field property=<span class="java&#45;quote">"name"</span>/&#62;
-	&#60;f:field property=<span class="java&#45;quote">"address"</span>/&#62;
-	&#60;f:field property=<span class="java&#45;quote">"dateOfBirth"</span>/&#62;
-&#60;/f:with&#62;</pre></div>
+The plugin provides a set of tags you can use to render the fields in a form.<p class="paragraph"/>In the simplest case you can use  <em class="italic">f:all</em>  to render a field for every property of a bean (the domain object or command the form will bind to):<p class="paragraph"/><div class="code"><pre>&#60;g:form…&#62;
+    &#60;f:all bean=<span class="java&#45;quote">"person"</span>/&#62;
+&#60;/g:form&#62;</pre></div><p class="paragraph"/>To render individual fields you use the  <em class="italic">f:field</em>  tag:<p class="paragraph"/><div class="code"><pre>&#60;g:form…&#62;
+    &#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"name"</span>/&#62;
+    &#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"address"</span>/&#62;
+    &#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"dateOfBirth"</span>/&#62;
+&#60;/g:form&#62;</pre></div><p class="paragraph"/>The  <em class="italic">f:field</em>  tag will automatically handle embedded domain properties recursively:<p class="paragraph"/><div class="code"><pre>&#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"address"</span>/&#62;</pre></div><p class="paragraph"/>If there is no bean object backing a form but you still want to render the surrounding field markup you can give  <em class="italic">f:field</em>  a body:<p class="paragraph"/><div class="code"><pre>&#60;f:field property=<span class="java&#45;quote">"password"</span>&#62;
+    &#60;g:password name=<span class="java&#45;quote">"password"</span>/&#62;
+&#60;/f:field&#62;</pre></div><p class="paragraph"/>It should be an unusual case but to render just the input without its surrounding container you can use the  <em class="italic">f:input</em>  tag:<p class="paragraph"/><div class="code"><pre>&#60;f:input bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"name"</span>/&#62;</pre></div><p class="paragraph"/>To make it more convenient when rendering lots of properties of the same  <em class="italic">bean</em>  you can use the  <em class="italic">f:with</em>  tag to avoid having to specify  <em class="italic">bean</em>  on any tags nested inside:<p class="paragraph"/><div class="code"><pre>&#60;g:form…&#62;
+    &#60;f:with bean=<span class="java&#45;quote">"person"</span>&#62;
+        &#60;f:field property=<span class="java&#45;quote">"name"</span>/&#62;
+        &#60;f:field property=<span class="java&#45;quote">"address"</span>/&#62;
+        &#60;f:field property=<span class="java&#45;quote">"dateOfBirth"</span>/&#62;
+    &#60;/f:with&#62;
+&#60;/g:form&#62;</pre></div><p class="paragraph"/>If you need to render a property for display purposes you can use  <em class="italic">f:display</em> . It will internally use  <em class="italic">g:fieldValue</em> ,  <em class="italic">g:formatBoolean</em>  or  <em class="italic">g:formatDate</em>  to format the value.<p class="paragraph"/><div class="code"><pre>&#60;f:display bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"name"</span>/&#62;</pre></div><p class="paragraph"/>If you need to render the value in a different way you can give  <em class="italic">f:display</em>  a body instead.<p class="paragraph"/><div class="code"><pre>&#60;f:display bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"dateOfBirth"</span>&#62;
+    &#60;g:formatDate format=<span class="java&#45;quote">"dd MMM yyyy"</span> date=<span class="java&#45;quote">"$&#123;value&#125;"</span>/&#62;
+&#60;/f:display&#62;</pre></div><p class="paragraph"/>By default  <em class="italic">f:display</em>  simply renders the property value but if you supply a  <em class="italic">&#95;display.gsp</em>  template you can render the value in some structured markup, e.g. a table cell or list item. See the <a href="../guide/single.html#customizingFieldRendering" class="guide">Customizing Field Rendering</a> section for how to override templates. For example to render values in a definition list you could use a template like this:<p class="paragraph"/><div class="code"><pre>&#60;dt&#62;$&#123;label&#125;&#60;/dt&#62;
+&#60;dd&#62;$&#123;value&#125;&#60;/dd&#62;</pre></div>
 
 
 
@@ -123,6 +132,9 @@ The plugin provides a set of tags you can use to render forms.<p class="paragrap
                         
                             
                             <div class="menu-item"><a href="../ref/Tags/all.html">all</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/Tags/display.html">display</a>
                             </div>
                             
                             <div class="menu-item"><a href="../ref/Tags/field.html">field</a>

@@ -1,0 +1,88 @@
+As described earlier the plugin resolves the GSP template used for each property according to conventions.
+You can override the rendering based on the class and property name or the property type.
+All tags will look in the following locations in decreasing order of preference:
+
+# @grails-app/views/*controllerName*/*actionName*/*propertyName*/@
+# @grails-app/views/*controllerName*/*actionName*/*propertyType*/@
+# @grails-app/views/*controllerName*/*actionName*/@
+# @grails-app/views/*controllerName*/*propertyName*/@
+# @grails-app/views/*controllerName*/*propertyType*/@
+# @grails-app/views/*controllerName*/@
+# @grails-app/views/\_fields/*class*/*propertyName*/@
+# @grails-app/views/\_fields/*superclass*/*propertyName*/@
+# @grails-app/views/\_fields/*associationType*/@
+# @grails-app/views/\_fields/*propertyType*/@
+# @grails-app/views/\_fields/*propertySuperclass*/@
+# @grails-app/views/\_fields/default/@
+
+By default almost all these locations are taken into account for every fields tag on the GPSs!
+This happens only *once in production mode* but for *each request in development mode* (because you want to see your GSP updates asap).
+On forms with a lot of fields this can quickly get time consuming because _groovyPageLocator_ takes several milliseconds for each template lookup.
+But you can control which locations will be considered by this plugin by configuring the _FormFieldsTemplateService_ in your _Config.groovy_ or _resources.groovy_.
+If you know what kind of templates you provide, you can save up to several seconds per page reload in *development mode*.
+
+The _FormFieldsTemplateService_ has six properties which control separate location options:
+
+{table}
+*Name* | *Ignored locations*
+*ignoreControllerLookup* | @grails-app/views/*controllerName*\*/@
+*ignoreControllerActionLookup* | @grails-app/views/*controllerName*/*actionName*/\*/@
+*ignoreAssociationLookup* | @grails-app/views/\_fields/*associationType*/@
+*ignoreBeanTypeLookup* | @grails-app/views/\_fields/*class*/*propertyName*/@ (including supertype)
+*ignoreBeanSuperTypeLookup* | @grails-app/views/\_fields/*superclass*/*propertyName*/@
+*ignorePropertyTypeLookup* | @grails-app/views/\_fields/*propertyType*/@ (including supertype)
+*ignorePropertySuperTypeLookup* | @grails-app/views/\_fields/*propertySuperclass*/@
+{table}
+
+
+h2. Configuration
+
+You can use one of two ways to configure template lookup paths:
+
+in *Config.groovy* set the following configuration parameters
+{code}
+...
+// fields plugin configuration
+grails.plugins.formfields.ignoreControllerLookup = true
+grails.plugins.formfields.ignoreControllerActionLookup = true
+grails.plugins.formfields.ignoreAssociationLookup = true
+//grails.plugins.formfields.ignoreBeanTypeLookup = false
+grails.plugins.formfields.ignoreBeanSuperTypeLookup = true
+//grails.plugins.formfields.ignorePropertyTypeLookup = false
+...
+{code}
+This is a good starting point if you only use "bean type" templates.
+
+or
+
+in *resources.groovy* redeclare the formFieldsTemplateService bean
+{code}
+beans = {
+...
+    formFieldsTemplateService(FormFieldsTemplateService) {
+        groovyPageLocator = ref("groovyPageLocator")
+        pluginManager = ref("pluginManager")
+
+        ignoreControllerLookup = true
+        ignoreControllerActionLookup = true
+        ignoreAssociationLookup = true
+        ignoreBeanSuperTypeLookup = true
+    }
+...
+}
+{code}
+Same as above but with overridden service bean.
+
+h2. Example
+
+For example on a multi-tabbed page with a total of ~100 <f:*> tags.
+~50% <f:display/>
+~45% <f:field/>
+~5%  <f:input/>
+
+and templates in "_fields/bean/property",  "_fields/propertyType/",  "_fields/default/" for a total of 10 properties.
+
+With the default lookup strategy the page takes 25sec.
+With optimized lookup strategy the page loads in 5sec (ignoring controller- and -action, association- and bean super type -templates).
+
+If you are using only one major lookup strategy, i.e. controller OR beantype lookup, switch of the other. This may save you a lot of time during development.

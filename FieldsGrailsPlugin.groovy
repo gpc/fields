@@ -40,5 +40,15 @@ class FieldsGrailsPlugin {
 			proxyHandler = ref('proxyHandler')
 		}
 	}
-	
+
+	def doWithApplicationContext = { appCtx ->
+		def formFieldsTemplateService = appCtx.formFieldsTemplateService
+		formFieldsTemplateService.ignoreControllerLookup = application.config.grails.plugins.formfields.ignoreControllerLookup
+		formFieldsTemplateService.ignoreControllerActionLookup = application.config.grails.plugins.formfields.ignoreControllerActionLookup
+		formFieldsTemplateService.ignoreBeanTypeLookup = application.config.grails.plugins.formfields.ignoreBeanTypeLookup
+        formFieldsTemplateService.ignoreBeanSuperTypeLookup = application.config.grails.plugins.formfields.ignoreBeanSuperTypeLookup
+        formFieldsTemplateService.ignoreAssociationLookup = application.config.grails.plugins.formfields.ignoreAssociationLookup
+        formFieldsTemplateService.ignorePropertyTypeLookup = application.config.grails.plugins.formfields.ignorePropertyTypeLookup
+		formFieldsTemplateService.ignorePropertySuperTypeLookup = application.config.grails.plugins.formfields.ignorePropertySuperTypeLookup
+	}
 }

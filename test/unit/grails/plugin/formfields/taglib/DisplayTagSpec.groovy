@@ -41,6 +41,11 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
 		applyTemplate('<f:display bean="personInstance" property="dateOfBirth"/>', [personInstance: personInstance]) ==~ /1987-04-19 00:00:00/
 	}
 
+    void 'renders date values using g:formatDate without default dateformat'() {
+   		expect:
+   		applyTemplate('<f:display bean="personInstance" property="dateOfBirth"/>', [personInstance: personInstance]) ==~ /1987-04-19 00:00:00 [A-Z]{3,4}/
+   	}
+
 	void 'displays using template if one is present'() {
 		given:
 		views["/_fields/default/_display.gsp"] = '<dt>${label}</dt><dd>${value}</dd>'

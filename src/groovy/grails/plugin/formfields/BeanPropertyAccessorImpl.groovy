@@ -58,7 +58,8 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
 	}
 
 	List<FieldError> getErrors() {
-		if (rootBean.metaClass.hasProperty(rootBean, 'errors')) {
+		if (rootBean.metaClass.hasProperty(rootBean, 'errors') && rootBean.errors) {
+
 			rootBean.errors.getFieldErrors(pathFromRoot)
 		} else {
 			[]

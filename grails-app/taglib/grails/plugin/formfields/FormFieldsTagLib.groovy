@@ -16,15 +16,16 @@
 
 package grails.plugin.formfields
 
+import static grails.plugin.formfields.FormFieldsTemplateService.toPropertyNameFormat
+import static org.codehaus.groovy.grails.commons.GrailsClassUtils.getStaticPropertyValue
 import groovy.xml.MarkupBuilder
+
 import org.apache.commons.lang.StringUtils
+import org.codehaus.groovy.grails.commons.*
 import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
 import org.codehaus.groovy.grails.scaffolding.DomainClassPropertyComparator
 import org.codehaus.groovy.grails.web.pages.GroovyPage
-import org.codehaus.groovy.grails.commons.*
-
-import static FormFieldsTemplateService.toPropertyNameFormat
-import static org.codehaus.groovy.grails.commons.GrailsClassUtils.getStaticPropertyValue
+import org.hibernate.proxy.HibernateProxyHelper
 
 class FormFieldsTagLib implements GrailsApplicationAware {
 
@@ -65,6 +66,14 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		def bean = resolveBean(attrs.bean)
 		def prefix = resolvePrefix(attrs.prefix)
 		def domainClass = resolveDomainClass(bean)
+		if (!domainClass){
+			try{
+				def cl = HibernateProxyHelper.getClassWithoutInitializingProxy(bean)
+				domainClass = resolveDomainClass(cl)
+			}catch(e){
+				log.warn(e)
+			}
+		}
 		if (domainClass) {
 			for (property in resolvePersistentProperties(domainClass, attrs)) {
 				out << field(bean: bean, property: property.name, prefix: prefix)

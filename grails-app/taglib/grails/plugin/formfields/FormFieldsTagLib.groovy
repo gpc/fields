@@ -25,7 +25,6 @@ import org.codehaus.groovy.grails.commons.*
 import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
 import org.codehaus.groovy.grails.scaffolding.DomainClassPropertyComparator
 import org.codehaus.groovy.grails.web.pages.GroovyPage
-import org.hibernate.proxy.HibernateProxyHelper
 
 class FormFieldsTagLib implements GrailsApplicationAware {
 
@@ -66,14 +65,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		def bean = resolveBean(attrs.bean)
 		def prefix = resolvePrefix(attrs.prefix)
 		def domainClass = resolveDomainClass(bean)
-		if (!domainClass){
-			try{
-				def cl = HibernateProxyHelper.getClassWithoutInitializingProxy(bean)
-				domainClass = resolveDomainClass(cl)
-			}catch(e){
-				log.warn(e)
-			}
-		}
+		domainClass = domainClass?:resolveDomainClassWithHibernateProxy(bean)
+		
 		if (domainClass) {
 			for (property in resolvePersistentProperties(domainClass, attrs)) {
 				out << field(bean: bean, property: property.name, prefix: prefix)
@@ -170,6 +163,30 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 
 		out << renderForDisplay(propertyAccessor, model, attrs)
+	}
+	
+	private static def hibernateProxyHelperClass
+	private static boolean hibernateProxyHelperClass_initComplete = false
+	
+	private def resolveDomainClassWithHibernateProxy(def bean){
+		def domainClass
+		try{
+			if (!hibernateProxyHelperClass_initComplete){
+				hibernateProxyHelperClass_initComplete = true
+				try{
+					hibernateProxyHelperClass = Class.forName("org.hibernate.proxy.HibernateProxyHelper")
+				}catch(ClassNotFoundException e1){
+					log.debug("org.hibernate.proxy.HibernateProxyHelper not found. Looks like the project does not use hibernate.")
+				}
+			}
+			if (hibernateProxyHelperClass){
+				def cl = hibernateProxyHelperClass.getClassWithoutInitializingProxy(bean)
+				domainClass = resolveDomainClass(cl)
+			}
+		}catch(e){
+			log.warn(e)
+		}
+		domainClass
 	}
 
 	private void renderEmbeddedProperties(bean, BeanPropertyAccessor propertyAccessor, attrs) {

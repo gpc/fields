@@ -79,7 +79,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 				out << field(bean: bean, property: property.name, prefix: prefix)
 			}
 		} else {
-			throwTagError('Tag [all] currently only supports domain types')
+			throwTagError("Tag [all] currently only supports domain types: attrs.bean = '${attrs.bean}'; bean = '$bean'.")
 		}
 	}
 

@@ -308,12 +308,16 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		labelText
 	}
 
-	private String resolveMessage(List<String> keysInPreferenceOrder, String defaultMessage) {
-		def message = keysInPreferenceOrder.findResult { key ->
-			message(code: key, default: null) ?: null
-		}
-		message ?: defaultMessage
-	}
+    private String resolveMessage(List<String> keysInPreferenceOrder, String defaultMessage) {
+        def message = keysInPreferenceOrder.findResult { key ->
+            if (hibernateProxyHelperClass){
+                //A micro-optimization in case hibernate not used.
+                key = key.replaceAll('_\\$\\$_javassist_\\d+\\.', '.')
+            }           
+            message(code: key, default: null) ?: null
+        }
+        message ?: defaultMessage
+    }
 
 	private String renderDefaultField(Map model) {
 		def classes = ['fieldcontain']

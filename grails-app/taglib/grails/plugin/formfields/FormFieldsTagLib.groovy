@@ -164,6 +164,17 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 		out << renderForDisplay(propertyAccessor, model, attrs)
 	}
+    
+    private lookupHibernateProxyHelper(){
+        if (!hibernateProxyHelperClass_initComplete){
+            hibernateProxyHelperClass_initComplete = true
+            try{
+                hibernateProxyHelperClass = Class.forName("org.hibernate.proxy.HibernateProxyHelper")
+            }catch(ClassNotFoundException e1){
+                log.debug("org.hibernate.proxy.HibernateProxyHelper not found. Looks like the project does not use hibernate.")
+            }
+        }
+    }
 	
 	private static def hibernateProxyHelperClass
 	private static boolean hibernateProxyHelperClass_initComplete = false
@@ -171,14 +182,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	private def resolveDomainClassWithHibernateProxy(def bean){
 		def domainClass
 		try{
-			if (!hibernateProxyHelperClass_initComplete){
-				hibernateProxyHelperClass_initComplete = true
-				try{
-					hibernateProxyHelperClass = Class.forName("org.hibernate.proxy.HibernateProxyHelper")
-				}catch(ClassNotFoundException e1){
-					log.debug("org.hibernate.proxy.HibernateProxyHelper not found. Looks like the project does not use hibernate.")
-				}
-			}
+			lookupHibernateProxyHelper()
 			if (hibernateProxyHelperClass){
 				def cl = hibernateProxyHelperClass.getClassWithoutInitializingProxy(bean)
 				domainClass = resolveDomainClass(cl)
@@ -309,6 +313,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
     
     private String removeJavaAssistPart(String key){
+        lookupHibernateProxyHelper()
         //A micro-optimization in case hibernate not used.
         if (hibernateProxyHelperClass){
             key = key.replaceAll('_\\$\\$_javassist_\\d+\\.', '.')

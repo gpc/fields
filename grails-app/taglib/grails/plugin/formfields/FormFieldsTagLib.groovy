@@ -322,12 +322,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		} else if (model.type in URL) {
 			return g.field(attrs + [type: "url"])
 		} else if (model.type.isEnum()) {
-			if (attrs.value instanceof Enum)
-				attrs.value = attrs.value.name()
-			attrs.keys = model.type.values()*.name()
-			attrs.from = model.type.values()
-			if (!model.required) attrs.noSelection = ["": ""]
-			return g.select(attrs)
+			return renderEnumInput(model,attrs)
 		} else if (model.persistentProperty?.oneToOne || model.persistentProperty?.manyToOne || model.persistentProperty?.manyToMany) {
 			return renderAssociationInput(model, attrs)
 		} else if (model.persistentProperty?.oneToMany) {
@@ -395,6 +390,21 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			if (model.constraints?.max != null) attrs.max = model.constraints.max
 		}
 		return g.field(attrs)
+	}
+
+	private String renderEnumInput(Map model, Map attrs) {
+		if (attrs.value instanceof Enum)
+			attrs.value = attrs.value.name()
+		if (!model.required) attrs.noSelection = ["": ""]
+
+		if ( model.constraints?.inList) {
+			attrs.keys = model.constraints.inList*.name()
+			attrs.from = model.constraints.inList
+		} else {
+			attrs.keys = model.type.values()*.name()
+			attrs.from = model.type.values()
+		}
+		return g.select(attrs)
 	}
 
 	private String renderAssociationInput(Map model, Map attrs) {

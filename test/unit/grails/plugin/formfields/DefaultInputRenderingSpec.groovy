@@ -508,6 +508,29 @@ class DefaultInputRenderingSpec extends Specification {
 		"Enum"	| "FIRST"
 	}
 
+	@Issue('https://github.com/robfletcher/grails-fields/issues/93')
+	def "enum select should respect constraint inList"() {
+		given:
+		def model = [type: EnumWithToString, property: "prop", constraints: [inList: inListConstraint], persistentProperty: basicProperty]
+
+		when:
+		def output = tagLib.renderDefaultInput(model)
+
+		then:
+		output =~ /select name="prop"/
+		inListConstraint.every {
+			output =~ /option value="${it.name()}"/
+		}
+		notAllowed.every {
+			!(output =~ /$it/)
+		}
+
+		where:
+		inListConstraint									| notAllowed
+		[EnumWithToString.FIRST,EnumWithToString.SECOND ] 	| [EnumWithToString.THIRD]
+		[EnumWithToString.FIRST] 							| [EnumWithToString.THIRD, EnumWithToString.SECOND ]
+	}
+
 	@Issue("https://github.com/robfletcher/grails-fields/issues/50")
 	def "string property with a widget type of textarea is rendered as a textArea"() {
 		given:

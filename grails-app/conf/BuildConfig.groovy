@@ -38,6 +38,7 @@ grails.project.dependency.resolution = {
     }
 
     dependencies {
+        test 'org.spockframework:spock-grails-support:0.7-groovy-2.0'
 		test 'javassist:javassist:3.12.0.GA'
 		test('org.jodd:jodd-wot:3.3.4') {
 			excludes 'slf4j-api', 'asm'
@@ -45,11 +46,11 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-		test(':spock:0.6') {
+		test(':spock:0.7') {
 			export = false
-			excludes 'groovy-all'
+			exclude 'spock-grails-support'
 		}
-        build(':release:2.0.3', ':rest-client-builder:1.0.2') {
+        build(':release:2.2.0', ':rest-client-builder:1.0.2') {
             export = false
         }
     }

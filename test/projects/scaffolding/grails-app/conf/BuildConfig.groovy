@@ -25,6 +25,7 @@ grails.project.dependency.resolution = {
 		mavenRepo "https://nexus.codehaus.org/content/repositories/snapshots"
     }
     dependencies {
+        test 'org.spockframework:spock-grails-support:0.7-groovy-2.0'
 		test "org.codehaus.geb:geb-spock:$gebVersion"
 		test "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
 		test "org.seleniumhq.selenium:selenium-htmlunit-driver:$seleniumVersion"
@@ -35,7 +36,9 @@ grails.project.dependency.resolution = {
         compile ":jquery:1.7.2"
         compile ":resources:1.1.6"
         build ":tomcat:$grailsVersion"
-		test ":spock:0.6"
+        test(':spock:0.7') {
+            exclude 'spock-grails-support'
+        }
 		test ":geb:$gebVersion"
     }
 }

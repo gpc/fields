@@ -31,24 +31,20 @@ grails.project.dependency.resolution = {
 		inherits true
 		grailsHome()
         grailsCentral()
-		grailsRepo "http://grails.org/plugins"
+//		grailsRepo "http://grails.org/plugins"
 		grailsPlugins()
         mavenCentral()
         mavenLocal()
     }
 
     dependencies {
-		test 'javassist:javassist:3.12.0.GA'
-		test('org.jodd:jodd-wot:3.3.4') {
-			excludes 'slf4j-api', 'asm'
-		}
+        test "org.spockframework:spock-grails-support:0.7-groovy-2.0"
     }
 
     plugins {
-		test(':spock:0.6') {
-			export = false
-			excludes 'groovy-all'
-		}
+        test(":spock:0.7") {
+            exclude "spock-grails-support"
+        }
         build(':release:2.0.3', ':rest-client-builder:1.0.2') {
             export = false
         }

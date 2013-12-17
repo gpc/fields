@@ -46,6 +46,7 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
+		compile ':scaffolding:1.0.0'
 		test(':spock:0.7') {
 			export = false
 			exclude 'spock-grails-support'

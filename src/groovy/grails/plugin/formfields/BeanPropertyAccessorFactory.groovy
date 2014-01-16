@@ -17,13 +17,19 @@
 package grails.plugin.formfields
 
 import groovy.transform.PackageScope
-import java.lang.reflect.ParameterizedType
-import java.util.regex.Pattern
+import org.codehaus.groovy.grails.commons.GrailsApplication
+import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
 import org.codehaus.groovy.grails.support.proxy.ProxyHandler
-import org.codehaus.groovy.grails.commons.*
-import org.codehaus.groovy.grails.validation.*
-import org.springframework.beans.*
+import org.codehaus.groovy.grails.validation.ConstrainedProperty
+import org.codehaus.groovy.grails.validation.ConstraintsEvaluator
+import org.springframework.beans.BeanWrapper
+import org.springframework.beans.BeanWrapperImpl
+import org.springframework.beans.NotReadablePropertyException
+import org.springframework.beans.PropertyAccessorFactory
+
+import java.lang.reflect.ParameterizedType
+import java.util.regex.Pattern
 
 class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 
@@ -35,7 +41,7 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 		if (bean == null) {
 			new PropertyPathAccessor(propertyPath)
 		} else {
-			def params = [rootBean: bean, rootBeanType: bean.getClass(), pathFromRoot: propertyPath]
+			def params = [rootBean: bean, rootBeanType: bean.getClass(), pathFromRoot: propertyPath, grailsApplication: grailsApplication]
 			params.rootBeanClass = resolveDomainClass(bean.getClass())
 
 			resolvePropertyFromPath(bean, propertyPath, params)

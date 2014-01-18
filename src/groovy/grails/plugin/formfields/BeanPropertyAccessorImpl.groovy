@@ -22,6 +22,7 @@ import org.apache.commons.lang.ClassUtils
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
+import org.codehaus.groovy.grails.plugins.VersionComparator
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import org.springframework.validation.FieldError
 
@@ -50,10 +51,8 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
     @Lazy
     private boolean convertBlanksToNull = { ->
 
-        List<String> grailsVersionParts = grailsApplication.metadata.getGrailsVersion().tokenize('.')
-        String majorVersion = grailsVersionParts[0]
-        String minorVersion = grailsVersionParts[1]
-        boolean isAtLeastGrails2Point3 = "$majorVersion$minorVersion".toInteger() >= 23
+        String applicationGrailsVersion = grailsApplication.metadata.getGrailsVersion()
+        boolean isAtLeastGrails2Point3 = new VersionComparator().compare(applicationGrailsVersion, '2.3') != -1
 
         if (isAtLeastGrails2Point3) {
             getDataBindingConfigParamValue('convertEmptyStringsToNull') && getDataBindingConfigParamValue('trimStrings')

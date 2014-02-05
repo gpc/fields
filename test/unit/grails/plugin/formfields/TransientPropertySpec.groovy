@@ -21,7 +21,7 @@ class TransientPropertySpec extends AbstractFormFieldsTagLibSpec {
     def setup() {
         def taglib = applicationContext.getBean(FormFieldsTagLib)
 
-        mockFormFieldsTemplateService.findTemplate(_, 'field') >> [path: '/_fields/default/field']
+        mockFormFieldsTemplateService.findTemplate(_, 'field', "") >> [path: '/_fields/default/field']
         taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 
         userInstance = new User(email: 'rob@freeside.co', password: 'yuonocanhaz', confirmPassword: 'yuonocanhaz').save(failOnError: true)

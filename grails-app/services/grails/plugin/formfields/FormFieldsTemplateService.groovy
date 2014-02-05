@@ -30,14 +30,14 @@ class FormFieldsTemplateService {
     GrailsConventionGroovyPageLocator groovyPageLocator
     GrailsPluginManager pluginManager
 
-    Map findTemplate(BeanPropertyAccessor propertyAccessor, String templateName) {
-        findTemplateCached(propertyAccessor, controllerName, actionName, templateName)
+    Map findTemplate(BeanPropertyAccessor propertyAccessor, String templateName, String componentName = "") {
+        findTemplateCached(propertyAccessor, controllerName, actionName, templateName, componentName)
     }
 
     private final Closure findTemplateCached = shouldCache() ? this.&findTemplateCacheable.memoize() : this.&findTemplateCacheable
 
-    private Map findTemplateCacheable(BeanPropertyAccessor propertyAccessor, String controllerName, String actionName, String templateName) {
-        def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerName, actionName, templateName)
+    private Map findTemplateCacheable(BeanPropertyAccessor propertyAccessor, String controllerName, String actionName, String templateName, String componentName) {
+        def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerName, actionName, templateName, componentName)
 
         candidatePaths.findResult { path ->
             log.debug "looking for template with path $path"
@@ -60,8 +60,13 @@ class FormFieldsTemplateService {
         GrailsNameUtils.getLogicalPropertyName(type.name, '')
     }
 
-    private List<String> candidateTemplatePaths(BeanPropertyAccessor propertyAccessor, String controllerName, String actionName, String templateName) {
+    private List<String> candidateTemplatePaths(BeanPropertyAccessor propertyAccessor, String controllerName, String actionName, String templateName, String componentName) {
         def templateResolveOrder = []
+
+        //if there is a component name then takes priority
+        if(componentName != ""){
+            templateResolveOrder << appendPiecesForUri("/_fields/_components", componentName, templateName)
+        }
 
         // if there is a controller for the current request any template in its views directory takes priority
         if (controllerName) {
@@ -126,3 +131,4 @@ class FormFieldsTemplateService {
     }
 
 }
+

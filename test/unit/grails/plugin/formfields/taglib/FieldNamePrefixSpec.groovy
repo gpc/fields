@@ -19,7 +19,7 @@ class FieldNamePrefixSpec extends AbstractFormFieldsTagLibSpec {
 	def setup() {
 		def taglib = applicationContext.getBean(FormFieldsTagLib)
 
-		mockFormFieldsTemplateService.findTemplate(_, 'field') >> [path: '/_fields/default/field']
+		mockFormFieldsTemplateService.findTemplate(_, 'field', "") >> [path: '/_fields/default/field']
 		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 
 		mockEmbeddedSitemeshLayout(taglib)

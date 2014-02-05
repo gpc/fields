@@ -89,6 +89,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	 * is determined by whether there are any errors associated with it.
 	 * @attr label Overrides the default label displayed next to the input field.
 	 * @attr prefix Prefix to add to input element names.
+	 * @attr component Use a component instead of a regular field.
 	 */
 	def field = { attrs, body ->
 		if (attrs.containsKey('bean') && !attrs.bean) throwTagError("Tag [field] requires a non-null value for attribute [bean]")
@@ -96,6 +97,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 		def bean = resolveBean(attrs.remove('bean'))
 		def property = attrs.remove('property')
+        def component = attrs.component ?: ""
 
 		def propertyAccessor = resolveProperty(bean, property)
 		if (propertyAccessor.persistentProperty?.embedded) {
@@ -118,7 +120,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 				model.widget = renderWidget(propertyAccessor, model, inputAttrs)
 			}
 
-			def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'field')
+            def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'field', component)
 			if (template) {
 				out << render(template: template.path, plugin: template.plugin, model: model + fieldAttrs)
 			} else {
@@ -160,8 +162,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		} else {
 			model.value = renderDefaultDisplay(model, attrs)
 		}
-
-		out << renderForDisplay(propertyAccessor, model, attrs)
+        def component = attrs.component?:''
+		out << renderForDisplay(propertyAccessor, component, model, attrs)
 	}
 
 	private void renderEmbeddedProperties(bean, BeanPropertyAccessor propertyAccessor, attrs) {
@@ -206,8 +208,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 	}
 
-	private String renderForDisplay(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:]) {
-		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'display')
+	private String renderForDisplay(BeanPropertyAccessor propertyAccessor, String componentName, Map model, Map attrs = [:]) {
+		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'display', componentName)
 		if (template) {
 			render template: template.path, plugin: template.plugin, model: model + attrs
 		} else {
@@ -406,7 +408,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			attrs.from = model.type.values()
 		}
 		return g.select(attrs)
-	}
+	  }
 
 	private String renderAssociationInput(Map model, Map attrs) {
 		attrs.id = (model.prefix ?: '') + model.property

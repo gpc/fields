@@ -43,7 +43,7 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
 		views["/_fields/default/_display.gsp"] = '<dt>${label}</dt><dd>${value}</dd>'
 
 		and:
-		mockFormFieldsTemplateService.findTemplate(_, 'display') >> [path: '/_fields/default/display']
+		mockFormFieldsTemplateService.findTemplate(_, 'display', "") >> [path: '/_fields/default/display']
 
 		expect:
 		applyTemplate('<f:display bean="personInstance" property="name"/>', [personInstance: personInstance]) == '<dt>Name</dt><dd>Bart Simpson</dd>'
@@ -55,7 +55,7 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
 		views["/_fields/default/_display.gsp"] = '<dt>${label}</dt><dd>${value}</dd>'
 
 		and:
-		mockFormFieldsTemplateService.findTemplate(_, 'display') >> [path: '/_fields/default/display']
+		mockFormFieldsTemplateService.findTemplate(_, 'display', "") >> [path: '/_fields/default/display']
 
 		expect:
 		applyTemplate('<f:display bean="personInstance" property="name">${value.reverse()}</f:display>', [personInstance: personInstance]) == '<dt>Name</dt><dd>nospmiS traB</dd>'

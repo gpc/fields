@@ -18,10 +18,13 @@ package grails.plugin.formfields
 
 import groovy.xml.MarkupBuilder
 import org.apache.commons.lang.StringUtils
+import org.codehaus.groovy.grails.plugins.GrailsPluginManager
 import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
 import org.codehaus.groovy.grails.scaffolding.DomainClassPropertyComparator
 import org.codehaus.groovy.grails.web.pages.GroovyPage
 import org.codehaus.groovy.grails.commons.*
+import org.codehaus.groovy.grails.web.pages.discovery.GrailsConventionGroovyPageLocator
+import org.codehaus.groovy.grails.web.pages.discovery.GroovyPageLocator
 
 import static FormFieldsTemplateService.toPropertyNameFormat
 import static org.codehaus.groovy.grails.commons.GrailsClassUtils.getStaticPropertyValue
@@ -35,6 +38,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	FormFieldsTemplateService formFieldsTemplateService
 	GrailsApplication grailsApplication
 	BeanPropertyAccessorFactory beanPropertyAccessorFactory
+    GrailsConventionGroovyPageLocator groovyPageLocator
+    GrailsPluginManager pluginManager
 
 	/**
 	 * @attr bean REQUIRED Name of the source bean in the GSP model.
@@ -45,6 +50,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		def bean = resolveBean(attrs.bean)
 		def prefix = resolvePrefix(attrs.prefix)
 		try {
+			pageScope.variables['layout'] = attrs.layout ?: 'default'
 			pageScope.variables[BEAN_PAGE_SCOPE_VARIABLE] = bean
 			pageScope.variables[PREFIX_PAGE_SCOPE_VARIABLE] = prefix
 			out << body()
@@ -64,6 +70,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		if (!attrs.bean) throwTagError("Tag [all] is missing required attribute [bean]")
 		def bean = resolveBean(attrs.bean)
 		def prefix = resolvePrefix(attrs.prefix)
+        pageScope.variables['layout'] = attrs.layout ?: 'default'
 		def domainClass = resolveDomainClass(bean)
 		if (domainClass) {
 			for (property in resolvePersistentProperties(domainClass, attrs)) {
@@ -116,17 +123,31 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			if (hasBody(body)) {
 				model.widget = body(model + inputAttrs)
 			} else {
-				model.widget = renderWidget(propertyAccessor, model, inputAttrs)
+				model.widget = renderWidget(propertyAccessor, model, component, inputAttrs)
 			}
 
-            def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'field', component)
-			if (template) {
-				out << render(template: template.path, plugin: template.plugin, model: model + fieldAttrs)
-			} else {
-				out << renderDefaultField(model)
-			}
+            def layout = attrs.layout ?: pageScope.variables['layout']
+            out << renderLayout(layout, 'field', model + fieldAttrs)
 		}
 	}
+
+    private void renderLayout(layout, templateName, model){
+        def layoutTemplatePath = "/_fields/_layouts/$layout/$templateName"
+        def source = groovyPageLocator.findTemplateByPath(layoutTemplatePath)
+        def template = [:]
+        if (source) {
+            template.path = layoutTemplatePath
+            def plugin = pluginManager.allPlugins.find {
+                source.URI.startsWith(it.pluginPath)
+            }
+            template.plugin = plugin?.name
+            log.info "found template $template.path ${plugin ? "in $template.plugin plugin" : ''}"
+            out << render(template: template.path, plugin: template.plugin, model: model)
+        } else {
+            log.info "template $layoutTemplatePath was not found"
+            out << render(template: "/_fields/_layouts/noLayout", contextPath: pluginContextPath, model: model)
+        }
+    }
 
 	/**
 	 * @attr bean REQUIRED Name of the source bean in the GSP model.
@@ -155,14 +176,15 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 		def propertyAccessor = resolveProperty(bean, property)
 		def model = buildModel(propertyAccessor, attrs)
+        def component = attrs.component?:''
 
 		if (hasBody(body)) {
-			model.value = body(model)
+			model.widget = body(model)
 		} else {
-			model.value = renderDefaultDisplay(model, attrs)
+			model.widget = renderForDisplay(propertyAccessor, model, component, attrs)
 		}
-        def component = attrs.component?:''
-		out << renderForDisplay(propertyAccessor, component, model, attrs)
+        def layout = attrs.layout ?: pageScope.variables['layout']
+        out << renderLayout(layout, 'display', model + attrs)
 	}
 
 	private void renderEmbeddedProperties(bean, BeanPropertyAccessor propertyAccessor, attrs) {
@@ -198,8 +220,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		]
 	}
 
-	private String renderWidget(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:]) {
-		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'input')
+	private String renderWidget(BeanPropertyAccessor propertyAccessor, Map model, String componentName, Map attrs = [:]) {
+		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'field', componentName)
 		if (template) {
 			render template: template.path, plugin: template.plugin, model: model + attrs
 		} else {
@@ -207,12 +229,12 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 	}
 
-	private String renderForDisplay(BeanPropertyAccessor propertyAccessor, String componentName, Map model, Map attrs = [:]) {
+	private String renderForDisplay(BeanPropertyAccessor propertyAccessor, Map model, String componentName, Map attrs = [:]) {
 		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'display', componentName)
 		if (template) {
 			render template: template.path, plugin: template.plugin, model: model + attrs
 		} else {
-			model.value
+            renderDefaultDisplay(model, attrs)
 		}
 	}
 

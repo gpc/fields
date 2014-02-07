@@ -35,25 +35,31 @@ class FormFieldsTemplateService {
     }
 
     private final Closure findTemplateCached = shouldCache() ? this.&findTemplateCacheable.memoize() : this.&findTemplateCacheable
+    public final Closure findTemplateByPathCached = shouldCache() ? this.&findTemplateByPathCacheable.memoize() : this.&findTemplateByPathCacheable
 
     private Map findTemplateCacheable(BeanPropertyAccessor propertyAccessor, String controllerName, String actionName, String templateName, String componentName) {
         def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerName, actionName, templateName, componentName)
 
         candidatePaths.findResult { path ->
-            log.debug "looking for template with path $path"
-            def source = groovyPageLocator.findTemplateByPath(path)
-            if (source) {
-                def template = [path: path]
-                def plugin = pluginManager.allPlugins.find {
-                    source.URI.startsWith(it.pluginPath)
-                }
-                template.plugin = plugin?.name
-                log.info "found template $template.path ${plugin ? "in $template.plugin plugin" : ''}"
-                template
-            } else {
-                null
-            }
+            return findTemplateByPathCached(path)
         }
+    }
+
+    public Map findTemplateByPathCacheable(String path){
+        log.debug "looking for template with path $path"
+        def source = groovyPageLocator.findTemplateByPath(path)
+        def template = null
+        if (source) {
+            template = [path:path]
+            def plugin = pluginManager.allPlugins.find {
+                source.URI.startsWith(it.pluginPath)
+            }
+            template.plugin = plugin?.name
+            log.info "found template $template.path ${plugin ? "in $template.plugin plugin" : ''}"
+        } else {
+            log.info "template $path was not found"
+        }
+        return template
     }
 
     static String toPropertyNameFormat(Class type) {

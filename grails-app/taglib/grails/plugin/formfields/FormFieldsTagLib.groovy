@@ -133,18 +133,10 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
     private void renderLayout(layout, templateName, model){
         def layoutTemplatePath = "/_fields/_layouts/$layout/$templateName"
-        def source = groovyPageLocator.findTemplateByPath(layoutTemplatePath)
-        def template = [:]
-        if (source) {
-            template.path = layoutTemplatePath
-            def plugin = pluginManager.allPlugins.find {
-                source.URI.startsWith(it.pluginPath)
-            }
-            template.plugin = plugin?.name
-            log.info "found template $template.path ${plugin ? "in $template.plugin plugin" : ''}"
-            out << render(template: template.path, plugin: template.plugin, model: model)
+        def layoutTemplate = formFieldsTemplateService.findTemplateByPathCached(layoutTemplatePath)
+        if (layoutTemplate) {
+            out << render(template: layoutTemplate.path, plugin: layoutTemplate.plugin, model: model)
         } else {
-            log.info "template $layoutTemplatePath was not found"
             out << render(template: "/_fields/_layouts/noLayout", contextPath: pluginContextPath, model: model)
         }
     }

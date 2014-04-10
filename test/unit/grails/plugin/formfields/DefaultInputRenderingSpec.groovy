@@ -5,6 +5,7 @@ import grails.util.Environment
 import grails.test.mixin.*
 import org.codehaus.groovy.grails.commons.*
 import spock.lang.*
+import java.sql.Blob
 
 @TestFor(FormFieldsTagLib)
 @Mock(Person)
@@ -48,6 +49,7 @@ class DefaultInputRenderingSpec extends Specification {
 		URL     | /input type="url"/
 		Byte[]  | /input type="file"/
 		byte[]  | /input type="file"/
+		Blob    | /input type="file"/
 	}
 
 	def "input for a #type.simpleName property with a value of '#value' matches '#outputPattern'"() {

@@ -27,6 +27,8 @@ import org.codehaus.groovy.grails.web.pages.GroovyPage
 import static FormFieldsTemplateService.toPropertyNameFormat
 import static org.codehaus.groovy.grails.commons.GrailsClassUtils.getStaticPropertyValue
 
+import java.sql.Blob
+
 class FormFieldsTagLib implements GrailsApplicationAware {
 
 	static final namespace = 'f'
@@ -330,7 +332,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			return renderOneToManyInput(model, attrs)
 		} else if (model.type in [Date, Calendar, java.sql.Date, java.sql.Time]) {
 			return renderDateTimeInput(model, attrs)
-		} else if (model.type in [byte[], Byte[]]) {
+		} else if (model.type in [byte[], Byte[], Blob]) {
 			return g.field(attrs + [type: "file"])
 		} else if (model.type in [TimeZone, Currency, Locale]) {
 			if (!model.required) attrs.noSelection = ["": ""]

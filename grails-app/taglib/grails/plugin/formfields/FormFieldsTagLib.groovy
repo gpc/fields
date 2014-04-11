@@ -134,8 +134,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	 */
 	def input = { attrs ->
 		def bean = resolveBean(attrs.remove('bean'))
-		if (!bean) throwTagError("Tag [$name] is missing required attribute [bean]")
-		if (!attrs.property) throwTagError("Tag [$name] is missing required attribute [property]")
+		if (!bean) throwTagError("Tag [input] is missing required attribute [bean]")
+		if (!attrs.property) throwTagError("Tag [input] is missing required attribute [property]")
 
 		def property = attrs.remove('property')
 
@@ -147,8 +147,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 	def display = { attrs, body ->
 		def bean = resolveBean(attrs.remove('bean'))
-		if (!bean) throwTagError("Tag [$name] is missing required attribute [bean]")
-		if (!attrs.property) throwTagError("Tag [$name] is missing required attribute [property]")
+		if (!bean) throwTagError("Tag [display] is missing required attribute [bean]")
+		if (!attrs.property) throwTagError("Tag [display] is missing required attribute [property]")
 
 		def property = attrs.remove('property')
 

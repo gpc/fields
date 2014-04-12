@@ -31,7 +31,7 @@ class FormFieldsTemplateService {
     GrailsPluginManager pluginManager
 
     Map findTemplate(BeanPropertyAccessor propertyAccessor, String templateName, String componentName = "") {
-        findTemplateCached(propertyAccessor, controllerName, actionName, templateName, componentName)
+        findTemplateCached.call(propertyAccessor, controllerName, actionName, templateName, componentName)
     }
 
     private final Closure findTemplateCached = shouldCache() ? this.&findTemplateCacheable.memoize() : this.&findTemplateCacheable
@@ -41,7 +41,7 @@ class FormFieldsTemplateService {
         def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerName, actionName, templateName, componentName)
 
         candidatePaths.findResult { path ->
-            return findTemplateByPathCached(path)
+            return findTemplateByPathCached.call(path)
         }
     }
 

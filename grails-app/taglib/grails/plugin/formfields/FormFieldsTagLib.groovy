@@ -24,7 +24,6 @@ import org.codehaus.groovy.grails.scaffolding.DomainClassPropertyComparator
 import org.codehaus.groovy.grails.web.pages.GroovyPage
 import org.codehaus.groovy.grails.commons.*
 import org.codehaus.groovy.grails.web.pages.discovery.GrailsConventionGroovyPageLocator
-import org.codehaus.groovy.grails.web.pages.discovery.GroovyPageLocator
 
 import static FormFieldsTemplateService.toPropertyNameFormat
 import static org.codehaus.groovy.grails.commons.GrailsClassUtils.getStaticPropertyValue
@@ -38,7 +37,6 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	FormFieldsTemplateService formFieldsTemplateService
 	GrailsApplication grailsApplication
 	BeanPropertyAccessorFactory beanPropertyAccessorFactory
-    GrailsConventionGroovyPageLocator groovyPageLocator
     GrailsPluginManager pluginManager
 
 	/**
@@ -133,7 +131,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
     private void renderLayout(layout, templateName, model){
         def layoutTemplatePath = "/_fields/_layouts/$layout/$templateName"
-        def layoutTemplate = formFieldsTemplateService.findTemplateByPathCached(layoutTemplatePath)
+        def layoutTemplate = formFieldsTemplateService.findTemplateByPathCached.call(layoutTemplatePath)
         if (layoutTemplate) {
             out << render(template: layoutTemplate.path, plugin: layoutTemplate.plugin, model: model)
         } else {

@@ -24,15 +24,13 @@ grails.project.target.level = 1.6
 
 grails.project.dependency.resolution = {
 
-    inherits 'global'
     log 'warn'
 
     repositories {
 		inherits true
 		grailsHome()
         grailsCentral()
-		grailsRepo "http://grails.org/plugins"
-		grailsPlugins()
+        grailsPlugins()
         mavenCentral()
         mavenLocal()
     }
@@ -46,6 +44,7 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
+		compile ':scaffolding:1.0.0'
 		test(':spock:0.7') {
 			export = false
 			exclude 'spock-grails-support'

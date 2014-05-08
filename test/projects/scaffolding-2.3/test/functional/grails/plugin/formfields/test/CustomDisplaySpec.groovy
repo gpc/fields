@@ -12,7 +12,7 @@ class CustomDisplaySpec extends GebSpec {
 
     void 'display is customized on list page'() {
         given:
-        go 'product/list'
+        go 'product/index'
         def row = $('tbody tr', 0)
 
         expect:
@@ -24,7 +24,7 @@ class CustomDisplaySpec extends GebSpec {
 
     void 'display is customized on show page'() {
         given:
-        go 'product/list'
+        go 'product/index'
         $('tbody tr', 0).find('td a').click()
 
         expect:

@@ -40,7 +40,7 @@
 			</tbody>
 		</table>
 		<div class="pagination">
-			<g:paginate total="${productInstanceTotal}" />
+			<g:paginate total="${productInstanceCount}" />
 		</div>
 	</div>
 </body>

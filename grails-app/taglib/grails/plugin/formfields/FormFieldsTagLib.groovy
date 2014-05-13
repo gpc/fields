@@ -123,10 +123,13 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			if (hasBody(body)) {
 				model.widget = body(model + inputAttrs)
 			} else {
-				model.widget = renderWidget(propertyAccessor, model, component, inputAttrs)
+				model.widget = renderWidget(propertyAccessor, model + fieldAttrs, component, inputAttrs)
 			}
 
-            def layout = attrs.layout ?: pageScope.variables['layout']
+            def layout = attrs.layout
+            if(!layout)
+                layout = pageScope.variables['layout'] ?: 'default'
+
             out << renderLayout(layout, 'field', model + fieldAttrs)
 		}
 	}
@@ -175,7 +178,9 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		} else {
 			model.widget = renderForDisplay(propertyAccessor, model, component, attrs)
 		}
-        def layout = attrs.layout ?: pageScope.variables['layout']
+        def layout = attrs.layout
+        if(!layout)
+            layout = pageScope.variables['layout'] ?: 'default'
         out << renderLayout(layout, 'display', model + attrs)
 	}
 

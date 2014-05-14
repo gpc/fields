@@ -22,13 +22,13 @@ import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
+import org.codehaus.groovy.grails.web.pages.FastStringWriter
 import org.codehaus.groovy.grails.web.pages.GroovyPage
 
 import static FormFieldsTemplateService.toPropertyNameFormat
 import static org.codehaus.groovy.grails.commons.GrailsClassUtils.getStaticPropertyValue
 
 import java.sql.Blob
-
 class FormFieldsTagLib implements GrailsApplicationAware {
 
 	static final namespace = 'f'
@@ -38,6 +38,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	FormFieldsTemplateService formFieldsTemplateService
 	GrailsApplication grailsApplication
 	BeanPropertyAccessorFactory beanPropertyAccessorFactory
+	
+	static defaultEncodeAs = [taglib:'raw']
 
 	/**
 	 * @attr bean REQUIRED Name of the source bean in the GSP model.
@@ -199,7 +201,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		]
 	}
 
-	private String renderWidget(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:]) {
+	private CharSequence renderWidget(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:]) {
 		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'input')
 		if (template) {
 			render template: template.path, plugin: template.plugin, model: model + attrs
@@ -208,7 +210,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 	}
 
-	private String renderForDisplay(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:]) {
+	private CharSequence renderForDisplay(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:]) {
 		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'display')
 		if (template) {
 			render template: template.path, plugin: template.plugin, model: model + attrs
@@ -267,10 +269,10 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	private boolean hasBody(Closure body) {
-		return !body.is(GroovyPage.EMPTY_BODY_CLOSURE)
+		return body && !body.is(GroovyPage.EMPTY_BODY_CLOSURE)
 	}
 
-	private String resolveLabelText(BeanPropertyAccessor propertyAccessor, Map attrs) {
+	private CharSequence resolveLabelText(BeanPropertyAccessor propertyAccessor, Map attrs) {
 		def labelText
 		def label = attrs.remove('label')
 		if (label) {
@@ -285,31 +287,32 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		labelText
 	}
 
-	private String resolveMessage(List<String> keysInPreferenceOrder, String defaultMessage) {
+	private CharSequence resolveMessage(List<String> keysInPreferenceOrder, String defaultMessage) {
 		def message = keysInPreferenceOrder.findResult { key ->
 			message(code: key, default: null) ?: null
 		}
 		message ?: defaultMessage
 	}
 
-	private String renderDefaultField(Map model) {
+	private CharSequence renderDefaultField(Map model) {
 		def classes = ['fieldcontain']
 		if (model.invalid) classes << 'error'
 		if (model.required) classes << 'required'
 
-		def writer = new StringWriter()
+		def writer = new FastStringWriter()
 		new MarkupBuilder(writer).div(class: classes.join(' ')) {
 			label(for: (model.prefix ?: '') + model.property, model.label) {
 				if (model.required) {
 					span(class: 'required-indicator', '*')
 				}
 			}
-			mkp.yieldUnescaped model.widget
+			// TODO: encoding information of widget gets lost - don't use MarkupBuilder
+			mkp.yieldUnescaped model.widget 
 		}
-		writer.toString()
+		writer.buffer
 	}
 
-	private String renderDefaultInput(Map model, Map attrs = [:]) {
+	private CharSequence renderDefaultInput(Map model, Map attrs = [:]) {
 		attrs.name = (model.prefix ?: '') + model.property
 		attrs.value = model.value
 		if (model.required) attrs.required = "" // TODO: configurable how this gets output? Some people prefer required="required"
@@ -342,7 +345,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 	}
 
-    private String renderDateTimeInput(Map model, Map attrs) {
+    private CharSequence renderDateTimeInput(Map model, Map attrs) {
 		attrs.precision = model.type == java.sql.Time ? "minute" : "day"
 		if (!model.required) {
 			attrs.noSelection = ["": ""]
@@ -351,7 +354,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		return g.datePicker(attrs)
 	}
 
-	private String renderStringInput(Map model, Map attrs) {
+	private CharSequence renderStringInput(Map model, Map attrs) {
 		if (!attrs.type) {
 			if (model.constraints?.inList) {
 				attrs.from = model.constraints.inList
@@ -377,7 +380,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		return g.field(attrs)
 	}
 
-	private String renderNumericInput(Map model, Map attrs) {
+	private CharSequence renderNumericInput(Map model, Map attrs) {
 		if (!attrs.type && model.constraints?.inList) {
 			attrs.from = model.constraints.inList
 			if (!model.required) attrs.noSelection = ["": ""]
@@ -395,7 +398,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		return g.field(attrs)
 	}
 
-	private String renderEnumInput(Map model, Map attrs) {
+	private CharSequence renderEnumInput(Map model, Map attrs) {
 		if (attrs.value instanceof Enum)
 			attrs.value = attrs.value.name()
 		if (!model.required) attrs.noSelection = ["": ""]
@@ -410,7 +413,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		return g.select(attrs)
 	}
 
-	private String renderAssociationInput(Map model, Map attrs) {
+	private CharSequence renderAssociationInput(Map model, Map attrs) {
 		attrs.id = (model.prefix ?: '') + model.property
 		attrs.from = null != attrs.from ? attrs.from : model.persistentProperty.referencedPropertyType.list()
 		attrs.optionKey = "id" // TODO: handle alternate id names
@@ -426,8 +429,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		return g.select(attrs)
 	}
 
-	private String renderOneToManyInput(Map model, Map attrs) {
-		def buffer = new StringBuilder()
+	private CharSequence renderOneToManyInput(Map model, Map attrs) {
+		def buffer = new FastStringWriter()
 		buffer << '<ul>'
 		def referencedDomainClass = model.persistentProperty.referencedDomainClass
 		def controllerName = referencedDomainClass.propertyName
@@ -440,10 +443,10 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		def referencedTypeLabel = message(code: "${referencedDomainClass.propertyName}.label", default: referencedDomainClass.shortName)
 		def addLabel = g.message(code: 'default.add.label', args: [referencedTypeLabel])
 		buffer << g.link(controller: controllerName, action: "create", params: [("${model.beanClass.propertyName}.id".toString()): model.bean.id], addLabel)
-		buffer as String
+		buffer.buffer
 	}
 
-	private String renderDefaultDisplay(Map model, Map attrs = [:]) {
+	private CharSequence renderDefaultDisplay(Map model, Map attrs = [:]) {
 		switch (model.type) {
 			case Boolean.TYPE:
 			case Boolean:

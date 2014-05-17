@@ -1,0 +1,5 @@
+h1. Performance
+
+Due to the flexibility needed during development, the Fields plugin doesn't cache template lookup paths in the Development environment and thus, performs much slower than in Production. The reason for this is, that with caching-on, it would not be  possible to recognize newly added field templates without restarting the application. As a result, with bigger webpages, containing a lot of fields, rendering may be fairly slow in development (depending on the number of fields on the page).
+
+However, in production, template lookups are cached, so only the first page renderings are slow, subsequent ones are fast. Since the template lookup cache is global to the application, "first", in this context, means first-ever-in-the-runtime-of-the-application so this will affect users only after application (re)starts.

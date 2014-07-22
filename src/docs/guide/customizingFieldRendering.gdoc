@@ -78,6 +78,8 @@ and override the template _f:display_ uses with any of these:
 # @grails-app/views/\_fields/string/\_display.gsp@
 # @grails-app/views/\_fields/default/\_display.gsp@
 
+During template development it is usually recommended to disable template caching in order to allow the plugin to recognize new/renamed/moved templates without restarting the application. See the "Performance" section of the guide for the exact settings.
+
 h2. Default Behaviour - Using Grails Input Tags
 
 If no template override is found the plugin will use the standard grails input tags (e.g. _g:select_, _g:checkbox_, _g:field_) for rendering input controls.

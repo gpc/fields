@@ -20,12 +20,13 @@ import org.codehaus.groovy.grails.plugins.GrailsPluginManager
 import org.codehaus.groovy.grails.web.pages.discovery.GrailsConventionGroovyPageLocator
 import org.springframework.web.context.request.RequestContextHolder
 import grails.util.*
-import static grails.util.Environment.DEVELOPMENT
 import static org.codehaus.groovy.grails.io.support.GrailsResourceUtils.appendPiecesForUri
 
 class FormFieldsTemplateService {
 
     static transactional = false
+		
+    def grailsApplication	
 
     GrailsConventionGroovyPageLocator groovyPageLocator
     GrailsPluginManager pluginManager
@@ -121,8 +122,13 @@ class FormFieldsTemplateService {
         RequestContextHolder.requestAttributes?.actionName
     }
 
-    private static boolean shouldCache() {
-        Environment.current != DEVELOPMENT
+    private boolean shouldCache() {
+        // If not explicitely specified, there is no template caching
+        Boolean cacheDisabled = grailsApplication?.config?.grails?.plugin?.fields?.disableLookupCache
+        if (cacheDisabled)
+            return false
+        else
+            return true
     }
 
 }

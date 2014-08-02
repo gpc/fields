@@ -166,7 +166,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		out << renderForDisplay(propertyAccessor, model, attrs)
 	}
 
-	private void renderEmbeddedProperties(bean, BeanPropertyAccessor propertyAccessor, attrs) {
+	protected void renderEmbeddedProperties(bean, BeanPropertyAccessor propertyAccessor, attrs) {
 		def legend = resolveMessage(propertyAccessor.labelKeys, propertyAccessor.defaultLabel)
 		out << applyLayout(name: '_fields/embedded', params: [type: toPropertyNameFormat(propertyAccessor.propertyType), legend: legend]) {
 			for (embeddedProp in resolvePersistentProperties(propertyAccessor.persistentProperty.component, attrs)) {
@@ -176,11 +176,11 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 	}
 
-	private BeanPropertyAccessor resolveProperty(bean, String propertyPath) {
+	protected BeanPropertyAccessor resolveProperty(bean, String propertyPath) {
 		beanPropertyAccessorFactory.accessorFor(bean, propertyPath)
 	}
 
-	private Map buildModel(BeanPropertyAccessor propertyAccessor, Map attrs) {
+	protected Map buildModel(BeanPropertyAccessor propertyAccessor, Map attrs) {
 		def value = attrs.containsKey('value') ? attrs.remove('value') : propertyAccessor.value
 		def valueDefault = attrs.remove('default')
 		[
@@ -199,7 +199,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		]
 	}
 
-	private String renderWidget(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:]) {
+	protected String renderWidget(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:]) {
 		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'input')
 		if (template) {
 			render template: template.path, plugin: template.plugin, model: model + attrs
@@ -208,7 +208,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 	}
 
-	private String renderForDisplay(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:]) {
+	protected String renderForDisplay(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:]) {
 		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'display')
 		if (template) {
 			render template: template.path, plugin: template.plugin, model: model + attrs
@@ -217,7 +217,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 	}
 
-	private Object resolveBean(beanAttribute) {
+	protected Object resolveBean(beanAttribute) {
 		def bean = pageScope.variables[BEAN_PAGE_SCOPE_VARIABLE]
 		if (!bean) {
 			// Tomcat throws NPE if you query pageScope for null/empty values
@@ -229,7 +229,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		bean
 	}
 
-	private String resolvePrefix(prefixAttribute) {
+	protected String resolvePrefix(prefixAttribute) {
 		def prefix = pageScope.variables[PREFIX_PAGE_SCOPE_VARIABLE]
 		// Tomcat throws NPE if you query pageScope for null/empty values
 		if (prefixAttribute?.toString()) {
@@ -241,15 +241,15 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		prefix ?: ''
 	}
 
-	private GrailsDomainClass resolveDomainClass(bean) {
+	protected GrailsDomainClass resolveDomainClass(bean) {
 		resolveDomainClass(bean.getClass())
 	}
 
-	private GrailsDomainClass resolveDomainClass(Class beanClass) {
+	protected GrailsDomainClass resolveDomainClass(Class beanClass) {
 		grailsApplication.getDomainClass(beanClass.name)
 	}
 
-	private List<GrailsDomainClassProperty> resolvePersistentProperties(GrailsDomainClass domainClass, attrs) {
+	protected List<GrailsDomainClassProperty> resolvePersistentProperties(GrailsDomainClass domainClass, attrs) {
 		def properties = domainClass.persistentProperties as List
 
 		def blacklist = attrs.except?.tokenize(',')*.trim() ?: []
@@ -266,11 +266,11 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		properties
 	}
 
-	private boolean hasBody(Closure body) {
+	protected boolean hasBody(Closure body) {
 		return !body.is(GroovyPage.EMPTY_BODY_CLOSURE)
 	}
 
-	private String resolveLabelText(BeanPropertyAccessor propertyAccessor, Map attrs) {
+	protected String resolveLabelText(BeanPropertyAccessor propertyAccessor, Map attrs) {
 		def labelText
 		def label = attrs.remove('label')
 		if (label) {
@@ -285,14 +285,14 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		labelText
 	}
 
-	private String resolveMessage(List<String> keysInPreferenceOrder, String defaultMessage) {
+	protected String resolveMessage(List<String> keysInPreferenceOrder, String defaultMessage) {
 		def message = keysInPreferenceOrder.findResult { key ->
 			message(code: key, default: null) ?: null
 		}
 		message ?: defaultMessage
 	}
 
-	private String renderDefaultField(Map model) {
+	protected String renderDefaultField(Map model) {
 		def classes = ['fieldcontain']
 		if (model.invalid) classes << 'error'
 		if (model.required) classes << 'required'
@@ -309,7 +309,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		writer.toString()
 	}
 
-	private String renderDefaultInput(Map model, Map attrs = [:]) {
+	protected String renderDefaultInput(Map model, Map attrs = [:]) {
 		attrs.name = (model.prefix ?: '') + model.property
 		attrs.value = model.value
 		if (model.required) attrs.required = "" // TODO: configurable how this gets output? Some people prefer required="required"
@@ -342,7 +342,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 	}
 
-    private String renderDateTimeInput(Map model, Map attrs) {
+    protected String renderDateTimeInput(Map model, Map attrs) {
 		attrs.precision = model.type == java.sql.Time ? "minute" : "day"
 		if (!model.required) {
 			attrs.noSelection = ["": ""]
@@ -351,7 +351,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		return g.datePicker(attrs)
 	}
 
-	private String renderStringInput(Map model, Map attrs) {
+	protected String renderStringInput(Map model, Map attrs) {
 		if (!attrs.type) {
 			if (model.constraints?.inList) {
 				attrs.from = model.constraints.inList
@@ -377,7 +377,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		return g.field(attrs)
 	}
 
-	private String renderNumericInput(Map model, Map attrs) {
+	protected String renderNumericInput(Map model, Map attrs) {
 		if (!attrs.type && model.constraints?.inList) {
 			attrs.from = model.constraints.inList
 			if (!model.required) attrs.noSelection = ["": ""]
@@ -395,7 +395,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		return g.field(attrs)
 	}
 
-	private String renderEnumInput(Map model, Map attrs) {
+	protected String renderEnumInput(Map model, Map attrs) {
 		if (attrs.value instanceof Enum)
 			attrs.value = attrs.value.name()
 		if (!model.required) attrs.noSelection = ["": ""]
@@ -410,7 +410,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		return g.select(attrs)
 	}
 
-	private String renderAssociationInput(Map model, Map attrs) {
+	protected String renderAssociationInput(Map model, Map attrs) {
 		attrs.id = (model.prefix ?: '') + model.property
 		attrs.from = null != attrs.from ? attrs.from : model.persistentProperty.referencedPropertyType.list()
 		attrs.optionKey = "id" // TODO: handle alternate id names
@@ -426,7 +426,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		return g.select(attrs)
 	}
 
-	private String renderOneToManyInput(Map model, Map attrs) {
+	protected String renderOneToManyInput(Map model, Map attrs) {
 		def buffer = new StringBuilder()
 		buffer << '<ul>'
 		def referencedDomainClass = model.persistentProperty.referencedDomainClass
@@ -443,7 +443,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		buffer as String
 	}
 
-	private String renderDefaultDisplay(Map model, Map attrs = [:]) {
+	protected String renderDefaultDisplay(Map model, Map attrs = [:]) {
 		switch (model.type) {
 			case Boolean.TYPE:
 			case Boolean:
@@ -460,7 +460,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 	}
 
-    private boolean isEditable(constraints) {
+    protected boolean isEditable(constraints) {
         !constraints || constraints.editable
     }
 

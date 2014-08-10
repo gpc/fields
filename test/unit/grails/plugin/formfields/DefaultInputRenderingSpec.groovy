@@ -589,6 +589,7 @@ class MockPersistentProperty implements GrailsDomainClassProperty {
 	Class type
 	String typePropertyName
 	boolean isEnum
+	boolean explicitSaveUpdateCascade
 
 	boolean isEnum() { isEnum }
 }

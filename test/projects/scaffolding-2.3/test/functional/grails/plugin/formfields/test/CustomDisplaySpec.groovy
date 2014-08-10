@@ -6,7 +6,7 @@ import test.Product
 class CustomDisplaySpec extends GebSpec {
 
     void setup() {
-        new Product(name: 'MacBook Pro', price: 1499.99, taxRate: 0.2).save(failOnError: true)
+        new Product(name: '<b>MacBook</b> Pro', price: 1499.99, taxRate: 0.2).save(failOnError: true)
         new Product(name: 'MacBook Air', price: 1099.99, taxRate: 0.2).save(failOnError: true)
     }
 
@@ -16,7 +16,7 @@ class CustomDisplaySpec extends GebSpec {
         def row = $('tbody tr', 0)
 
         expect:
-        row.find('td', 0).find('a').text() == 'MacBook Pro'
+        row.find('td', 0).find('a').text() == '<b>MacBook</b> Pro'
         row.find('td', 1).text() == '\u00a31,499.99'
         row.find('td', 2).text() == '0.2%'
         row.find('td', 3).text() == '\u00a3300.00'
@@ -29,7 +29,7 @@ class CustomDisplaySpec extends GebSpec {
 
         expect:
         $('ol li', 0).find('.property-label').text() == 'Name'
-        $('ol li', 0).find('.property-value').text() == 'MacBook Pro'
+        $('ol li', 0).find('.property-value').text() == '<b>MacBook</b> Pro'
         $('ol li', 1).find('.property-label').text() == 'Price'
         $('ol li', 1).find('.property-value').text() == '\u00a31,499.99'
         $('ol li', 2).find('.property-label').text() == 'Tax Rate'

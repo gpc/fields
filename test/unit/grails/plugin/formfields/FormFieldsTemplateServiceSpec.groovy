@@ -19,7 +19,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		webRequest.controllerName = 'foo'
 		webRequest.actionName = 'bar'
 
-		personInstance = new Person(name: "Bart Simpson", password: "bartman", gender: Gender.Male, dateOfBirth: new Date(87, 3, 19), minor: true)
+		personInstance = new Person(name: "Bart Simpson", password: "bartman", gender: Gender.Male, dateOfBirth: new Date(87, 3, 19), minor: true, picture: "good looking".bytes)
 		personInstance.address = new Address(street: "94 Evergreen Terrace", city: "Springfield", country: "USA")
 
 		employeeInstance = new Employee(salutation: Salutation.MR, name: "Waylon Smithers", salary: 10)
@@ -361,5 +361,23 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		template.plugin == null
 		render(template: template.path) == 'ACTION FIELD TEMPLATE'
 	}
+
+    @Issue('https://github.com/gpc/grails-fields/issues/144')
+    void "resolves template for property type byte[]"() {
+        given:
+        views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+        views["/_fields/byteArray/_field.gsp"] = 'PROPERTY BYTE ARRAY TYPE TEMPLATE'
+        views["/_fields/byte;/_field.gsp"] = 'PROPERTY WRONG BYTE ARRAY TYPE TEMPLATE'
+
+        and:
+        def property = factory.accessorFor(personInstance, 'picture')
+
+        expect:
+        def template = service.findTemplate(property, 'field')
+        template.path == '/_fields/byteArray/field'
+        template.plugin == null
+        render(template: template.path) == 'PROPERTY BYTE ARRAY TYPE TEMPLATE'
+    }
+
 
 }

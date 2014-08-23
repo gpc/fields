@@ -27,7 +27,7 @@ class DefaultFieldTemplateSpec extends Specification {
 		def output = tagLib.renderDefaultField(model)
 
 		then:
-		def root = $(output)
+		def root = $(output.toString())
 		root.is('div.fieldcontain')
 
 		and:
@@ -47,7 +47,7 @@ class DefaultFieldTemplateSpec extends Specification {
 		def output = tagLib.renderDefaultField(model)
 		
 		then:
-		$(output).hasClass('error')
+		$(output.toString()).hasClass('error')
 	}
 
 	void "container marked as required"() {
@@ -58,7 +58,7 @@ class DefaultFieldTemplateSpec extends Specification {
 		def output = tagLib.renderDefaultField(model)
 
 		then:
-		def root = $(output)
+		def root = $(output.toString())
 		root.hasClass('required')
 		
 		and:

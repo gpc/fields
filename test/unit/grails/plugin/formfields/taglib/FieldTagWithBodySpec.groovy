@@ -55,15 +55,4 @@ class FieldTagWithBodySpec extends AbstractFormFieldsTagLibSpec {
         expect:
         applyTemplate('<f:field bean="personInstance" property="name" input-foo="bar">${attrs.foo}</f:field>', [personInstance: personInstance]) == 'bar'
     }
-
-    void 'the required attribute is added to attrs in the model if applicable'() {
-        given:
-        views['/_fields/default/_field.gsp'] = '${widget}'
-
-        expect:
-        applyTemplate('<f:field bean="personInstance" property="name">${attrs.containsKey("required")} ${attrs.required==""}</f:field>', [personInstance: personInstance]) == 'true true'
-        applyTemplate('<f:field bean="personInstance" property="salutation">${attrs.containsKey("required")} ${attrs.required==""}</f:field>', [personInstance: personInstance]) == 'false false'
-        applyTemplate('<f:field bean="personInstance" property="salutation" required="true">${attrs.containsKey("required")} ${attrs.required==""}</f:field>', [personInstance: personInstance]) == 'true true'
-    }
-
 }

@@ -117,14 +117,14 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			}
 
 			if (hasBody(body)) {
-				model.widget = body(model + inputAttrs)
+				model.widget = body(buildWidgetModel(model, inputAttrs))
 			} else {
 				model.widget = renderWidget(propertyAccessor, model, inputAttrs)
 			}
 
 			def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'field')
 			if (template) {
-				out << render(template: template.path, plugin: template.plugin, model: model + fieldAttrs)
+				out << render(template: template.path, plugin: template.plugin, model: model + [attrs: fieldAttrs] + fieldAttrs)
 			} else {
 				out << renderDefaultField(model)
 			}
@@ -201,10 +201,19 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		]
 	}
 
-	private CharSequence renderWidget(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:]) {
+    private Map buildWidgetModel(Map model, Map attrs) {
+        def widgetModel = model + attrs //copy attrs to model for backward compatibility
+        if (model.required) {
+            attrs.required = ""
+        }
+        widgetModel.attrs = attrs
+        return widgetModel
+    }
+
+    private CharSequence renderWidget(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:]) {
 		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'input')
 		if (template) {
-			render template: template.path, plugin: template.plugin, model: model + attrs
+			render template: template.path, plugin: template.plugin, model: buildWidgetModel(model, attrs)
 		} else {
 			renderDefaultInput model, attrs
 		}
@@ -213,7 +222,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	private CharSequence renderForDisplay(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:]) {
 		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'display')
 		if (template) {
-			render template: template.path, plugin: template.plugin, model: model + attrs
+			render template: template.path, plugin: template.plugin, model: model + [attrs: attrs] + attrs
 		} else {
 			model.value
 		}

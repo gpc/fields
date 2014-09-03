@@ -130,20 +130,6 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
         applyTemplate('<f:field bean="personInstance" property="name" input-foo="bar"/>', [personInstance: personInstance]) == '<span>bar</span>'
     }
 
-    void 'the required attribute is added to attrs in the model if applicable'() {
-        given:
-        views["/_fields/default/_field.gsp"] = '${widget}'
-        views["/_fields/person/name/_input.gsp"] = '${attrs.containsKey("required")} ${attrs.required==""}'
-
-		and:
-		mockFormFieldsTemplateService.findTemplate(_, 'input') >> [path: '/_fields/person/name/input']
-
-        expect:
-        applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == 'true true'
-        applyTemplate('<f:field bean="personInstance" property="salutation"/>', [personInstance: personInstance]) == 'false false'
-        applyTemplate('<f:field bean="personInstance" property="salutation" required="true"/>', [personInstance: personInstance]) == 'true true'
-    }
-
 	@Issue("https://github.com/robfletcher/grails-fields/pull/49")
     void 'arbitrary attributes prefixed with input- on f:field are passed to the default input'() {
         given:

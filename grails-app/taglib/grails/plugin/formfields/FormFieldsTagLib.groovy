@@ -117,8 +117,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			}
 
 			if (hasBody(body)) {
-				model.widget = body(buildWidgetModel(model, inputAttrs))
-			} else {
+                model.widget = body(model + [attrs: inputAttrs] + inputAttrs)
+            } else {
 				model.widget = renderWidget(propertyAccessor, model, inputAttrs)
 			}
 
@@ -201,19 +201,10 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		]
 	}
 
-    private Map buildWidgetModel(Map model, Map attrs) {
-        def widgetModel = model + attrs //copy attrs to model for backward compatibility
-        if (model.required) {
-            attrs.required = ""
-        }
-        widgetModel.attrs = attrs
-        return widgetModel
-    }
-
     private CharSequence renderWidget(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:]) {
 		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'input')
 		if (template) {
-			render template: template.path, plugin: template.plugin, model: buildWidgetModel(model, attrs)
+			render template: template.path, plugin: template.plugin, model: model + [attrs: attrs] + attrs
 		} else {
 			renderDefaultInput model, attrs
 		}

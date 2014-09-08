@@ -69,16 +69,23 @@ grails.project.test.reports.dir = "target/test-reports"
 grails.project.source.level = 1.6
 grails.project.target.level = 1.6
 
+def grailsVersion = grails.util.Metadata.current.getGrailsVersion()
+
 grails.project.dependency.resolution = {
     inherits "global"
     log "error"
     checksums true
     repositories {
         inherits true
-		mavenLocal()
+        mavenLocal()
     }
     plugins {
-		compile ":$pluginName:$pluginVersion"
+        compile ":$pluginName:$pluginVersion"
+        if(grailsVersion.startsWith("2.3.")) {
+          compile ":scaffolding:2.0.3"
+        } else if (grailsVersion.startsWith("2.4.")) {
+          compile ":scaffolding:2.1.2"
+        }
     }
 }
 """

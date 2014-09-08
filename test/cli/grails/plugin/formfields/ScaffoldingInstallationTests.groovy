@@ -1,12 +1,10 @@
 package grails.plugin.formfields
 
-import org.junit.Test
 import static org.apache.commons.io.FileUtils.checksumCRC32
 
 class ScaffoldingInstallationTests extends AbstractTemporaryProjectTest {
 
-	@Test
-	void installTemplatesCopiesTemplatesToTargetApp() {
+	void testInstallTemplatesCopiesTemplatesToTargetApp() {
 		runGrailsCommand "install-form-fields-templates"
 
 		for (filename in ['create.gsp', 'edit.gsp']) {
@@ -22,8 +20,7 @@ class ScaffoldingInstallationTests extends AbstractTemporaryProjectTest {
 		}
 	}
 
-	@Test
-	void installTemplatesOverwritesDefaultScaffoldingTemplates() {
+	void testInstallTemplatesOverwritesDefaultScaffoldingTemplates() {
 		runGrailsCommand "install-templates"
 
 		for (filename in ['create.gsp', 'edit.gsp']) {

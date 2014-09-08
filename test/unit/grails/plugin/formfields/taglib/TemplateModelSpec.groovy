@@ -215,8 +215,11 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 		personInstance.errors.rejectValue("name", "blank")
 		personInstance.errors.rejectValue("name", "nullable")
 
-		expect:
-		applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "<em>blank</em><em>nullable</em>"
+		when:
+		def renderedErrors = applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance])
+
+		then:
+		renderedErrors == "<em>blank</em><em>nullable</em>" || renderedErrors == "<em>blank.grails.plugin.formfields.mock.Person.name</em><em>nullable.grails.plugin.formfields.mock.Person.name</em>"
 	}
 
 	void "required flag is passed to template"() {

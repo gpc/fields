@@ -22,6 +22,8 @@ grails.project.test.reports.dir = 'target/test-reports'
 grails.project.source.level = 1.6
 grails.project.target.level = 1.6
 
+grails.project.dependency.resolver = "maven"
+
 grails.project.dependency.resolution = {
 
     inherits 'global'
@@ -29,27 +31,23 @@ grails.project.dependency.resolution = {
 
     repositories {
 		inherits true
-		grailsHome()
-        grailsCentral()
-		grailsPlugins()
-        mavenCentral()
+        grailsPlugins()
+        grailsHome()
         mavenLocal()
+        grailsCentral()
+        mavenCentral()
     }
 
     dependencies {
-        test 'org.spockframework:spock-grails-support:0.7-groovy-2.0'
 		test 'javassist:javassist:3.12.0.GA'
 		test('org.jodd:jodd-wot:3.3.4') {
 			excludes 'slf4j-api', 'asm'
 		}
+        test "cglib:cglib-nodep:2.2.2"
     }
 
     plugins {
-		test(':spock:0.7') {
-			export = false
-			exclude 'spock-grails-support'
-		}
-        build(':release:2.2.0', ':rest-client-builder:1.0.2') {
+        build(':release:3.0.1', ':rest-client-builder:2.0.3') {
             export = false
         }
     }

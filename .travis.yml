@@ -4,5 +4,13 @@ jdk:
 branches:
   only:
     - master
-script: ./grailsw refresh-dependencies
-  && ./grailsw "test-app unit:"
+env:
+  global:
+    - TERM=dumb
+  matrix:
+    - GRAILS_VERSION=2.4.3
+    - GRAILS_VERSION=2.3.11
+    - GRAILS_VERSION=2.2.5
+matrix:
+  fast_finish: false
+script: ./travis-build.sh

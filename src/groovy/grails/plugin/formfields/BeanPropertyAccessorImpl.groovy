@@ -120,7 +120,7 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
 
 	private List<Class> getSuperclassesAndInterfaces(Class type) {
 		def superclasses = []
-		superclasses.addAll(ClassUtils.getAllSuperclasses(type))
+		superclasses.addAll(ClassUtils.getAllSuperclasses(ClassUtils.primitiveToWrapper(type)))
 		superclasses.addAll(ClassUtils.getAllInterfaces(type))
 		superclasses.removeAll([Object, GroovyObject, Serializable, Cloneable, Comparable])
 		superclasses

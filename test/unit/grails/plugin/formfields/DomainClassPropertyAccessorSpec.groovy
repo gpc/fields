@@ -332,4 +332,12 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		'dateOfBirth' | []
 	}
 
+    void 'the superclasses of a primitive include the superclasses of the wrapper'() {
+        given:
+        def propertyAccessor = factory.accessorFor(employee, 'salary')
+
+        expect:
+        propertyAccessor.propertyTypeSuperclasses == [Number]
+    }
+
 }

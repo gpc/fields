@@ -73,6 +73,8 @@ grails.project.target.level = 1.6
 
 def grailsVersion = grails.util.Metadata.current.getGrailsVersion()
 
+grails.project.dependency.resolver = "maven"
+
 grails.project.dependency.resolution = {
     inherits "global"
     log "error"
@@ -80,6 +82,10 @@ grails.project.dependency.resolution = {
     repositories {
         inherits true
         mavenLocal()
+        grailsHome()
+        grailsPlugins()
+        grailsCentral()
+        mavenCentral()
     }
     plugins {
         compile ":$pluginName:$pluginVersion"

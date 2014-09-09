@@ -56,6 +56,8 @@ abstract class AbstractTemporaryProjectTest extends AbstractCliTestCase {
 		def projectDir = new File(tempDir, tempProjectName)
 		workDir = projectDir
 		generateBuildConfig()
+		runGrailsCommand '-refresh-dependencies clean'
+		runGrailsCommand 'compile'
 		runGrailsCommand 'package'
 	}
 

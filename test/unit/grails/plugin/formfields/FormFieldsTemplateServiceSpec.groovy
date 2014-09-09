@@ -64,6 +64,38 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		render(template: template.path) == 'PROPERTY TYPE TEMPLATE'
 	}
 
+	void "resolves template for widget constraint"() {
+		given:
+		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/_fields/string/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
+		views["/_fields/fancywidget/_field.gsp"] = 'WIDGET TEMPLATE'
+
+		and:
+		def property = factory.accessorFor(personInstance, 'name')
+
+		expect:
+		def template = service.findTemplate(property, 'field')
+		template.path == '/_fields/fancywidget/field'
+		template.plugin == null
+		render(template: template.path) == 'WIDGET TEMPLATE'
+	}
+
+	void "resolves template for implicit widget constraint"() {
+		given:
+		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/_fields/string/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
+		views["/_fields/password/_field.gsp"] = 'WIDGET TEMPLATE'
+
+		and:
+		def property = factory.accessorFor(personInstance, 'password')
+
+		expect:
+		def template = service.findTemplate(property, 'field')
+		template.path == '/_fields/password/field'
+		template.plugin == null
+		render(template: template.path) == 'WIDGET TEMPLATE'
+	}
+
 	void "resolves template for domain class property"() {
 		given:
 		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'

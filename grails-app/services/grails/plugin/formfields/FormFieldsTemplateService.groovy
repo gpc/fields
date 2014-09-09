@@ -16,17 +16,19 @@
 
 package grails.plugin.formfields
 
+import grails.util.GrailsNameUtils
 import org.codehaus.groovy.grails.plugins.GrailsPluginManager
+import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import org.codehaus.groovy.grails.web.pages.discovery.GrailsConventionGroovyPageLocator
 import org.springframework.web.context.request.RequestContextHolder
-import grails.util.*
+
 import static org.codehaus.groovy.grails.io.support.GrailsResourceUtils.appendPiecesForUri
 
 class FormFieldsTemplateService {
 
     static transactional = false
-		
-    def grailsApplication	
+
+    def grailsApplication
 
     GrailsConventionGroovyPageLocator groovyPageLocator
     GrailsPluginManager pluginManager
@@ -35,7 +37,8 @@ class FormFieldsTemplateService {
         findTemplateCached(propertyAccessor, controllerName, actionName, templateName)
     }
 
-    private final Closure findTemplateCached = shouldCache() ? this.&findTemplateCacheable.memoize() : this.&findTemplateCacheable
+    private
+    final Closure findTemplateCached = shouldCache() ? this.&findTemplateCacheable.memoize() : this.&findTemplateCacheable
 
     private Map findTemplateCacheable(BeanPropertyAccessor propertyAccessor, String controllerName, String actionName, String templateName) {
         def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerName, actionName, templateName)
@@ -95,6 +98,12 @@ class FormFieldsTemplateService {
             templateResolveOrder << appendPiecesForUri('/_fields', associationPath, templateName)
         }
 
+        // if we have a widget look in `grails-app/views/_fields/<widget>/_field.gsp`
+        def widget = getWidget(propertyAccessor.constraints)
+        if (widget) {
+            templateResolveOrder << appendPiecesForUri("/_fields", widget, templateName)
+        }
+
         // if we have a property type look in `grails-app/views/_fields/<propertyType>/_field.gsp` and equivalent for superclasses
         if (propertyAccessor.propertyType) {
             templateResolveOrder << appendPiecesForUri("/_fields", toPropertyNameFormat(propertyAccessor.propertyType), templateName)
@@ -118,6 +127,27 @@ class FormFieldsTemplateService {
         associationPath
     }
 
+    private String getWidget(ConstrainedProperty cp) {
+        if (cp.widget) {
+            return cp.widget
+        }
+        if (cp.password) {
+            return 'password'
+        }
+        if (CharSequence.isAssignableFrom(cp.propertyType)) {
+            if (cp.url) {
+                return 'url'
+            }
+            if (cp.creditCard) {
+                return 'creditCard'
+            }
+            if (cp.email) {
+                return 'email'
+            }
+        }
+        null
+    }
+
     private String getControllerName() {
         RequestContextHolder.requestAttributes?.controllerName
     }
@@ -129,10 +159,7 @@ class FormFieldsTemplateService {
     private boolean shouldCache() {
         // If not explicitely specified, there is no template caching
         Boolean cacheDisabled = grailsApplication?.config?.grails?.plugin?.fields?.disableLookupCache
-        if (cacheDisabled)
-            return false
-        else
-            return true
+        return !cacheDisabled
     }
 
 }

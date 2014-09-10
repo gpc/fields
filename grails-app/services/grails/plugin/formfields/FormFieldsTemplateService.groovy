@@ -61,7 +61,11 @@ class FormFieldsTemplateService {
     }
 
     static String toPropertyNameFormat(Class type) {
-        GrailsNameUtils.getLogicalPropertyName(type.name, '')
+        def propertyNameFormat = GrailsNameUtils.getLogicalPropertyName(type.name, '')
+        if(propertyNameFormat.endsWith(';')) {
+            propertyNameFormat = propertyNameFormat - ';' + 'Array'
+        }
+        return propertyNameFormat
     }
 
     private List<String> candidateTemplatePaths(BeanPropertyAccessor propertyAccessor, String controllerName, String actionName, String templateName) {

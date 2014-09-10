@@ -16,6 +16,7 @@ class Person {
 	String excludedProperty
 	String displayFalseProperty
 	Boolean grailsDeveloper
+    Byte[] picture
 
 	static hasMany = [emails: String]
 	static embedded = ['address']
@@ -28,7 +29,8 @@ class Person {
 		excludedProperty nullable: true
 		displayFalseProperty nullable: true, display: false
 		grailsDeveloper nullable: true
-        password password: true
+        	picture nullable: true
+        	password password: true
 	}
 
 	static scaffold = [exclude: ['excludedProperty']]

@@ -29,10 +29,21 @@ class FieldsGrailsPlugin {
 	def authorEmail = 'rob@freeside.co'
 	def description = 'Customizable form-field rendering based on overrideable GSP template'
 
-	def documentation = 'http://freeside.co/grails-fields'
+	def documentation = 'https://grails-fields-plugin.github.io/grails-fields'
 	def license = 'APACHE'
 	def issueManagement = [system: 'GitHub', url: 'https://github.com/grails-fields-plugin/grails-fields/issues']
 	def scm = [system: 'GitHub', url: 'https://github.com/grails-fields-plugin/grails-fields']
+     	def organization = [ name: "Grails Fields Plugin Developers Group", url: "https://github.com/grails-fields-plugin" ]
+
+	def developers = [ 
+		[ name: "Rob Fletcher", email: "rob@freeside.co" ],
+		[ name: "Erik Pragt", email: "erik.pragt@gmail.com" ],
+		[ name: "Domurtag", email: "https://github.com/domurtag" ], // TODO: Real email address
+		[ name: "Craig Burke", email: "craig@craigburke.com" ],
+		[ name: "Soeren Glasius", email: "soeren@glasius.dk" ]
+
+	]
+
 
 	def doWithSpring = {
 		beanPropertyAccessorFactory(BeanPropertyAccessorFactory) {

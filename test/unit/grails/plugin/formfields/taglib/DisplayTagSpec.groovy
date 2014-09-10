@@ -61,6 +61,20 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
 		applyTemplate('<f:display bean="personInstance" property="name">${value.reverse()}</f:display>', [personInstance: personInstance]) == '<dt>Name</dt><dd>nospmiS traB</dd>'
 	}
 
+    @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/135')
+    void 'numeric properties are not converted to Strings in display template'() {
+        given:
+        views["/_fields/default/_display.gsp"] = '<dt>${label}</dt><dd>${value}</dd>'
+
+        and:
+        mockFormFieldsTemplateService.findTemplate(_, 'display') >> [path: '/_fields/default/display']
+
+        expect:
+        def expectedDisplayedPrice = productInstance.netPrice.round(1)
+        applyTemplate('<f:display bean="productInstance" property="netPrice">${g.formatNumber(number: value, maxFractionDigits: 1)}</f:display>',
+                [productInstance: productInstance]) == "<dt>Net Price</dt><dd>$expectedDisplayedPrice</dd>"
+    }
+
     void 'can nest f:display inside f:with'() {
         expect:
         applyTemplate('<f:with bean="personInstance"><f:display property="name"/></f:with>', [personInstance: personInstance]) == personInstance.name

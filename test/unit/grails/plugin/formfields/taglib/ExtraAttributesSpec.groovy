@@ -23,9 +23,17 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
 		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 	}
 
-    void 'arbitrary attributes can be passed to the field template'() {
+    void 'arbitrary attributes can be passed to the field template model for backward compatibility'() {
         given:
         views["/_fields/default/_field.gsp"] = '${foo}'
+
+        expect:
+        applyTemplate('<f:field bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == 'bar'
+    }
+
+    void 'arbitrary attributes are be passed to the field template model in "attrs"'() {
+        given:
+        views["/_fields/default/_field.gsp"] = '${attrs.foo}'
 
         expect:
         applyTemplate('<f:field bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == 'bar'
@@ -34,7 +42,7 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
     void 'arbitrary attributes on f:field are not passed to the input template'() {
         given:
         views["/_fields/default/_field.gsp"] = '${widget}'
-        views["/_fields/person/name/_input.gsp"] = '<span>${foo}</span>'
+        views["/_fields/person/name/_input.gsp"] = '<span>${foo}${attrs?.foo}</span>'
 
 		and:
 		mockFormFieldsTemplateService.findTemplate(_, 'input') >> [path: '/_fields/person/name/input']
@@ -49,6 +57,28 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
 
         expect:
         applyTemplate('<f:field bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == '<input type="text" name="name" value="Bart Simpson" required="" id="name" />'
+    }
+
+    void 'arbitrary attributes can be passed to the display template model for backward compatibility'() {
+        given:
+        views["/_fields/default/_display.gsp"] = '${foo}'
+
+        and:
+        mockFormFieldsTemplateService.findTemplate(_, 'display') >> [path: '/_fields/default/display']
+
+        expect:
+        applyTemplate('<f:display bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == 'bar'
+    }
+
+    void 'arbitrary attributes are be passed to the display template model in "attrs"'() {
+        given:
+        views["/_fields/default/_display.gsp"] = '${attrs.foo}'
+
+        and:
+        mockFormFieldsTemplateService.findTemplate(_, 'display') >> [path: '/_fields/default/display']
+
+        expect:
+        applyTemplate('<f:display bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == 'bar'
     }
 
 	void 'arbitrary attributes on f:input are passed to the input template'() {
@@ -76,11 +106,22 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
         applyTemplate('<f:field bean="personInstance" property="name" input-foo="bar" />', [personInstance: personInstance]) == '<foo></foo>'
     }
 
-	@Issue("https://github.com/robfletcher/grails-fields/pull/49")
-    void 'arbitrary attributes prefixed with input- on f:field are passed to the input template'() {
+    void 'arbitrary attributes prefixed with input- on f:field are added to the input template model for backward compatibility'() {
         given:
         views["/_fields/default/_field.gsp"] = '${widget}'
         views["/_fields/person/name/_input.gsp"] = '<span>${foo}</span>'
+
+		and:
+		mockFormFieldsTemplateService.findTemplate(_, 'input') >> [path: '/_fields/person/name/input']
+
+        expect:
+        applyTemplate('<f:field bean="personInstance" property="name" input-foo="bar"/>', [personInstance: personInstance]) == '<span>bar</span>'
+    }
+
+    void 'arbitrary attributes prefixed with input- on f:field are passed to the input template as attrs'() {
+        given:
+        views["/_fields/default/_field.gsp"] = '${widget}'
+        views["/_fields/person/name/_input.gsp"] = '<span>${attrs.foo}</span>'
 
 		and:
 		mockFormFieldsTemplateService.findTemplate(_, 'input') >> [path: '/_fields/person/name/input']

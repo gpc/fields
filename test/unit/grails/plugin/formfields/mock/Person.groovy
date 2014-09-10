@@ -22,12 +22,13 @@ class Person {
 
 	static constraints = {
         salutation nullable: true
-		name blank: false
+		name blank: false, widget: 'fancywidget'
 		dateOfBirth nullable: true
 		address nullable: true
 		excludedProperty nullable: true
 		displayFalseProperty nullable: true, display: false
 		grailsDeveloper nullable: true
+        password password: true
 	}
 
 	static scaffold = [exclude: ['excludedProperty']]

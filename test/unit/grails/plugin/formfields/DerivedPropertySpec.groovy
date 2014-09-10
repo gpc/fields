@@ -5,7 +5,7 @@ import grails.plugin.formfields.taglib.AbstractFormFieldsTagLibSpec
 import grails.test.mixin.*
 import spock.lang.*
 
-@Issue('https://github.com/robfletcher/grails-fields/issues/85')
+@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/85')
 @TestFor(FormFieldsTagLib)
 @Mock(Product)
 class DerivedPropertySpec extends AbstractFormFieldsTagLibSpec {

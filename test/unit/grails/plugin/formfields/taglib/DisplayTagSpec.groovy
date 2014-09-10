@@ -4,7 +4,7 @@ import grails.test.mixin.TestFor
 import spock.lang.Issue
 import grails.plugin.formfields.*
 
-@Issue('https://github.com/robfletcher/grails-fields/issues/45')
+@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/45')
 @TestFor(FormFieldsTagLib)
 class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
 
@@ -49,7 +49,7 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
 		applyTemplate('<f:display bean="personInstance" property="name"/>', [personInstance: personInstance]) == '<dt>Name</dt><dd>Bart Simpson</dd>'
 	}
 
-	@Issue('https://github.com/robfletcher/grails-fields/issues/88')
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/88')
 	void 'display tag will use body for rendering value'() {
 		given:
 		views["/_fields/default/_display.gsp"] = '<dt>${label}</dt><dd>${value}</dd>'

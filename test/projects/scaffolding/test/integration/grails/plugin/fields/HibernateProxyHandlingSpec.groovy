@@ -6,7 +6,7 @@ import org.hibernate.proxy.HibernateProxy
 import spock.lang.*
 import test.*
 
-@Issue('https://github.com/robfletcher/grails-fields/issues/36')
+@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/36')
 class HibernateProxyHandlingSpec extends Specification {
 
 	BeanPropertyAccessorFactory beanPropertyAccessorFactory

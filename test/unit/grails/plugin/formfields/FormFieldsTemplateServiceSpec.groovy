@@ -112,7 +112,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		render(template: template.path) == 'CLASS AND PROPERTY TEMPLATE'
 	}
 
-    @Issue('https://github.com/robfletcher/grails-fields/issues/88')
+    @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/88')
     void "resolves template from controller views directory"() {
 		given:
 		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
@@ -130,7 +130,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		render(template: template.path) == 'CONTROLLER DEFAULT TEMPLATE'
 	}
 
-	@Issue('https://github.com/robfletcher/grails-fields/issues/39')
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/39')
 	void "resolves template by property type from controller views directory"() {
 		given:
 		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
@@ -168,7 +168,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		render(template: template.path) == 'CONTROLLER FIELD NAME TEMPLATE'
 	}
 
-    @Issue('https://github.com/robfletcher/grails-fields/issues/88')
+    @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/88')
     void "resolves template by from controller and action views directory"() {
         given:
         views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
@@ -189,7 +189,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
         render(template: template.path) == 'ACTION DEFAULT TEMPLATE'
     }
 
-    @Issue('https://github.com/robfletcher/grails-fields/issues/39')
+    @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/39')
 	void "resolves template by property type from controller and action views directory"() {
 		given:
 		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
@@ -211,7 +211,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		render(template: template.path) == 'ACTION FIELD TYPE TEMPLATE'
 	}
 
-	@Issue('https://github.com/robfletcher/grails-fields/issues/33')
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/33')
 	void "resolves template by property name from controller and action views directory"() {
 		given:
 		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
@@ -298,7 +298,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		render(template: template.path) == 'GENERIC ENUM TEMPLATE'
 	}
 
-	@Issue('https://github.com/robfletcher/grails-fields/issues/19')
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/19')
 	def "property template gets resolved by the property's interface"() {
 		given:
 		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'

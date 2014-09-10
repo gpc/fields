@@ -50,7 +50,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 		applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "<label>Name of person</label>"
 	}
 
-	@Issue('https://github.com/robfletcher/grails-fields/issues/38')
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/38')
 	void "label is resolved by property path before property type and passed to template"() {
 		given:
 		views["/_fields/default/_field.gsp"] = '<label>${label}</label>'
@@ -63,7 +63,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 		applyTemplate('<f:field bean="personInstance" property="address.city"/>', [personInstance: personInstance]) == "<label>Label for property path</label>"
 	}
 
-    @Issue('https://github.com/robfletcher/grails-fields/issues/76')
+    @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/76')
 	void "label is resolved by property type when property path message code does not exist"() {
 		given:
 		views["/_fields/default/_field.gsp"] = '<label>${label}</label>'
@@ -75,7 +75,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 		applyTemplate('<f:field bean="personInstance" property="address.city"/>', [personInstance: personInstance]) == "<label>Label for property type</label>"
 	}
 
-    @Issue('https://github.com/robfletcher/grails-fields/issues/76')
+    @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/76')
 	void "label is not resolved by property type when property path label same as default label"() {
 		given:
 		views["/_fields/default/_field.gsp"] = '<label>${label}</label>'
@@ -124,7 +124,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 		applyTemplate('<f:field bean="personInstance" property="dateOfBirth"/>', [personInstance: personInstance]) == "1987-04-19"
 	}
 	
-	@Issue('https://github.com/robfletcher/grails-fields/issues/55')
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/55')
 	void "numeric value of zero is not overridden by default"() {
 		given:
 		views["/_fields/default/_field.gsp"] = '<span>${value}</span>'
@@ -144,7 +144,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 		applyTemplate('<f:field bean="personInstance" property="name" value="Bartholomew J. Simpson"/>', [personInstance: personInstance]) == "Bartholomew J. Simpson"
 	}
 
-	@Issue('https://github.com/robfletcher/grails-fields/issues/46')
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/46')
 	void "value is overridden by #{value == null ? 'null' : 'empty'} value attribute"() {
 		given:
 		views["/_fields/default/_field.gsp"] = '<em>${value}</em>'
@@ -178,7 +178,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 		applyTemplate('<f:field bean="personInstance" property="name" default="A. N. Other"/>', [personInstance: personInstance]) == "Bart Simpson"
 	}
 
-	@Issue('https://github.com/robfletcher/grails-fields/issues/46')
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/46')
 	void "default attribute is ignored if a non-null value override is specified"() {
 		given:
 		views["/_fields/default/_field.gsp"] = '${value}'
@@ -187,7 +187,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 		applyTemplate('<f:field bean="personInstance" property="name" value="Bartholomew J. Simpson" default="A. N. Other"/>', [personInstance: personInstance]) == 'Bartholomew J. Simpson'
 	}
 
-	@Issue('https://github.com/robfletcher/grails-fields/issues/46')
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/46')
 	void "default attribute is ignored if a value override of '#value' is specified"() {
 		given:
 		views["/_fields/default/_field.gsp"] = '${value}'
@@ -281,7 +281,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 		applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == '<input type="text" name="name" value="Bart Simpson" required="" id="name" />'
 	}
 
-    @Issue('https://github.com/robfletcher/grails-fields/issues/80')
+    @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/80')
 	def "correct value for Boolean"() {
 		given:
     	views["/_fields/default/_field.gsp"] = 'value=${value}'
@@ -297,7 +297,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
         true  | 'value=true'
 	}
 
-    @Issue('https://github.com/robfletcher/grails-fields/issues/80')
+    @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/80')
 	def "correct value for boolean"() {
 		given:
     	views["/_fields/default/_field.gsp"] = 'value=${value}'

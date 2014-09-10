@@ -40,7 +40,7 @@ class AllTagSpec extends AbstractFormFieldsTagLibSpec {
 		output =~ /\bminor\b/
 	}
 
-	@Issue('https://github.com/robfletcher/grails-fields/issues/21')
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/21')
 	void 'all tag skips #property property'() {
 		given:
 		views["/_fields/default/_field.gsp"] = '${property} '
@@ -55,7 +55,7 @@ class AllTagSpec extends AbstractFormFieldsTagLibSpec {
 		property << ['id', 'version', 'onLoad', 'lastUpdated', 'excludedProperty', 'displayFalseProperty']
 	}
 
-	@Issue('https://github.com/robfletcher/grails-fields/issues/12')
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/12')
 	void 'all tag skips properties listed with the except attribute'() {
 		given:
 		views["/_fields/default/_field.gsp"] = '${property} '

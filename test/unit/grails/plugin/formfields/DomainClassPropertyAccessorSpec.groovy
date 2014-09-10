@@ -155,7 +155,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		propertyAccessor.persistentProperty == null
 	}
 
-	@Issue('https://github.com/robfletcher/grails-fields/issues/37')
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/37')
 	void "resolves constraints of the '#property' property when the intervening path is null"() {
 		given:
 		def book = new Book()
@@ -211,7 +211,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		propertyAccessor.constraints.inList == ["USA", "UK", "Canada"]
 	}
 
-	@Issue('https://github.com/robfletcher/grails-fields/issues/38')
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/38')
 	void "label keys for '#property' are '#labels'"() {
 		given:
 		def bean = beanType.list().find { it.class == beanType}

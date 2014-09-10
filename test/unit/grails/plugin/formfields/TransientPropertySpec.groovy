@@ -6,7 +6,7 @@ import spock.lang.Issue
 import grails.test.mixin.*
 import grails.plugin.formfields.mock.User
 
-@Issue('https://github.com/robfletcher/grails-fields/issues/87')
+@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/87')
 @TestFor(FormFieldsTagLib)
 @Mock(User)
 class TransientPropertySpec extends AbstractFormFieldsTagLibSpec {

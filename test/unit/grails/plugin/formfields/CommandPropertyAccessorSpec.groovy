@@ -218,7 +218,7 @@ class CommandPropertyAccessorSpec extends Specification {
 		propertyAccessor.propertyType == String
 	}
 
-	@Issue('https://github.com/robfletcher/grails-fields/issues/37')
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/37')
 	void "resolves constraints of the '#property' property even when the intervening object is null"() {
 		given:
 		TestCommand command = mockCommandObject(TestCommand)

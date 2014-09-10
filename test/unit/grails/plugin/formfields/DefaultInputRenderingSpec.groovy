@@ -69,7 +69,7 @@ class DefaultInputRenderingSpec extends Specification {
 		URL     | "http://grails.org/" | /value="http:\/\/grails.org\/"/
 	}
 
-	@Issue('https://github.com/robfletcher/grails-fields/issues/60')
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/60')
 	void "input for a property with a password constraint does not include the value"() {
 		given:
 		def model = [type: String, property: "prop", constraints: [password: true], persistentProperty: basicProperty, value: 'correct horse battery staple']
@@ -480,7 +480,7 @@ class DefaultInputRenderingSpec extends Specification {
 		output.contains("""<a href="/person/create?thing.id=1337">Add Person</a>""")
 	}
 	
-	@Issue('https://github.com/robfletcher/grails-fields/issues/56')
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/56')
 	def 'an enum with a toString method uses name instead of toString for the keys'() {
 		given:
 		def model = [type: EnumWithToString, property: "prop", constraints: [:], persistentProperty: basicProperty]
@@ -495,7 +495,7 @@ class DefaultInputRenderingSpec extends Specification {
 		}
 	}
 
-	@Issue('https://github.com/robfletcher/grails-fields/issues/56')
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/56')
 	def "enum with toString select and #type value has correct selected option"() {
 		when:
 		def model = [type: EnumWithToString, property: "prop", constraints: [:], persistentProperty: basicProperty, value: value]
@@ -510,7 +510,7 @@ class DefaultInputRenderingSpec extends Specification {
 		"Enum"	| "FIRST"
 	}
 
-	@Issue('https://github.com/robfletcher/grails-fields/issues/93')
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/93')
 	def "enum select should respect constraint inList"() {
 		given:
 		def model = [type: EnumWithToString, property: "prop", constraints: [inList: inListConstraint], persistentProperty: basicProperty]
@@ -533,7 +533,7 @@ class DefaultInputRenderingSpec extends Specification {
 		[EnumWithToString.FIRST] 							| [EnumWithToString.THIRD, EnumWithToString.SECOND ]
 	}
 
-	@Issue("https://github.com/robfletcher/grails-fields/issues/50")
+	@Issue("https://github.com/grails-fields-plugin/grails-fields/issues/50")
 	def "string property with a widget type of textarea is rendered as a textArea"() {
 		given:
 		def model = [type: String, property: "prop", constraints: [widget:'textarea'], persistentProperty: basicProperty]
@@ -542,7 +542,7 @@ class DefaultInputRenderingSpec extends Specification {
 		tagLib.renderDefaultInput(model) =~ /textarea name="prop"/
 	}
 
-	@Issue('https://github.com/robfletcher/grails-fields/issues/43')
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/43')
 	void 'input type can be overridden by supplying input-type parameter'() {
 		given:
 		def model = [type: propertyType, property: "prop", constraints: [:], persistentProperty: basicProperty]

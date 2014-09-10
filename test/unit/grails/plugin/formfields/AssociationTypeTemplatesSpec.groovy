@@ -7,7 +7,7 @@ import grails.plugin.formfields.mock.*
 import grails.test.mixin.*
 import spock.lang.*
 
-@Issue('https://github.com/robfletcher/grails-fields/issues/39')
+@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/39')
 @TestMixin(GroovyPageUnitTestMixin)
 @TestFor(FormFieldsTemplateService)
 @Mock([Book, Author])

@@ -5,7 +5,7 @@ import spock.lang.Issue
 import grails.plugin.formfields.*
 import grails.test.mixin.*
 
-@Issue('https://github.com/robfletcher/grails-fields/issues/30')
+@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/30')
 @TestFor(FormFieldsTagLib)
 @Mock(Person)
 class EmbeddedPropertiesSpec extends AbstractFormFieldsTagLibSpec {

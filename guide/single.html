@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
     <head>
-        <title>Fields Plugin 1.3</title>
+        <title>Fields Plugin 1.4</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
         <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8" />
@@ -35,6 +35,8 @@ function addJsClass(el) {
                             
                             <div class="toc-item" style="margin-left:0"><a href="#includingTemplatesInPlugins"><strong>6</strong><span>Including Templates in Plugins</span></a></div>
                             
+                            <div class="toc-item" style="margin-left:0"><a href="#performance"><strong>7</strong><span>Performance</span></a></div>
+                            
                         </div>
                     </div>
                 </li>
@@ -62,7 +64,7 @@ function addJsClass(el) {
                         <div class="project">
                             <h1>Fields Plugin - Reference Documentation</h1>
                             <p><strong>Authors:</strong> Rob Fletcher</p>
-                            <p><strong>Version:</strong> 1.3</p>
+                            <p><strong>Version:</strong> 1.4</p>
                             
                         </div>
 
@@ -81,6 +83,8 @@ function addJsClass(el) {
                             <div class="toc-item" style="margin-left:0px"><a href="#scaffolding"><strong>5</strong><span>Scaffolding</span></a></div>
                             
                             <div class="toc-item" style="margin-left:0px"><a href="#includingTemplatesInPlugins"><strong>6</strong><span>Including Templates in Plugins</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#performance"><strong>7</strong><span>Performance</span></a></div>
                             
                             <div style="clear:both" ></div>
                         </div>
@@ -185,7 +189,7 @@ The plugin resolves the GSP template used for each property according to convent
 <li><code>grails-app/views/&#95;fields/person/name/&#95;display.gsp</code></li>
 <li><code>grails-app/views/&#95;fields/string/&#95;display.gsp</code></li>
 <li><code>grails-app/views/&#95;fields/default/&#95;display.gsp</code></li>
-</ol><p class="paragraph"/><h2>Default Behaviour - Using Grails Input Tags</h2><p class="paragraph"/>If no template override is found the plugin will use the standard grails input tags (e.g.  <em class="italic">g:select</em> ,  <em class="italic">g:checkbox</em> ,  <em class="italic">g:field</em> ) for rendering input controls.
+</ol><p class="paragraph"/>During template development it is usually recommended to disable template caching in order to allow the plugin to recognize new/renamed/moved templates without restarting the application. See the "Performance" section of the guide for the exact settings.<p class="paragraph"/><h2>Default Behaviour - Using Grails Input Tags</h2><p class="paragraph"/>If no template override is found the plugin will use the standard grails input tags (e.g.  <em class="italic">g:select</em> ,  <em class="italic">g:checkbox</em> ,  <em class="italic">g:field</em> ) for rendering input controls.
 Using  <em class="italic">f:field</em>  you can pass extra arguments (e.g.  <em class="italic">optionKey</em> ,  <em class="italic">optionValue</em> ) through to these tags by prefixing them with <code>input-</code>, e.g.<p class="paragraph"/><div class="code"><pre>&#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"gender"</span> input&#45;optionValue=<span class="java&#45;quote">"name"</span>/&#62;</pre></div><p class="paragraph"/><h2>Template parameters</h2><p class="paragraph"/>The  <em class="italic">f:field</em>  and  <em class="italic">f:input</em>  tags will pass the following parameters to your templates or to the body of  <em class="italic">f:field</em>  if you use one:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Name</strong></th><th><strong class="bold">Type</strong></th><th><strong class="bold">Description</strong></th></tr><tr class="table-odd"><td><strong class="bold">bean</strong></td><td>Object</td><td>The  <em class="italic">bean</em>  attribute as passed to the  <em class="italic">f:field</em>  or  <em class="italic">f:input</em>  tag.</td></tr><tr class="table-even"><td><strong class="bold">property</strong></td><td>String</td><td>The  <em class="italic">property</em>  attribute as passed to the  <em class="italic">f:field</em>  or  <em class="italic">f:input</em>  tag. This would generally be useful for the  <em class="italic">name</em>  attribute of a form input.</td></tr><tr class="table-odd"><td><strong class="bold">type</strong></td><td>Class</td><td>The property type.</td></tr><tr class="table-even"><td><strong class="bold">label</strong></td><td>String</td><td>The field label text. This is based on the  <em class="italic">label</em>  attribute passed to the  <em class="italic">f:field</em>  or  <em class="italic">f:input</em>  tag. If no  <em class="italic">label</em>  attribute was used the label is resolved by convention - see below.</td></tr><tr class="table-odd"><td><strong class="bold">value</strong></td><td>Object</td><td>the property value. This can also be overridden or defaulted if the  <em class="italic">value</em>  or  <em class="italic">default</em>  attribute was passed to  <em class="italic">f:field</em>  or  <em class="italic">f:input</em> .</td></tr><tr class="table-even"><td><strong class="bold">constraints</strong></td><td>ConstrainedProperty</td><td>The constraints for the property if the bean is a domain or command object.</td></tr><tr class="table-odd"><td><strong class="bold">persistentProperty</strong></td><td>GrailsDomainClassProperty</td><td>The persistent property object if the bean is a domain object.</td></tr><tr class="table-even"><td><strong class="bold">errors</strong></td><td>List&#60;String&#62;</td><td>The error messages for any field errors present on the property. If there are no errors this will be an empty  <em class="italic">List</em> .</td></tr><tr class="table-odd"><td><strong class="bold">required</strong></td><td>boolean</td><td> <em class="italic">true</em>  if the field is required, i.e. has a <code>nullable: false</code> or <code>blank: false</code> constraint.</td></tr><tr class="table-even"><td><strong class="bold">invalid</strong></td><td>boolean</td><td> <em class="italic">true</em>  if the property has any field errors.</td></tr><tr class="table-odd"><td><strong class="bold">prefix</strong></td><td>String</td><td>A string (including the trailing period) that should be appended before the input name such as <code>name="${prefix}propertyName"</code>.  The label is also modified.</td></tr></table><p class="paragraph"/>In addition  <em class="italic">f:field</em>  passes the following parameters:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Name</strong></th><th><strong class="bold">Type</strong></th><th><strong class="bold">Description</strong></th></tr><tr class="table-odd"><td><strong class="bold">widget</strong></td><td>String</td><td>The output of  <em class="italic">f:input</em>  for the current bean and property if  <em class="italic">f:field</em>  was used without a tag body, otherwise the output of the tag body.</td></tr></table><p class="paragraph"/><blockquote class="note">
 If the  <em class="italic">bean</em>  attribute was not supplied to  <em class="italic">f:field</em>  then  <em class="italic">bean</em> ,  <em class="italic">type</em> ,  <em class="italic">value</em>  and  <em class="italic">persistentProperty</em>  will all be  <em class="italic">null</em> .
 </blockquote><p class="paragraph"/><h3>Field labels</h3><p class="paragraph"/>If the  <em class="italic">label</em>  attribute is not supplied to the  <em class="italic">f:field</em>  tag then the label string passed to the field template is resolved by convention. The plugin uses the following order of preference for the label:
@@ -214,6 +218,11 @@ Scaffolding templates based on the  <em class="italic">Fields</em>  plugin are q
 Plugins can include field and/or input level templates to support special UI rendering or non-standard property types. Just include the templates in the plugin's <code>grails-app/views</code> directory as described in the <a href="../guide/single.html#customizingFieldRendering" class="guide">Customizing Field Rendering</a> section.<p class="paragraph"/><blockquote class="warning">
 If you supply templates in a plugin you should consider declaring a <code>&#60;%&#64; page defaultCodec="html" %&#62;</code> directive so that any HTML unsafe property values are escaped properly regardless of the default codec used by client apps.
 </blockquote>
+
+
+<h1 id="performance">7 Performance</h1>
+In order to be performant, the Fields plugin caches field template lookup results by default. This makes it possible to perform the time-consuming template path resolutions only once during the runtime of the application.<p class="paragraph"/>When template caching is active, only the first page renderings are slow, subsequent ones are fast.<p class="paragraph"/>Due to the flexibility needed during template development, this feature can be disabled so it would be possible to recognize newly added field templates without restarting the application. As a result, with bigger webpages, containing a lot of fields, rendering may be fairly slow in development (depending on the number of fields on the page).<p class="paragraph"/>For template development, the following configuration attribute should be placed in the development environment section of your application's Config.groovy:<p class="paragraph"/><div class="code"><pre>grails.plugin.fields.disableLookupCache = <span class="java&#45;keyword">true</span></pre></div><p class="paragraph"/>After the template development has finished, it is recommended to re-enable the template lookup cache in order to have a performant page rendering even during development.
+
 
                     </div>
                 </td>

@@ -19,7 +19,7 @@ import org.codehaus.groovy.grails.validation.ConstraintsEvaluator
 
 class FieldsGrailsPlugin {
 
-	def version = '1.3'
+	def version = '1.4'
 	def grailsVersion = '2.0 > *'
 	def dependsOn = [:]
 	def pluginExcludes = []
@@ -31,8 +31,8 @@ class FieldsGrailsPlugin {
 
 	def documentation = 'http://freeside.co/grails-fields'
 	def license = 'APACHE'
-	def issueManagement = [system: 'GitHub', url: 'https://github.com/robfletcher/grails-fields/issues']
-	def scm = [system: 'GitHub', url: 'https://github.com/robfletcher/grails-fields']
+	def issueManagement = [system: 'GitHub', url: 'https://github.com/grails-fields-plugin/grails-fields/issues']
+	def scm = [system: 'GitHub', url: 'https://github.com/grails-fields-plugin/grails-fields']
 
 	def doWithSpring = {
 		beanPropertyAccessorFactory(BeanPropertyAccessorFactory) {

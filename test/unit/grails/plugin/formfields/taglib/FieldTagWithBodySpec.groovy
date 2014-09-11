@@ -5,7 +5,7 @@ import spock.lang.Issue
 import grails.plugin.formfields.*
 import grails.test.mixin.*
 
-@Issue('https://github.com/robfletcher/grails-fields/pull/16')
+@Issue('https://github.com/grails-fields-plugin/grails-fields/pull/16')
 @TestFor(FormFieldsTagLib)
 @Mock(Person)
 class FieldTagWithBodySpec extends AbstractFormFieldsTagLibSpec {
@@ -39,7 +39,7 @@ class FieldTagWithBodySpec extends AbstractFormFieldsTagLibSpec {
         applyTemplate('<f:field bean="personInstance" property="name">bean: ${bean.getClass().simpleName}, property: ${property}, type: ${type.simpleName}, label: ${label}, value: ${value}</f:field>', [personInstance: personInstance]) == 'bean: Person, property: name, type: String, label: Name, value: Bart Simpson'
     }
 
-	@Issue("https://github.com/robfletcher/grails-fields/pull/49")
+	@Issue("https://github.com/grails-fields-plugin/grails-fields/pull/49")
     void 'extra attributes prefixed with input- are passed to the tag body for backward compatibility'() {
         given:
         views['/_fields/default/_field.gsp'] = '${widget}'

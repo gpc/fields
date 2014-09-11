@@ -5,7 +5,7 @@ import spock.lang.Issue
 import grails.plugin.formfields.*
 import grails.test.mixin.*
 
-@Issue('https://github.com/robfletcher/grails-fields/pull/17')
+@Issue('https://github.com/grails-fields-plugin/grails-fields/pull/17')
 @TestFor(FormFieldsTagLib)
 @Mock(Person)
 class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
@@ -97,7 +97,7 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
 		applyTemplate('<f:input bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == '<input type="text" foo="bar" name="name" value="Bart Simpson" required="" id="name" />'
 	}
 
-	@Issue("https://github.com/robfletcher/grails-fields/pull/49")
+	@Issue("https://github.com/grails-fields-plugin/grails-fields/pull/49")
     void 'arbitrary attributes prefixed with input- are not passed to the field template'() {
         given:
         views["/_fields/default/_field.gsp"] = '<foo>${foo}</foo>'
@@ -130,7 +130,7 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
         applyTemplate('<f:field bean="personInstance" property="name" input-foo="bar"/>', [personInstance: personInstance]) == '<span>bar</span>'
     }
 
-	@Issue("https://github.com/robfletcher/grails-fields/pull/49")
+	@Issue("https://github.com/grails-fields-plugin/grails-fields/pull/49")
     void 'arbitrary attributes prefixed with input- on f:field are passed to the default input'() {
         given:
         views["/_fields/default/_field.gsp"] = '${widget}'

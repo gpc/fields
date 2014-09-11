@@ -346,7 +346,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		render(template: template.path) == 'CLASS AND PROPERTY TEMPLATE'
 	}
 
-	@Issue('https://github.com/robfletcher/grails-fields/pull/16')
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/pull/16')
 	void 'resolves template without a bean just based on property path'() {
 		given:
 		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
@@ -361,7 +361,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		render(template: template.path) == 'DEFAULT FIELD TEMPLATE'
 	}
 
-	@Issue('https://github.com/robfletcher/grails-fields/pull/16')
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/pull/16')
 	void 'resolves controller template without a bean just based on property path'() {
 		given:
 		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
@@ -377,7 +377,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		render(template: template.path) == 'CONTROLLER FIELD TEMPLATE'
 	}
 
-	@Issue('https://github.com/robfletcher/grails-fields/pull/33')
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/pull/33')
 	void 'resolves controller action template without a bean just based on property path'() {
 		given:
 		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'

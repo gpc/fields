@@ -5,7 +5,7 @@ import spock.lang.Issue
 import grails.plugin.formfields.*
 import grails.test.mixin.*
 
-@Issue('https://github.com/robfletcher/grails-fields/pull/51')
+@Issue('https://github.com/grails-fields-plugin/grails-fields/pull/51')
 @TestFor(FormFieldsTagLib)
 @Mock(Person)
 class FieldNamePrefixSpec extends AbstractFormFieldsTagLibSpec {

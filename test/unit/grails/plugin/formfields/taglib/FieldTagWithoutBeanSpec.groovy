@@ -4,7 +4,7 @@ import grails.test.mixin.TestFor
 import spock.lang.Issue
 import grails.plugin.formfields.*
 
-@Issue('https://github.com/robfletcher/grails-fields/pull/16')
+@Issue('https://github.com/grails-fields-plugin/grails-fields/pull/16')
 @TestFor(FormFieldsTagLib)
 class FieldTagWithoutBeanSpec extends AbstractFormFieldsTagLibSpec {
 

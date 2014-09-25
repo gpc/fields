@@ -19,6 +19,7 @@ package grails.plugin.formfields
 import groovy.transform.PackageScope
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
 import org.codehaus.groovy.grails.support.proxy.ProxyHandler
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
@@ -79,20 +80,26 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 	}
 
 	private ConstrainedProperty resolveConstraints(BeanWrapper beanWrapper, GrailsDomainClass beanClass, String propertyName) {
-		if (beanClass) {
-			beanClass.constrainedProperties[propertyName]
+        if (beanClass) {
+			def constrainedProperty = beanClass.constrainedProperties[propertyName] as ConstrainedProperty
+
+            if(!constrainedProperty && propertyName in beanClass.getPropertyValue(GrailsDomainClassProperty.TRANSIENT, List.class)) {
+                constrainedProperty = createDefaultConstraint(beanWrapper, propertyName)
+            }
+            return constrainedProperty
 		} else {
 			// TODO: possibly a better way to get constraints direct from a command object rather than re-evaluating them
-			def constraints = constraintsEvaluator.evaluate(beanWrapper.wrappedClass)[propertyName]
-			if (!constraints) {
-				constraints = new ConstrainedProperty(beanWrapper.wrappedClass, propertyName, beanWrapper.getPropertyType(propertyName))
-				constraints.nullable = true
-			}
-			constraints
-		}
+			return constraintsEvaluator.evaluate(beanWrapper.wrappedClass)[propertyName] as ConstrainedProperty ?: createDefaultConstraint(beanWrapper, propertyName)
+        }
 	}
 
-	private Class resolvePropertyType(BeanWrapper beanWrapper, GrailsDomainClass beanClass, String propertyName) {
+    private ConstrainedProperty createDefaultConstraint(BeanWrapper beanWrapper, String propertyName) {
+        def defaultConstraint = new ConstrainedProperty(beanWrapper.wrappedClass, propertyName, beanWrapper.getPropertyType(propertyName))
+        defaultConstraint.nullable = true
+        defaultConstraint
+    }
+
+    private Class resolvePropertyType(BeanWrapper beanWrapper, GrailsDomainClass beanClass, String propertyName) {
 		Class propertyType = null
 		if (beanClass) {
 			propertyType = resolveDomainPropertyType(beanClass, propertyName)

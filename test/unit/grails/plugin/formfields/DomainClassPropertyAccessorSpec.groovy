@@ -29,7 +29,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		person.emails = [home: "bart@thesimpsons.net", school: "bart.simpson@springfieldelementary.edu"]
 		person.save(failOnError: true)
 
-		employee = new Employee(name: 'Homer J Simpson', jobTitle: 'Safety officer', password: 'mmmdonuts', gender: Gender.Male, address: address)
+		employee = new Employee(name: 'Homer J Simpson', password: 'mmmdonuts', gender: Gender.Male, address: address)
 		employee.save(failOnError: true)
 
 		author = new Author(name: "William Gibson")
@@ -289,7 +289,43 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		propertyAccessor.invalid
 	}
 
-	void "the #path property is required:#expected"() {
+    @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/160')
+    void "resolves transient property"() {
+        given:
+        def propertyAccessor = factory.accessorFor(person, "transientText")
+
+        expect:
+        propertyAccessor.value == person.transientText
+        propertyAccessor.rootBeanType == Person
+        propertyAccessor.beanType == Person
+        propertyAccessor.beanClass.clazz == Person
+        propertyAccessor.pathFromRoot == "transientText"
+        propertyAccessor.propertyName == "transientText"
+        propertyAccessor.propertyType == String
+        propertyAccessor.persistentProperty.name == "transientText"
+        propertyAccessor.constraints.nullable
+        propertyAccessor.constraints.propertyName == 'transientText'
+    }
+
+    @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/160')
+    void "resolves id property that has no constraints"() {
+        given:
+        def propertyAccessor = factory.accessorFor(person, "id")
+
+        expect:
+        propertyAccessor.value == person.id
+        propertyAccessor.rootBeanType == Person
+        propertyAccessor.beanType == Person
+        propertyAccessor.beanClass.clazz == Person
+        propertyAccessor.pathFromRoot == "id"
+        propertyAccessor.propertyName == "id"
+        propertyAccessor.propertyType == Long
+        propertyAccessor.persistentProperty.name == "id"
+        propertyAccessor.constraints == null
+    }
+
+
+    void "the #path property is required:#expected"() {
 		given:
 		def propertyAccessor = factory.accessorFor(person, path)
 

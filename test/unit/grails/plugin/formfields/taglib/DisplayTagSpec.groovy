@@ -80,4 +80,11 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
         applyTemplate('<f:with bean="personInstance"><f:display property="name"/></f:with>', [personInstance: personInstance]) == personInstance.name
     }
 
+    @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/160')
+    void 'renders transients using g:fieldValue'() {
+        expect:
+        applyTemplate('<f:display bean="personInstance" property="transientText"/>', [personInstance: personInstance]) == personInstance.transientText
+    }
+
+
 }

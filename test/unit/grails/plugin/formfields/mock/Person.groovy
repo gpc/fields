@@ -18,6 +18,10 @@ class Person {
 	Boolean grailsDeveloper
     Byte[] picture
 
+    transient String getTransientText() {
+        "transient text"
+    }
+
 	static hasMany = [emails: String]
 	static embedded = ['address']
 
@@ -34,7 +38,7 @@ class Person {
 	}
 
 	static scaffold = [exclude: ['excludedProperty']]
-
+    static transients = ['transientText']
 	def onLoad = {
 		println "loaded"
 	}

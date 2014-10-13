@@ -38,10 +38,9 @@ class FieldsGrailsPlugin {
 	def developers = [ 
 		[ name: "Rob Fletcher", email: "rob@freeside.co" ],
 		[ name: "Erik Pragt", email: "erik.pragt@gmail.com" ],
-		[ name: "Domurtag", email: "https://github.com/domurtag" ], // TODO: Real email address
+		[ name: "Dónal Murtagh", email: "domurtag@yahoo.co.uk" ],
 		[ name: "Craig Burke", email: "craig@craigburke.com" ],
 		[ name: "Soeren Glasius", email: "soeren@glasius.dk" ]
-
 	]
 
 

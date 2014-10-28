@@ -128,24 +128,23 @@ class FormFieldsTemplateService {
     }
 
     private String getWidget(ConstrainedProperty cp) {
-        if (cp.widget) {
-            return cp.widget
-        }
-        if (cp.password) {
-            return 'password'
-        }
-        if (CharSequence.isAssignableFrom(cp.propertyType)) {
-            if (cp.url) {
-                return 'url'
+        String widget = null
+        if (cp) {
+            if (cp.widget) {
+                widget = cp.widget
+            } else if (cp.password) {
+                widget = 'password'
+            } else if (CharSequence.isAssignableFrom(cp.propertyType)) {
+                if (cp.url) {
+                    widget = 'url'
+                } else if (cp.creditCard) {
+                    widget = 'creditCard'
+                } else if (cp.email) {
+                    widget = 'email'
+                }
             }
-            if (cp.creditCard) {
-                return 'creditCard'
-            }
-            if (cp.email) {
-                return 'email'
-            }
         }
-        null
+        widget
     }
 
     private String getControllerName() {

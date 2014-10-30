@@ -411,5 +411,10 @@ class FormFieldsTemplateServiceSpec extends Specification {
         render(template: template.path) == 'PROPERTY BYTE ARRAY TYPE TEMPLATE'
     }
 
+    @Issue('https://github.com/grails-fields-plugin/grails-fields/pull/164')
+    void "does not fail if constrained property is null"() {
+        expect:
+        null == service.getWidget(null)
+    }
 
 }

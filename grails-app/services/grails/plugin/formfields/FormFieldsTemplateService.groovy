@@ -62,7 +62,7 @@ class FormFieldsTemplateService {
 
     static String toPropertyNameFormat(Class type) {
         def propertyNameFormat = GrailsNameUtils.getLogicalPropertyName(type.name, '')
-        if(propertyNameFormat.endsWith(';')) {
+        if (propertyNameFormat.endsWith(';')) {
             propertyNameFormat = propertyNameFormat - ';' + 'Array'
         }
         return propertyNameFormat
@@ -127,25 +127,25 @@ class FormFieldsTemplateService {
         associationPath
     }
 
-    private String getWidget(ConstrainedProperty cp) {
+    protected String getWidget(ConstrainedProperty cp) {
+        if (null == cp) {
+            return null
+        }
+        String widget = null
         if (cp.widget) {
-            return cp.widget
-        }
-        if (cp.password) {
-            return 'password'
-        }
-        if (CharSequence.isAssignableFrom(cp.propertyType)) {
+            widget = cp.widget
+        } else if (cp.password) {
+            widget = 'password'
+        } else if (CharSequence.isAssignableFrom(cp.propertyType)) {
             if (cp.url) {
-                return 'url'
-            }
-            if (cp.creditCard) {
-                return 'creditCard'
-            }
-            if (cp.email) {
-                return 'email'
+                widget = 'url'
+            } else if (cp.creditCard) {
+                widget = 'creditCard'
+            } else if (cp.email) {
+                widget = 'email'
             }
         }
-        null
+        return widget
     }
 
     private String getControllerName() {

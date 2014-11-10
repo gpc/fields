@@ -257,7 +257,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		def blacklist = attrs.except?.tokenize(',')*.trim() ?: []
 		blacklist << 'dateCreated' << 'lastUpdated'
 		def scaffoldProp = getStaticPropertyValue(domainClass.clazz, 'scaffold')
-		if (scaffoldProp) {
+		if (scaffoldProp && scaffoldProp.exclude) {
 			blacklist.addAll(scaffoldProp.exclude)
 		}
 		properties.removeAll { it.name in blacklist }

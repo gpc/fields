@@ -30,7 +30,7 @@ function install_and_use_grails {
 	gvm use grails $grails_version
 }
 
-use_grails_version="${GRAILS_VERSION:-2.4.3}"
+use_grails_version="${GRAILS_VERSION:-2.4.4}"
 install_and_use_grails $use_grails_version
 perl -i -p -e "s/app\\.grails\\.version=.*/app.grails.version=$use_grails_version/" application.properties
 

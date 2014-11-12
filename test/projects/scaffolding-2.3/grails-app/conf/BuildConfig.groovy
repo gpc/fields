@@ -50,6 +50,7 @@ grails.project.dependency.resolution = {
     def gebVersion = "0.9.2"
 
     dependencies {
+        build "net.sourceforge.nekohtml:nekohtml:1.9.18"
         test "org.gebish:geb-spock:$gebVersion"
         test "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
         test "org.seleniumhq.selenium:selenium-htmlunit-driver:$seleniumVersion"

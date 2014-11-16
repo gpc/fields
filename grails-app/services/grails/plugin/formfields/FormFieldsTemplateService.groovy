@@ -20,7 +20,6 @@ import grails.util.GrailsNameUtils
 import org.codehaus.groovy.grails.plugins.GrailsPluginManager
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import org.codehaus.groovy.grails.web.pages.discovery.GrailsConventionGroovyPageLocator
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
 import org.codehaus.groovy.grails.web.util.WebUtils
 import org.springframework.web.context.request.RequestContextHolder
 
@@ -43,7 +42,6 @@ class FormFieldsTemplateService {
     final Closure findTemplateCached = shouldCache() ? this.&findTemplateCacheable.memoize() : this.&findTemplateCacheable
 
     private Map findTemplateCacheable(BeanPropertyAccessor propertyAccessor, String controllerNamespace, String controllerName, String actionName, String templateName) {
-
         def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName)
 
         candidatePaths.findResult { path ->
@@ -65,7 +63,7 @@ class FormFieldsTemplateService {
 
     static String toPropertyNameFormat(Class type) {
         def propertyNameFormat = GrailsNameUtils.getLogicalPropertyName(type.name, '')
-        if(propertyNameFormat.endsWith(';')) {
+        if (propertyNameFormat.endsWith(';')) {
             propertyNameFormat = propertyNameFormat - ';' + 'Array'
         }
         return propertyNameFormat
@@ -74,7 +72,7 @@ class FormFieldsTemplateService {
     private List<String> candidateTemplatePaths(BeanPropertyAccessor propertyAccessor, String controllerNamespace, String controllerName, String actionName, String templateName) {
         def templateResolveOrder = []
 
-        // if there is a controller for the current request any template in its views directory takes priority
+        // if there is a controller namespace for the current request any template in its views directory takes priority
         if (controllerNamespace) {
             // first try action-specific templates
             templateResolveOrder << appendPiecesForUri("/", controllerNamespace, controllerName, actionName, propertyAccessor.propertyName, templateName)
@@ -143,25 +141,25 @@ class FormFieldsTemplateService {
         associationPath
     }
 
-    private String getWidget(ConstrainedProperty cp) {
+    protected String getWidget(ConstrainedProperty cp) {
+        if (null == cp) {
+            return null
+        }
+        String widget = null
         if (cp.widget) {
-            return cp.widget
-        }
-        if (cp.password) {
-            return 'password'
-        }
-        if (CharSequence.isAssignableFrom(cp.propertyType)) {
+            widget = cp.widget
+        } else if (cp.password) {
+            widget = 'password'
+        } else if (CharSequence.isAssignableFrom(cp.propertyType)) {
             if (cp.url) {
-                return 'url'
-            }
-            if (cp.creditCard) {
-                return 'creditCard'
-            }
-            if (cp.email) {
-                return 'email'
+                widget = 'url'
+            } else if (cp.creditCard) {
+                widget = 'creditCard'
+            } else if (cp.email) {
+                widget = 'email'
             }
         }
-        null
+        return widget
     }
 
     private String getControllerNamespace() {
@@ -169,13 +167,10 @@ class FormFieldsTemplateService {
     }
 
     private String getControllerName() {
-        def test = RequestContextHolder.requestAttributes
         RequestContextHolder.requestAttributes?.controllerName
     }
 
     private String getActionName() {
-        GrailsWebRequest webUtils = WebUtils.retrieveGrailsWebRequest()
-        def namespace = webUtils.getControllerNamespace()
         RequestContextHolder.requestAttributes?.actionName
     }
 
@@ -186,3 +181,4 @@ class FormFieldsTemplateService {
     }
 
 }
+

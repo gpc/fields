@@ -20,7 +20,9 @@ import grails.util.GrailsNameUtils
 import org.codehaus.groovy.grails.plugins.GrailsPluginManager
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import org.codehaus.groovy.grails.web.pages.discovery.GrailsConventionGroovyPageLocator
-import org.codehaus.groovy.grails.web.util.WebUtils
+import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
+import org.springframework.web.context.request.RequestAttributes
 import org.springframework.web.context.request.RequestContextHolder
 
 import static org.codehaus.groovy.grails.io.support.GrailsResourceUtils.appendPiecesForUri
@@ -163,7 +165,9 @@ class FormFieldsTemplateService {
     }
 
     private String getControllerNamespace() {
-        return WebUtils.retrieveGrailsWebRequest().getControllerNamespace()
+        if (GrailsWebRequest.metaClass.respondsTo(GrailsWebRequest, "getControllerNamespace").size() > 0) {
+            return RequestContextHolder.requestAttributes?.getAttribute(GrailsApplicationAttributes.CONTROLLER_NAMESPACE_ATTRIBUTE, RequestAttributes.SCOPE_REQUEST)
+        }
     }
 
     private String getControllerName() {

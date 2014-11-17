@@ -5,6 +5,8 @@ import org.codehaus.groovy.grails.support.proxy.DefaultProxyHandler
 import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
 import grails.plugin.formfields.mock.*
 import grails.test.mixin.*
+import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
 import spock.lang.*
 
 @TestMixin(GroovyPageUnitTestMixin)
@@ -16,6 +18,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 	def factory = new BeanPropertyAccessorFactory()
 	
 	void setup() {
+
 		webRequest.controllerName = 'foo'
 		webRequest.actionName = 'bar'
 
@@ -126,6 +129,27 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		expect:
 		def template = service.findTemplate(property, 'field')
 		template.path == "/$webRequest.controllerName/field"
+		template.plugin == null
+		render(template: template.path) == 'CONTROLLER DEFAULT TEMPLATE'
+	}
+
+//	@IgnoreIf({ GrailsApplicationAttributes.metaClass.hasProperty(GrailsApplicationAttributes, "CONTROLLER_NAMESPACE_ATTRIBUTE") == false })
+	@IgnoreIf({ GrailsWebRequest.metaClass.respondsTo(GrailsWebRequest, "getControllerNamespace").size() == 0 })
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/168')
+	void "resolves template from namespaced controller views directory"() {
+		given:
+		webRequest.setControllerNamespace('namespace')
+		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/_fields/string/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
+		views["/_fields/person/name/_field.gsp"] = 'CLASS AND PROPERTY TEMPLATE'
+		views["/$webRequest.controllerNamespace/$webRequest.controllerName/_field.gsp"] = 'CONTROLLER DEFAULT TEMPLATE'
+
+		and:
+		def property = factory.accessorFor(personInstance, 'name')
+
+		expect:
+		def template = service.findTemplate(property, 'field')
+		template.path == "/$webRequest.controllerNamespace/$webRequest.controllerName/field"
 		template.plugin == null
 		render(template: template.path) == 'CONTROLLER DEFAULT TEMPLATE'
 	}

@@ -20,6 +20,9 @@ import grails.util.GrailsNameUtils
 import org.codehaus.groovy.grails.plugins.GrailsPluginManager
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import org.codehaus.groovy.grails.web.pages.discovery.GrailsConventionGroovyPageLocator
+import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
+import org.springframework.web.context.request.RequestAttributes
 import org.springframework.web.context.request.RequestContextHolder
 
 import static org.codehaus.groovy.grails.io.support.GrailsResourceUtils.appendPiecesForUri
@@ -34,14 +37,14 @@ class FormFieldsTemplateService {
     GrailsPluginManager pluginManager
 
     Map findTemplate(BeanPropertyAccessor propertyAccessor, String templateName) {
-        findTemplateCached(propertyAccessor, controllerName, actionName, templateName)
+        findTemplateCached(propertyAccessor, controllerNamespace, controllerName, actionName, templateName)
     }
 
     private
     final Closure findTemplateCached = shouldCache() ? this.&findTemplateCacheable.memoize() : this.&findTemplateCacheable
 
-    private Map findTemplateCacheable(BeanPropertyAccessor propertyAccessor, String controllerName, String actionName, String templateName) {
-        def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerName, actionName, templateName)
+    private Map findTemplateCacheable(BeanPropertyAccessor propertyAccessor, String controllerNamespace, String controllerName, String actionName, String templateName) {
+        def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName)
 
         candidatePaths.findResult { path ->
             log.debug "looking for template with path $path"
@@ -68,8 +71,21 @@ class FormFieldsTemplateService {
         return propertyNameFormat
     }
 
-    private List<String> candidateTemplatePaths(BeanPropertyAccessor propertyAccessor, String controllerName, String actionName, String templateName) {
+    private List<String> candidateTemplatePaths(BeanPropertyAccessor propertyAccessor, String controllerNamespace, String controllerName, String actionName, String templateName) {
         def templateResolveOrder = []
+
+        // if there is a controller namespace for the current request any template in its views directory takes priority
+        if (controllerNamespace) {
+            // first try action-specific templates
+            templateResolveOrder << appendPiecesForUri("/", controllerNamespace, controllerName, actionName, propertyAccessor.propertyName, templateName)
+            if (propertyAccessor.propertyType) templateResolveOrder << appendPiecesForUri("/", controllerNamespace, controllerName, actionName, toPropertyNameFormat(propertyAccessor.propertyType), templateName)
+            templateResolveOrder << appendPiecesForUri("/", controllerNamespace, controllerName, actionName, templateName)
+
+            // then general templates for the controller
+            templateResolveOrder << appendPiecesForUri("/", controllerNamespace, controllerName, propertyAccessor.propertyName, templateName)
+            if (propertyAccessor.propertyType) templateResolveOrder << appendPiecesForUri("/", controllerNamespace, controllerName, toPropertyNameFormat(propertyAccessor.propertyType), templateName)
+            templateResolveOrder << appendPiecesForUri("/", controllerNamespace, controllerName, templateName)
+        }
 
         // if there is a controller for the current request any template in its views directory takes priority
         if (controllerName) {
@@ -148,6 +164,12 @@ class FormFieldsTemplateService {
         return widget
     }
 
+    private String getControllerNamespace() {
+        if (GrailsWebRequest.metaClass.respondsTo(GrailsWebRequest, "getControllerNamespace").size() > 0) {
+            return RequestContextHolder.requestAttributes?.getAttribute(GrailsApplicationAttributes.CONTROLLER_NAMESPACE_ATTRIBUTE, RequestAttributes.SCOPE_REQUEST)
+        }
+    }
+
     private String getControllerName() {
         RequestContextHolder.requestAttributes?.controllerName
     }
@@ -163,3 +185,4 @@ class FormFieldsTemplateService {
     }
 
 }
+

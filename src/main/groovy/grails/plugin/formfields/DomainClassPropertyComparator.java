@@ -1,8 +1,7 @@
 package grails.plugin.formfields;
 
-import org.codehaus.groovy.grails.commons.GrailsDomainClass;
-import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
-import org.codehaus.groovy.grails.validation.ConstrainedProperty;
+import grails.core.*;
+import grails.validation.ConstrainedProperty;
 import org.springframework.util.Assert;
 
 import java.util.Comparator;

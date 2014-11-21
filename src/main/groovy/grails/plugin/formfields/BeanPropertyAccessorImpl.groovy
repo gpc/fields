@@ -19,14 +19,12 @@ package grails.plugin.formfields
 import grails.util.GrailsNameUtils
 import groovy.transform.Canonical
 import org.apache.commons.lang.ClassUtils
-import org.codehaus.groovy.grails.commons.GrailsApplication
-import org.codehaus.groovy.grails.commons.GrailsDomainClass
-import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
-import org.codehaus.groovy.grails.plugins.VersionComparator
-import org.codehaus.groovy.grails.validation.ConstrainedProperty
+import grails.core.*
+import grails.plugins.VersionComparator
+import grails.validation.ConstrainedProperty
 import org.springframework.validation.FieldError
 
-import static org.codehaus.groovy.grails.validation.ConstrainedProperty.BLANK_CONSTRAINT
+import static grails.validation.ConstrainedProperty.BLANK_CONSTRAINT
 
 @Canonical(includes = 'beanType, propertyName, propertyType')
 class BeanPropertyAccessorImpl implements BeanPropertyAccessor {

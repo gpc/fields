@@ -1,12 +1,12 @@
 package grails.plugin.formfields
 
 import grails.util.GrailsNameUtils
-import org.codehaus.groovy.grails.validation.ConstrainedProperty
+import grails.validation.ConstrainedProperty
 import org.springframework.validation.FieldError
 import static grails.plugin.formfields.BeanPropertyAccessorFactory.stripIndex
 import static java.util.Collections.EMPTY_LIST
 import static org.apache.commons.lang.StringUtils.substringAfterLast
-import org.codehaus.groovy.grails.commons.*
+import grails.core.*
 
 class PropertyPathAccessor implements BeanPropertyAccessor {
 

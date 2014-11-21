@@ -18,17 +18,19 @@ package grails.plugin.formfields
 
 import groovy.xml.MarkupBuilder
 import org.apache.commons.lang.StringUtils
-import org.codehaus.groovy.grails.commons.GrailsApplication
-import org.codehaus.groovy.grails.commons.GrailsDomainClass
-import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
-import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
-import org.codehaus.groovy.grails.web.pages.FastStringWriter
-import org.codehaus.groovy.grails.web.pages.GroovyPage
+import grails.core.GrailsApplication
+import grails.core.GrailsDomainClass
+import grails.core.GrailsDomainClassProperty
+import grails.core.support.GrailsApplicationAware
+
+import org.grails.buffer.FastStringWriter
+import org.grails.web.pages.GroovyPage
 
 import static FormFieldsTemplateService.toPropertyNameFormat
-import static org.codehaus.groovy.grails.commons.GrailsClassUtils.getStaticPropertyValue
+import static grails.util.GrailsClassUtils.getStaticPropertyValue
 
 import java.sql.Blob
+
 class FormFieldsTagLib implements GrailsApplicationAware {
 
 	static final namespace = 'f'

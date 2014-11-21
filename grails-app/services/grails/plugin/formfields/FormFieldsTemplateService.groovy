@@ -17,21 +17,22 @@
 package grails.plugin.formfields
 
 import grails.util.GrailsNameUtils
-import org.codehaus.groovy.grails.plugins.GrailsPluginManager
-import org.codehaus.groovy.grails.validation.ConstrainedProperty
-import org.codehaus.groovy.grails.web.pages.discovery.GrailsConventionGroovyPageLocator
-import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
+import grails.core.GrailsApplication
+import grails.plugins.GrailsPluginManager
+import grails.validation.ConstrainedProperty
+import grails.web.util.GrailsApplicationAttributes
+import org.grails.web.pages.discovery.GrailsConventionGroovyPageLocator
+import org.grails.web.servlet.mvc.GrailsWebRequest
 import org.springframework.web.context.request.RequestAttributes
 import org.springframework.web.context.request.RequestContextHolder
 
-import static org.codehaus.groovy.grails.io.support.GrailsResourceUtils.appendPiecesForUri
+import static org.grails.io.support.GrailsResourceUtils.appendPiecesForUri
 
 class FormFieldsTemplateService {
 
     static transactional = false
 
-    def grailsApplication
+    GrailsApplication grailsApplication
 
     GrailsConventionGroovyPageLocator groovyPageLocator
     GrailsPluginManager pluginManager

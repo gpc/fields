@@ -16,9 +16,9 @@
 
 package grails.plugin.formfields
 
-import org.codehaus.groovy.grails.validation.ConstrainedProperty
+import grails.validation.ConstrainedProperty
 import org.springframework.validation.FieldError
-import org.codehaus.groovy.grails.commons.*
+import grails.core.*
 
 interface BeanPropertyAccessor {
 

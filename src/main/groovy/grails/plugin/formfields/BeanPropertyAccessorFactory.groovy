@@ -17,13 +17,11 @@
 package grails.plugin.formfields
 
 import groovy.transform.PackageScope
-import org.codehaus.groovy.grails.commons.GrailsApplication
-import org.codehaus.groovy.grails.commons.GrailsDomainClass
-import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
-import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
-import org.codehaus.groovy.grails.support.proxy.ProxyHandler
-import org.codehaus.groovy.grails.validation.ConstrainedProperty
-import org.codehaus.groovy.grails.validation.ConstraintsEvaluator
+import grails.core.*
+import grails.core.support.GrailsApplicationAware
+import grails.core.support.proxy.ProxyHandler
+import grails.validation.ConstrainedProperty
+import grails.validation.ConstraintsEvaluator
 import org.springframework.beans.BeanWrapper
 import org.springframework.beans.BeanWrapperImpl
 import org.springframework.beans.NotReadablePropertyException

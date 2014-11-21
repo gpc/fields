@@ -1,3 +1,4 @@
+package grails.plugin.formfields
 /*
  * Copyright 2012 Rob Fletcher
  *
@@ -14,13 +15,11 @@
  * limitations under the License.
  */
 
-import grails.plugin.formfields.BeanPropertyAccessorFactory
 import org.codehaus.groovy.grails.validation.ConstraintsEvaluator
 
 class FieldsGrailsPlugin {
 
-	def version = '1.5-SNAPSHOT'
-	def grailsVersion = '2.0 > *'
+	def grailsVersion = '3.0 > *'
 	def dependsOn = [:]
 	def pluginExcludes = []
 

@@ -1,0 +1,100 @@
+ext {
+  grailsVersion = "3.0.0.BUILD-SNAPSHOT"
+}
+
+buildscript {
+    ext {
+      grailsVersion = "3.0.0.BUILD-SNAPSHOT"
+    }
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "http://repo.grails.org/grails/core" }
+        maven { url "http://repo.spring.io/libs-release" }
+    }
+    dependencies {
+        classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+    }
+}
+
+version "0.1-SNAPSHOT"
+group "org.grails.plugins"
+
+apply plugin: "grails-plugin"
+apply plugin: "maven"
+apply plugin: 'maven-publish'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+  maven { url "http://repo.grails.org/grails/core" }
+}
+
+configurations {
+  provided
+}
+
+dependencies {
+  provided "org.grails:grails-dependencies:$grailsVersion"
+  provided "org.grails:grails-web-boot:$grailsVersion"
+  provided "org.grails:grails-dependencies:$grailsVersion"
+  provided 'javax.servlet:javax.servlet-api:3.1.0'
+
+  testCompile "org.grails:grails-plugin-testing:$grailsVersion"
+}
+
+sourceSets {
+    main {
+        compileClasspath += files(configurations.provided)
+    }
+    test {
+        compileClasspath += files(configurations.provided)
+        runtimeClasspath += files(configurations.provided)
+    }
+}
+
+eclipse {
+    classpath {
+        plusConfigurations += [configurations.provided]
+    }
+}
+
+idea {
+    module {
+        scopes.PROVIDED.plus += [configurations.provided]
+    }
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId project.name
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+
+    repositories {
+        maven {
+            credentials {
+                username project.properties.get('grailsPluginsUsername')
+                password project.properties.get('grailsPluginsPassword')
+            }
+            url "https://repo.grails.org/grails/libs-snapshots-local/"
+        }
+    }
+}

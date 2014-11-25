@@ -24,6 +24,8 @@ import grails.core.GrailsDomainClassProperty
 import grails.core.support.GrailsApplicationAware
 
 import org.grails.buffer.FastStringWriter
+import org.grails.datastore.gorm.config.GrailsDomainClassPersistentProperty
+import org.grails.validation.DomainClassPropertyComparator
 import org.grails.web.pages.GroovyPage
 
 import static FormFieldsTemplateService.toPropertyNameFormat
@@ -151,21 +153,62 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		out << renderWidget(propertyAccessor, model, attrs)
 	}
 
+	/**
+	 * Renders a collection of beans in a table
+	 *
+	 * @attr collection REQUIRED The collection of beans to render
+	 */
+	def table = { attrs, body ->
+		def collection = resolveBean(attrs.remove('collection'))
+		def domainClass = (collection instanceof Collection) && collection ? resolveDomainClass(collection.iterator().next()) : null
+		if(domainClass) {
+			def properties = domainClass.persistentProperties.sort(new DomainClassPropertyComparator(domainClass))
+			if(properties.size()>6) {
+				properties = properties[0..6]
+			}
+			out << render(template: "/templates/_fields/table", model:[domainClass: domainClass, domainProperties: properties, collection: collection])
+		}
+	}
+
+	/**
+	 * Renders a bean or bean property in non editable form for display on the page
+	 *
+	 * @attr bean REQUIRED Name of the source bean in the GSP model
+	 * @attr property OPTIONAL The name of the property to display
+	 */
 	def display = { attrs, body ->
 		def bean = resolveBean(attrs.remove('bean'))
 		if (!bean) throwTagError("Tag [display] is missing required attribute [bean]")
-		if (!attrs.property) throwTagError("Tag [display] is missing required attribute [property]")
+		def prefix = resolvePrefix(attrs.prefix)
 
 		def property = attrs.remove('property')
 
-		def propertyAccessor = resolveProperty(bean, property)
-		def model = buildModel(propertyAccessor, attrs)
-
-		if (hasBody(body)) {
-			model.value = body(model)
+		if(property == null) {
+			GrailsDomainClass domainClass = resolveDomainClass(bean)
+			if(domainClass) {
+				def properties = domainClass.persistentProperties.sort(new DomainClassPropertyComparator(domainClass))
+				out << render(template: "/templates/_fields/list", model:[domainClass:domainClass, domainProperties: properties]) { prop ->
+					def propertyAccessor = resolveProperty(bean, prop.name)
+					def model = buildModel(propertyAccessor, attrs)
+					if(prop.isAssociation()) {
+						// TODO: Support associations, embedded etc.
+					}
+					else {
+						out << renderForDisplay(propertyAccessor, model, attrs)
+					}
+				}
+			}
 		}
+		else {
+			def propertyAccessor = resolveProperty(bean, property)
+			def model = buildModel(propertyAccessor, attrs)
 
-		out << renderForDisplay(propertyAccessor, model, attrs)
+			if (hasBody(body)) {
+				model.value = body(model)
+			}
+
+			out << renderForDisplay(propertyAccessor, model, attrs)
+		}
 	}
 
 	private void renderEmbeddedProperties(bean, BeanPropertyAccessor propertyAccessor, attrs) {
@@ -207,6 +250,21 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			render template: template.path, plugin: template.plugin, model: model + [attrs: attrs] + attrs
 		} else {
 			renderDefaultInput model, attrs
+		}
+	}
+
+	private CharSequence renderDisplayBean(BeanPropertyAccessor propertyAccessor, String style, CharSequence body) {
+		def template = formFieldsTemplateService.findTemplate(propertyAccessor, "display-$style")
+		if (template) {
+
+		}
+		else {
+			if("table".equalsIgnoreCase(style)) {
+				// TODO: implement
+			}
+			else {
+
+			}
 		}
 	}
 
@@ -266,7 +324,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		properties.removeAll { !it.domainClass.constrainedProperties[it.name]?.display }
         properties.removeAll { it.derived }
 
-		Collections.sort(properties, new DomainClassPropertyComparator(domainClass))
+		Collections.sort(properties, new org.grails.validation.DomainClassPropertyComparator(domainClass))
 		properties
 	}
 

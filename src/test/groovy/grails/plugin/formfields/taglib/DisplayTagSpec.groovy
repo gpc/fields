@@ -1,11 +1,14 @@
 package grails.plugin.formfields.taglib
 
+import grails.plugin.formfields.mock.Person
+import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
 import spock.lang.Issue
 import grails.plugin.formfields.*
 
 @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/45')
 @TestFor(FormFieldsTagLib)
+@Mock(Person)
 class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
 
 	def mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
@@ -19,6 +22,17 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
 
 		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 	}
+
+	void 'renders all properties as list'() {
+		when:"A list is rendered"
+			def result = applyTemplate('<f:display bean="personInstance" />', [personInstance: personInstance])
+
+		then:"The result is a list"
+			result.contains '<ol class="property-list person">'
+			result.contains '<span id="gender-label" class="property-label">Gender</span>'
+			result.contains '<span class="property-value" aria-labelledby="gender-label">Male</span>'
+	}
+
 
 	void 'renders value using g:fieldValue if no template is present'() {
 		expect:

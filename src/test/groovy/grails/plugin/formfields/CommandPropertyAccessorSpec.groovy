@@ -1,10 +1,10 @@
 package grails.plugin.formfields
 
+import grails.core.support.proxy.DefaultProxyHandler
 import grails.test.mixin.web.ControllerUnitTestMixin
-import org.codehaus.groovy.grails.support.proxy.DefaultProxyHandler
-import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
 import grails.plugin.formfields.mock.*
 import grails.test.mixin.*
+import org.grails.validation.DefaultConstraintEvaluator
 import spock.lang.*
 
 @TestMixin(ControllerUnitTestMixin)

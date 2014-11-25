@@ -1,9 +1,11 @@
 package grails.plugin.formfields
 
+import grails.core.GrailsDomainClass
+import grails.core.GrailsDomainClassProperty
 import grails.plugin.formfields.mock.Person
 import grails.util.Environment
 import grails.test.mixin.*
-import org.codehaus.groovy.grails.commons.*
+import org.grails.core.DefaultGrailsDomainClass
 import spock.lang.*
 import java.sql.Blob
 

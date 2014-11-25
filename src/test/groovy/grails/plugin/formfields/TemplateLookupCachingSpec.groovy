@@ -1,12 +1,13 @@
 package grails.plugin.formfields
 
+import grails.core.support.proxy.DefaultProxyHandler
 import grails.plugin.formfields.mock.Person
 import grails.test.mixin.TestMixin
 import grails.test.mixin.support.GrailsUnitTestMixin
-import org.codehaus.groovy.grails.support.proxy.DefaultProxyHandler
-import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
+import org.grails.validation.DefaultConstraintEvaluator
+import org.grails.web.pages.discovery.GrailsConventionGroovyPageLocator
+import org.grails.web.pages.discovery.GroovyPageResourceScriptSource
 import org.springframework.core.io.ByteArrayResource
-import org.codehaus.groovy.grails.web.pages.discovery.*
 import spock.lang.*
 
 @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/5')

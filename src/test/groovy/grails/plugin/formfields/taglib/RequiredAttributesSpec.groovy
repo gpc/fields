@@ -1,9 +1,9 @@
 package grails.plugin.formfields.taglib
 
 import grails.plugin.formfields.mock.Person
-import org.codehaus.groovy.grails.web.taglib.exceptions.GrailsTagException
 import grails.plugin.formfields.*
 import grails.test.mixin.*
+import org.grails.web.taglib.exceptions.GrailsTagException
 
 @TestFor(FormFieldsTagLib)
 @Mock(Person)

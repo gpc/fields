@@ -1,8 +1,8 @@
 package grails.plugin.formfields.taglib
 
+import grails.core.support.proxy.DefaultProxyHandler
 import grails.plugin.formfields.BeanPropertyAccessorFactory
-import org.codehaus.groovy.grails.support.proxy.DefaultProxyHandler
-import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
+import org.grails.validation.DefaultConstraintEvaluator
 import spock.lang.Specification
 import grails.plugin.formfields.mock.*
 

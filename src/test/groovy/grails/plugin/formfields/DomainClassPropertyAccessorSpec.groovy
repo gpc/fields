@@ -1,8 +1,8 @@
 package grails.plugin.formfields
 
+import grails.core.support.proxy.DefaultProxyHandler
 import grails.test.mixin.web.ControllerUnitTestMixin
-import org.codehaus.groovy.grails.support.proxy.DefaultProxyHandler
-import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
+import org.grails.validation.DefaultConstraintEvaluator
 import org.springframework.beans.NotReadablePropertyException
 import grails.plugin.formfields.mock.*
 import grails.test.mixin.*
@@ -345,7 +345,10 @@ class DomainClassPropertyAccessorSpec extends Specification {
 	def 'the superclasses of #type.simpleName are #expected'() {
 		given:
 		def propertyAccessor = factory.accessorFor(type.newInstance(), path)
-		def beanSuperClasses = propertyAccessor.beanSuperclasses.findAll { it.simpleName != 'DirtyCheckable' }
+		def beanSuperClasses = propertyAccessor.beanSuperclasses
+								.findAll { it.simpleName != 'DirtyCheckable' &&
+										   it.simpleName != 'DomainClass' &&
+		                                   it.simpleName != 'WebDataBinding'}
 
 		expect:
 		beanSuperClasses == expected

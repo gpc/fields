@@ -19,7 +19,9 @@ class FieldNamePrefixSpec extends AbstractFormFieldsTagLibSpec {
 	def setup() {
 		def taglib = applicationContext.getBean(FormFieldsTagLib)
 
-		mockFormFieldsTemplateService.findTemplate(_, 'field') >> [path: '/_fields/default/field']
+		views["/_fields/_layouts/_noLayout.gsp"] = '${raw(renderedField)}'
+		mockFormFieldsTemplateService.findTemplate(_, 'field', null) >> [path: '/_fields/default/field']
+		mockFormFieldsTemplateService.findTemplateByPath(_) >> null
 		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 
 		mockEmbeddedSitemeshLayout(taglib)
@@ -31,7 +33,7 @@ class FieldNamePrefixSpec extends AbstractFormFieldsTagLibSpec {
 		views["/_fields/person/name/_input.gsp"] = '${prefix}${property}'
 
 		and:
-		mockFormFieldsTemplateService.findTemplate(_, 'input') >> [path: '/_fields/person/name/input']
+		mockFormFieldsTemplateService.findTemplate(_, 'input', null) >> [path: '/_fields/person/name/input']
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name" prefix="foo"/>', [personInstance: personInstance]) == 'foo.name'

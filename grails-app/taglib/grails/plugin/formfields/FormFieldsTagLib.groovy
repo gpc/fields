@@ -26,7 +26,7 @@ import grails.core.support.GrailsApplicationAware
 import org.grails.buffer.FastStringWriter
 import org.grails.datastore.gorm.config.GrailsDomainClassPersistentProperty
 import org.grails.validation.DomainClassPropertyComparator
-import org.grails.web.pages.GroovyPage
+import org.grails.gsp.GroovyPage
 
 import static FormFieldsTemplateService.toPropertyNameFormat
 import static grails.util.GrailsClassUtils.getStaticPropertyValue

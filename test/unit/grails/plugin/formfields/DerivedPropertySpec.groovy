@@ -22,7 +22,6 @@ class DerivedPropertySpec extends AbstractFormFieldsTagLibSpec {
 
         views["/_fields/_layouts/_noLayout.gsp"] = '${raw(renderedField)}'
         mockFormFieldsTemplateService.findTemplate(_, 'field', null) >> [path: '/_fields/default/field']
-        mockFormFieldsTemplateService.findTemplateByPath(_) >> null
         taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 
         // @Mock isn't aware of formulae so we need to set this manually

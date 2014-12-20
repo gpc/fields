@@ -130,8 +130,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 				model.renderedField = renderForField(propertyAccessor, model, component, [attrs: fieldAttrs] + fieldAttrs)
 			}
 
-            def layout = getLayout(attrs)
-            out << renderLayout(layout, 'field', model + fieldAttrs)
+            out << renderLayout(propertyAccessor, component, model + fieldAttrs, attrs)
 		}
 	}
 
@@ -139,22 +138,15 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		String layout = attrs.remove('layout')
 		if(!layout)
 			layout = pageScope.variables['layout']
-		if(!layout){
-			def defaultLayoutConfig = grailsApplication.config.grails.fields.defaultLayout
-			if(defaultLayoutConfig)
-				layout = defaultLayoutConfig[0]
-		}
 		return layout
 	}
 
-    private void renderLayout(layout, templateName, model){
-		if(layout){
-			def layoutTemplatePath = "/_fields/_layouts/$layout/$templateName"
-			def layoutTemplate = formFieldsTemplateService.findTemplateByPath(layoutTemplatePath)
-			if (layoutTemplate){
-				out << render(template: layoutTemplate.path, plugin: layoutTemplate.plugin, model: model)
-				return
-			}
+    private void renderLayout(BeanPropertyAccessor propertyAccessor, String component, Map model, Map attrs){
+		def layout = getLayout(attrs)
+		def layoutTemplate = formFieldsTemplateService.findLayout(propertyAccessor, component, layout)
+		if (layoutTemplate){
+			out << render(template: layoutTemplate.path, plugin: layoutTemplate.plugin, model: model)
+			return
 		}
 		out << render(template: "/_fields/_layouts/noLayout", contextPath: pluginContextPath, model: model)
     }
@@ -198,8 +190,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			model.renderedField = model.widget
         }
 
-        def layout = getLayout(attrs)
-        out << renderLayout(layout, 'display', model + attrs)
+        out << renderLayout(propertyAccessor, component, model + attrs, attrs)
 	}
 
 	private void renderEmbeddedProperties(bean, BeanPropertyAccessor propertyAccessor, attrs) {

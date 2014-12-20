@@ -21,7 +21,6 @@ class FieldTagWithBodySpec extends AbstractFormFieldsTagLibSpec {
 
         views["/_fields/_layouts/_noLayout.gsp"] = '${raw(renderedField)}'
         mockFormFieldsTemplateService.findTemplate(_, 'field', null) >> [path: '/_fields/default/field']
-        mockFormFieldsTemplateService.findTemplateByPath(_) >> null
 		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 	}
 

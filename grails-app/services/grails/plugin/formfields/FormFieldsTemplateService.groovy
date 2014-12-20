@@ -40,17 +40,29 @@ class FormFieldsTemplateService {
         findTemplateCached.call(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, componentName)
     }
 
-    Map findTemplateByPath(String path) {
-        findTemplateByPathCached.call(path)
+    Map findLayout(BeanPropertyAccessor propertyAccessor, String componentName, String layoutTemplatePath) {
+        findLayoutCached.call(propertyAccessor, controllerNamespace, controllerName, actionName, componentName, layoutTemplatePath)
     }
 
     private
     final Closure findTemplateCached = shouldCache() ? this.&findTemplateCacheable.memoize() : this.&findTemplateCacheable
     private
+    final Closure findLayoutCached = shouldCache() ? this.&findLayoutCacheable.memoize() : this.&findLayoutCacheable
+    private
     final Closure findTemplateByPathCached = shouldCache() ? this.&findTemplateByPathCacheable.memoize() : this.&findTemplateByPathCacheable
 
     private Map findTemplateCacheable(BeanPropertyAccessor propertyAccessor, String controllerNamespace, String controllerName, String actionName, String templateName, String componentName) {
         def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, componentName)
+
+        candidatePaths.findResult { path ->
+            return findTemplateByPathCached.call(path)
+        }
+    }
+
+    private Map findLayoutCacheable(BeanPropertyAccessor propertyAccessor, String controllerNamespace, String controllerName, String actionName, String componentName, String layout) {
+        def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, "layout", componentName)
+        if(layout)
+            candidatePaths.add(0, "/_fields/_layouts/$layout")
 
         candidatePaths.findResult { path ->
             return findTemplateByPathCached.call(path)
@@ -86,7 +98,7 @@ class FormFieldsTemplateService {
         def templateResolveOrder = []
 
         //if there is a component name then takes priority
-        if(componentName != "")
+        if(componentName)
             templateResolveOrder << appendPiecesForUri("/_fields/_components", componentName, templateName)
 
         // if there is a controller namespace for the current request any template in its views directory takes priority

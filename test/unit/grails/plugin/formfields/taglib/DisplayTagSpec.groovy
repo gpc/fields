@@ -18,7 +18,6 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
 		def taglib = applicationContext.getBean(FormFieldsTagLib)
 		views["/_fields/_layouts/_noLayout.gsp"] = '${raw(renderedField)}'
 		mockFormFieldsTemplateService.findTemplate(_, 'field', null) >> null
-		mockFormFieldsTemplateService.findTemplateByPath(_) >> null
 		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 	}
 

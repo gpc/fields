@@ -17,7 +17,8 @@ class FieldTagWithoutBeanSpec extends AbstractFormFieldsTagLibSpec {
 	def setup() {
 		def taglib = applicationContext.getBean(FormFieldsTagLib)
 
-		mockFormFieldsTemplateService.findTemplate(_, 'field') >> [path: '/_fields/default/field']
+		views["/_fields/_layouts/_noLayout.gsp"] = '${raw(renderedField)}'
+		mockFormFieldsTemplateService.findTemplate(_, 'field', null) >> [path: '/_fields/default/field']
 		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 	}
 

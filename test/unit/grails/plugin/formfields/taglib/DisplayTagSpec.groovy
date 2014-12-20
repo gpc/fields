@@ -16,7 +16,8 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
 
 	def setup() {
 		def taglib = applicationContext.getBean(FormFieldsTagLib)
-
+		views["/_fields/_layouts/_noLayout.gsp"] = '${raw(renderedField)}'
+		mockFormFieldsTemplateService.findTemplate(_, 'field', null) >> null
 		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 	}
 
@@ -43,7 +44,7 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
 		views["/_fields/default/_display.gsp"] = '<dt>${label}</dt><dd>${value}</dd>'
 
 		and:
-		mockFormFieldsTemplateService.findTemplate(_, 'display') >> [path: '/_fields/default/display']
+		mockFormFieldsTemplateService.findTemplate(_, 'display', null) >> [path: '/_fields/default/display']
 
 		expect:
 		applyTemplate('<f:display bean="personInstance" property="name"/>', [personInstance: personInstance]) == '<dt>Name</dt><dd>Bart Simpson</dd>'
@@ -55,7 +56,7 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
 		views["/_fields/default/_display.gsp"] = '<dt>${label}</dt><dd>${value}</dd>'
 
 		and:
-		mockFormFieldsTemplateService.findTemplate(_, 'display') >> [path: '/_fields/default/display']
+		mockFormFieldsTemplateService.findTemplate(_, 'display', null) >> [path: '/_fields/default/display']
 
 		expect:
 		applyTemplate('<f:display bean="personInstance" property="name">${value.reverse()}</f:display>', [personInstance: personInstance]) == '<dt>Name</dt><dd>nospmiS traB</dd>'
@@ -67,7 +68,7 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
         views["/_fields/default/_display.gsp"] = '<dt>${label}</dt><dd>${value}</dd>'
 
         and:
-        mockFormFieldsTemplateService.findTemplate(_, 'display') >> [path: '/_fields/default/display']
+        mockFormFieldsTemplateService.findTemplate(_, 'display', null) >> [path: '/_fields/default/display']
 
         expect:
         def expectedDisplayedPrice = productInstance.netPrice.round(1)

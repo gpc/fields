@@ -1,16 +1,13 @@
 language: groovy
 jdk:
-  - oraclejdk7
-branches:
-  only:
-    - master
+- openjdk7
+before_script:
+- rm -rf target
+script: "./travis-build.sh"
 env:
   global:
-    - TERM=dumb
-  matrix:
-    - GRAILS_VERSION=2.4.4
-    - GRAILS_VERSION=2.3.11
-    - GRAILS_VERSION=2.2.5
-matrix:
-  fast_finish: false
-script: ./travis-build.sh
+  - GIT_NAME="Lari Hotari"
+  - GIT_EMAIL="lari@hotari.net"
+  - secure: h9Iujsq2khAd0WjqhF+9Hart01mA/E03K2w51lMr4i6aOXUvqF99npzlib/tG4NZlV8pocOKF7ICwx6r3vXc+D2xu4wfyGwPw0+RlwivZBaqeavMmFepVoUW3GBud7LFcmlCX8Br+YbDejXqFv8TgCJwG3X/fEqgRfdurSPwxr4=
+  - secure: lDqlh/DbkXHjQkwIjK8MHyc7RIF8BAHaWsqAlc/NiIw/8saY33OYyqh3hnQWkjwdMrzLuy755P5mSZt35Cc54BXXh9hQNhbnQNGJbt85PmmbI7vhqiA0WUatRAb3ZvN52YMsQt/KvYCs3rLn7yJ3jmfGXoLhzVzrOB77XWsxagY=
+  - secure: l0Ip7R//w4SjZY+rgLKG9xgF8v1+DE5oK2TxljdNM6IZ52D3XF9T4V/yjhRpU86ayb49a8HpL9HYk7a+Cm0zybSSBDlsw+OYrVMjqdEqPti4o2eERgARgW3CL57Lt5kizK7b4DqsMPWqKJrb/2VKK/wGx7sG7zYs/6EPb1dSSxo=

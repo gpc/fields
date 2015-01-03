@@ -20,7 +20,7 @@ import grails.util.GrailsNameUtils
 import grails.core.GrailsApplication
 import grails.plugins.GrailsPluginManager
 import grails.validation.ConstrainedProperty
-import org.grails.gsp.io.GrailsConventionGroovyPageLocator
+import org.grails.web.gsp.io.GrailsConventionGroovyPageLocator
 import org.grails.web.servlet.mvc.GrailsWebRequest
 import org.grails.web.util.GrailsApplicationAttributes
 import org.springframework.web.context.request.RequestAttributes

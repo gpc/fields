@@ -348,7 +348,8 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		def beanSuperClasses = propertyAccessor.beanSuperclasses
 								.findAll { it.simpleName != 'DirtyCheckable' &&
 										   it.simpleName != 'DomainClass' &&
-		                                   it.simpleName != 'WebDataBinding'}
+										   it.simpleName != 'WebDataBinding' &&
+										   it.simpleName != 'StaticQueryMethods'}
 
 		expect:
 		beanSuperClasses == expected

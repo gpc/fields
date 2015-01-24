@@ -39,8 +39,16 @@ class WithTagSpec extends AbstractFormFieldsTagLibSpec {
 
 	void 'scoped bean attribute does not linger around after f:with tag'() {
 		expect:
-		applyTemplate('<f:with bean="personInstance">${pageScope.getVariable("f:with:bean")}</f:with>${pageScope.getVariable("f:with:bean")}', [personInstance: personInstance]) == 'Bart Simpson'
+		applyTemplate('<f:with bean="personInstance">${pageScope.getVariable("f:with:stack")}</f:with>${pageScope.getVariable("f:with:stack")}', [personInstance: personInstance]) == 'Bart Simpson'
 	}
+
+    void 'scoped beans can be nested'() {
+        given:
+        views['/_fields/default/_field.gsp'] = '${value} '
+
+        expect:
+        applyTemplate('<f:with bean="productInstance"><f:field property="netPrice"/><f:with bean="personInstance"><f:field property="name"/></f:with></f:with>', [personInstance: personInstance, productInstance: productInstance]) == '12.33 Bart Simpson '
+    }
 
     void 'embedded attributes work if in scope from f:with'() {
         given:

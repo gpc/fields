@@ -32,14 +32,39 @@ import java.sql.Blob
 class FormFieldsTagLib implements GrailsApplicationAware {
 
 	static final namespace = 'f'
-	static final String BEAN_PAGE_SCOPE_VARIABLE = 'f:with:bean'
-	static final String PREFIX_PAGE_SCOPE_VARIABLE = 'f:with:prefix'
+    static final String STACK_PAGE_SCOPE_VARIABLE = 'f:with:stack'
 
 	FormFieldsTemplateService formFieldsTemplateService
 	GrailsApplication grailsApplication
 	BeanPropertyAccessorFactory beanPropertyAccessorFactory
-	
+
 	static defaultEncodeAs = [taglib:'raw']
+
+    class BeanAndPrefix {
+        Object bean
+        String prefix
+    }
+
+    class BeanAndPrefixStack extends Stack<BeanAndPrefix> {
+        Object getBean() {
+            empty() ? null : peek().bean
+        }
+
+        String getPrefix() {
+            empty() ? null : peek().prefix
+        }
+
+        String toString() {
+            bean?.toString() ?: ''
+        }
+    }
+
+    BeanAndPrefixStack getBeanStack() {
+        if (!pageScope.hasVariable(STACK_PAGE_SCOPE_VARIABLE)) {
+            pageScope.setVariable(STACK_PAGE_SCOPE_VARIABLE, new BeanAndPrefixStack())
+        }
+        pageScope.variables[STACK_PAGE_SCOPE_VARIABLE]
+    }
 
 	/**
 	 * @attr bean REQUIRED Name of the source bean in the GSP model.
@@ -47,15 +72,12 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	 */
 	def with = { attrs, body ->
 		if (!attrs.bean) throwTagError("Tag [with] is missing required attribute [bean]")
-		def bean = resolveBean(attrs.bean)
-		def prefix = resolvePrefix(attrs.prefix)
+        BeanAndPrefix beanPrefix = resolveBeanAndPrefix(attrs.bean, attrs.prefix)
 		try {
-			pageScope.variables[BEAN_PAGE_SCOPE_VARIABLE] = bean
-			pageScope.variables[PREFIX_PAGE_SCOPE_VARIABLE] = prefix
+            beanStack.push(beanPrefix)
 			out << body()
 		} finally {
-			pageScope.variables.remove(BEAN_PAGE_SCOPE_VARIABLE)
-			pageScope.variables.remove(PREFIX_PAGE_SCOPE_VARIABLE)
+            beanStack.pop()
 		}
 	}
 
@@ -219,25 +241,23 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 	}
 
+    private resolvePageScopeVariable(attributeName) {
+        // Tomcat throws NPE if you query pageScope for null/empty values
+        attributeName ? pageScope.variables[attributeName] : null
+    }
+
+    private BeanAndPrefix resolveBeanAndPrefix(beanAttribute, prefixAttribute) {
+        def bean = resolvePageScopeVariable(beanAttribute) ?: beanAttribute
+        def prefix = resolvePageScopeVariable(prefixAttribute) ?: prefixAttribute
+        new BeanAndPrefix(bean: bean, prefix: prefix)
+    }
+
 	private Object resolveBean(beanAttribute) {
-		def bean = pageScope.variables[BEAN_PAGE_SCOPE_VARIABLE]
-		if (!bean) {
-			// Tomcat throws NPE if you query pageScope for null/empty values
-			if (beanAttribute.toString()) {
-				bean = pageScope.variables[beanAttribute]
-			}
-		}
-		if (!bean) bean = beanAttribute
-		bean
+        resolvePageScopeVariable(beanAttribute) ?: beanAttribute ?: beanStack.bean
 	}
 
-	private String resolvePrefix(prefixAttribute) {
-		def prefix = pageScope.variables[PREFIX_PAGE_SCOPE_VARIABLE]
-		// Tomcat throws NPE if you query pageScope for null/empty values
-		if (prefixAttribute?.toString()) {
-			prefix = pageScope.variables[prefixAttribute]
-		}
-		if (!prefix) prefix = prefixAttribute
+    private String resolvePrefix(prefixAttribute) {
+        def prefix = resolvePageScopeVariable(prefixAttribute) ?: prefixAttribute ?: beanStack.prefix
 		if (prefix && !prefix.endsWith('.'))
 			prefix = prefix + '.'
 		prefix ?: ''
@@ -307,7 +327,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 				}
 			}
 			// TODO: encoding information of widget gets lost - don't use MarkupBuilder
-			mkp.yieldUnescaped model.widget 
+			mkp.yieldUnescaped model.widget
 		}
 		writer.buffer
 	}
@@ -466,5 +486,4 @@ class FormFieldsTagLib implements GrailsApplicationAware {
     private boolean isEditable(constraints) {
         !constraints || constraints.editable
     }
-
 }

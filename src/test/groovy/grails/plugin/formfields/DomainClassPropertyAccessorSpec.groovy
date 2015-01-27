@@ -349,7 +349,11 @@ class DomainClassPropertyAccessorSpec extends Specification {
 								.findAll { it.simpleName != 'DirtyCheckable' &&
 										   it.simpleName != 'DomainClass' &&
 										   it.simpleName != 'WebDataBinding' &&
+										   it.simpleName != 'GormEntity' &&
+										   it.simpleName != 'GormValidateable' &&
+										   !it.simpleName.contains('$') &&									   										   
 										   it.simpleName != 'StaticQueryMethods'}
+
 
 		expect:
 		beanSuperClasses == expected

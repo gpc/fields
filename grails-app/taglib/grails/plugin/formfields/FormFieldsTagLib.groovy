@@ -56,6 +56,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			pageScope.variables[PREFIX_PAGE_SCOPE_VARIABLE] = prefix
 			out << body()
 		} finally {
+			pageScope.variables.remove('layout')
 			pageScope.variables.remove(BEAN_PAGE_SCOPE_VARIABLE)
 			pageScope.variables.remove(PREFIX_PAGE_SCOPE_VARIABLE)
 		}
@@ -78,6 +79,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			for (property in resolvePersistentProperties(domainClass, attrs)) {
 				out << field(bean: bean, property: property.name, prefix: prefix)
 			}
+			pageScope.variables.remove('layout')
 		} else {
 			throwTagError('Tag [all] currently only supports domain types')
 		}

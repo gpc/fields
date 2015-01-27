@@ -144,11 +144,10 @@ class FormFieldsTagLib implements GrailsApplicationAware {
     private void renderLayout(BeanPropertyAccessor propertyAccessor, String component, Map model, Map attrs){
 		def layout = getLayout(attrs)
 		def layoutTemplate = formFieldsTemplateService.findLayout(propertyAccessor, component, layout)
-		if (layoutTemplate){
+		if (layoutTemplate)
 			out << render(template: layoutTemplate.path, plugin: layoutTemplate.plugin, model: model)
-			return
-		}
-		out << render(template: "/_fields/_layouts/noLayout", contextPath: pluginContextPath, model: model)
+		else
+			out << render(template: "/_fields/_layouts/noLayout", contextPath: pluginContextPath, model: model)
     }
 
 	/**

@@ -132,7 +132,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	/**
-	 * @attr bean REQUIRED Name of the source bean in the GSP model.
+	 * @attr bean Name of the source bean in the GSP model.
 	 * @attr property REQUIRED The name of the property to display. This is resolved
 	 * against the specified bean or the bean in the current scope.
 	 */
@@ -149,6 +149,11 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		out << renderWidget(propertyAccessor, model, attrs)
 	}
 
+	/**
+	 * @attr bean Name of the source bean in the GSP model.
+	 * @attr property REQUIRED The name of the property to display. This is resolved
+	 * against the specified bean or the bean in the current scope.
+	 */
 	def display = { attrs, body ->
 		def bean = resolveBean(attrs.remove('bean'))
 		if (!bean) throwTagError("Tag [display] is missing required attribute [bean]")

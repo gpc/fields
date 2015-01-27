@@ -6,6 +6,7 @@ rm -rf *.zip
 filename=$(find build/libs -name "*.jar" | head -1)
 filename=$(basename "$filename")
 
+EXIT_STATUS = 0
 if [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then
 
   echo "Publishing archives"
@@ -63,3 +64,5 @@ if [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then
     cd ..
     rm -rf gh-pages
 fi
+
+exit $EXIT_STATUS

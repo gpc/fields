@@ -35,6 +35,62 @@ Templates in plugins are resolved as well. This means plugins such as _Joda Time
 
 For most properties the out-of-the-box defaults should provide a good starting point.
 
+h2. Layout feature
+
+The plugin now finds one template for the component and one for the layout. In this way you can have the same component in different wrappers.
+
+The founded template for the property is going to be used in the layout's template which is found in the same way as the component's template does with the name '_layout.gsp'.
+
+i.e. the code for one layout:
+{code}
+<div class="myLayout">
+    <label>${label}</label>
+
+    ${raw(renderedField)}
+
+    <g:if test="${required}">
+        <span class="required-indicator">*</span>
+    </g:if>
+</div>
+{code}
+
+{note}
+You can specify a default layout in @_fields/_layouts/_default.gsp@. If none layout is founded then is going to render the component without a wrapper.
+{note}
+
+If you specify a layout's name then this is going to be search in: @_fields/_layouts/_layoutsName.gsp@.
+
+{code}
+<f:field bean="travel" property="startDate" layout="specialLayout"/>
+
+<f:with bean="person" layout="specialLayout">
+  <f:field property="name"/>
+  <f:field property="birthday"/>
+  <f:field property="gender" layout="layoutX"/>
+</f:with>
+{code}
+
+{note}
+name and birthday use specialLayout and gender use layoutX.
+{note}
+
+In this way your templates are much cleaner because you don't repeat yourself coding the same for the wrapper's code!.
+
+h2. Component feature
+It is possible to change the way some template is found if you specify the component attribute. In this way instead of looking the template in the traditional way is going to search in @_fields/_components/_componentAttribute.gsp@.
+This is very useful when you have a lot of controls of the same type that you want to show with a special control, for example different Strings with TimePickers.
+
+i.e.: (travel instance has a string property called startTime)
+{code}
+<f:field bean="travel" property="startTime" component="time"/>
+{code}
+
+{note}
+If the _component_ template is not found then is going to render the template in the traditional way.
+{note}
+
+In this way is much more easy to pick up the same template over and over without having to copy and paste these in different folders!.
+
 h2. Example
 
 Imagine an object of class _Employee_ that extends the class _Person_ and has a a String _name_ property.
@@ -78,6 +134,11 @@ and override the template _f:display_ uses with any of these:
 # @grails-app/views/\_fields/string/\_display.gsp@
 # @grails-app/views/\_fields/default/\_display.gsp@
 
+If you use the component attribute then is going to use:
+# @grails-app/views/\_fields/*\_components/componentName/*\_field.gsp@
+# @grails-app/views/\_fields/*\_components/componentName/*\_input.gsp@
+# @grails-app/views/\_fields/*\_components/componentName/*\_display.gsp@
+
 During template development it is usually recommended to disable template caching in order to allow the plugin to recognize new/renamed/moved templates without restarting the application. See the "Performance" section of the guide for the exact settings.
 
 h2. Default Behaviour - Using Grails Input Tags
@@ -113,6 +174,13 @@ In addition _f:field_ passes the following parameters:
 {table}
 *Name* | *Type* | *Description*
 *widget* | String | The output of _f:input_ for the current bean and property if _f:field_ was used without a tag body, otherwise the output of the tag body.
+{table}
+
+To use in the layout's template:
+
+{table}
+*Name* | *Type* | *Description*
+*renderedField* | String | The output of the component.
 {table}
 
 {note}

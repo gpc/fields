@@ -39,15 +39,6 @@ class FormFieldsTemplateServiceLayoutSpec extends Specification {
 		applicationContext.getBean("groovyPagesTemplateRenderer").clearCache()
 	}
 
-	void 'use no layout when no others exist'() {
-		given:
-		def property = factory.accessorFor(personInstance, 'name')
-
-		expect:
-		def template = service.findLayout(property, null, null)
-		template == null
-	}
-
 	void 'uses default layout when no others exist'() {
 		given:
 		views["/_fields/default/_layout.gsp"] = 'DEFAULT LAYOUT TEMPLATE'

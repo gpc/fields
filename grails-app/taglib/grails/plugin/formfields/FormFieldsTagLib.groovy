@@ -238,11 +238,10 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 	private CharSequence renderForField(BeanPropertyAccessor propertyAccessor, Map model, String componentName, Map attrs = [:]) {
 		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'field', componentName)
-		if (template) {
+		if (template)
 			render template: template.path, plugin: template.plugin, model: model + [attrs: attrs] + attrs
-		} else {
-			renderDefaultField model
-		}
+		else
+			return raw(model.widget)
 	}
 
 	private CharSequence renderForDisplay(BeanPropertyAccessor propertyAccessor, Map model, String componentName, Map attrs = [:]) {
@@ -329,24 +328,6 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			message(code: key, default: null) ?: null
 		}
 		message ?: defaultMessage
-	}
-
-	private CharSequence renderDefaultField(Map model) {
-		def classes = ['fieldcontain']
-		if (model.invalid) classes << 'error'
-		if (model.required) classes << 'required'
-
-		def writer = new FastStringWriter()
-		new MarkupBuilder(writer).div(class: classes.join(' ')) {
-			label(for: (model.prefix ?: '') + model.property, model.label) {
-				if (model.required) {
-					span(class: 'required-indicator', '*')
-				}
-			}
-			// TODO: encoding information of widget gets lost - don't use MarkupBuilder
-			mkp.yieldUnescaped model.widget 
-		}
-		writer.buffer
 	}
 
 	private CharSequence renderDefaultInput(Map model, Map attrs = [:]) {

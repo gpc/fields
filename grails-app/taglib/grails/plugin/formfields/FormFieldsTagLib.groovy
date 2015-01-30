@@ -248,7 +248,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
     private resolvePageScopeVariable(attributeName) {
         // Tomcat throws NPE if you query pageScope for null/empty values
-        attributeName ? pageScope.variables[attributeName] : null
+        attributeName?.toString() ? pageScope.variables[attributeName] : null
     }
 
     private BeanAndPrefix resolveBeanAndPrefix(beanAttribute, prefixAttribute) {

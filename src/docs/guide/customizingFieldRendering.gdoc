@@ -37,13 +37,14 @@ For most properties the out-of-the-box defaults should provide a good starting p
 
 h2. Layout feature
 
-The plugin now finds one template for the component and one for the layout. In this way you can have the same component in different wrappers.
+In previous version of this plugin all the templates contained a lot of repeated lines of code.
+The plugin now finds one template for the component and one for the layout. In this way you can render the same component in different wrappers and you don't have to write the same code on each template.
 
-The founded template for the property is going to be used in the layout's template which is found in the same way as the component's template does with the name '_layout.gsp'.
+The founded template for the property is going to be used in the layout's template which is found in the same way as the component's template (with the name '_layout.gsp').
 
-i.e. the code for one layout:
+i.e. the code for one layout (in: @person/_layout.gsp@):
 {code}
-<div class="myLayout">
+<div class="person-field">
     <label>${label}</label>
 
     ${raw(renderedField)}
@@ -55,7 +56,7 @@ i.e. the code for one layout:
 {code}
 
 {note}
-You can specify a default layout in @_fields/default/_layout.gsp@. If none layout is founded then is going to render the component without a wrapper.
+You can specify a default layout in @_fields/default/_layout.gsp@.
 {note}
 
 If you specify a layout's name then this is going to be search in: @_fields/_layouts/_layoutsName.gsp@.
@@ -74,16 +75,28 @@ If you specify a layout's name then this is going to be search in: @_fields/_lay
 name and birthday use specialLayout and gender use layoutX.
 {note}
 
-In this way your templates are much cleaner because you don't repeat yourself coding the same for the wrapper's code!.
+In this way your templates are much cleaner because you don't repeat yourself coding the same for the wrapper's code!. The layout's template renders the wrapper for the field's template.
+
+{note}
+If you don't want to change all your templates for using this feature you can create a default template who renders only the content of the field:
+{note}
+If that is the case then create this template in @_fields/_default/_layout.gsp@:
+{code}
+${raw(renderedField)}
+{code}
 
 h2. Component feature
-It is possible to change the way some template is found if you specify the component attribute. In this way instead of looking the template in the traditional way is going to search in @_fields/_components/_componentAttribute.gsp@.
+It is possible to change the way some templates are found if you specify the _component_ attribute. In this way instead of looking the template in the traditional way is going to search in @_fields/_components/_componentAttribute.gsp@.
 This is very useful when you have a lot of controls of the same type that you want to show with a special control, for example different Strings with TimePickers.
 
-i.e.: (travel instance has a string property called startTime)
+i.e.: if travel bean has two string properties called startTime and arrivalTime:
 {code}
-<f:field bean="travel" property="startTime" component="time"/>
+<f:with bean="travel">
+    <f:field property="startTime" component="time"/>
+    <f:field property="arrivalTime" component="time"/>
+</f:with>
 {code}
+this will render the templates located in @_fields/_components/time/@
 
 {note}
 If the _component_ template is not found then is going to render the template in the traditional way.

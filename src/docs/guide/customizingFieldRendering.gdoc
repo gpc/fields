@@ -1,5 +1,12 @@
-The plugin resolves the GSP template used for each property according to conventions. You can override the rendering based on the class and property name or the property type. The _f:field_ tag looks for a template called @\_field.gsp@, the _f:input_ tag looks for a template called @\_input.gsp@ and the _f:display_ tag looks for a template called @\_display.gsp@. All the tags will look in the following locations in decreasing order of preference:
+The plugin resolves the GSP template used for each property according to conventions. You can override the rendering based on the class and property name or the property type. The _f:field_ tag looks for a template called @\_field.gsp@, the _f:input_ tag looks for a template called @\_input.gsp@ and the _f:display_ tag looks for a template called @\_display.gsp@. 
 
+Since version 1.5: 
+* You can add a template called @\_layout.gsp@ that contains the code that wraps/decorate the control itself (defined in @\_field.gsp@ or @\_display.gsp@, @\_input.gsp@ won't use this layout). See the "Layout feature" section below for more details.
+* You can define component templates and reuse them between different fields, so you don't have to copy the same template in different folders. See the "Component feature" section below for more details.
+
+All the tags will look in the following locations in decreasing order of preference:
+
+# @grails-app/views/\_components/*componentName*/@
 # @grails-app/views/*controllerName*/*actionName*/*propertyName*/@
 # @grails-app/views/*controllerName*/*actionName*/*propertyType*/@
 # @grails-app/views/*controllerName*/*actionName*/@
@@ -17,6 +24,7 @@ The variables referenced in these paths are:
 
 {table}
 *Name* | *Description*
+*componentName* | The name of the component (declared as an attribute inside your views).
 *controllerName* | The name of the current controller (if any).
 *actionName* | The name of the current action (if any).
 *class* | The bean class. For simple properties this is the class of the object passed to the _bean_ attribute of the _f:field_ or _f:input_ tag but when the _property_ attribute was nested this is the class at the end of the chain. For example, if the property path was _employees\[0\].address.street_ this will be the class of _address_.
@@ -37,30 +45,48 @@ For most properties the out-of-the-box defaults should provide a good starting p
 
 h2. Layout feature
 
-In previous version of this plugin all the templates contained a lot of repeated lines of code.
-The plugin now finds one template for the component and one for the layout. In this way you can render the same component in different wrappers and you don't have to write the same code on each template.
+In previous versions of this plugin all the templates contained a lot of repeated code.
+You can now define one template for the control itself and another one for the layout. This way you can render the same control with different wrappers and you don't have to repeat the same code in each template.
 
-The founded template for the property is going to be used in the layout's template which is found in the same way as the component's template (with the name '_layout.gsp').
+In previous versions you would have something like this:
 
-i.e. the code for one layout (in: @person/_layout.gsp@):
 {code}
 <div class="person-field">
     <label>${label}</label>
 
+    <input type="text" name="${prefix}${property}" value="${value}"/>
+
+    <g:if test="${required}"> <span class="required-indicator">*</span> </g:if>
+</div>
+{code}
+
+Now you can separate the layout and the control itself, for example:
+
+Layout template:
+
+{code}
+<div>
+    <label>${label}</label>
+
     ${raw(renderedField)}
 
-    <g:if test="${required}">
-        <span class="required-indicator">*</span>
-    </g:if>
+    <g:if test="${required}"> <span class="required-indicator">*</span> </g:if>
 </div>
+{code}
+
+Control template:
+
+{code}
+<input type="text" name="${prefix}${property}" value="${value}"/>
 {code}
 
 {note}
 You can specify a default layout in @_fields/default/_layout.gsp@.
 {note}
 
-If you specify a layout's name then this is going to be search in: @_fields/_layouts/_layoutsName.gsp@.
+If you specify a layout name then this will be searched in: @_fields/_layouts/_layoutsName.gsp@.
 
+Example:
 {code}
 <f:field bean="travel" property="startDate" layout="specialLayout"/>
 
@@ -72,44 +98,43 @@ If you specify a layout's name then this is going to be search in: @_fields/_lay
 {code}
 
 {note}
-name and birthday use specialLayout and gender use layoutX.
+The @name@ and @birthday@ properties will use @specialLayout@ and the @gender@ property will use @layoutX@.
 {note}
 
-In this way your templates are much cleaner because you don't repeat yourself coding the same for the wrapper's code!. The layout's template renders the wrapper for the field's template.
+This way your templates are much cleaner because you don't have to repeat the wrapper code in every control template! The layout template renders the wrapper for the control template.
 
 {note}
-If you don't want to change all your templates for using this feature you can create a default template who renders only the content of the field:
+If you don't want to change all your existing templates to use this feature, you can create a default template that renders only the content of the field. Create this template in @_fields/_default/_layout.gsp@:
+{code}${raw(renderedField)}{code}
 {note}
-If that is the case then create this template in @_fields/_default/_layout.gsp@:
-{code}
-${raw(renderedField)}
-{code}
 
 h2. Component feature
-It is possible to change the way some templates are found if you specify the _component_ attribute. In this way instead of looking the template in the traditional way is going to search in @_fields/_components/_componentAttribute.gsp@.
-This is very useful when you have a lot of controls of the same type that you want to show with a special control, for example different Strings with TimePickers.
+You can specify which template to use with the _component_ attribute. 
+This is very useful when you want to use the same control in different scenarios.
+The template will be searched in @_fields/_components/_componentAttribute.gsp@.
 
-i.e.: if travel bean has two string properties called startTime and arrivalTime:
+For example, if a "travel" bean has two Date properties called startTime and arrivalTime:
 {code}
 <f:with bean="travel">
     <f:field property="startTime" component="time"/>
     <f:field property="arrivalTime" component="time"/>
 </f:with>
 {code}
-this will render the templates located in @_fields/_components/time/@
+This will render the templates located in @_fields/_components/time/@.
 
 {note}
-If the _component_ template is not found then is going to render the template in the traditional way.
+If the _component_ template is not found then it will render the template in the traditional way.
 {note}
 
-In this way is much more easy to pick up the same template over and over without having to copy and paste these in different folders!.
+This makes it much easier to use the same template over and over without having to copy and paste it in different folders!
 
 h2. Example
 
-Imagine an object of class _Employee_ that extends the class _Person_ and has a a String _name_ property.
+Imagine an object of class _Employee_ that extends the class _Person_ and has a String _name_ property.
 
 You can override the template _f:field_ uses with any of these:
 
+# @grails-app/views/\_fields/\_components/*componentName*/\_field.gsp@
 # @grails-app/views/*controllerName*/*actionName*/name/\_field.gsp@
 # @grails-app/views/*controllerName*/*actionName*/string/\_field.gsp@
 # @grails-app/views/*controllerName*/*actionName*/\_field.gsp@
@@ -123,6 +148,7 @@ You can override the template _f:field_ uses with any of these:
 
 override the template _f:input_ uses with any of these:
 
+# @grails-app/views/\_fields/\_components/*componentName*/\_input.gsp@
 # @grails-app/views/*controllerName*/*actionName*/name/\_input.gsp@
 # @grails-app/views/*controllerName*/*actionName*/string/\_input.gsp@
 # @grails-app/views/*controllerName*/*actionName*/\_input.gsp@
@@ -136,6 +162,7 @@ override the template _f:input_ uses with any of these:
 
 and override the template _f:display_ uses with any of these:
 
+# @grails-app/views/\_fields/\_components/*componentName*/\_display.gsp@
 # @grails-app/views/*controllerName*/*actionName*/name/\_display.gsp@
 # @grails-app/views/*controllerName*/*actionName*/string/\_display.gsp@
 # @grails-app/views/*controllerName*/*actionName*/\_display.gsp@
@@ -146,11 +173,6 @@ and override the template _f:display_ uses with any of these:
 # @grails-app/views/\_fields/person/name/\_display.gsp@
 # @grails-app/views/\_fields/string/\_display.gsp@
 # @grails-app/views/\_fields/default/\_display.gsp@
-
-If you use the component attribute then is going to use:
-# @grails-app/views/\_fields/*\_components/componentName/*\_field.gsp@
-# @grails-app/views/\_fields/*\_components/componentName/*\_input.gsp@
-# @grails-app/views/\_fields/*\_components/componentName/*\_display.gsp@
 
 During template development it is usually recommended to disable template caching in order to allow the plugin to recognize new/renamed/moved templates without restarting the application. See the "Performance" section of the guide for the exact settings.
 

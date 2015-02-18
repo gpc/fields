@@ -100,10 +100,13 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 		def bean = resolveBean(attrs.remove('bean'))
 		def property = attrs.remove('property')
+        def defaultFolder = attrs.remove('default')
+        def fieldFolder = attrs.remove('field')
+        def inputFolder = attrs.remove('input')
 
 		def propertyAccessor = resolveProperty(bean, property)
 		if (propertyAccessor.persistentProperty?.embedded) {
-			renderEmbeddedProperties(bean, propertyAccessor, attrs)
+			renderEmbeddedProperties(bean, propertyAccessor, attrs + [default: defaultFolder, field: fieldFolder, input: inputFolder])
 		} else {
 			def model = buildModel(propertyAccessor, attrs)
 			def fieldAttrs = [:]
@@ -117,16 +120,16 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			}
 
 			if (hasBody(body)) {
-                model.widget = body(model + [attrs: inputAttrs] + inputAttrs)
+                model.widget = raw(body(model + [attrs: inputAttrs] + inputAttrs))
             } else {
-				model.widget = renderWidget(propertyAccessor, model, inputAttrs)
+				model.widget = renderWidget(propertyAccessor, model, inputAttrs, inputFolder?:defaultFolder)
 			}
 
-			def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'field')
+			def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'field', fieldFolder?:defaultFolder)
 			if (template) {
 				out << render(template: template.path, plugin: template.plugin, model: model + [attrs: fieldAttrs] + fieldAttrs)
 			} else {
-				out << renderDefaultField(model)
+                out << render(template: "/default/field", model: model + [attrs: fieldAttrs] + fieldAttrs, contextPath: pluginContextPath)
 			}
 		}
 	}
@@ -142,11 +145,12 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		if (!attrs.property) throwTagError("Tag [input] is missing required attribute [property]")
 
 		def property = attrs.remove('property')
+        def inputFolder = attrs.remove('input')
 
 		def propertyAccessor = resolveProperty(bean, property)
 		def model = buildModel(propertyAccessor, attrs)
 
-		out << renderWidget(propertyAccessor, model, attrs)
+		out << renderWidget(propertyAccessor, model, attrs, inputFolder)
 	}
 
 	def display = { attrs, body ->
@@ -156,14 +160,29 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 		def property = attrs.remove('property')
 
+        def defaultFolder = attrs.remove('default')
+        def displayFolder = attrs.remove('display')
+        def outputFolder = attrs.remove('output')
+
 		def propertyAccessor = resolveProperty(bean, property)
 		def model = buildModel(propertyAccessor, attrs)
 
-		if (hasBody(body)) {
-			model.value = body(model)
-		}
+//		if (hasBody(body)) {
+//			model.value = body(model)
+//		}
 
-		out << renderForDisplay(propertyAccessor, model, attrs)
+        if (hasBody(body)) {
+            model.widget = raw(body(model + [attrs: attrs]))
+        } else {
+            model.widget = renderOutput(propertyAccessor, model, attrs, outputFolder?:defaultFolder)
+        }
+
+        def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'display', displayFolder?:defaultFolder)
+        if (template) {
+            out << render(template: template.path, plugin: template.plugin, model: model + [attrs: attrs] + attrs)
+        } else {
+            out << render(template: "/default/display", model: model + [attrs: attrs] + attrs, contextPath: pluginContextPath)
+        }
 	}
 
 	private void renderEmbeddedProperties(bean, BeanPropertyAccessor propertyAccessor, attrs) {
@@ -171,7 +190,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		out << applyLayout(name: '_fields/embedded', params: [type: toPropertyNameFormat(propertyAccessor.propertyType), legend: legend]) {
 			for (embeddedProp in resolvePersistentProperties(propertyAccessor.persistentProperty.component, attrs)) {
 				def propertyPath = "${propertyAccessor.pathFromRoot}.${embeddedProp.name}"
-				out << field(bean: bean, property: propertyPath, prefix: attrs.prefix)
+				out << field(bean: bean, property: propertyPath, prefix: attrs.prefix, default: attrs.default, field: attrs.field, input: attrs.input)
 			}
 		}
 	}
@@ -199,8 +218,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		]
 	}
 
-    private CharSequence renderWidget(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:]) {
-		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'input')
+    private CharSequence renderWidget(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:], String inputFolder) {
+		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'input', inputFolder)
 		if (template) {
 			render template: template.path, plugin: template.plugin, model: model + [attrs: attrs] + attrs
 		} else {
@@ -208,8 +227,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 	}
 
-	private CharSequence renderForDisplay(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:]) {
-		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'display')
+	private CharSequence renderOutput(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:], String outputFolder) {
+		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'output', outputFolder)
 		if (template) {
 			render template: template.path, plugin: template.plugin, model: model + [attrs: attrs] + attrs
 		} else if (!(model.value instanceof CharSequence)) {
@@ -292,24 +311,6 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			message(code: key, default: null) ?: null
 		}
 		message ?: defaultMessage
-	}
-
-	private CharSequence renderDefaultField(Map model) {
-		def classes = ['fieldcontain']
-		if (model.invalid) classes << 'error'
-		if (model.required) classes << 'required'
-
-		def writer = new FastStringWriter()
-		new MarkupBuilder(writer).div(class: classes.join(' ')) {
-			label(for: (model.prefix ?: '') + model.property, model.label) {
-				if (model.required) {
-					span(class: 'required-indicator', '*')
-				}
-			}
-			// TODO: encoding information of widget gets lost - don't use MarkupBuilder
-			mkp.yieldUnescaped model.widget 
-		}
-		writer.buffer
 	}
 
 	private CharSequence renderDefaultInput(Map model, Map attrs = [:]) {

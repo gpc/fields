@@ -4,41 +4,47 @@ buildscript {
     }
     repositories {
         mavenLocal()
-        maven { url "http://repo.grails.org/grails/core" }
+        maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+        classpath 'com.bertramlabs.plugins:asset-pipeline-gradle:2.1.1'
     }
 }
 
 plugins {
-  id "com.jfrog.bintray" version "1.0"
-  id "io.spring.dependency-management" version "0.3.1.RELEASE"
-}
-
-ext {
-  grailsVersion = project.grailsVersion
-  gradleWrapperVersion = project.gradleWrapperVersion
+    id "io.spring.dependency-management" version "0.3.1.RELEASE"
+    id "com.jfrog.bintray" version "1.1"
 }
 
 version "2.0.0-SNAPSHOT"
 group "org.grails.plugins"
 
+apply plugin: "spring-boot"
+apply plugin: "asset-pipeline"
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-gsp"
 apply plugin: "org.grails.grails-doc"
 apply plugin: 'maven-publish'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
+// Used for publishing to central repository, remove if not needed
 apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/grailsCentralPublishing.gradle'
 apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/bintrayPublishing.gradle'
+
+ext {
+  grailsVersion = project.grailsVersion
+  gradleWrapperVersion = project.gradleWrapperVersion
+}
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
+
 repositories {
   mavenLocal()
-  maven { url "http://repo.grails.org/grails/core" }
+  mavenCentral()
+  maven { url "https://repo.grails.org/grails/core" }
 }
 
 dependencyManagement {
@@ -49,11 +55,18 @@ dependencyManagement {
 }
 
 dependencies {
-  provided "org.grails:grails-dependencies"
+  provided 'org.springframework.boot:spring-boot-starter-logging'
+  provided "org.springframework.boot:spring-boot-starter-actuator"
+  provided "org.springframework.boot:spring-boot-autoconfigure"
+  provided "org.springframework.boot:spring-boot-starter-tomcat"
+
   provided "org.grails:grails-web-boot"
-  provided 'javax.servlet:javax.servlet-api'
+  provided "org.grails:grails-dependencies"
+  provided 'javax.servlet:javax.servlet-api:3.1.0'
 
   testCompile "org.grails:grails-plugin-testing"
+
+  console "org.grails:grails-console"
 
   testCompile 'javassist:javassist:3.12.0.GA'
   testCompile('org.jodd:jodd-wot:3.3.4') {
@@ -73,13 +86,3 @@ idea {
         scopes.PROVIDED.plus += [configurations.provided]
     }
 }
-/*bintray {
-    pkg {
-        version {
-            gpg {
-                sign = true
-            }
-        }
-    }
-}*/
-

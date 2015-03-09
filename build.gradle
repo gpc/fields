@@ -20,14 +20,15 @@ plugins {
 version "2.0.0-SNAPSHOT"
 group "org.grails.plugins"
 
+apply plugin: 'maven-publish'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
 apply plugin: "spring-boot"
 apply plugin: "asset-pipeline"
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-gsp"
+
 apply plugin: "org.grails.grails-doc"
-apply plugin: 'maven-publish'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
 // Used for publishing to central repository, remove if not needed
 apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/grailsCentralPublishing.gradle'
 apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/bintrayPublishing.gradle'

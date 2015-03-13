@@ -37,6 +37,12 @@ grails.project.dependency.resolution = {
         grailsHome()
         mavenLocal()
         grailsCentral()
+        if(grailsVersion.startsWith("2.2.")) {
+            // Here because Grails 2.2.x RepositoriesConfiguration uses http://repo.grails.org/grails/plugins/ which does not work
+            mavenRepo('https://repo.grails.org/grails/plugins/')
+            // Here because MavenCentral does not provide junit:junit-dep:4.10 but bintray does
+            mavenRepo('https://jcenter.bintray.com')
+        }
         mavenCentral()
     }
 

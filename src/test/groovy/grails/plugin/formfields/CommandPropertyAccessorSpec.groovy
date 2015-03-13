@@ -232,10 +232,10 @@ class CommandPropertyAccessorSpec extends Specification {
 		propertyAccessor.constraints?.blank || isRequired
 
 		where:
-		property             | isRequired
-		'person.name'        | true
-		'person.id'          | true
-		'person.dateOfBirth' | false
+		property                      | isRequired
+		'person.name'                 | true
+		'person.id'                   | true
+		'person.displayFalseProperty' | false
 	}
 
 	void 'if a nested property is a domain class then it is handled as one'() {

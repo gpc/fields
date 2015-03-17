@@ -37,6 +37,8 @@ grails.project.dependency.resolution = {
         grailsHome()
         mavenLocal()
         grailsCentral()
+        mavenRepo('https://repo.grails.org/grails/plugins/')
+        mavenRepo('https://jcenter.bintray.com')
         mavenCentral()
     }
 

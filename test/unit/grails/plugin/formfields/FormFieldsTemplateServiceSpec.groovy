@@ -46,7 +46,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def property = factory.accessorFor(personInstance, 'name')
 
 		expect:
-		def template = service.findTemplate(property, 'field')
+		def template = service.findTemplate(property, 'field', null)
 		template.path == '/_fields/default/field'
 		template.plugin == null
 		render(template: template.path) == 'DEFAULT FIELD TEMPLATE'
@@ -61,7 +61,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def property = factory.accessorFor(personInstance, 'name')
 
 		expect:
-		def template = service.findTemplate(property, 'field')
+		def template = service.findTemplate(property, 'field', null)
 		template.path == '/_fields/string/field'
 		template.plugin == null
 		render(template: template.path) == 'PROPERTY TYPE TEMPLATE'
@@ -77,7 +77,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def property = factory.accessorFor(personInstance, 'name')
 
 		expect:
-		def template = service.findTemplate(property, 'field')
+		def template = service.findTemplate(property, 'field', "fancywidget")
 		template.path == '/_fields/fancywidget/field'
 		template.plugin == null
 		render(template: template.path) == 'WIDGET TEMPLATE'
@@ -93,7 +93,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def property = factory.accessorFor(personInstance, 'password')
 
 		expect:
-		def template = service.findTemplate(property, 'field')
+		def template = service.findTemplate(property, 'field', "password")
 		template.path == '/_fields/password/field'
 		template.plugin == null
 		render(template: template.path) == 'WIDGET TEMPLATE'
@@ -109,7 +109,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def property = factory.accessorFor(personInstance, 'name')
 
 		expect:
-		def template = service.findTemplate(property, 'field')
+		def template = service.findTemplate(property, 'field', null)
 		template.path == '/_fields/person/name/field'
 		template.plugin == null
 		render(template: template.path) == 'CLASS AND PROPERTY TEMPLATE'
@@ -127,7 +127,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def property = factory.accessorFor(personInstance, 'name')
 
 		expect:
-		def template = service.findTemplate(property, 'field')
+		def template = service.findTemplate(property, 'field', null)
 		template.path == "/$webRequest.controllerName/field"
 		template.plugin == null
 		render(template: template.path) == 'CONTROLLER DEFAULT TEMPLATE'
@@ -148,7 +148,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def property = factory.accessorFor(personInstance, 'name')
 
 		expect:
-		def template = service.findTemplate(property, 'field')
+		def template = service.findTemplate(property, 'field', null)
 		template.path == "/$webRequest.controllerNamespace/$webRequest.controllerName/field"
 		template.plugin == null
 		render(template: template.path) == 'CONTROLLER DEFAULT TEMPLATE'
@@ -167,7 +167,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def property = factory.accessorFor(personInstance, 'name')
 
 		expect:
-		def template = service.findTemplate(property, 'field')
+		def template = service.findTemplate(property, 'field', null)
 		template.path == "/$webRequest.controllerName/string/field"
 		template.plugin == null
 		render(template: template.path) == 'CONTROLLER FIELD TYPE TEMPLATE'
@@ -186,7 +186,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def property = factory.accessorFor(personInstance, 'name')
 
 		expect:
-		def template = service.findTemplate(property, 'field')
+		def template = service.findTemplate(property, 'field', null)
 		template.path == "/$webRequest.controllerName/name/field"
 		template.plugin == null
 		render(template: template.path) == 'CONTROLLER FIELD NAME TEMPLATE'
@@ -207,7 +207,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
         def property = factory.accessorFor(personInstance, 'name')
 
         expect:
-        def template = service.findTemplate(property, 'field')
+        def template = service.findTemplate(property, 'field', null)
         template.path == "/$webRequest.controllerName/$webRequest.actionName/field"
         template.plugin == null
         render(template: template.path) == 'ACTION DEFAULT TEMPLATE'
@@ -229,7 +229,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def property = factory.accessorFor(personInstance, 'name')
 
 		expect:
-		def template = service.findTemplate(property, 'field')
+		def template = service.findTemplate(property, 'field', null)
 		template.path == "/$webRequest.controllerName/$webRequest.actionName/string/field"
 		template.plugin == null
 		render(template: template.path) == 'ACTION FIELD TYPE TEMPLATE'
@@ -252,7 +252,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def property = factory.accessorFor(personInstance, 'name')
 
 		expect:
-		def template = service.findTemplate(property, 'field')
+		def template = service.findTemplate(property, 'field', null)
 		template.path == "/$webRequest.controllerName/$webRequest.actionName/name/field"
 		template.plugin == null
 		render(template: template.path) == 'ACTION FIELD NAME TEMPLATE'
@@ -270,7 +270,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def property = factory.accessorFor(personInstance, 'name')
 
 		expect:
-		def template = service.findTemplate(property, 'field')
+		def template = service.findTemplate(property, 'field', null)
 		template.path == '/_fields/default/field'
 		template.plugin == null
 		render(template: template.path) == 'DEFAULT FIELD TEMPLATE'
@@ -285,7 +285,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def property = factory.accessorFor(employeeInstance, 'name')
 
 		expect:
-		def template = service.findTemplate(property, 'field')
+		def template = service.findTemplate(property, 'field', null)
 		template.path == '/_fields/person/name/field'
 		template.plugin == null
 		render(template: template.path) == 'SUPERCLASS TEMPLATE'
@@ -301,7 +301,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def property = factory.accessorFor(employeeInstance, 'name')
 
 		expect:
-		def template = service.findTemplate(property, 'field')
+		def template = service.findTemplate(property, 'field', null)
 		template.path == '/_fields/employee/name/field'
 		template.plugin == null
 		render(template: template.path) == 'SUBCLASS TEMPLATE'
@@ -316,7 +316,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def property = factory.accessorFor(employeeInstance, 'salutation')
 
 		expect:
-		def template = service.findTemplate(property, 'field')
+		def template = service.findTemplate(property, 'field', null)
 		template.path == '/_fields/enum/field'
 		template.plugin == null
 		render(template: template.path) == 'GENERIC ENUM TEMPLATE'
@@ -332,7 +332,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def property = factory.accessorFor(personInstance, 'name')
 
 		expect:
-		def template = service.findTemplate(property, 'field')
+		def template = service.findTemplate(property, 'field', null)
 		template.path == '/_fields/charSequence/field'
 		template.plugin == null
 		render(template: template.path) == 'INTERFACE TEMPLATE'
@@ -348,7 +348,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def property = factory.accessorFor(employeeInstance, 'salutation')
 
 		expect:
-		def template = service.findTemplate(property, 'field')
+		def template = service.findTemplate(property, 'field', null)
 		template.path == '/_fields/salutation/field'
 		template.plugin == null
 		render(template: template.path) == 'SALUTATION TEMPLATE'
@@ -364,7 +364,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def property = factory.accessorFor(personInstance, 'address.city')
 
 		expect:
-		def template = service.findTemplate(property, 'field')
+		def template = service.findTemplate(property, 'field', null)
 		template.path == '/_fields/address/city/field'
 		template.plugin == null
 		render(template: template.path) == 'CLASS AND PROPERTY TEMPLATE'
@@ -379,7 +379,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def property = factory.accessorFor(null, 'name')
 
 		expect:
-		def template = service.findTemplate(property, 'field')
+		def template = service.findTemplate(property, 'field', null)
 		template.path == '/_fields/default/field'
 		template.plugin == null
 		render(template: template.path) == 'DEFAULT FIELD TEMPLATE'
@@ -395,7 +395,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def property = factory.accessorFor(null, 'name')
 
 		expect:
-		def template = service.findTemplate(property, 'field')
+		def template = service.findTemplate(property, 'field', null)
 		template.path == "/$webRequest.controllerName/name/field"
 		template.plugin == null
 		render(template: template.path) == 'CONTROLLER FIELD TEMPLATE'
@@ -412,7 +412,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		def property = factory.accessorFor(null, 'name')
 
 		expect:
-		def template = service.findTemplate(property, 'field')
+		def template = service.findTemplate(property, 'field', null)
 		template.path == "/$webRequest.controllerName/$webRequest.actionName/name/field"
 		template.plugin == null
 		render(template: template.path) == 'ACTION FIELD TEMPLATE'
@@ -429,7 +429,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
         def property = factory.accessorFor(personInstance, 'picture')
 
         expect:
-        def template = service.findTemplate(property, 'field')
+        def template = service.findTemplate(property, 'field', null)
         template.path == '/_fields/byteArray/field'
         template.plugin == null
         render(template: template.path) == 'PROPERTY BYTE ARRAY TYPE TEMPLATE'

@@ -39,7 +39,7 @@ class TemplateLookupCachingSpec extends Specification {
 		def property = beanPropertyAccessorFactory.accessorFor(person, 'name')
 
 		when:
-		def template = service.findTemplate(property, 'input')
+		def template = service.findTemplate(property, 'input', null)
 
 		then:
 		template.path == '/_fields/person/name/input'
@@ -53,7 +53,7 @@ class TemplateLookupCachingSpec extends Specification {
 		def property = beanPropertyAccessorFactory.accessorFor(person, 'name')
 
 		when:
-		def template = service.findTemplate(property, 'input')
+		def template = service.findTemplate(property, 'input', null)
 
 		then:
 		template.path == '/_fields/person/name/input'
@@ -70,7 +70,7 @@ class TemplateLookupCachingSpec extends Specification {
 		def property = beanPropertyAccessorFactory.accessorFor(person, 'password')
 
 		when:
-		def template = service.findTemplate(property, 'input')
+		def template = service.findTemplate(property, 'input', null)
 
 		then:
 		template.path == '/_fields/person/password/input'
@@ -87,7 +87,7 @@ class TemplateLookupCachingSpec extends Specification {
 		def property = beanPropertyAccessorFactory.accessorFor(person, 'name')
 		
 		when:
-		def template = service.findTemplate(property, 'field')
+		def template = service.findTemplate(property, 'field', null)
 		
 		then:
 		template.path == '/_fields/person/name/field'

@@ -16,7 +16,6 @@
 
 package grails.plugin.formfields
 
-import groovy.xml.MarkupBuilder
 import org.apache.commons.lang.StringUtils
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
@@ -100,13 +99,13 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 		def bean = resolveBean(attrs.remove('bean'))
 		def property = attrs.remove('property')
-        def defaultFolder = attrs.remove('default')
+        def templatesFolder = attrs.remove('templates')
         def fieldFolder = attrs.remove('field')
-        def inputFolder = attrs.remove('input')
+        def widgetFolder = attrs.remove('widget')
 
 		def propertyAccessor = resolveProperty(bean, property)
 		if (propertyAccessor.persistentProperty?.embedded) {
-			renderEmbeddedProperties(bean, propertyAccessor, attrs + [default: defaultFolder, field: fieldFolder, input: inputFolder])
+			renderEmbeddedProperties(bean, propertyAccessor, attrs + [templates: templatesFolder, field: fieldFolder, input: widgetFolder])
 		} else {
 			def model = buildModel(propertyAccessor, attrs)
 			def fieldAttrs = [:]
@@ -122,14 +121,14 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			if (hasBody(body)) {
                 model.widget = raw(body(model + [attrs: inputAttrs] + inputAttrs))
             } else {
-				model.widget = renderWidget(propertyAccessor, model, inputAttrs, inputFolder?:defaultFolder)
+				model.widget = renderWidget(propertyAccessor, model, inputAttrs, widgetFolder?:templatesFolder)
 			}
 
-			def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'field', fieldFolder?:defaultFolder)
+			def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'field', fieldFolder?:templatesFolder)
 			if (template) {
 				out << render(template: template.path, plugin: template.plugin, model: model + [attrs: fieldAttrs] + fieldAttrs)
 			} else {
-                out << render(template: "/default/field", model: model + [attrs: fieldAttrs] + fieldAttrs, contextPath: pluginContextPath)
+                out << renderDefaultField(model)
 			}
 		}
 	}
@@ -145,12 +144,12 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		if (!attrs.property) throwTagError("Tag [input] is missing required attribute [property]")
 
 		def property = attrs.remove('property')
-        def inputFolder = attrs.remove('input')
+        def widgetFolder = attrs.remove('widget')
 
 		def propertyAccessor = resolveProperty(bean, property)
 		def model = buildModel(propertyAccessor, attrs)
 
-		out << renderWidget(propertyAccessor, model, attrs, inputFolder)
+		out << renderWidget(propertyAccessor, model, attrs, widgetFolder)
 	}
 
 	def display = { attrs, body ->
@@ -160,24 +159,21 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 		def property = attrs.remove('property')
 
-        def defaultFolder = attrs.remove('default')
-        def displayFolder = attrs.remove('display')
-        def outputFolder = attrs.remove('output')
+        def templatesFolder = attrs.remove('templates')
+        def displayFolder = attrs.remove('field')
+        def widgetFolder = attrs.remove('widget')
 
 		def propertyAccessor = resolveProperty(bean, property)
 		def model = buildModel(propertyAccessor, attrs)
 
-//		if (hasBody(body)) {
-//			model.value = body(model)
-//		}
-
         if (hasBody(body)) {
+			model.value = body(model)
             model.widget = raw(body(model + [attrs: attrs]))
         } else {
-            model.widget = renderOutput(propertyAccessor, model, attrs, outputFolder?:defaultFolder)
+            model.widget = renderDisplayInput(propertyAccessor, model, attrs, widgetFolder?:templatesFolder)
         }
 
-        def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'display', displayFolder?:defaultFolder)
+        def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'display', displayFolder?:templatesFolder)
         if (template) {
             out << render(template: template.path, plugin: template.plugin, model: model + [attrs: attrs] + attrs)
         } else {
@@ -190,7 +186,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		out << applyLayout(name: '_fields/embedded', params: [type: toPropertyNameFormat(propertyAccessor.propertyType), legend: legend]) {
 			for (embeddedProp in resolvePersistentProperties(propertyAccessor.persistentProperty.component, attrs)) {
 				def propertyPath = "${propertyAccessor.pathFromRoot}.${embeddedProp.name}"
-				out << field(bean: bean, property: propertyPath, prefix: attrs.prefix, default: attrs.default, field: attrs.field, input: attrs.input)
+				out << field(bean: bean, property: propertyPath, prefix: attrs.prefix, default: attrs.default, field: attrs.field, widget: attrs.widget)
 			}
 		}
 	}
@@ -218,8 +214,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		]
 	}
 
-    private CharSequence renderWidget(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:], String inputFolder) {
-		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'input', inputFolder)
+    private CharSequence renderWidget(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:], String widgetFolder) {
+		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'input', widgetFolder)
 		if (template) {
 			render template: template.path, plugin: template.plugin, model: model + [attrs: attrs] + attrs
 		} else {
@@ -227,8 +223,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 	}
 
-	private CharSequence renderOutput(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:], String outputFolder) {
-		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'output', outputFolder)
+	private CharSequence renderDisplayInput(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:], String widgetFolder) {
+		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'displayInput', widgetFolder)
 		if (template) {
 			render template: template.path, plugin: template.plugin, model: model + [attrs: attrs] + attrs
 		} else if (!(model.value instanceof CharSequence)) {
@@ -312,6 +308,10 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 		message ?: defaultMessage
 	}
+
+    private CharSequence renderDefaultField(Map model) {
+        render(template: "/default/field", model: model, contextPath: pluginContextPath)
+    }
 
 	private CharSequence renderDefaultInput(Map model, Map attrs = [:]) {
 		attrs.name = (model.prefix ?: '') + model.property

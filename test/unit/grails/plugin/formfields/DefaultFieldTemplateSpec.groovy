@@ -16,6 +16,17 @@ class DefaultFieldTemplateSpec extends Specification {
 		model.property = 'property'
 		model.required = false
 		model.widget = '<input name="property">'
+        views["/default/_field.gsp"] = '<g:set var="classes" value="fieldcontain "/>\n' +
+                '<g:if test="${required}">\n' +
+                '    <g:set var="classes" value="${classes + \'required \'}"/>\n' +
+                '</g:if>\n' +
+                '<g:if test="${invalid}">\n' +
+                '    <g:set var="classes" value="${classes + \'error \'}"/>\n' +
+                '</g:if>\n' +
+                '<div class="${classes}">\n' +
+                '    <label for="${prefix}${property}">${label}<g:if test="${required}"><span class="required-indicator">*</span></g:if></label>\n' +
+                '    <%= widget %>\n' +
+                '</div>'
 	}
 	
 	static Jerry $(String html) {

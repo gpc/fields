@@ -38,7 +38,7 @@ class AssociationTypeTemplatesSpec extends Specification {
 		def property = factory.accessorFor(authorInstance, 'books')
 
 		expect:
-		def template = service.findTemplate(property, 'field')
+		def template = service.findTemplate(property, 'field', null)
 		render(template: template.path) == 'ASSOCIATION TYPE TEMPLATE'
 	}
 
@@ -53,7 +53,7 @@ class AssociationTypeTemplatesSpec extends Specification {
 		def property = factory.accessorFor(authorInstance, 'books')
 
 		expect:
-		def template = service.findTemplate(property, 'field')
+		def template = service.findTemplate(property, 'field', null)
 		render(template: template.path) == 'PROPERTY NAME TEMPLATE'
 	}
 

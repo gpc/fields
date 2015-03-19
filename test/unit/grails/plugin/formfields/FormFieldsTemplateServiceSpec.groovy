@@ -84,6 +84,41 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		render(template: template.path) == 'WIDGET TEMPLATE'
 	}
 
+    void "resolves template for component field"() {
+        given:
+        views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
+        views["/_fields/string/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
+        views["/_fields/fancywidget/_field.gsp"] = 'WIDGET TEMPLATE'
+        views["/_fields/_components/time/_field.gsp"] = 'COMPONENT TEMPLATE'
+
+        and:
+        def property = factory.accessorFor(personInstance, 'name')
+
+        expect:
+        def template = service.findTemplate(property, 'field', "time")
+        template.path == '/_fields/_components/time/field'
+        template.plugin == null
+        render(template: template.path) == 'COMPONENT TEMPLATE'
+    }
+
+    void "resolves template for component display"() {
+        given:
+        views["/_fields/default/_display.gsp"] = 'DEFAULT FIELD TEMPLATE'
+        views["/_fields/string/_display.gsp"] = 'PROPERTY TYPE TEMPLATE'
+        views["/_fields/fancywidget/_display.gsp"] = 'WIDGET TEMPLATE'
+        views["/_fields/_components/time/_field.gsp"] = 'FIELD COMPONENT TEMPLATE'
+        views["/_fields/_components/time/_display.gsp"] = 'DISPLAY COMPONENT TEMPLATE'
+
+        and:
+        def property = factory.accessorFor(personInstance, 'name')
+
+        expect:
+        def template = service.findTemplate(property, 'display', "time")
+        template.path == '/_fields/_components/time/display'
+        template.plugin == null
+        render(template: template.path) == 'DISPLAY COMPONENT TEMPLATE'
+    }
+
 	void "resolves template for implicit widget constraint"() {
 		given:
 		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'

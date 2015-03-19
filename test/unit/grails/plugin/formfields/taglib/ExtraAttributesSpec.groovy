@@ -19,7 +19,8 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
 	def setup() {
 		def taglib = applicationContext.getBean(FormFieldsTagLib)
 
-		mockFormFieldsTemplateService.findTemplate(_, 'field') >> [path: '/_fields/default/field']
+        views["/_fields/_layouts/_noLayout.gsp"] = '${raw(renderedField)}'
+        mockFormFieldsTemplateService.findTemplate(_, 'field', null) >> [path: '/_fields/default/field']
 		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 	}
 
@@ -45,7 +46,7 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
         views["/_fields/person/name/_input.gsp"] = '<span>${foo}${attrs?.foo}</span>'
 
 		and:
-		mockFormFieldsTemplateService.findTemplate(_, 'input') >> [path: '/_fields/person/name/input']
+		mockFormFieldsTemplateService.findTemplate(_, 'input', null) >> [path: '/_fields/person/name/input']
 
         expect:
         applyTemplate('<f:field bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == '<span></span>'
@@ -64,7 +65,7 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
         views["/_fields/default/_display.gsp"] = '${foo}'
 
         and:
-        mockFormFieldsTemplateService.findTemplate(_, 'display') >> [path: '/_fields/default/display']
+        mockFormFieldsTemplateService.findTemplate(_, 'display', null) >> [path: '/_fields/default/display']
 
         expect:
         applyTemplate('<f:display bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == 'bar'
@@ -75,7 +76,7 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
         views["/_fields/default/_display.gsp"] = '${attrs.foo}'
 
         and:
-        mockFormFieldsTemplateService.findTemplate(_, 'display') >> [path: '/_fields/default/display']
+        mockFormFieldsTemplateService.findTemplate(_, 'display', null) >> [path: '/_fields/default/display']
 
         expect:
         applyTemplate('<f:display bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == 'bar'
@@ -86,7 +87,7 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
 		views["/_fields/person/name/_input.gsp"] = '${foo}'
 
 		and:
-		mockFormFieldsTemplateService.findTemplate(_, 'input') >> [path: '/_fields/person/name/input']
+		mockFormFieldsTemplateService.findTemplate(_, 'input', null) >> [path: '/_fields/person/name/input']
 
 		expect:
 		applyTemplate('<f:input bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == 'bar'
@@ -112,7 +113,7 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
         views["/_fields/person/name/_input.gsp"] = '<span>${foo}</span>'
 
 		and:
-		mockFormFieldsTemplateService.findTemplate(_, 'input') >> [path: '/_fields/person/name/input']
+		mockFormFieldsTemplateService.findTemplate(_, 'input', null) >> [path: '/_fields/person/name/input']
 
         expect:
         applyTemplate('<f:field bean="personInstance" property="name" input-foo="bar"/>', [personInstance: personInstance]) == '<span>bar</span>'
@@ -124,7 +125,7 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
         views["/_fields/person/name/_input.gsp"] = '<span>${attrs.foo}</span>'
 
 		and:
-		mockFormFieldsTemplateService.findTemplate(_, 'input') >> [path: '/_fields/person/name/input']
+		mockFormFieldsTemplateService.findTemplate(_, 'input', null) >> [path: '/_fields/person/name/input']
 
         expect:
         applyTemplate('<f:field bean="personInstance" property="name" input-foo="bar"/>', [personInstance: personInstance]) == '<span>bar</span>'

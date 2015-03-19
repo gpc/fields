@@ -1,21 +1,34 @@
 package grails.plugin.formfields
 
+import grails.plugin.formfields.mock.Person
+import grails.plugin.formfields.taglib.AbstractFormFieldsTagLibSpec
 import grails.test.mixin.TestFor
 import jodd.lagarto.dom.jerry.Jerry
-import spock.lang.Specification
 import static jodd.lagarto.dom.jerry.Jerry.jerry
 
 @TestFor(FormFieldsTagLib)
-class DefaultFieldTemplateSpec extends Specification {
-	
+class DefaultFieldTemplateSpec extends AbstractFormFieldsTagLibSpec {
+	def mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
 	Map model = [:]
 
-	void setup() {
-		model.invalid = false
-		model.label = 'label'
-		model.property = 'property'
-		model.required = false
-		model.widget = '<input name="property">'
+	def setupSpec() {
+		configurePropertyAccessorSpringBean()
+	}
+
+	def setup() {
+		views["/_fields/default/_layout.gsp"] = """<g:set var="classes" value="fieldcontain "/>
+			<g:if test="\${required}">
+				<g:set var="classes" value="\${classes + 'required '}"/>
+			</g:if>
+			<g:if test="\${invalid}">
+				<g:set var="classes" value="\${classes + 'error '}"/>
+			</g:if>
+			<div class="\${classes}">
+				<label for="\${prefix}\${property}">\${label}<g:if test="\${required}"><span class="required-indicator">*</span></g:if></label>\${raw(renderedField)}
+			</div>"""
+		mockFormFieldsTemplateService.findTemplate(_, _, _) >> null
+		mockFormFieldsTemplateService.findLayout(_, _, _) >> [path: '/_fields/default/layout']
+		tagLib.formFieldsTemplateService = mockFormFieldsTemplateService
 	}
 	
 	static Jerry $(String html) {
@@ -23,8 +36,13 @@ class DefaultFieldTemplateSpec extends Specification {
 	}
 	
 	void "default rendering"() {
+		given:
+		def personInstance = new Person(
+				name: "Clint Eastwood"
+		)
+
 		when:
-		def output = tagLib.renderDefaultField(model)
+		def output = applyTemplate('<f:field bean="personInstance" property="name" label="label" required="false"/>', [personInstance: personInstance])
 
 		then:
 		def root = $(output.toString())
@@ -33,29 +51,34 @@ class DefaultFieldTemplateSpec extends Specification {
 		and:
 		def label = root.find('label')
 		label.text() == 'label'
-		label.attr('for') == 'property'
+		label.attr('for') == 'name'
 		
 		and:
-		label.next().is('input[name=property]')
+		label.next().is('input[name=name]')
 	}
 
 	void "container marked as invalid"() {
 		given:
-		model.invalid = true
+		def personInstance = new Person(
+				name: "Clint Eastwood"
+		)
+		personInstance.errors.rejectValue('name', "error")
 
 		when:
-		def output = tagLib.renderDefaultField(model)
-		
+		def output = applyTemplate('<f:field bean="personInstance" property="name" label="label" required="false"/>', [personInstance: personInstance])
+
 		then:
 		$(output.toString()).hasClass('error')
 	}
 
 	void "container marked as required"() {
 		given:
-		model.required = true
+		def personInstance = new Person(
+				name: "Clint Eastwood"
+		)
 
 		when:
-		def output = tagLib.renderDefaultField(model)
+		def output = applyTemplate('<f:field bean="personInstance" property="name" label="label" required="true"/>', [personInstance: personInstance])
 
 		then:
 		def root = $(output.toString())

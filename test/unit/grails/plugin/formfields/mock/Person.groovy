@@ -27,7 +27,7 @@ class Person {
 
 	static constraints = {
         salutation nullable: true
-		name blank: false, widget: 'fancywidget'
+		name blank: false
 		dateOfBirth nullable: true
 		address nullable: true
 		excludedProperty nullable: true

@@ -170,7 +170,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			model.value = body(model)
             model.widget = raw(body(model + [attrs: attrs]))
         } else {
-            model.widget = renderDisplayInput(propertyAccessor, model, attrs, widgetFolder?:templatesFolder)
+            model.widget = renderDisplayOutput(propertyAccessor, model, attrs, widgetFolder?:templatesFolder)
         }
 
         def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'display', displayFolder?:templatesFolder)
@@ -223,8 +223,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 	}
 
-	private CharSequence renderDisplayInput(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:], String widgetFolder) {
-		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'displayInput', widgetFolder)
+	private CharSequence renderDisplayOutput(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:], String widgetFolder) {
+		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'displayOutput', widgetFolder)
 		if (template) {
 			render template: template.path, plugin: template.plugin, model: model + [attrs: attrs] + attrs
 		} else if (!(model.value instanceof CharSequence)) {

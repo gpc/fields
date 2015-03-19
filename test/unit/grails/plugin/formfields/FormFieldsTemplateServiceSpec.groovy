@@ -67,23 +67,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		render(template: template.path) == 'PROPERTY TYPE TEMPLATE'
 	}
 
-	void "resolves template for widget constraint"() {
-		given:
-		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
-		views["/_fields/string/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
-		views["/_fields/fancywidget/_field.gsp"] = 'WIDGET TEMPLATE'
-
-		and:
-		def property = factory.accessorFor(personInstance, 'name')
-
-		expect:
-		def template = service.findTemplate(property, 'field', "fancywidget")
-		template.path == '/_fields/fancywidget/field'
-		template.plugin == null
-		render(template: template.path) == 'WIDGET TEMPLATE'
-	}
-
-	void "resolves template for implicit widget constraint"() {
+	void "resolves template for password field"() {
 		given:
 		views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
 		views["/_fields/string/_field.gsp"] = 'PROPERTY TYPE TEMPLATE'
@@ -97,6 +81,54 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		template.path == '/_fields/password/field'
 		template.plugin == null
 		render(template: template.path) == 'WIDGET TEMPLATE'
+	}
+
+    void "resolves template for password widget"() {
+		given:
+		views["/_fields/default/_input.gsp"] = 'DEFAULT FIELD WIDGET'
+		views["/_fields/string/_input.gsp"] = 'PROPERTY TYPE WIDGET'
+		views["/_fields/password/_input.gsp"] = 'INPUT WIDGET'
+
+		and:
+		def property = factory.accessorFor(personInstance, 'password')
+
+		expect:
+		def template = service.findTemplate(property, 'input', "password")
+		template.path == '/_fields/password/input'
+		template.plugin == null
+		render(template: template.path) == 'INPUT WIDGET'
+	}
+
+    void "resolves template for password display"() {
+		given:
+		views["/_fields/default/_display.gsp"] = 'DEFAULT DISPLAY TEMPLATE'
+		views["/_fields/string/_display.gsp"] = 'PROPERTY TYPE TEMPLATE'
+		views["/_fields/password/_display.gsp"] = 'OUTPUT TEMPLATE'
+
+		and:
+		def property = factory.accessorFor(personInstance, 'password')
+
+		expect:
+		def template = service.findTemplate(property, 'display', "password")
+		template.path == '/_fields/password/display'
+		template.plugin == null
+		render(template: template.path) == 'OUTPUT TEMPLATE'
+	}
+
+    void "resolves template for display password widget"() {
+		given:
+		views["/_fields/default/_displayOutput.gsp"] = 'DEFAULT FIELD FOR DISPLAY'
+		views["/_fields/string/_displayOutput.gsp"] = 'PROPERTY TYPE FOR DISPLAY'
+		views["/_fields/password/_displayOutput.gsp"] = 'OUTPUT FOR DISPLAY'
+
+		and:
+		def property = factory.accessorFor(personInstance, 'password')
+
+		expect:
+		def template = service.findTemplate(property, 'displayOutput', "password")
+		template.path == '/_fields/password/displayOutput'
+		template.plugin == null
+		render(template: template.path) == 'OUTPUT FOR DISPLAY'
 	}
 
 	void "resolves template for domain class property"() {

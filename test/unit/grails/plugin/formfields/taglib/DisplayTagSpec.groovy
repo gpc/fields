@@ -86,5 +86,108 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
         applyTemplate('<f:display bean="personInstance" property="transientText"/>', [personInstance: personInstance]) == personInstance.transientText
     }
 
+    void 'render field template with the input inside of it'() {
+        given:
+        views["/_fields/default/_field.gsp"] = '<dt>${label}</dt><dd>${widget}</dd>'
+        views["/_fields/default/_input.gsp"] = '${value.reverse()}'
+
+        and:
+        mockFormFieldsTemplateService.findTemplate(_, 'field', null) >> [path: '/_fields/default/field']
+        mockFormFieldsTemplateService.findTemplate(_, 'input', null) >> [path: '/_fields/default/input']
+
+        expect:
+        applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == '<dt>Name</dt><dd>nospmiS traB</dd>'
+    }
+
+    void 'render field template with the templates attribute'() {
+        given:
+        views["/_fields/widget/_field.gsp"] = '<dt>WIDGET:</dt><dd>${widget}</dd>'
+        views["/_fields/widget/_input.gsp"] = '${value.reverse()}'
+
+        and:
+        mockFormFieldsTemplateService.findTemplate(_, 'field', "widget") >> [path: '/_fields/widget/field']
+        mockFormFieldsTemplateService.findTemplate(_, 'input', "widget") >> [path: '/_fields/widget/input']
+
+        expect:
+        applyTemplate('<f:field bean="personInstance" property="name" templates="widget"/>', [personInstance: personInstance]) == '<dt>WIDGET:</dt><dd>nospmiS traB</dd>'
+    }
+
+    void 'render field template with the field attribute'() {
+        given:
+        views["/_fields/widget/_field.gsp"] = '<dt>WIDGET:</dt><dd>${widget}</dd>'
+        views["/_fields/default/_input.gsp"] = '${value}'
+
+        and:
+        mockFormFieldsTemplateService.findTemplate(_, 'field', "widget") >> [path: '/_fields/widget/field']
+        mockFormFieldsTemplateService.findTemplate(_, 'input', null) >> [path: '/_fields/default/input']
+
+        expect:
+        applyTemplate('<f:field bean="personInstance" property="name" field="widget"/>', [personInstance: personInstance]) == '<dt>WIDGET:</dt><dd>Bart Simpson</dd>'
+    }
+
+    void 'render field template with the widget attribute'() {
+        given:
+        views["/_fields/default/_field.gsp"] = '<dt>${label}</dt><dd>${widget}</dd>'
+        views["/_fields/widget/_input.gsp"] = '${value.reverse()}'
+
+        and:
+        mockFormFieldsTemplateService.findTemplate(_, 'field', null) >> [path: '/_fields/default/field']
+        mockFormFieldsTemplateService.findTemplate(_, 'input', "widget") >> [path: '/_fields/widget/input']
+
+        expect:
+        applyTemplate('<f:field bean="personInstance" property="name" widget="widget"/>', [personInstance: personInstance]) == '<dt>Name</dt><dd>nospmiS traB</dd>'
+    }
+
+    void 'render display template with the displayOutput inside of it'() {
+        given:
+        views["/_fields/default/_display.gsp"] = '<dt>${label}</dt><dd>${widget}</dd>'
+        views["/_fields/default/_displayOutput.gsp"] = '${value.reverse()}'
+
+        and:
+        mockFormFieldsTemplateService.findTemplate(_, 'display', null) >> [path: '/_fields/default/display']
+        mockFormFieldsTemplateService.findTemplate(_, 'displayOutput', null) >> [path: '/_fields/default/displayOutput']
+
+        expect:
+        applyTemplate('<f:display bean="personInstance" property="name"/>', [personInstance: personInstance]) == '<dt>Name</dt><dd>nospmiS traB</dd>'
+    }
+
+    void 'render display template with the templates attribute'() {
+        given:
+        views["/_fields/widget/_display.gsp"] = '<dt>WIDGET:</dt><dd>${widget}</dd>'
+        views["/_fields/widget/_displayOutput.gsp"] = '${value.reverse()}'
+
+        and:
+        mockFormFieldsTemplateService.findTemplate(_, 'display', "widget") >> [path: '/_fields/widget/display']
+        mockFormFieldsTemplateService.findTemplate(_, 'displayOutput', "widget") >> [path: '/_fields/widget/displayOutput']
+
+        expect:
+        applyTemplate('<f:display bean="personInstance" property="name" templates="widget"/>', [personInstance: personInstance]) == '<dt>WIDGET:</dt><dd>nospmiS traB</dd>'
+    }
+
+    void 'render display template with the field attribute'() {
+        given:
+        views["/_fields/widget/_display.gsp"] = '<dt>WIDGET:</dt><dd>${widget}</dd>'
+        views["/_fields/default/_displayOutput.gsp"] = '${value}'
+
+        and:
+        mockFormFieldsTemplateService.findTemplate(_, 'display', "widget") >> [path: '/_fields/widget/display']
+        mockFormFieldsTemplateService.findTemplate(_, 'displayOutput', null) >> [path: '/_fields/default/displayOutput']
+
+        expect:
+        applyTemplate('<f:display bean="personInstance" property="name" field="widget"/>', [personInstance: personInstance]) == '<dt>WIDGET:</dt><dd>Bart Simpson</dd>'
+    }
+
+    void 'render display template with the widget attribute'() {
+        given:
+        views["/_fields/default/_display.gsp"] = '<dt>${label}</dt><dd>${widget}</dd>'
+        views["/_fields/widget/_displayOutput.gsp"] = '${value.reverse()}'
+
+        and:
+        mockFormFieldsTemplateService.findTemplate(_, 'display', null) >> [path: '/_fields/default/display']
+        mockFormFieldsTemplateService.findTemplate(_, 'displayOutput', "widget") >> [path: '/_fields/widget/displayOutput']
+
+        expect:
+        applyTemplate('<f:display bean="personInstance" property="name" widget="widget"/>', [personInstance: personInstance]) == '<dt>Name</dt><dd>nospmiS traB</dd>'
+    }
 
 }

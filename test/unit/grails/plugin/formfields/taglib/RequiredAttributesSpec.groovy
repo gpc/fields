@@ -18,7 +18,11 @@ class RequiredAttributesSpec extends AbstractFormFieldsTagLibSpec {
 	def setup() {
 		def taglib = applicationContext.getBean(FormFieldsTagLib)
 
-		mockFormFieldsTemplateService.findTemplate(_, 'field', null) >> [path: '/_fields/default/field']
+		mockFormFieldsTemplateService.findTemplate(_, 'wrapper', null) >> [path: '/_fields/default/wrapper']
+        mockFormFieldsTemplateService.getTemplateFor('wrapper') >> "wrapper"
+        mockFormFieldsTemplateService.getTemplateFor('widget') >> "widget"
+        mockFormFieldsTemplateService.getTemplateFor('displayWrapper') >> "displayWrapper"
+        mockFormFieldsTemplateService.getTemplateFor('displayWidget') >> "displayWidget"
 		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 	}
 
@@ -48,7 +52,7 @@ class RequiredAttributesSpec extends AbstractFormFieldsTagLibSpec {
 
 	void "bean attribute can be a String"() {
 		given:
-		views["/_fields/default/_field.gsp"] = '${bean.getClass().simpleName}'
+		views["/_fields/default/_wrapper.gsp"] = '${bean.getClass().simpleName}'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "Person"

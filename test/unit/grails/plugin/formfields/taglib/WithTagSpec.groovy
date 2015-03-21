@@ -19,7 +19,11 @@ class WithTagSpec extends AbstractFormFieldsTagLibSpec {
 	def setup() {
 		def taglib = applicationContext.getBean(FormFieldsTagLib)
 
-		mockFormFieldsTemplateService.findTemplate(_, 'field', null) >> [path: '/_fields/default/field']
+		mockFormFieldsTemplateService.findTemplate(_, 'wrapper', null) >> [path: '/_fields/default/wrapper']
+        mockFormFieldsTemplateService.getTemplateFor('wrapper') >> "wrapper"
+        mockFormFieldsTemplateService.getTemplateFor('widget') >> "widget"
+        mockFormFieldsTemplateService.getTemplateFor('displayWrapper') >> "displayWrapper"
+        mockFormFieldsTemplateService.getTemplateFor('displayWidget') >> "displayWidget"
 		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 
         mockEmbeddedSitemeshLayout taglib
@@ -27,7 +31,7 @@ class WithTagSpec extends AbstractFormFieldsTagLibSpec {
 
 	void 'bean attribute does not have to be specified if it is in scope from f:with'() {
 		given:
-		views["/_fields/default/_field.gsp"] = '${property} '
+		views["/_fields/default/_wrapper.gsp"] = '${property} '
 
 		expect:
 		applyTemplate('<f:with bean="personInstance"><f:field property="name"/></f:with>', [personInstance: personInstance]) == 'name '
@@ -40,7 +44,7 @@ class WithTagSpec extends AbstractFormFieldsTagLibSpec {
 
     void 'embedded attributes work if in scope from f:with'() {
         given:
-        views['/_fields/default/_field.gsp'] = '${property} '
+        views['/_fields/default/_wrapper.gsp'] = '${property} '
 
         when:
         def output = applyTemplate('<f:with bean="personInstance"><f:field property="address"/></f:with>', [personInstance: personInstance])

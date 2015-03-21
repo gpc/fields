@@ -21,7 +21,8 @@ class TransientPropertySpec extends AbstractFormFieldsTagLibSpec {
     def setup() {
         def taglib = applicationContext.getBean(FormFieldsTagLib)
 
-        mockFormFieldsTemplateService.findTemplate(_, 'field', null) >> [path: '/_fields/default/field']
+        mockFormFieldsTemplateService.findTemplate(_, 'wrapper', null) >> [path: '/_fields/default/wrapper']
+        mockFormFieldsTemplateService.getTemplateFor('wrapper') >> "wrapper"
         taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 
         userInstance = new User(email: 'rob@freeside.co', password: 'yuonocanhaz', confirmPassword: 'yuonocanhaz').save(failOnError: true)
@@ -29,7 +30,7 @@ class TransientPropertySpec extends AbstractFormFieldsTagLibSpec {
 
     void 'transient properties can be rendered by f:field'() {
         given:
-        views["/_fields/default/_field.gsp"] = '${value}'
+        views["/_fields/default/_wrapper.gsp"] = '${value}'
 
         when:
         def output = applyTemplate('<f:field bean="userInstance" property="confirmPassword"/>', [userInstance: userInstance])

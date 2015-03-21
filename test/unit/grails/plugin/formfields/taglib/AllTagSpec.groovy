@@ -19,7 +19,11 @@ class AllTagSpec extends AbstractFormFieldsTagLibSpec {
 	def setup() {
 		def taglib = applicationContext.getBean(FormFieldsTagLib)
 
-		mockFormFieldsTemplateService.findTemplate(_, 'field', null) >> [path: '/_fields/default/field']
+		mockFormFieldsTemplateService.findTemplate(_, 'wrapper', null) >> [path: '/_fields/default/wrapper']
+        mockFormFieldsTemplateService.getTemplateFor('wrapper') >> "wrapper"
+        mockFormFieldsTemplateService.getTemplateFor('widget') >> "widget"
+        mockFormFieldsTemplateService.getTemplateFor('displayWrapper') >> "displayWrapper"
+        mockFormFieldsTemplateService.getTemplateFor('displayWidget') >> "displayWidget"
 		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 
 		mockEmbeddedSitemeshLayout(taglib)
@@ -27,7 +31,7 @@ class AllTagSpec extends AbstractFormFieldsTagLibSpec {
 
 	void "all tag renders fields for all properties"() {
 		given:
-		views["/_fields/default/_field.gsp"] = '${property} '
+		views["/_fields/default/_wrapper.gsp"] = '${property} '
 
 		when:
 		def output = applyTemplate('<f:all bean="personInstance"/>', [personInstance: personInstance])
@@ -43,7 +47,7 @@ class AllTagSpec extends AbstractFormFieldsTagLibSpec {
 	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/21')
 	void 'all tag skips #property property'() {
 		given:
-		views["/_fields/default/_field.gsp"] = '${property} '
+		views["/_fields/default/_wrapper.gsp"] = '${property} '
 
 		when:
 		def output = applyTemplate('<f:all bean="personInstance"/>', [personInstance: personInstance])
@@ -58,7 +62,7 @@ class AllTagSpec extends AbstractFormFieldsTagLibSpec {
 	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/12')
 	void 'all tag skips properties listed with the except attribute'() {
 		given:
-		views["/_fields/default/_field.gsp"] = '${property} '
+		views["/_fields/default/_wrapper.gsp"] = '${property} '
 
 		when:
 		def output = applyTemplate('<f:all bean="personInstance" except="password, minor"/>', [personInstance: personInstance])

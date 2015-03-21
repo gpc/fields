@@ -19,7 +19,11 @@ class EmbeddedPropertiesSpec extends AbstractFormFieldsTagLibSpec {
 	def setup() {
 		def taglib = applicationContext.getBean(FormFieldsTagLib)
 
-		mockFormFieldsTemplateService.findTemplate(_, 'field', null) >> [path: '/_fields/default/field']
+		mockFormFieldsTemplateService.findTemplate(_, 'wrapper', null) >> [path: '/_fields/default/wrapper']
+        mockFormFieldsTemplateService.getTemplateFor('wrapper') >> "wrapper"
+        mockFormFieldsTemplateService.getTemplateFor('widget') >> "widget"
+        mockFormFieldsTemplateService.getTemplateFor('displayWrapper') >> "displayWrapper"
+        mockFormFieldsTemplateService.getTemplateFor('displayWidget') >> "displayWidget"
 		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 
         mockEmbeddedSitemeshLayout taglib
@@ -27,7 +31,7 @@ class EmbeddedPropertiesSpec extends AbstractFormFieldsTagLibSpec {
 
 	void "field tag renders individual fields for embedded properties"() {
 		given:
-		views["/_fields/default/_field.gsp"] = '${property} '
+		views["/_fields/default/_wrapper.gsp"] = '${property} '
 
 		when:
 		def output = applyTemplate('<f:field bean="personInstance" property="address"/>', [personInstance: personInstance])
@@ -38,7 +42,7 @@ class EmbeddedPropertiesSpec extends AbstractFormFieldsTagLibSpec {
 
 	void "field tag wraps embedded properties in a container"() {
 		given:
-		views["/_fields/default/_field.gsp"] = '${property} '
+		views["/_fields/default/_wrapper.gsp"] = '${property} '
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="address"/>', [personInstance: personInstance]) == '<fieldset class="embedded address"><legend>Address</legend>address.street address.city address.country </fieldset>'
@@ -46,7 +50,7 @@ class EmbeddedPropertiesSpec extends AbstractFormFieldsTagLibSpec {
 
 	void "embedded property label is resolved from message bundle"() {
 		given:
-		views["/_fields/default/_field.gsp"] = '${property} '
+		views["/_fields/default/_wrapper.gsp"] = '${property} '
 
 		and:
 		messageSource.addMessage('person.address.label', request.locale, 'Address of person')

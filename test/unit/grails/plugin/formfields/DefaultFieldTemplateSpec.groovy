@@ -16,7 +16,7 @@ class DefaultFieldTemplateSpec extends Specification {
 		model.property = 'property'
 		model.required = false
 		model.widget = '<input name="property">'
-        views["/default/_field.gsp"] = '<g:set var="classes" value="fieldcontain "/>\n' +
+        views["/default/_wrapper.gsp"] = '<g:set var="classes" value="fieldcontain "/>\n' +
                 '<g:if test="${required}">\n' +
                 '    <g:set var="classes" value="${classes + \'required \'}"/>\n' +
                 '</g:if>\n' +

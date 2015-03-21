@@ -40,6 +40,17 @@ class FormFieldsTemplateService {
         findTemplateCached(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder)
     }
 
+    String getTemplateFor(String property){
+        getTemplateName(property)
+    }
+
+    private
+    final Closure getTemplateName = shouldCache() ? this.&getTemplateNameCacheable.memoize() : this.&getTemplateNameCacheable
+
+    private String getTemplateNameCacheable(String templateProperty){
+        return grailsApplication?.config?.grails?.plugin?.fields[templateProperty] ?: templateProperty
+    }
+
     private
     final Closure findTemplateCached = shouldCache() ? this.&findTemplateCacheable.memoize() : this.&findTemplateCacheable
 

@@ -16,7 +16,8 @@ class Person {
 	String excludedProperty
 	String displayFalseProperty
 	Boolean grailsDeveloper
-    Byte[] picture
+	Byte[] picture
+	byte[] anotherPicture
 
     transient String getTransientText() {
         "transient text"
@@ -33,8 +34,9 @@ class Person {
 		excludedProperty nullable: true
 		displayFalseProperty nullable: true, display: false
 		grailsDeveloper nullable: true
-        	picture nullable: true
-        	password password: true
+		picture nullable: true
+		anotherPicture nullable: true
+		password password: true
 	}
 
 	static scaffold = [exclude: ['excludedProperty']]

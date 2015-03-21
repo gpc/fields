@@ -75,9 +75,9 @@ class FormFieldsTemplateService {
     }
 
     static String toPropertyNameFormat(Class type) {
-        def propertyNameFormat = GrailsNameUtils.getLogicalPropertyName(type.name, '')
-        if (propertyNameFormat.endsWith(';')) {
-            propertyNameFormat = propertyNameFormat - ';' + 'Array'
+        def propertyNameFormat = GrailsNameUtils.getLogicalPropertyName(type.canonicalName, '')
+        if (propertyNameFormat.endsWith('[]')) {
+            propertyNameFormat = propertyNameFormat - '[]' + 'Array'
         }
         return propertyNameFormat
     }

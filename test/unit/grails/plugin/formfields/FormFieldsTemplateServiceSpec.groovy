@@ -1,13 +1,14 @@
 package grails.plugin.formfields
-
+import grails.plugin.formfields.mock.*
+import grails.test.mixin.TestFor
+import grails.test.mixin.TestMixin
 import grails.test.mixin.web.GroovyPageUnitTestMixin
 import org.codehaus.groovy.grails.support.proxy.DefaultProxyHandler
 import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
-import grails.plugin.formfields.mock.*
-import grails.test.mixin.*
-import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
-import spock.lang.*
+import spock.lang.IgnoreIf
+import spock.lang.Issue
+import spock.lang.Specification
 
 @TestMixin(GroovyPageUnitTestMixin)
 @TestFor(FormFieldsTemplateService)
@@ -451,7 +452,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
 	}
 
     @Issue('https://github.com/gpc/grails-fields/issues/144')
-    void "resolves template for property type byte[]"() {
+    void "resolves template for property type object Byte array"() {
         given:
         views["/_fields/default/_wrapper.gsp"] = 'DEFAULT FIELD TEMPLATE'
         views["/_fields/byteArray/_wrapper.gsp"] = 'PROPERTY BYTE ARRAY TYPE TEMPLATE'
@@ -472,5 +473,24 @@ class FormFieldsTemplateServiceSpec extends Specification {
         expect:
         null == service.getWidget(null)
     }
+
+    @Issue('https://github.com/gpc/grails-fields/issues/183')
+    void "resolves template for property type simple type byte array"() {
+        given:
+        views["/_fields/default/_wrapper.gsp"] = 'DEFAULT FIELD TEMPLATE'
+        views["/_fields/byteArray/_wrapper.gsp"] = 'PROPERTY SIMPLE BYTE ARRAY TYPE TEMPLATE'
+        views["/_fields/byte;/_wrapper.gsp"] = 'PROPERTY WRONG BYTE ARRAY TYPE TEMPLATE'
+        views["/_fields/[B/_wrapper.gsp"] = 'PROPERTY WRONG BYTE ARRAY TYPE TEMPLATE'
+
+        and:
+        def property = factory.accessorFor(personInstance, 'anotherPicture')
+
+        expect:
+        def template = service.findTemplate(property, 'wrapper', null)
+        template.path == '/_fields/byteArray/wrapper'
+        template.plugin == null
+        render(template: template.path) == 'PROPERTY SIMPLE BYTE ARRAY TYPE TEMPLATE'
+    }
+
 
 }

@@ -127,7 +127,7 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
         mockFormFieldsTemplateService.findTemplate(_, 'widget', null) >> [path: '/_fields/default/widget']
 
         expect:
-        applyTemplate('<f:field bean="personInstance" property="name" field="widget"/>', [personInstance: personInstance]) == '<dt>WIDGET:</dt><dd>Bart Simpson</dd>'
+        applyTemplate('<f:field bean="personInstance" property="name" wrapper="widget"/>', [personInstance: personInstance]) == '<dt>WIDGET:</dt><dd>Bart Simpson</dd>'
     }
 
     void 'render field template with the widget attribute'() {
@@ -179,7 +179,7 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
         mockFormFieldsTemplateService.findTemplate(_, 'displayWidget', null) >> [path: '/_fields/default/displayWidget']
 
         expect:
-        applyTemplate('<f:display bean="personInstance" property="name" field="widget"/>', [personInstance: personInstance]) == '<dt>WIDGET:</dt><dd>Bart Simpson</dd>'
+        applyTemplate('<f:display bean="personInstance" property="name" wrapper="widget"/>', [personInstance: personInstance]) == '<dt>WIDGET:</dt><dd>Bart Simpson</dd>'
     }
 
     void 'render display template with the widget attribute'() {

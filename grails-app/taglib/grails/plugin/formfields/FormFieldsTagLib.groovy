@@ -92,6 +92,9 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	 * is determined by whether there are any errors associated with it.
 	 * @attr label Overrides the default label displayed next to the input field.
 	 * @attr prefix Prefix to add to input element names.
+	 * @attr wrapper Specify the folder inside _fields where to look up for the wrapper template.
+	 * @attr widget Specify the folder inside _fields where to look up for the widget template.
+	 * @attr templates Specify the folder inside _fields where to look up for the wrapper and widget template.
 	 */
 	def field = { attrs, body ->
 		if (attrs.containsKey('bean') && !attrs.bean) throwTagError("Tag [field] requires a non-null value for attribute [bean]")
@@ -100,7 +103,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		def bean = resolveBean(attrs.remove('bean'))
 		def property = attrs.remove('property')
         def templatesFolder = attrs.remove('templates')
-        def fieldFolder = attrs.remove('field')
+        def fieldFolder = attrs.remove('wrapper')
         def widgetFolder = attrs.remove('widget')
 
 		def propertyAccessor = resolveProperty(bean, property)
@@ -160,7 +163,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		def property = attrs.remove('property')
 
         def templatesFolder = attrs.remove('templates')
-        def displayFolder = attrs.remove('field')
+        def displayFolder = attrs.remove('wrapper')
         def widgetFolder = attrs.remove('widget')
 
 		def propertyAccessor = resolveProperty(bean, property)

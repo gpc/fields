@@ -1,5 +1,31 @@
-The plugin resolves the GSP template used for each property according to conventions. You can override the rendering based on the class and property name or the property type. The _f:field_ tag looks for a template called @\_field.gsp@, the _f:input_ tag looks for a template called @\_input.gsp@ and the _f:display_ tag looks for a template called @\_display.gsp@. All the tags will look in the following locations in decreasing order of preference:
+The plugin resolves the GSP template used for each property according to conventions. You can override the rendering based on the class and property name or the property type. The _f:field_ tag looks for a template called @\_wrapper.gsp@, the _f:input_ tag looks for a template called @\_widget.gsp@, the _f:display_ tag looks for a template called @\_displayWrapper.gsp@.
 
+Since version 1.5:
+* You can specify a widget template for a display. The default name is _displayWidget.gsp
+* All the default names for the templates were replaced for good. _field.gsp is now _wrapper.gsp, _input.gsp is now _widget.gsp, _display.gsp is now _displayWrapper.gsp and now is a new template called _displayWidget.gsp.
+* You can configure how the templates are named:
+Configure in your Config.groovy: (i.e. for backwards compatibility)
+{code}
+grails.plugin.fields.wrapper = "field"
+grails.plugin.fields.displayWrapper = "display"
+grails.plugin.fields.widget = "input"
+grails.plugin.fields.displayWidget = "displayWidget"
+{code}
+* You can change how the templates are found specifying some attributes in your views:
+i.e. (with the default configuration for the templates names)
+{code}
+<f:field   property="startDate" wrapper="bootstrap3"/>   // -> renders _fields/bootstrap3/_wrapper.gsp
+<f:field   property="startDate" widget="time"/>          // -> renders _fields/time/_widget.gsp
+<f:field   property="startDate" templates="time"/>       // -> renders _fields/time/_wrapper.gsp and _fields/time/_widget.gsp
+
+<f:display property="startDate" wrapper="bootstrap3"/>   // -> renders _fields/bootstrap3/_displayWrapper.gsp
+<f:display property="startDate" widget="time"/>          // -> renders _fields/time/_displayWidget.gsp
+<f:display property="startDate" templates="time"/>       // -> renders _fields/time/_displayWrapper.gsp and _fields/time/_displayWidget.gsp
+{code}
+
+All the tags will look in the following locations in decreasing order of preference:
+
+# @grails-app/views/*someComponent*/@ (if you specify wrapper or widget attribute)
 # @grails-app/views/*controllerName*/*actionName*/*propertyName*/@
 # @grails-app/views/*controllerName*/*actionName*/*propertyType*/@
 # @grails-app/views/*controllerName*/*actionName*/@
@@ -31,52 +57,55 @@ All class names are camel-cased simple forms. For example _java.lang.String_ = _
 
 Templates are resolved in this order so that you can override in the more specific circumstance and fall back to successively more general defaults. For example, you can define a field template for all _java.lang.String_ properties but override a specific property of a particular class to use more specialized rendering.
 
-Templates in plugins are resolved as well. This means plugins such as _Joda Time_ can provide default rendering for special property types. A template in your application will take precedence over a template in a plugin at the same 'level'. For example if a plugin provides a @grails-app/views/\_fields/string/\_input.gsp@ the same template in your application will override it but if the plugin provides @grails-app/views/\_fields/person/name/\_input.gsp@ it would be used in preference to the more general template in your application.
+Templates in plugins are resolved as well. This means plugins such as _Joda Time_ can provide default rendering for special property types. A template in your application will take precedence over a template in a plugin at the same 'level'. For example if a plugin provides a @grails-app/views/\_fields/string/\_widget.gsp@ the same template in your application will override it but if the plugin provides @grails-app/views/\_fields/person/name/\_widget.gsp@ it would be used in preference to the more general template in your application.
 
 For most properties the out-of-the-box defaults should provide a good starting point.
 
 h2. Example
 
-Imagine an object of class _Employee_ that extends the class _Person_ and has a a String _name_ property.
+Imagine an object of class _Employee_ that extends the class _Person_ and has a String _name_ property.
 
 You can override the template _f:field_ uses with any of these:
 
-# @grails-app/views/*controllerName*/*actionName*/name/\_field.gsp@
-# @grails-app/views/*controllerName*/*actionName*/string/\_field.gsp@
-# @grails-app/views/*controllerName*/*actionName*/\_field.gsp@
-# @grails-app/views/*controllerName*/name/\_field.gsp@
-# @grails-app/views/*controllerName*/string/\_field.gsp@
-# @grails-app/views/*controllerName*/\_field.gsp@
-# @grails-app/views/\_fields/employee/name/\_field.gsp@
-# @grails-app/views/\_fields/person/name/\_field.gsp@
-# @grails-app/views/\_fields/string/\_field.gsp@
-# @grails-app/views/\_fields/default/\_field.gsp@
+# @grails-app/views/\_fields/*componentName*/\_wrapper.gsp@
+# @grails-app/views/*controllerName*/*actionName*/name/\_wrapper.gsp@
+# @grails-app/views/*controllerName*/*actionName*/string/\_wrapper.gsp@
+# @grails-app/views/*controllerName*/*actionName*/\_wrapper.gsp@
+# @grails-app/views/*controllerName*/name/\_wrapper.gsp@
+# @grails-app/views/*controllerName*/string/\_wrapper.gsp@
+# @grails-app/views/*controllerName*/\_wrapper.gsp@
+# @grails-app/views/\_fields/employee/name/\_wrapper.gsp@
+# @grails-app/views/\_fields/person/name/\_wrapper.gsp@
+# @grails-app/views/\_fields/string/\_wrapper.gsp@
+# @grails-app/views/\_fields/default/\_wrapper.gsp@
 
 override the template _f:input_ uses with any of these:
 
-# @grails-app/views/*controllerName*/*actionName*/name/\_input.gsp@
-# @grails-app/views/*controllerName*/*actionName*/string/\_input.gsp@
-# @grails-app/views/*controllerName*/*actionName*/\_input.gsp@
-# @grails-app/views/*controllerName*/name/\_input.gsp@
-# @grails-app/views/*controllerName*/string/\_input.gsp@
-# @grails-app/views/*controllerName*/\_input.gsp@
-# @grails-app/views/\_fields/employee/name/\_input.gsp@
-# @grails-app/views/\_fields/person/name/\_input.gsp@
-# @grails-app/views/\_fields/string/\_input.gsp@
-# @grails-app/views/\_fields/default/\_input.gsp@
+# @grails-app/views/\_fields/*componentName*/\_widget.gsp@
+# @grails-app/views/*controllerName*/*actionName*/name/\_widget.gsp@
+# @grails-app/views/*controllerName*/*actionName*/string/\_widget.gsp@
+# @grails-app/views/*controllerName*/*actionName*/\_widget.gsp@
+# @grails-app/views/*controllerName*/name/\_widget.gsp@
+# @grails-app/views/*controllerName*/string/\_widget.gsp@
+# @grails-app/views/*controllerName*/\_widget.gsp@
+# @grails-app/views/\_fields/employee/name/\_widget.gsp@
+# @grails-app/views/\_fields/person/name/\_widget.gsp@
+# @grails-app/views/\_fields/string/\_widget.gsp@
+# @grails-app/views/\_fields/default/\_widget.gsp@
 
 and override the template _f:display_ uses with any of these:
 
-# @grails-app/views/*controllerName*/*actionName*/name/\_display.gsp@
-# @grails-app/views/*controllerName*/*actionName*/string/\_display.gsp@
-# @grails-app/views/*controllerName*/*actionName*/\_display.gsp@
-# @grails-app/views/*controllerName*/name/\_display.gsp@
-# @grails-app/views/*controllerName*/string/\_display.gsp@
-# @grails-app/views/*controllerName*/\_display.gsp@
-# @grails-app/views/\_fields/employee/name/\_display.gsp@
-# @grails-app/views/\_fields/person/name/\_display.gsp@
-# @grails-app/views/\_fields/string/\_display.gsp@
-# @grails-app/views/\_fields/default/\_display.gsp@
+# @grails-app/views/\_fields/*componentName*/\_displayWrapper.gsp@
+# @grails-app/views/*controllerName*/*actionName*/name/\_displayWrapper.gsp@
+# @grails-app/views/*controllerName*/*actionName*/string/\_displayWrapper.gsp@
+# @grails-app/views/*controllerName*/*actionName*/\_displayWrapper.gsp@
+# @grails-app/views/*controllerName*/name/\_displayWrapper.gsp@
+# @grails-app/views/*controllerName*/string/\_displayWrapper.gsp@
+# @grails-app/views/*controllerName*/\_displayWrapper.gsp@
+# @grails-app/views/\_fields/employee/name/\_displayWrapper.gsp@
+# @grails-app/views/\_fields/person/name/\_displayWrapper.gsp@
+# @grails-app/views/\_fields/string/\_displayWrapper.gsp@
+# @grails-app/views/\_fields/default/\_displayWrapper.gsp@
 
 During template development it is usually recommended to disable template caching in order to allow the plugin to recognize new/renamed/moved templates without restarting the application. See the "Performance" section of the guide for the exact settings.
 

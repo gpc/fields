@@ -115,10 +115,11 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			def inputAttrs = [:]
 
 			attrs.each { k, v ->
-				if (k?.startsWith("input-"))
-					inputAttrs[k.replace("input-", '')] = v
-				else
-					fieldAttrs[k] = v
+				if (k?.startsWith("input-")) {
+                    inputAttrs[k.replace("input-", '')] = v
+                } else {
+                    fieldAttrs[k] = v
+                }
 			}
 
 			if (hasBody(body)) {

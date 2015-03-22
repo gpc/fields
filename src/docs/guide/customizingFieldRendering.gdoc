@@ -1,31 +1,39 @@
-The plugin resolves the GSP template used for each property according to conventions. You can override the rendering based on the class and property name or the property type. The _f:field_ tag looks for a template called @\_wrapper.gsp@, the _f:input_ tag looks for a template called @\_widget.gsp@, the _f:display_ tag looks for a template called @\_displayWrapper.gsp@.
+The plugin resolves the GSP template used for each property according to conventions. You can override the rendering based
+on the class and property name or the property type. The _f:field_ tag looks for a template called @\_wrapper.gsp@, the _f:input_
+tag looks for a template called @\_widget.gsp@, the _f:display_ tag looks for a template called @\_displayWrapper.gsp@.
 
-Since version 1.5:
-* You can specify a widget template for a display. The default name is _displayWidget.gsp
-* All the default names for the templates were replaced for good. _field.gsp is now _wrapper.gsp, _input.gsp is now _widget.gsp, _display.gsp is now _displayWrapper.gsp and now is a new template called _displayWidget.gsp.
-* You can configure how the templates are named:
-Configure in your Config.groovy: (i.e. for backwards compatibility)
+{warning}
+Breaking changes in version 1.5
+{warning}
+
+In version 1.5 a new template was introduced @_displayWidget.gsp@. This is the corollary of @_widget.gsp@ for fields that
+are read-only, i.e. it is responsible for rendering just the markup for the field itself. Furthermore, the default names
+of all the templates were changed in this version, in the interest of clarity and consistency. The changes to the template
+names are summarized below:
+
+{table}
+ *Old Template Name (before v.1.5)* | *New Template Name (v.1.5 onwards)*
+ @_field.gsp@ | @_wrapper.gsp@
+ @_input.gsp@ | @_widget.gsp@
+ @_display.gsp@ | @_displayWrapper.gsp@
+ N/A | @_displayWidget.gsp@
+{table}
+
+Users upgrading to 1.5 from a previous version should either rename their templates (recommended) or add the following
+to @Config.groovy@ to change the default templates names to the old names
+
 {code}
 grails.plugin.fields.wrapper = "field"
 grails.plugin.fields.displayWrapper = "display"
 grails.plugin.fields.widget = "input"
 grails.plugin.fields.displayWidget = "displayWidget"
 {code}
-* You can change how the templates are found specifying some attributes in your views:
-i.e. (with the default configuration for the templates names)
-{code}
-<f:field   property="startDate" wrapper="bootstrap3"/>   // -> renders _fields/bootstrap3/_wrapper.gsp
-<f:field   property="startDate" widget="time"/>          // -> renders _fields/time/_widget.gsp
-<f:field   property="startDate" templates="time"/>       // -> renders _fields/time/_wrapper.gsp and _fields/time/_widget.gsp
 
-<f:display property="startDate" wrapper="bootstrap3"/>   // -> renders _fields/bootstrap3/_displayWrapper.gsp
-<f:display property="startDate" widget="time"/>          // -> renders _fields/time/_displayWidget.gsp
-<f:display property="startDate" templates="time"/>       // -> renders _fields/time/_displayWrapper.gsp and _fields/time/_displayWidget.gsp
-{code}
+h1. Locating Field Templates by Convention
 
-All the tags will look in the following locations in decreasing order of preference:
+The template for a field is chosen by a convention using the names of the controller, action, bean
+class, bean property, etc. All the tags will look for templates in the following directories in decreasing order of preference:
 
-# @grails-app/views/*someComponent*/@ (if you specify wrapper or widget attribute)
 # @grails-app/views/*controllerName*/*actionName*/*propertyName*/@
 # @grails-app/views/*controllerName*/*actionName*/*propertyType*/@
 # @grails-app/views/*controllerName*/*actionName*/@
@@ -61,13 +69,12 @@ Templates in plugins are resolved as well. This means plugins such as _Joda Time
 
 For most properties the out-of-the-box defaults should provide a good starting point.
 
-h2. Example
+h2. Locating Templates Conventionally Example
 
 Imagine an object of class _Employee_ that extends the class _Person_ and has a String _name_ property.
 
 You can override the template _f:field_ uses with any of these:
 
-# @grails-app/views/\_fields/*componentName*/\_wrapper.gsp@
 # @grails-app/views/*controllerName*/*actionName*/name/\_wrapper.gsp@
 # @grails-app/views/*controllerName*/*actionName*/string/\_wrapper.gsp@
 # @grails-app/views/*controllerName*/*actionName*/\_wrapper.gsp@
@@ -81,7 +88,6 @@ You can override the template _f:field_ uses with any of these:
 
 override the template _f:input_ uses with any of these:
 
-# @grails-app/views/\_fields/*componentName*/\_widget.gsp@
 # @grails-app/views/*controllerName*/*actionName*/name/\_widget.gsp@
 # @grails-app/views/*controllerName*/*actionName*/string/\_widget.gsp@
 # @grails-app/views/*controllerName*/*actionName*/\_widget.gsp@
@@ -95,7 +101,6 @@ override the template _f:input_ uses with any of these:
 
 and override the template _f:display_ uses with any of these:
 
-# @grails-app/views/\_fields/*componentName*/\_displayWrapper.gsp@
 # @grails-app/views/*controllerName*/*actionName*/name/\_displayWrapper.gsp@
 # @grails-app/views/*controllerName*/*actionName*/string/\_displayWrapper.gsp@
 # @grails-app/views/*controllerName*/*actionName*/\_displayWrapper.gsp@
@@ -155,3 +160,37 @@ If the _label_ attribute is not supplied to the _f:field_ tag then the label str
 # An i18n message using the key '_beanClass_._path_@.label@'. For example when using @<f:field bean="personInstance" property="address.city"/>@ the plugin will try the i18n key @person.address.city.label@. If the property path contains any index it is removed so @<f:field bean="authorInstance" property="books[0].title"/>@ would use the key @author.books.title.label@.
 # An i18n message using the key '_objectType_._propertyName_@.label@'. For example when using @<f:field bean="personInstance" property="address.city"/>@ the plugin will try the i18n key @address.city.label@.
 # The natural property name. For example when using @<f:field bean="personInstance" property="dateOfBirth"/>@ the plugin will use the label @"Date Of Birth"@.
+
+h1. Locating Field Templates Directly
+
+Rather than relying on the convention described previously to locate the template(s) to be used for a particular field, it is
+instead possible to directly specify the directory containing the templates. This feature was introduced in version 1.5.
+
+# The @wrapper@ attribute can be used with the _f:field_ or _f:display_ tags to specify the directory containing the @_wrapper.gsp@ or @_displayWrapper.gsp@ template to be used
+# The @widget@ attribute can be used with the _f:field_ or _f:display_ tags to specify the directory containing the @_widget.gsp@ or @_displayWidget.gsp@ template to be used
+# If the wrapper and widget templates both have the same value, the @templates@ attribute can be used instead as a shorthand. For example:
+
+{code}
+<f:field property="startDate" templates="bootstrap3" />
+{code}
+
+is equivalent to:
+
+{code}
+<f:field property="startDate" wrapper="bootstrap3" widget="bootstrap3" />
+{code}
+
+If a direct location is specified, and the templates cannot be found therein, the plugin will fallback to locating templates
+by convention.
+
+h2. Locating Templates Directly Example
+
+{code}
+<f:field property="startDate" wrapper="bootstrap3"/>   // -> renders _fields/bootstrap3/_wrapper.gsp
+<f:field property="startDate" widget="time"/>          // -> renders _fields/time/_widget.gsp
+<f:field property="startDate" templates="time"/>       // -> renders _fields/time/_wrapper.gsp and _fields/time/_widget.gsp
+
+<f:display property="startDate" wrapper="bootstrap3"/> // -> renders _fields/bootstrap3/_displayWrapper.gsp
+<f:display property="startDate" widget="time"/>        // -> renders _fields/time/_displayWidget.gsp
+<f:display property="startDate" templates="time"/>     // -> renders _fields/time/_displayWrapper.gsp and _fields/time/_displayWidget.gsp
+{code}

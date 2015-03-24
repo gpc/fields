@@ -33,7 +33,7 @@ class FieldsGrailsPlugin {
 	def license = 'APACHE'
 	def issueManagement = [system: 'GitHub', url: 'https://github.com/grails-fields-plugin/grails-fields/issues']
 	def scm = [system: 'GitHub', url: 'https://github.com/grails-fields-plugin/grails-fields']
-     	def organization = [ name: "Grails Fields Plugin Developers Group", url: "https://github.com/grails-fields-plugin" ]
+    def organization = [ name: "Grails Fields Plugin Developers Group", url: "https://github.com/grails-fields-plugin" ]
 
 	def developers = [ 
 		[ name: "Rob Fletcher", email: "rob@freeside.co" ],

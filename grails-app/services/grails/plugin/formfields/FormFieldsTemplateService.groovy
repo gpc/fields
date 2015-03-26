@@ -40,8 +40,8 @@ class FormFieldsTemplateService {
         findTemplateCached(propertyAccessor, controllerNamespace, controllerName, actionName, templateName)
     }
 
-    private
-    final Closure findTemplateCached = shouldCache() ? this.&findTemplateCacheable.memoize() : this.&findTemplateCacheable
+    @Lazy
+    private Closure findTemplateCached = shouldCache() ? this.&findTemplateCacheable.memoize() : this.&findTemplateCacheable
 
     private Map findTemplateCacheable(BeanPropertyAccessor propertyAccessor, String controllerNamespace, String controllerName, String actionName, String templateName) {
         def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName)
@@ -179,7 +179,7 @@ class FormFieldsTemplateService {
     }
 
     private boolean shouldCache() {
-        // If not explicitely specified, there is no template caching
+        // If not explicitly specified, there is no template caching
         Boolean cacheDisabled = grailsApplication?.config?.grails?.plugin?.fields?.disableLookupCache
         return !cacheDisabled
     }

@@ -134,25 +134,26 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			renderEmbeddedProperties(bean, propertyAccessor, attrs + [templates: templatesFolder, field: fieldFolder, input: widgetFolder])
 		} else {
 			def model = buildModel(propertyAccessor, attrs)
-			def fieldAttrs = [:]
-			def inputAttrs = [:]
+			def wrapperAttrs = [:]
+			def widgetAttrs = [:]
 
 			attrs.each { k, v ->
-				if (k?.startsWith("input-"))
-					inputAttrs[k.replace("input-", '')] = v
+				String prefixAttribute = formFieldsTemplateService.getWidgetPrefix()
+				if (k?.startsWith(prefixAttribute))
+					widgetAttrs[k.replace(prefixAttribute, '')] = v
 				else
-					fieldAttrs[k] = v
+					wrapperAttrs[k] = v
 			}
 
 			if (hasBody(body)) {
-                model.widget = raw(body(model + [attrs: inputAttrs] + inputAttrs))
+                model.widget = raw(body(model + [attrs: widgetAttrs] + widgetAttrs))
             } else {
-				model.widget = renderWidget(propertyAccessor, model, inputAttrs, widgetFolder?:templatesFolder)
+				model.widget = renderWidget(propertyAccessor, model, widgetAttrs, widgetFolder?:templatesFolder)
 			}
 
 			def template = formFieldsTemplateService.findTemplate(propertyAccessor, formFieldsTemplateService.getTemplateFor("wrapper"), fieldFolder?:templatesFolder)
 			if (template) {
-				out << render(template: template.path, plugin: template.plugin, model: model + [attrs: fieldAttrs] + fieldAttrs)
+				out << render(template: template.path, plugin: template.plugin, model: model + [attrs: wrapperAttrs] + wrapperAttrs)
 			} else {
                 out << renderDefaultField(model)
 			}
@@ -197,16 +198,27 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		def propertyAccessor = resolveProperty(bean, property)
 		def model = buildModel(propertyAccessor, attrs)
 
+		def wrapperAttrs = [:]
+		def widgetAttrs = [:]
+
+		attrs.each { k, v ->
+			String prefixAttribute = formFieldsTemplateService.getWidgetPrefix()
+			if (k?.startsWith(prefixAttribute))
+				widgetAttrs[k.replace(prefixAttribute, '')] = v
+			else
+				wrapperAttrs[k] = v
+		}
+
         if (hasBody(body)) {
 			model.value = body(model)
-            model.widget = raw(body(model + [attrs: attrs]))
+            model.widget = raw(body(model + [attrs: widgetAttrs] + widgetAttrs))
         } else {
-            model.widget = renderDisplayWidget(propertyAccessor, model, attrs, widgetFolder?:templatesFolder)
+            model.widget = renderDisplayWidget(propertyAccessor, model, widgetAttrs, widgetFolder?:templatesFolder)
         }
 
         def template = formFieldsTemplateService.findTemplate(propertyAccessor, formFieldsTemplateService.getTemplateFor("displayWrapper"), displayFolder?:templatesFolder)
         if (template) {
-            out << render(template: template.path, plugin: template.plugin, model: model + [attrs: attrs] + attrs)
+            out << render(template: template.path, plugin: template.plugin, model: model + [attrs: wrapperAttrs] + wrapperAttrs)
         } else {
             out << raw(model.widget)
         }

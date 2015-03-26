@@ -24,6 +24,7 @@ class EmbeddedPropertiesSpec extends AbstractFormFieldsTagLibSpec {
         mockFormFieldsTemplateService.getTemplateFor('widget') >> "widget"
         mockFormFieldsTemplateService.getTemplateFor('displayWrapper') >> "displayWrapper"
         mockFormFieldsTemplateService.getTemplateFor('displayWidget') >> "displayWidget"
+		mockFormFieldsTemplateService.getWidgetPrefix() >> 'input-'
 		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 
         mockEmbeddedSitemeshLayout taglib

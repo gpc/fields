@@ -36,6 +36,17 @@ class FormFieldsTemplateService {
     GrailsConventionGroovyPageLocator groovyPageLocator
     GrailsPluginManager pluginManager
 
+    String getWidgetPrefix(){
+        getWidgetPrefixName()
+    }
+
+    private
+    final Closure getWidgetPrefixName = shouldCache() ? this.&getWidgetPrefixNameCacheable.memoize() : this.&getWidgetPrefixNameCacheable
+
+    private String getWidgetPrefixNameCacheable(){
+        return grailsApplication?.config?.grails?.plugin?.fields?.widgetPrefix ?: 'widget-'
+    }
+
     Map findTemplate(BeanPropertyAccessor propertyAccessor, String templateName, String templatesFolder) {
         findTemplateCached(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder)
     }

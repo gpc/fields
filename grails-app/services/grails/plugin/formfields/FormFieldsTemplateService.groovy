@@ -37,13 +37,19 @@ class FormFieldsTemplateService {
     GrailsPluginManager pluginManager
 
     Map findTemplate(BeanPropertyAccessor propertyAccessor, String templateName) {
-        findTemplateCached(propertyAccessor, controllerNamespace, controllerName, actionName, templateName)
+        // it looks like the assignment below is redundant, but tests fail if findTemplateCached is invoked directly
+        Closure templateFinder = findTemplateCached
+        templateFinder(propertyAccessor, controllerNamespace, controllerName, actionName, templateName)
     }
 
     @Lazy
-    private Closure findTemplateCached = shouldCache() ? this.&findTemplateCacheable.memoize() : this.&findTemplateCacheable
+    private Closure findTemplateCached = shouldCache() ? findTemplateCacheable.memoize() : findTemplateCacheable
 
-    private Map findTemplateCacheable(BeanPropertyAccessor propertyAccessor, String controllerNamespace, String controllerName, String actionName, String templateName) {
+    /**
+     * Locates a template and returns a map indicating the path to the template and the plugin in which it is contained.
+     * The latter will be null if the template is contained within the app itself.
+     */
+    private findTemplateCacheable = { BeanPropertyAccessor propertyAccessor, String controllerNamespace, String controllerName, String actionName, String templateName ->
         def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName)
 
         candidatePaths.findResult { path ->

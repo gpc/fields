@@ -20,10 +20,12 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
 		def taglib = applicationContext.getBean(FormFieldsTagLib)
 
 		mockFormFieldsTemplateService.findTemplate(_, 'wrapper', null) >> [path: '/_fields/default/wrapper']
+		mockFormFieldsTemplateService.findTemplate(_, 'displayWrapper', null) >> [path: '/_fields/default/displayWrapper']
         mockFormFieldsTemplateService.getTemplateFor('wrapper') >> "wrapper"
         mockFormFieldsTemplateService.getTemplateFor('widget') >> "widget"
         mockFormFieldsTemplateService.getTemplateFor('displayWrapper') >> "displayWrapper"
         mockFormFieldsTemplateService.getTemplateFor('displayWidget') >> "displayWidget"
+        mockFormFieldsTemplateService.getWidgetPrefix() >> 'input-'
 		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 	}
 
@@ -43,7 +45,7 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
         applyTemplate('<f:field bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == 'bar'
     }
 
-    void 'arbitrary attributes on f:field are not passed to the input template'() {
+    void 'arbitrary attributes on f:field are not passed to the widget template'() {
         given:
         views["/_fields/default/_wrapper.gsp"] = '${widget}'
         views["/_fields/person/name/_widget.gsp"] = '<span>${foo}${attrs?.foo}</span>'
@@ -55,12 +57,36 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
         applyTemplate('<f:field bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == '<span></span>'
     }
 
-    void 'arbitrary attributes on f:field are not passed to the default input'() {
+    void 'arbitrary attributes on f:display are not passed to the widget template'() {
+        given:
+        views["/_fields/default/_displayWrapper.gsp"] = '${widget}'
+        views["/_fields/person/name/_displayWidget.gsp"] = '<span>${foo}${attrs?.foo}</span>'
+
+		and:
+		mockFormFieldsTemplateService.findTemplate(_, 'displayWidget', null) >> [path: '/_fields/person/name/displayWidget']
+
+        expect:
+        applyTemplate('<f:display bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == '<span></span>'
+    }
+
+    void 'arbitrary attributes on f:field are not passed to the default widget'() {
         given:
         views["/_fields/default/_wrapper.gsp"] = '${widget}'
 
         expect:
         applyTemplate('<f:field bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == '<input type="text" name="name" value="Bart Simpson" required="" id="name" />'
+    }
+
+    void 'arbitrary attributes on f:display are not passed to the default widget'() {
+        given:
+        views["/_fields/default/_displayWrapper.gsp"] = '${widget}'
+        views["/_fields/default/_displayWidget.gsp"] = '${foo}'
+
+        and:
+        mockFormFieldsTemplateService.findTemplate(_, 'displayWidget', null) >> [path: '/_fields/default/displayWidget']
+
+        expect:
+        applyTemplate('<f:display bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == ''
     }
 
     void 'arbitrary attributes can be passed to the display template model for backward compatibility'() {
@@ -110,7 +136,15 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
         applyTemplate('<f:field bean="personInstance" property="name" input-foo="bar" />', [personInstance: personInstance]) == '<foo></foo>'
     }
 
-    void 'arbitrary attributes prefixed with input- on f:field are added to the input template model for backward compatibility'() {
+    void 'arbitrary attributes prefixed with input- are not passed to the display template'() {
+        given:
+        views["/_fields/default/_displayWrapper.gsp"] = '<foo>${foo}</foo>'
+
+        expect:
+        applyTemplate('<f:display bean="personInstance" property="name" input-foo="bar" />', [personInstance: personInstance]) == '<foo></foo>'
+    }
+
+    void 'arbitrary attributes prefixed with input- on f:field are added to the widget template model for backward compatibility'() {
         given:
         views["/_fields/default/_wrapper.gsp"] = '${widget}'
         views["/_fields/person/name/_widget.gsp"] = '<span>${foo}</span>'
@@ -120,6 +154,18 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
 
         expect:
         applyTemplate('<f:field bean="personInstance" property="name" input-foo="bar"/>', [personInstance: personInstance]) == '<span>bar</span>'
+    }
+
+    void 'arbitrary attributes prefixed with input- on f:display are added to the display widget template model for backward compatibility'() {
+        given:
+        views["/_fields/default/_displayWrapper.gsp"] = '${widget}'
+        views["/_fields/person/name/_displayWidget.gsp"] = '<span>${foo}</span>'
+
+		and:
+		mockFormFieldsTemplateService.findTemplate(_, 'displayWidget', null) >> [path: '/_fields/person/name/displayWidget']
+
+        expect:
+        applyTemplate('<f:display bean="personInstance" property="name" input-foo="bar"/>', [personInstance: personInstance]) == '<span>bar</span>'
     }
 
     void 'arbitrary attributes prefixed with input- on f:field are passed to the input template as attrs'() {
@@ -132,6 +178,18 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
 
         expect:
         applyTemplate('<f:field bean="personInstance" property="name" input-foo="bar"/>', [personInstance: personInstance]) == '<span>bar</span>'
+    }
+
+    void 'arbitrary attributes prefixed with input- on f:display are passed to the widget template as attrs'() {
+        given:
+        views["/_fields/default/_displayWrapper.gsp"] = '${widget}'
+        views["/_fields/person/name/_displayWidget.gsp"] = '<span>${attrs.foo}</span>'
+
+		and:
+		mockFormFieldsTemplateService.findTemplate(_, 'displayWidget', null) >> [path: '/_fields/person/name/displayWidget']
+
+        expect:
+        applyTemplate('<f:display bean="personInstance" property="name" input-foo="bar"/>', [personInstance: personInstance]) == '<span>bar</span>'
     }
 
 	@Issue("https://github.com/grails-fields-plugin/grails-fields/pull/49")

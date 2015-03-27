@@ -34,6 +34,14 @@ class RequiredAttributesSpec extends AbstractFormFieldsTagLibSpec {
 		thrown GrailsTagException
 	}
 
+	void 'f:displayWidget requires a bean attribute'() {
+		when:
+		applyTemplate('<f:displayWidget property="name"/>')
+
+		then:
+		thrown GrailsTagException
+	}
+
 	void "property attribute is required"() {
 		when:
 		applyTemplate('<f:field bean="${personInstance}"/>', [personInstance: personInstance])

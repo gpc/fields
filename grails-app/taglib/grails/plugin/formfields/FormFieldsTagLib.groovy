@@ -161,11 +161,21 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	/**
+	 * @deprecated since version 1.5 - Use widget instead
 	 * @attr bean Name of the source bean in the GSP model.
 	 * @attr property REQUIRED The name of the property to display. This is resolved
 	 * against the specified bean or the bean in the current scope.
 	 */
 	def input = { attrs ->
+		out << widget(attrs)
+	}
+
+	/**
+	 * @attr bean Name of the source bean in the GSP model.
+	 * @attr property REQUIRED The name of the property to display. This is resolved
+	 * against the specified bean or the bean in the current scope.
+	 */
+	def widget = { attrs ->
 		def bean = resolveBean(attrs.remove('bean'))
 		if (!bean) throwTagError("Tag [input] is missing required attribute [bean]")
 		if (!attrs.property) throwTagError("Tag [input] is missing required attribute [property]")

@@ -70,3 +70,37 @@ By default _f:display_ simply renders the property value but if you supply a _\_
 <dt>${label}</dt>
 <dd>${value}</dd>
 {code}
+
+h2. Breaking changes
+
+h3. Templates
+The names of the templates were changed for more adequate ones:
+* _field to _wrapper
+* _input to _widget
+* _display to _displayWrapper
+* _displayWidget was added
+
+For backwards compatibility, configure in your Config.groovy:
+{code}
+grails.plugin.fields.wrapper = "field"
+grails.plugin.fields.displayWrapper = "display"
+grails.plugin.fields.widget = "input"
+{code}
+
+
+h3. Widget attributes
+To pass extra attributes to your widgets you have to prefix them with 'widget-'.
+
+Example:
+{code}
+<f:field property="birthDate" widget-format="dd/MM/yyyy"/>
+{code}
+
+For backwards compatibility, configure in your Config.groovy:
+{code}
+grails.plugin.fields.widgetPrefix = "input-"
+{code}
+
+h3. Changes in tags
+* The _input_ tag was deprecated because the name was not so good. Use the new _widget_ tag instead.
+* The _displayWidget_ tag was created. Provides the same behavior to display templates as the _widget_ tag provides to field templates.

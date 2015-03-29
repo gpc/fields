@@ -477,17 +477,17 @@ class FormFieldsTemplateServiceSpec extends Specification {
     @Issue('https://github.com/gpc/grails-fields/issues/183')
     void "resolves template for property type simple type byte array"() {
         given:
-        views["/_fields/default/_field.gsp"] = 'DEFAULT FIELD TEMPLATE'
-        views["/_fields/byteArray/_field.gsp"] = 'PROPERTY SIMPLE BYTE ARRAY TYPE TEMPLATE'
-        views["/_fields/byte;/_field.gsp"] = 'PROPERTY WRONG BYTE ARRAY TYPE TEMPLATE'
-        views["/_fields/[B/_field.gsp"] = 'PROPERTY WRONG BYTE ARRAY TYPE TEMPLATE'
+        views["/_fields/default/_wrapper.gsp"] = 'DEFAULT FIELD TEMPLATE'
+        views["/_fields/byteArray/_wrapper.gsp"] = 'PROPERTY SIMPLE BYTE ARRAY TYPE TEMPLATE'
+        views["/_fields/byte;/_wrapper.gsp"] = 'PROPERTY WRONG BYTE ARRAY TYPE TEMPLATE'
+        views["/_fields/[B/_wrapper.gsp"] = 'PROPERTY WRONG BYTE ARRAY TYPE TEMPLATE'
 
         and:
         def property = factory.accessorFor(personInstance, 'anotherPicture')
 
         expect:
-        def template = service.findTemplate(property, 'field', null)
-        template.path == '/_fields/byteArray/field'
+        def template = service.findTemplate(property, 'wrapper', null)
+        template.path == '/_fields/byteArray/wrapper'
         template.plugin == null
         render(template: template.path) == 'PROPERTY SIMPLE BYTE ARRAY TYPE TEMPLATE'
     }

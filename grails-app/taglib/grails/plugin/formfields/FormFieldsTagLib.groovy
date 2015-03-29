@@ -249,7 +249,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
         if (template) {
             out << render(template: template.path, plugin: template.plugin, model: model + [attrs: wrapperAttrs] + wrapperAttrs)
         } else {
-            out << render(template: "/default/display", model: model + [attrs: attrs] + attrs, contextPath: pluginContextPath)
+            out << raw(model.widget)
         }
 	}
 

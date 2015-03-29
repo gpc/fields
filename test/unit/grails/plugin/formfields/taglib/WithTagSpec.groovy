@@ -45,7 +45,7 @@ class WithTagSpec extends AbstractFormFieldsTagLibSpec {
 
     void 'scoped beans can be nested'() {
         given:
-        views['/_fields/default/_field.gsp'] = '${value} '
+        views['/_fields/default/_wrapper.gsp'] = '${value} '
 
         expect:
         applyTemplate('<f:with bean="productInstance"><f:field property="netPrice"/><f:with bean="personInstance"><f:field property="name"/></f:with></f:with>', [personInstance: personInstance, productInstance: productInstance]) == '12.33 Bart Simpson '

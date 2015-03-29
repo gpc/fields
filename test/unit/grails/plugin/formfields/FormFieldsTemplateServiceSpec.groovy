@@ -486,7 +486,7 @@ class FormFieldsTemplateServiceSpec extends Specification {
         def property = factory.accessorFor(personInstance, 'anotherPicture')
 
         expect:
-        def template = service.findTemplate(property, 'field')
+        def template = service.findTemplate(property, 'field', null)
         template.path == '/_fields/byteArray/field'
         template.plugin == null
         render(template: template.path) == 'PROPERTY SIMPLE BYTE ARRAY TYPE TEMPLATE'

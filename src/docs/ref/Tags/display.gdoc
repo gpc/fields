@@ -16,9 +16,14 @@ h2. Examples
 {code}
 <f:display bean="person" property="name"/>
 
-<f:display bean="person" property="name" wrapper="bootstrap3"/>         // -> renders _fields/bootstrap3/_displayWrapper.gsp
-<f:display bean="person" property="name" widget="maskedInput"/>         // -> renders _fields/maskedInput/_displayWidget.gsp
-<f:display bean="person" property="name" templates="maskedInput"/>      // -> renders _fields/maskedInput/_displayWrapper.gsp and _fields/maskedInput/_displayWidget.gsp
+// renders _fields/bootstrap3/_displayWrapper.gsp:
+<f:display bean="person" property="name" wrapper="bootstrap3"/>
+
+// renders _fields/maskedInput/_displayWidget.gsp:
+<f:display bean="person" property="name" widget="maskedInput"/>
+
+// renders _fields/maskedInput/_displayWrapper.gsp and _fields/maskedInput/_displayWidget.gsp:
+<f:display bean="person" property="name" templates="maskedInput"/>
 
 <f:display bean="person" property="dateOfBirth">
     <g:formatDate format="dd MMM yyyy" date="${value}"/>

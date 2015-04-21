@@ -1,5 +1,5 @@
 The plugin resolves the GSP template used for each property according to conventions. You can override the rendering based
-on the class and property name or the property type. The _f:field_ tag looks for a template called @\_wrapper.gsp@, the _f:input_
+on the class and property name or the property type. The _f:field_ tag looks for a template called @\_wrapper.gsp@, the _f:widget_
 tag looks for a template called @\_widget.gsp@, the _f:display_ tag looks for a template called @\_displayWrapper.gsp@.
 
 {warning}
@@ -53,10 +53,10 @@ The variables referenced in these paths are:
 *Name* | *Description*
 *controllerName* | The name of the current controller (if any).
 *actionName* | The name of the current action (if any).
-*class* | The bean class. For simple properties this is the class of the object passed to the _bean_ attribute of the _f:field_ or _f:input_ tag but when the _property_ attribute was nested this is the class at the end of the chain. For example, if the property path was _employees\[0\].address.street_ this will be the class of _address_.
+*class* | The bean class. For simple properties this is the class of the object passed to the _bean_ attribute of the _f:field_ or _f:widget_ tag but when the _property_ attribute was nested this is the class at the end of the chain. For example, if the property path was _employees\[0\].address.street_ this will be the class of _address_.
 *superclass* | Any superclass or interface of _class_ excluding _Object_, _GroovyObject_, _Serializable_, _Comparable_ and _Cloneable_.
-*propertyName* | The property name at the end of the chain passed to the _property_ attribute of the _f:field_ or _f:input_ tag. For example, if the property path was _employees\[0\].address.street_ then this will be _street_.
-*propertyType* | The type of the property at the end of the chain passed to the _property_ attribute of the _f:field_ or _f:input_ tag. For example, for a _java.lang.String_ property this would be _string_.
+*propertyName* | The property name at the end of the chain passed to the _property_ attribute of the _f:field_ or _f:widget_ tag. For example, if the property path was _employees\[0\].address.street_ then this will be _street_.
+*propertyType* | The type of the property at the end of the chain passed to the _property_ attribute of the _f:field_ or _f:widget_ tag. For example, for a _java.lang.String_ property this would be _string_.
 *propertySuperclass* | Any superclass or interface of _propertyType_ excluding _Object_, _GroovyObject_, _Serializable_, _Comparable_ and _Cloneable_.
 *associationType* | One of _'oneToOne'_, _'oneToMany'_, _'manyToMany'_ or _'manyToOne'_. Only relevant if the property is a domain class association.
 {table}
@@ -86,7 +86,7 @@ You can override the template _f:field_ uses with any of these:
 # @grails-app/views/\_fields/string/\_wrapper.gsp@
 # @grails-app/views/\_fields/default/\_wrapper.gsp@
 
-override the template _f:input_ uses with any of these:
+override the template _f:widget_ uses with any of these:
 
 # @grails-app/views/*controllerName*/*actionName*/name/\_widget.gsp@
 # @grails-app/views/*controllerName*/*actionName*/string/\_widget.gsp@
@@ -114,26 +114,26 @@ and override the template _f:display_ uses with any of these:
 
 During template development it is usually recommended to disable template caching in order to allow the plugin to recognize new/renamed/moved templates without restarting the application. See the "Performance" section of the guide for the exact settings.
 
-h2. Default Behaviour - Using Grails Input Tags
+h2. Default Behaviour - Using Grails Widget Tags
 
 If no template override is found the plugin will use the standard grails input tags (e.g. _g:select_, _g:checkbox_, _g:field_) for rendering input controls.
-Using _f:field_ you can pass extra arguments (e.g. _optionKey_, _optionValue_) through to these tags by prefixing them with @input-@, e.g.
+Using _f:field_ you can pass extra arguments (e.g. _optionKey_, _optionValue_) through to these tags by prefixing them with @widget-@, e.g.
 
 {code}
-<f:field bean="person" property="gender" input-optionValue="name"/>
+<f:field bean="person" property="gender" widget-optionValue="name"/>
 {code}
 
 h2. Template parameters
 
-The _f:field_ and _f:input_ tags will pass the following parameters to your templates or to the body of _f:field_ if you use one:
+The _f:field_ and _f:widget_ tags will pass the following parameters to your templates or to the body of _f:field_ if you use one:
 
 {table}
 *Name* | *Type* | *Description*
-*bean* | Object | The _bean_ attribute as passed to the _f:field_ or _f:input_ tag.
-*property* | String | The _property_ attribute as passed to the _f:field_ or _f:input_ tag. This would generally be useful for the _name_ attribute of a form input.
+*bean* | Object | The _bean_ attribute as passed to the _f:field_ or _f:widget_ tag.
+*property* | String | The _property_ attribute as passed to the _f:field_ or _f:widget_ tag. This would generally be useful for the _name_ attribute of a form input.
 *type* | Class | The property type.
-*label* | String | The field label text. This is based on the _label_ attribute passed to the _f:field_ or _f:input_ tag. If no _label_ attribute was used the label is resolved by convention - see below.
-*value* | Object | the property value. This can also be overridden or defaulted if the _value_ or _default_ attribute was passed to _f:field_ or _f:input_.
+*label* | String | The field label text. This is based on the _label_ attribute passed to the _f:field_ or _f:widget_ tag. If no _label_ attribute was used the label is resolved by convention - see below.
+*value* | Object | the property value. This can also be overridden or defaulted if the _value_ or _default_ attribute was passed to _f:field_ or _f:widget_.
 *constraints* | ConstrainedProperty | The constraints for the property if the bean is a domain or command object.
 *persistentProperty* | GrailsDomainClassProperty | The persistent property object if the bean is a domain object.
 *errors* | List<String> | The error messages for any field errors present on the property. If there are no errors this will be an empty _List_.
@@ -146,7 +146,7 @@ In addition _f:field_ passes the following parameters:
 
 {table}
 *Name* | *Type* | *Description*
-*widget* | String | The output of _f:input_ for the current bean and property if _f:field_ was used without a tag body, otherwise the output of the tag body.
+*widget* | String | The output of _f:widget_ for the current bean and property if _f:field_ was used without a tag body, otherwise the output of the tag body.
 {table}
 
 {note}
@@ -180,17 +180,28 @@ is equivalent to:
 <f:field property="startDate" wrapper="bootstrap3" widget="bootstrap3" />
 {code}
 
-If a direct location is specified, and the templates cannot be found therein, the plugin will fallback to locating templates
+If a direct location is specified, and the templates cannot be found therein, the plugin will fall back to locating templates
 by convention.
 
 h2. Locating Templates Directly Example
 
 {code}
-<f:field property="startDate" wrapper="bootstrap3"/>   // -> renders _fields/bootstrap3/_wrapper.gsp
-<f:field property="startDate" widget="time"/>          // -> renders _fields/time/_widget.gsp
-<f:field property="startDate" templates="time"/>       // -> renders _fields/time/_wrapper.gsp and _fields/time/_widget.gsp
+// renders _fields/bootstrap3/_wrapper.gsp:
+<f:field property="startDate" wrapper="bootstrap3"/>
+   
+// renders _fields/time/_widget.gsp:
+<f:field property="startDate" widget="time"/>
 
-<f:display property="startDate" wrapper="bootstrap3"/> // -> renders _fields/bootstrap3/_displayWrapper.gsp
-<f:display property="startDate" widget="time"/>        // -> renders _fields/time/_displayWidget.gsp
-<f:display property="startDate" templates="time"/>     // -> renders _fields/time/_displayWrapper.gsp and _fields/time/_displayWidget.gsp
+// renders _fields/time/_wrapper.gsp and _fields/time/_widget.gsp:
+<f:field property="startDate" templates="time"/>
+
+
+// renders _fields/bootstrap3/_displayWrapper.gsp:
+<f:display property="startDate" wrapper="bootstrap3"/> 
+
+// renders _fields/time/_displayWidget.gsp:
+<f:display property="startDate" widget="time"/>
+
+// renders _fields/time/_displayWrapper.gsp and _fields/time/_displayWidget.gsp:
+<f:display property="startDate" templates="time"/>
 {code}

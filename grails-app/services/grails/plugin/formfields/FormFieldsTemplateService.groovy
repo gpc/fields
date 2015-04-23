@@ -37,13 +37,14 @@ class FormFieldsTemplateService {
     GrailsPluginManager pluginManager
 
     String getWidgetPrefix(){
-        getWidgetPrefixName()
+        Closure widgetPrefixNameResolver = getWidgetPrefixName
+        return widgetPrefixNameResolver()
     }
 
     @Lazy
-    private Closure getWidgetPrefixName = shouldCache() ? this.&getWidgetPrefixNameCacheable.memoize() : this.&getWidgetPrefixNameCacheable
+    private Closure getWidgetPrefixName = shouldCache() ? getWidgetPrefixNameCacheable.memoize() : getWidgetPrefixNameCacheable
 
-    private String getWidgetPrefixNameCacheable(){
+    private Closure getWidgetPrefixNameCacheable = { ->
         return grailsApplication?.config?.grails?.plugin?.fields?.widgetPrefix ?: 'widget-'
     }
 
@@ -59,16 +60,16 @@ class FormFieldsTemplateService {
     }
 
     @Lazy
-    private Closure getTemplateName = shouldCache() ? this.&getTemplateNameCacheable.memoize() : this.&getTemplateNameCacheable
+    private Closure getTemplateName = shouldCache() ? getTemplateNameCacheable.memoize() : getTemplateNameCacheable
 
-    private String getTemplateNameCacheable(String templateProperty){
+    private getTemplateNameCacheable = { String templateProperty ->
         return grailsApplication?.config?.grails?.plugin?.fields[templateProperty] ?: templateProperty
     }
 
     @Lazy
-    private Closure findTemplateCached = shouldCache() ? this.&findTemplateCacheable.memoize() : this.&findTemplateCacheable
+    private Closure findTemplateCached = shouldCache() ? findTemplateCacheable.memoize() : findTemplateCacheable
 
-    private Map findTemplateCacheable(BeanPropertyAccessor propertyAccessor, String controllerNamespace, String controllerName, String actionName, String templateName, String templatesFolder) {
+    private findTemplateCacheable = { BeanPropertyAccessor propertyAccessor, String controllerNamespace, String controllerName, String actionName, String templateName, String templatesFolder ->
         def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder)
 
         candidatePaths.findResult { path ->

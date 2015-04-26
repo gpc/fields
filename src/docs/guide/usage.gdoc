@@ -80,27 +80,27 @@ The names of the templates were changed for more adequate ones:
 * _display to _displayWrapper
 * _displayWidget was added
 
-To use the old names (for backwards compatibility), configure the following in your Config.groovy:
+To use the old names (for backwards compatibility), configure the following in @Config.groovy@
+
 {code}
 grails.plugin.fields.wrapper = "field"
 grails.plugin.fields.displayWrapper = "display"
 grails.plugin.fields.widget = "input"
 {code}
 
-
 h3. Widget attributes
-To pass extra attributes to your widgets you have to prefix them with 'widget-'.
+To pass additional attributes to widgets, prefix them with 'widget-'.
 
 Example:
 {code}
 <f:field property="birthDate" widget-format="dd/MM/yyyy"/>
 {code}
 
-To use the old prefix (for backwards compatibility), configure the following in your Config.groovy:
+To use the old prefix (for backwards compatibility), configure the following in @Config.groovy@:
 {code}
 grails.plugin.fields.widgetPrefix = "input-"
 {code}
 
 h3. Changes in tags
-* The _input_ tag was deprecated because the name could be confusing. Use the new _widget_ tag instead.
-* The _displayWidget_ tag was created. It outputs the widget for display purposes, without the wrapper (similar to the _widget_ tag).
+* The _input_ tag was deprecated because the name was confusing. Use the new _widget_ tag instead.
+* The _displayWidget_ tag was added. It outputs the widget for display purposes, without the wrapper (similar to the _widget_ tag).

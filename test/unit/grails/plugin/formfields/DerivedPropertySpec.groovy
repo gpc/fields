@@ -31,7 +31,7 @@ class DerivedPropertySpec extends AbstractFormFieldsTagLibSpec {
 
     void 'derived properties are ignored by f:all'() {
         given:
-        views["/_fields/default/_field.gsp"] = '${property} '
+        views["/_fields/default/_wrapper.gsp"] = '${property} '
 
         when:
         def output = applyTemplate('<f:all bean="productInstance"/>', [productInstance: productInstance])

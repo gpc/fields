@@ -36,21 +36,41 @@ class FormFieldsTemplateService {
     GrailsConventionGroovyPageLocator groovyPageLocator
     GrailsPluginManager pluginManager
 
-    Map findTemplate(BeanPropertyAccessor propertyAccessor, String templateName) {
+    String getWidgetPrefix(){
+        Closure widgetPrefixNameResolver = getWidgetPrefixName
+        return widgetPrefixNameResolver()
+    }
+
+    @Lazy
+    private Closure getWidgetPrefixName = shouldCache() ? getWidgetPrefixNameCacheable.memoize() : getWidgetPrefixNameCacheable
+
+    private Closure getWidgetPrefixNameCacheable = { ->
+        return grailsApplication?.config?.grails?.plugin?.fields?.widgetPrefix ?: 'widget-'
+    }
+
+    Map findTemplate(BeanPropertyAccessor propertyAccessor, String templateName, String templatesFolder) {
         // it looks like the assignment below is redundant, but tests fail if findTemplateCached is invoked directly
         Closure templateFinder = findTemplateCached
-        templateFinder(propertyAccessor, controllerNamespace, controllerName, actionName, templateName)
+        templateFinder(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder)
+    }
+
+    String getTemplateFor(String property){
+        Closure nameFinder = getTemplateName
+        nameFinder(property)
+    }
+
+    @Lazy
+    private Closure getTemplateName = shouldCache() ? getTemplateNameCacheable.memoize() : getTemplateNameCacheable
+
+    private getTemplateNameCacheable = { String templateProperty ->
+        return grailsApplication?.config?.grails?.plugin?.fields[templateProperty] ?: templateProperty
     }
 
     @Lazy
     private Closure findTemplateCached = shouldCache() ? findTemplateCacheable.memoize() : findTemplateCacheable
 
-    /**
-     * Locates a template and returns a map indicating the path to the template and the plugin in which it is contained.
-     * The latter will be null if the template is contained within the app itself.
-     */
-    private findTemplateCacheable = { BeanPropertyAccessor propertyAccessor, String controllerNamespace, String controllerName, String actionName, String templateName ->
-        def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName)
+    private findTemplateCacheable = { BeanPropertyAccessor propertyAccessor, String controllerNamespace, String controllerName, String actionName, String templateName, String templatesFolder ->
+        def candidatePaths = candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder)
 
         candidatePaths.findResult { path ->
             log.debug "looking for template with path $path"
@@ -77,8 +97,13 @@ class FormFieldsTemplateService {
         return propertyNameFormat
     }
 
-    private List<String> candidateTemplatePaths(BeanPropertyAccessor propertyAccessor, String controllerNamespace, String controllerName, String actionName, String templateName) {
+    private List<String> candidateTemplatePaths(BeanPropertyAccessor propertyAccessor, String controllerNamespace, String controllerName, String actionName, String templateName, String templatesFolder) {
         def templateResolveOrder = []
+
+        // if we have a widget look in `grails-app/views/_fields/<templateFolder>/_field.gsp`
+        if (templatesFolder) {
+            templateResolveOrder << appendPiecesForUri("/_fields", templatesFolder, templateName)
+        }
 
         // if there is a controller namespace for the current request any template in its views directory takes priority
         if (controllerNamespace) {
@@ -118,12 +143,6 @@ class FormFieldsTemplateService {
         def associationPath = getAssociationPath(propertyAccessor)
         if (associationPath) {
             templateResolveOrder << appendPiecesForUri('/_fields', associationPath, templateName)
-        }
-
-        // if we have a widget look in `grails-app/views/_fields/<widget>/_field.gsp`
-        def widget = getWidget(propertyAccessor.constraints)
-        if (widget) {
-            templateResolveOrder << appendPiecesForUri("/_fields", widget, templateName)
         }
 
         // if we have a property type look in `grails-app/views/_fields/<propertyType>/_field.gsp` and equivalent for superclasses
@@ -191,4 +210,3 @@ class FormFieldsTemplateService {
     }
 
 }
-

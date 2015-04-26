@@ -17,13 +17,17 @@ class FieldTagWithoutBeanSpec extends AbstractFormFieldsTagLibSpec {
 	def setup() {
 		def taglib = applicationContext.getBean(FormFieldsTagLib)
 
-		mockFormFieldsTemplateService.findTemplate(_, 'field') >> [path: '/_fields/default/field']
+		mockFormFieldsTemplateService.findTemplate(_, 'wrapper', null) >> [path: '/_fields/default/wrapper']
+        mockFormFieldsTemplateService.getTemplateFor('wrapper') >> "wrapper"
+        mockFormFieldsTemplateService.getTemplateFor('widget') >> "widget"
+        mockFormFieldsTemplateService.getTemplateFor('displayWrapper') >> "displayWrapper"
+        mockFormFieldsTemplateService.getTemplateFor('displayWidget') >> "displayWidget"
 		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 	}
 
 	void 'f:field can work without a bean attribute'() {
 		given:
-		views["/_fields/default/_field.gsp"] = '${property}'
+		views["/_fields/default/_wrapper.gsp"] = '${property}'
 
 		expect:
 		applyTemplate('<f:field property="name"/>') == 'name'
@@ -31,7 +35,7 @@ class FieldTagWithoutBeanSpec extends AbstractFormFieldsTagLibSpec {
 
 	void 'label is the natural property name if there is no bean attribute'() {
 		given:
-		views["/_fields/default/_field.gsp"] = '${label}'
+		views["/_fields/default/_wrapper.gsp"] = '${label}'
 
 		expect:
 		applyTemplate('<f:field property="name"/>') == 'Name'

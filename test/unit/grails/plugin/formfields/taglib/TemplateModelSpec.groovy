@@ -19,13 +19,17 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 	def setup() {
 		def taglib = applicationContext.getBean(FormFieldsTagLib)
 
-		mockFormFieldsTemplateService.findTemplate(_, 'field') >> [path: '/_fields/default/field']
+		mockFormFieldsTemplateService.findTemplate(_, 'wrapper', null) >> [path: '/_fields/default/wrapper']
+        mockFormFieldsTemplateService.getTemplateFor('wrapper') >> "wrapper"
+        mockFormFieldsTemplateService.getTemplateFor('widget') >> "widget"
+        mockFormFieldsTemplateService.getTemplateFor('displayWrapper') >> "displayWrapper"
+        mockFormFieldsTemplateService.getTemplateFor('displayWidget') >> "displayWidget"
 		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 	}
 
 	void "bean and property attributes are passed to template"() {
 		given:
-		views["/_fields/default/_field.gsp"] = '${bean.getClass().simpleName}.${property}'
+		views["/_fields/default/_wrapper.gsp"] = '${bean.getClass().simpleName}.${property}'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "Person.name"
@@ -33,7 +37,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 
 	void "constraints are passed to template"() {
 		given:
-		views["/_fields/default/_field.gsp"] = 'nullable=${constraints.nullable}, blank=${constraints.blank}'
+		views["/_fields/default/_wrapper.gsp"] = 'nullable=${constraints.nullable}, blank=${constraints.blank}'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "nullable=false, blank=false"
@@ -41,7 +45,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 
 	void "label is resolved by convention and passed to template"() {
 		given:
-		views["/_fields/default/_field.gsp"] = '<label>${label}</label>'
+		views["/_fields/default/_wrapper.gsp"] = '<label>${label}</label>'
 
 		and:
 		messageSource.addMessage('person.name.label', request.locale, "Name of person")
@@ -53,7 +57,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/38')
 	void "label is resolved by property path before property type and passed to template"() {
 		given:
-		views["/_fields/default/_field.gsp"] = '<label>${label}</label>'
+		views["/_fields/default/_wrapper.gsp"] = '<label>${label}</label>'
 
 		and:
 		messageSource.addMessage('person.address.city.label', request.locale, "Label for property path")
@@ -66,7 +70,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
     @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/76')
 	void "label is resolved by property type when property path message code does not exist"() {
 		given:
-		views["/_fields/default/_field.gsp"] = '<label>${label}</label>'
+		views["/_fields/default/_wrapper.gsp"] = '<label>${label}</label>'
 
 		and:
 		messageSource.addMessage('address.city.label', request.locale, "Label for property type")
@@ -78,7 +82,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
     @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/76')
 	void "label is not resolved by property type when property path label same as default label"() {
 		given:
-		views["/_fields/default/_field.gsp"] = '<label>${label}</label>'
+		views["/_fields/default/_wrapper.gsp"] = '<label>${label}</label>'
 
 		and:
 		messageSource.addMessage('person.address.city.label', request.locale, "City")
@@ -90,7 +94,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 
 	void "label is defaulted to natural property name"() {
 		given:
-		views["/_fields/default/_field.gsp"] = '<label>${label}</label>'
+		views["/_fields/default/_wrapper.gsp"] = '<label>${label}</label>'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "<label>Name</label>"
@@ -99,7 +103,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 
 	void "label can be overridden by label attribute"() {
 		given:
-		views["/_fields/default/_field.gsp"] = '<label>${label}</label>'
+		views["/_fields/default/_wrapper.gsp"] = '<label>${label}</label>'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name" label="Name of person"/>', [personInstance: personInstance]) == "<label>Name of person</label>"
@@ -107,7 +111,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 
 	void "label can be overridden by label key attribute"() {
 		given:
-		views["/_fields/default/_field.gsp"] = '<label>${label}</label>'
+		views["/_fields/default/_wrapper.gsp"] = '<label>${label}</label>'
 
 		and:
 		messageSource.addMessage("custom.name.label", request.locale, "Name of person")
@@ -118,7 +122,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 
 	void "value is defaulted to property value"() {
 		given:
-		views["/_fields/default/_field.gsp"] = '<g:formatDate date="${value}" format="yyyy-MM-dd"/>'
+		views["/_fields/default/_wrapper.gsp"] = '<g:formatDate date="${value}" format="yyyy-MM-dd"/>'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="dateOfBirth"/>', [personInstance: personInstance]) == "1987-04-19"
@@ -127,7 +131,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/55')
 	void "numeric value of zero is not overridden by default"() {
 		given:
-		views["/_fields/default/_field.gsp"] = '<span>${value}</span>'
+		views["/_fields/default/_wrapper.gsp"] = '<span>${value}</span>'
 		
 		and:
 		def employee = new Employee(name: 'Monica Lewinsky', jobTitle: 'Intern', salary: 0)
@@ -138,7 +142,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 
 	void "value is overridden by value attribute"() {
 		given:
-		views["/_fields/default/_field.gsp"] = '${value}'
+		views["/_fields/default/_wrapper.gsp"] = '${value}'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name" value="Bartholomew J. Simpson"/>', [personInstance: personInstance]) == "Bartholomew J. Simpson"
@@ -147,7 +151,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/46')
 	void "value is overridden by #{value == null ? 'null' : 'empty'} value attribute"() {
 		given:
-		views["/_fields/default/_field.gsp"] = '<em>${value}</em>'
+		views["/_fields/default/_wrapper.gsp"] = '<em>${value}</em>'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name" value="${value}"/>', [personInstance: personInstance, value: value]) == '<em></em>'
@@ -158,7 +162,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 
 	void "falsy string property value of '#value' falls back to default"() {
 		given:
-		views["/_fields/default/_field.gsp"] = '${value}'
+		views["/_fields/default/_wrapper.gsp"] = '${value}'
 
 		and:
 		personInstance.name = value
@@ -172,7 +176,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 
 	void "default attribute is ignored if property has non-null value"() {
 		given:
-		views["/_fields/default/_field.gsp"] = '${value}'
+		views["/_fields/default/_wrapper.gsp"] = '${value}'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name" default="A. N. Other"/>', [personInstance: personInstance]) == "Bart Simpson"
@@ -181,7 +185,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/46')
 	void "default attribute is ignored if a non-null value override is specified"() {
 		given:
-		views["/_fields/default/_field.gsp"] = '${value}'
+		views["/_fields/default/_wrapper.gsp"] = '${value}'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name" value="Bartholomew J. Simpson" default="A. N. Other"/>', [personInstance: personInstance]) == 'Bartholomew J. Simpson'
@@ -190,7 +194,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/46')
 	void "default attribute is ignored if a value override of '#value' is specified"() {
 		given:
-		views["/_fields/default/_field.gsp"] = '${value}'
+		views["/_fields/default/_wrapper.gsp"] = '${value}'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name" value="${value}" default="A. N. Other"/>', [personInstance: personInstance, value: value]) == 'A. N. Other'
@@ -201,7 +205,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 
 	void "errors passed to template is an empty collection for valid bean"() {
 		given:
-		views["/_fields/default/_field.gsp"] = '<g:each var="error" in="${errors}"><em>${error}</em></g:each>'
+		views["/_fields/default/_wrapper.gsp"] = '<g:each var="error" in="${errors}"><em>${error}</em></g:each>'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == ""
@@ -209,7 +213,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 
 	void "errors passed to template is a collection of strings"() {
 		given:
-		views["/_fields/default/_field.gsp"] = '<g:each var="error" in="${errors}"><em>${error}</em></g:each>'
+		views["/_fields/default/_wrapper.gsp"] = '<g:each var="error" in="${errors}"><em>${error}</em></g:each>'
 
 		and:
 		personInstance.errors.rejectValue("name", "blank")
@@ -224,7 +228,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 
 	void "required flag is passed to template"() {
 		given:
-		views["/_fields/default/_field.gsp"] = 'required=${required}'
+		views["/_fields/default/_wrapper.gsp"] = 'required=${required}'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "required=true"
@@ -232,7 +236,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 
 	void "required flag can be forced with attribute"() {
 		given:
-		views["/_fields/default/_field.gsp"] = 'required=${required}'
+		views["/_fields/default/_wrapper.gsp"] = 'required=${required}'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="minor" required="true"/>', [personInstance: personInstance]) == "required=true"
@@ -240,7 +244,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 
 	void "required flag can be forced off with attribute"() {
 		given:
-		views["/_fields/default/_field.gsp"] = 'required=${required}'
+		views["/_fields/default/_wrapper.gsp"] = 'required=${required}'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name" required="false"/>', [personInstance: personInstance]) == "required=false"
@@ -248,7 +252,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 
 	void "invalid flag is passed to template if bean has errors"() {
 		given:
-		views["/_fields/default/_field.gsp"] = 'invalid=${invalid}'
+		views["/_fields/default/_wrapper.gsp"] = 'invalid=${invalid}'
 
 		and:
 		personInstance.errors.rejectValue("name", "blank")
@@ -259,7 +263,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 
 	void "invalid flag is not passed to template if bean has no errors"() {
 		given:
-		views["/_fields/default/_field.gsp"] = 'invalid=${invalid}'
+		views["/_fields/default/_wrapper.gsp"] = 'invalid=${invalid}'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == "invalid=false"
@@ -267,7 +271,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 
 	void "invalid flag can be overridden with attribute"() {
 		given:
-		views["/_fields/default/_field.gsp"] = 'invalid=${invalid}'
+		views["/_fields/default/_wrapper.gsp"] = 'invalid=${invalid}'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name" invalid="true"/>', [personInstance: personInstance]) == "invalid=true"
@@ -275,7 +279,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
 
 	void "rendered input is passed to template"() {
 		given:
-		views["/_fields/default/_field.gsp"] = '${widget}'
+		views["/_fields/default/_wrapper.gsp"] = '${widget}'
 
 		expect:
 		applyTemplate('<f:field bean="personInstance" property="name"/>', [personInstance: personInstance]) == '<input type="text" name="name" value="Bart Simpson" required="" id="name" />'
@@ -284,7 +288,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
     @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/80')
 	def "correct value for Boolean"() {
 		given:
-    	views["/_fields/default/_field.gsp"] = 'value=${value}'
+    	views["/_fields/default/_wrapper.gsp"] = 'value=${value}'
 	    def personWithBoolean = { personInstance.grailsDeveloper = it ; personInstance }
 
 		expect:
@@ -300,7 +304,7 @@ class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
     @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/80')
 	def "correct value for boolean"() {
 		given:
-    	views["/_fields/default/_field.gsp"] = 'value=${value}'
+    	views["/_fields/default/_wrapper.gsp"] = 'value=${value}'
 	    def personWith_boolean = { personInstance.minor = it ; personInstance }
 
 		expect:

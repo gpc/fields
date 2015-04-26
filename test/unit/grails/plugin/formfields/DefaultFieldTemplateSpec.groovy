@@ -10,13 +10,25 @@ class DefaultFieldTemplateSpec extends Specification {
 	
 	Map model = [:]
 
-	void setup() {
-		model.invalid = false
-		model.label = 'label'
-		model.property = 'property'
-		model.required = false
-		model.widget = '<input name="property">'
-	}
+    void setup() {
+        model.invalid = false
+        model.label = 'label'
+        model.property = 'property'
+        model.required = false
+        model.widget = '<input name="property">'
+        views["/default/_wrapper.gsp"] = '''\
+<g:set var="classes" value="fieldcontain "/>
+<g:if test="${required}">
+    <g:set var="classes" value="${classes + 'required'}"/>
+</g:if>
+<g:if test="${invalid}">
+    <g:set var="classes" value="${classes + 'error'}"/>
+</g:if>
+<div class="${classes}">
+    <label for="${prefix}${property}">${label}<g:if test="${required}"><span class="required-indicator">*</span></g:if></label>
+    <%= widget %>
+</div>'''
+    }
 	
 	static Jerry $(String html) {
 		jerry(html).children()

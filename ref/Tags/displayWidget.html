@@ -70,11 +70,9 @@ function addJsClass(el) {
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
-                <h1>f:with</h1><p class="paragraph"/><h2>Description</h2><p class="paragraph"/>Places a bean in scope so that the bean attribute can be omitted on contained tags.<p class="paragraph"/><h2>Example</h2><p class="paragraph"/><div class="code"><pre>&#60;f:with bean=<span class="java&#45;quote">"person"</span>&#62;
-    &#60;f:field property=<span class="java&#45;quote">"name"</span>/&#62;
-    &#60;f:field property=<span class="java&#45;quote">"address.city"</span>/&#62;
-&#60;/f:with&#62;</pre></div><p class="paragraph"/><h3>Attributes</h3><p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Name</strong></th><th><strong class="bold">Required?</strong></th><th><strong class="bold">Description</strong></th></tr><tr class="table-odd"><td><strong class="bold">bean</strong></td><td>yes</td><td>The bean whose property is being rendered. This can be the object itself or the name of a page-scope variable.</td></tr><tr class="table-even"><td><strong class="bold">prefix</strong></td><td>String</td><td>A string (including the trailing period) that should be appended before the input name such as <code>name="${prefix}propertyName"</code>.  The label is also modified.</td></tr></table>
-
+                <h1>f:displayWidget</h1><p class="paragraph"/><h2>Description</h2><p class="paragraph"/> <em class="italic">f:displayWidget</em>  renders an appropriate widget for a display property, for example an <code>&#60;span&#62;${value}&#60;/span&#62;</code> element for a  <em class="italic">String</em>  property.<p class="paragraph"/><blockquote class="note">
+Using  <em class="italic">f:displayWidget</em>  directly will only be necessary for very specialized cases, usually it will be invoked via  <em class="italic">f:display</em> .
+</blockquote><p class="paragraph"/><h2>Attributes</h2><p class="paragraph"/> <em class="italic">f:displayWidget</em>  accepts exactly the same attributes as the  <em class="italic">f:<a href="../../ref/Tags/display.html" class="Tags">display</a></em>  tag (except for  <em class="italic">wrapper</em>  and  <em class="italic">templates</em>  attributes).
             </div>
         </td>
         <td id="col2">

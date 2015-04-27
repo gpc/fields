@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>2 Usage 1.4</title>
+    <title>2 Usage 1.5</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -83,7 +83,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> Rob Fletcher</p>
 
-                    <p><strong>Version:</strong> 1.4</p>
+                    <p><strong>Version:</strong> 1.5</p>
 
                     
                 </div>
@@ -101,7 +101,7 @@ The plugin provides a set of tags you can use to render the fields in a form.<p 
     &#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"dateOfBirth"</span>/&#62;
 &#60;/g:form&#62;</pre></div><p class="paragraph"/>The  <em class="italic">f:field</em>  tag will automatically handle embedded domain properties recursively:<p class="paragraph"/><div class="code"><pre>&#60;f:field bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"address"</span>/&#62;</pre></div><p class="paragraph"/>If there is no bean object backing a form but you still want to render the surrounding field markup you can give  <em class="italic">f:field</em>  a body:<p class="paragraph"/><div class="code"><pre>&#60;f:field property=<span class="java&#45;quote">"password"</span>&#62;
     &#60;g:password name=<span class="java&#45;quote">"password"</span>/&#62;
-&#60;/f:field&#62;</pre></div><p class="paragraph"/>It should be an unusual case but to render just the input without its surrounding container you can use the  <em class="italic">f:input</em>  tag:<p class="paragraph"/><div class="code"><pre>&#60;f:input bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"name"</span>/&#62;</pre></div><p class="paragraph"/>To make it more convenient when rendering lots of properties of the same  <em class="italic">bean</em>  you can use the  <em class="italic">f:with</em>  tag to avoid having to specify  <em class="italic">bean</em>  on any tags nested inside:<p class="paragraph"/><div class="code"><pre>&#60;g:form…&#62;
+&#60;/f:field&#62;</pre></div><p class="paragraph"/>It should be an unusual case but to render just the widget without its surrounding container you can use the  <em class="italic">f:widget</em>  tag:<p class="paragraph"/><div class="code"><pre>&#60;f:widget bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"name"</span>/&#62;</pre></div><p class="paragraph"/>To make it more convenient when rendering lots of properties of the same  <em class="italic">bean</em>  you can use the  <em class="italic">f:with</em>  tag to avoid having to specify  <em class="italic">bean</em>  on any tags nested inside:<p class="paragraph"/><div class="code"><pre>&#60;g:form…&#62;
     &#60;f:with bean=<span class="java&#45;quote">"person"</span>&#62;
         &#60;f:field property=<span class="java&#45;quote">"name"</span>/&#62;
         &#60;f:field property=<span class="java&#45;quote">"address"</span>/&#62;
@@ -110,8 +110,23 @@ The plugin provides a set of tags you can use to render the fields in a form.<p 
 &#60;/g:form&#62;</pre></div><p class="paragraph"/>If you need to render a property for display purposes you can use  <em class="italic">f:display</em> . It will internally use  <em class="italic">g:fieldValue</em> ,  <em class="italic">g:formatBoolean</em>  or  <em class="italic">g:formatDate</em>  to format the value.<p class="paragraph"/><div class="code"><pre>&#60;f:display bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"name"</span>/&#62;</pre></div><p class="paragraph"/>If you need to render the value in a different way you can give  <em class="italic">f:display</em>  a body instead.<p class="paragraph"/><div class="code"><pre>&#60;f:display bean=<span class="java&#45;quote">"person"</span> property=<span class="java&#45;quote">"dateOfBirth"</span>&#62;
     &#60;g:formatDate format=<span class="java&#45;quote">"dd MMM yyyy"</span> date=<span class="java&#45;quote">"$&#123;value&#125;"</span>/&#62;
 &#60;/f:display&#62;</pre></div><p class="paragraph"/>By default  <em class="italic">f:display</em>  simply renders the property value but if you supply a  <em class="italic">&#95;display.gsp</em>  template you can render the value in some structured markup, e.g. a table cell or list item. See the <a href="../guide/single.html#customizingFieldRendering" class="guide">Customizing Field Rendering</a> section for how to override templates. For example to render values in a definition list you could use a template like this:<p class="paragraph"/><div class="code"><pre>&#60;dt&#62;$&#123;label&#125;&#60;/dt&#62;
-&#60;dd&#62;$&#123;value&#125;&#60;/dd&#62;</pre></div>
-
+&#60;dd&#62;$&#123;value&#125;&#60;/dd&#62;</pre></div><p class="paragraph"/><h2>Breaking changes</h2><p class="paragraph"/><h3>Templates</h3>
+The names of the templates were changed for more adequate ones:
+<ul class="star">
+<li>_field to _wrapper</li>
+<li>_input to _widget</li>
+<li>_display to _displayWrapper</li>
+<li>_displayWidget was added</li>
+</ul><p class="paragraph"/>To use the old names (for backwards compatibility), configure the following in <code>Config.groovy</code><p class="paragraph"/><div class="code"><pre>grails.plugin.fields.wrapper = <span class="java&#45;quote">"field"</span>
+grails.plugin.fields.displayWrapper = <span class="java&#45;quote">"display"</span>
+grails.plugin.fields.widget = <span class="java&#45;quote">"input"</span></pre></div><p class="paragraph"/><h3>Widget attributes</h3>
+To pass additional attributes to widgets, prefix them with 'widget-'.<p class="paragraph"/>Example:
+<div class="code"><pre>&#60;f:field property=<span class="java&#45;quote">"birthDate"</span> widget&#45;format=<span class="java&#45;quote">"dd/MM/yyyy"</span>/&#62;</pre></div><p class="paragraph"/>To use the old prefix (for backwards compatibility), configure the following in <code>Config.groovy</code>:
+<div class="code"><pre>grails.plugin.fields.widgetPrefix = <span class="java&#45;quote">"input&#45;"</span></pre></div><p class="paragraph"/><h3>Changes in tags</h3>
+<ul class="star">
+<li>The  <em class="italic">input</em>  tag was deprecated because the name was confusing. Use the new  <em class="italic">widget</em>  tag instead.</li>
+<li>The  <em class="italic">displayWidget</em>  tag was added. It outputs the widget for display purposes, without the wrapper (similar to the  <em class="italic">widget</em>  tag).</li>
+</ul><p class="paragraph"/>
 
 
                 <div style="clear:both;margin-top:15px;"></div>
@@ -140,10 +155,16 @@ The plugin provides a set of tags you can use to render the fields in a form.<p 
                             <div class="menu-item"><a href="../ref/Tags/display.html">display</a>
                             </div>
                             
+                            <div class="menu-item"><a href="../ref/Tags/displayWidget.html">displayWidget</a>
+                            </div>
+                            
                             <div class="menu-item"><a href="../ref/Tags/field.html">field</a>
                             </div>
                             
                             <div class="menu-item"><a href="../ref/Tags/input.html">input</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/Tags/widget.html">widget</a>
                             </div>
                             
                             <div class="menu-item"><a href="../ref/Tags/with.html">with</a>

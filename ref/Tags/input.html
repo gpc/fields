@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>Fields Plugin 1.4</title>
+    <title>Fields Plugin 1.5</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -70,9 +70,12 @@ function addJsClass(el) {
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
-                <h1>f:input</h1><p class="paragraph"/><h2>Description</h2><p class="paragraph"/> <em class="italic">f:input</em>  renders an appropriate input for a property, for example an <code>&#60;input type="text"&#62;</code> element for a  <em class="italic">String</em>  property or a <code>&#60;select&#62;</code> for an enum.<p class="paragraph"/><blockquote class="note">
+                <h1>f:input (DEPRECATED)</h1><p class="paragraph"/><h2>Description</h2><p class="paragraph"/> <em class="italic">f:input</em>  renders an appropriate input for a property, for example an <code>&#60;input type="text"&#62;</code> element for a  <em class="italic">String</em>  property or a <code>&#60;select&#62;</code> for an enum.<p class="paragraph"/>Since version 1.5 you can specify where the widget's template is located with the  <em class="italic">widget</em>  attribute.<p class="paragraph"/>
+<blockquote class="note">
 Using  <em class="italic">f:input</em>  directly will only be necessary for very specialized cases, usually it will be invoked via  <em class="italic">f:field</em> .
-</blockquote><p class="paragraph"/><h2>Attributes</h2><p class="paragraph"/> <em class="italic">f:input</em>  accepts exactly the same attributes as the  <em class="italic">f:<a href="../../ref/Tags/field.html" class="Tags">field</a></em>  tag.
+</blockquote><p class="paragraph"/><h2>Attributes</h2><p class="paragraph"/> <em class="italic">f:input</em>  accepts exactly the same attributes as the  <em class="italic">f:<a href="../../ref/Tags/field.html" class="Tags">field</a></em>  tag (except for  <em class="italic">wrapper</em>  and  <em class="italic">templates</em>  attributes).<p class="paragraph"/><h3>Deprecated since version 1.5</h3>
+Use  <em class="italic">f:<a href="../../ref/Tags/widget.html" class="Tags">widget</a></em>  tag instead
+
             </div>
         </td>
         <td id="col2">
@@ -94,10 +97,16 @@ Using  <em class="italic">f:input</em>  directly will only be necessary for very
                             <div class="menu-item"><a href="../../ref/Tags/display.html">display</a>
                             </div>
                             
+                            <div class="menu-item"><a href="../../ref/Tags/displayWidget.html">displayWidget</a>
+                            </div>
+                            
                             <div class="menu-item"><a href="../../ref/Tags/field.html">field</a>
                             </div>
                             
                             <div class="menu-item"><a href="../../ref/Tags/input.html">input</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../../ref/Tags/widget.html">widget</a>
                             </div>
                             
                             <div class="menu-item"><a href="../../ref/Tags/with.html">with</a>

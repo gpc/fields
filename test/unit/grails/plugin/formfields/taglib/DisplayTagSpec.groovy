@@ -66,6 +66,18 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
 		applyTemplate('<f:display bean="personInstance" property="name">${value.reverse()}</f:display>', [personInstance: personInstance]) == '<dt>Name</dt><dd>nospmiS traB</dd>'
 	}
 
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/192')
+	void 'display tag will use body for rendering value2'() {
+		given:
+		views["/_fields/default/_displayWrapper.gsp"] = '<dt>${label}</dt><dd>${value}</dd>'
+
+		and:
+		mockFormFieldsTemplateService.findTemplate(_, 'displayWrapper', null) >> [path: '/_fields/default/displayWrapper']
+
+		expect:
+		applyTemplate('<f:display bean="personInstance" property="gender">${value.name()}</f:display>', [personInstance: personInstance]) == '<dt>Gender</dt><dd>Male</dd>'
+	}
+
     @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/135')
     void 'numeric properties are not converted to Strings in display template'() {
         given:

@@ -239,9 +239,9 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 
         if (hasBody(body)) {
+			model.widget = raw(body(model + [attrs: widgetAttrs] + widgetAttrs))
 			model.value = body(model)
-            model.widget = raw(body(model + [attrs: widgetAttrs] + widgetAttrs))
-        } else {
+		} else {
             model.widget = renderDisplayWidget(propertyAccessor, model, widgetAttrs, widgetFolder?:templatesFolder)
         }
 

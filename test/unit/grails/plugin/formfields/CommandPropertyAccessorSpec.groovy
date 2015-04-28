@@ -1,6 +1,7 @@
 package grails.plugin.formfields
 
 import grails.test.mixin.web.ControllerUnitTestMixin
+import grails.validation.Validateable
 import org.codehaus.groovy.grails.support.proxy.DefaultProxyHandler
 import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
 import grails.plugin.formfields.mock.*
@@ -52,7 +53,7 @@ class CommandPropertyAccessorSpec extends Specification {
 		!propertyAccessor.invalid
 
 		where:
-		type << [TestCommand, UnconstrainedCommand]
+		type << [TestCommand, UnconstrainedCommand, DerivedPropertiesBean]
 	}
 
 	void 'resolves a basic property even when its value is null'() {
@@ -286,4 +287,18 @@ class TestCommand {
 
 class UnconstrainedCommand {
 	String stringProperty
+}
+
+@Validateable
+class DerivedPropertiesBean {
+	String backingValue
+	String otherValue
+
+	String getStringProperty() {
+		return "$otherValue: $backingValue"
+	}
+
+	static constraints = {
+		otherValue nullable: true
+	}
 }

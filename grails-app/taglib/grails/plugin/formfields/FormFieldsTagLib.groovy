@@ -15,23 +15,20 @@
  */
 
 package grails.plugin.formfields
-
-import groovy.xml.MarkupBuilder
-import org.apache.commons.lang.StringUtils
 import grails.core.GrailsApplication
 import grails.core.GrailsDomainClass
 import grails.core.GrailsDomainClassProperty
 import grails.core.support.GrailsApplicationAware
-
+import groovy.xml.MarkupBuilder
+import org.apache.commons.lang.StringUtils
 import org.grails.buffer.FastStringWriter
-import org.grails.datastore.gorm.config.GrailsDomainClassPersistentProperty
-import org.grails.validation.DomainClassPropertyComparator
 import org.grails.gsp.GroovyPage
+import org.grails.validation.DomainClassPropertyComparator
+
+import java.sql.Blob
 
 import static FormFieldsTemplateService.toPropertyNameFormat
 import static grails.util.GrailsClassUtils.getStaticPropertyValue
-
-import java.sql.Blob
 
 class FormFieldsTagLib implements GrailsApplicationAware {
 
@@ -157,16 +154,30 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	 * Renders a collection of beans in a table
 	 *
 	 * @attr collection REQUIRED The collection of beans to render
+	 * @attr domainClass The FQN of the domain class of the elements in the collection.
+	 * Defaults to the class of the first element in the collection.
+	 * @attr properties The list of properties to be shown (table columns).
+	 * Defaults to the first 7 (or less) properties of the domain class ordered by the domain class' constraints.
 	 */
 	def table = { attrs, body ->
 		def collection = resolveBean(attrs.remove('collection'))
-		def domainClass = (collection instanceof Collection) && collection ? resolveDomainClass(collection.iterator().next()) : null
-		if(domainClass) {
-			def properties = domainClass.persistentProperties.sort(new DomainClassPropertyComparator(domainClass))
-			if(properties.size()>6) {
-				properties = properties[0..6]
+		def domainClass
+		if (attrs.containsKey('domainClass')) {
+			domainClass = grailsApplication.getDomainClass(attrs.remove('domainClass'))
+		} else {
+			domainClass = (collection instanceof Collection) && collection ? resolveDomainClass(collection.iterator().next()) : null
+		}
+		if (domainClass) {
+			def properties
+			if (attrs.containsKey('properties')) {
+				properties = attrs.remove('properties').collect { domainClass.getPropertyByName(it) }
+			} else {
+				properties = domainClass.persistentProperties.sort(new DomainClassPropertyComparator(domainClass))
+				if (properties.size() > 6) {
+					properties = properties[0..6]
+				}
 			}
-			out << render(template: "/templates/_fields/table", model:[domainClass: domainClass, domainProperties: properties, collection: collection])
+			out << render(template: "/templates/_fields/table", model: [domainClass: domainClass, domainProperties: properties, collection: collection])
 		}
 	}
 

@@ -158,6 +158,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	 * Defaults to the class of the first element in the collection.
 	 * @attr properties The list of properties to be shown (table columns).
 	 * Defaults to the first 7 (or less) properties of the domain class ordered by the domain class' constraints.
+ 	 * @attr displayStyle OPTIONAL Determines the display template used for the bean's properties.
+	 * Defaults to 'table', meaning that 'display-table' templates will be used when available.
 	 */
 	def table = { attrs, body ->
 		def collection = resolveBean(attrs.remove('collection'))
@@ -177,7 +179,9 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 					properties = properties[0..6]
 				}
 			}
-			out << render(template: "/templates/_fields/table", model: [domainClass: domainClass, domainProperties: properties, collection: collection])
+			def displayStyle= attrs.remove('displayStyle')
+			out << render(template: "/templates/_fields/table",
+					model: [domainClass: domainClass, domainProperties: properties, collection: collection, displayStyle: displayStyle])
 		}
 	}
 
@@ -186,11 +190,12 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	 *
 	 * @attr bean REQUIRED Name of the source bean in the GSP model
 	 * @attr property OPTIONAL The name of the property to display
+	 * @attr displayStyle OPTIONAL Determines the template used for displaying the bean's properties, e.g. when
+	 * displayStyle is 'table', 'display-table' templates will have preference over 'display' templates.
 	 */
 	def display = { attrs, body ->
 		def bean = resolveBean(attrs.remove('bean'))
 		if (!bean) throwTagError("Tag [display] is missing required attribute [bean]")
-		def prefix = resolvePrefix(attrs.prefix)
 
 		def property = attrs.remove('property')
 
@@ -201,12 +206,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 				out << render(template: "/templates/_fields/list", model:[domainClass:domainClass, domainProperties: properties]) { prop ->
 					def propertyAccessor = resolveProperty(bean, prop.name)
 					def model = buildModel(propertyAccessor, attrs)
-					if(prop.isAssociation()) {
-						// TODO: Support associations, embedded etc.
-					}
-					else {
-						out << renderForDisplay(propertyAccessor, model, attrs)
-					}
+					out << raw(renderForDisplay(propertyAccessor, model, attrs))
 				}
 			}
 		}
@@ -218,7 +218,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 				model.value = body(model)
 			}
 
-			out << renderForDisplay(propertyAccessor, model, attrs)
+			out << raw(renderForDisplay(propertyAccessor, model, attrs))
 		}
 	}
 
@@ -264,23 +264,15 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 	}
 
-	private CharSequence renderDisplayBean(BeanPropertyAccessor propertyAccessor, String style, CharSequence body) {
-		def template = formFieldsTemplateService.findTemplate(propertyAccessor, "display-$style")
-		if (template) {
-
-		}
-		else {
-			if("table".equalsIgnoreCase(style)) {
-				// TODO: implement
-			}
-			else {
-
-			}
-		}
-	}
-
 	private CharSequence renderForDisplay(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:]) {
-		def template = formFieldsTemplateService.findTemplate(propertyAccessor, 'display')
+		def template = null
+		def displayStyle = attrs.displayStyle
+		if (displayStyle && displayStyle != 'default') {
+			template = formFieldsTemplateService.findTemplate(propertyAccessor, "display-$attrs.displayStyle")
+		}
+		if (!template) {
+			template = formFieldsTemplateService.findTemplate(propertyAccessor, 'display')
+		}
 		if (template) {
 			render template: template.path, plugin: template.plugin, model: model + [attrs: attrs] + attrs
 		} else if (!(model.value instanceof CharSequence)) {
@@ -518,6 +510,18 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	private CharSequence renderDefaultDisplay(Map model, Map attrs = [:]) {
+		def persistentProperty = model.persistentProperty
+		if (persistentProperty?.association) {
+			if (persistentProperty.embedded) {
+				return (attrs.displayStyle == 'table') ? model.value?.toString().encodeAsHTML() :
+						displayEmbedded(model.value, persistentProperty.component, attrs)
+			} else if (persistentProperty.oneToMany || persistentProperty.manyToMany) {
+				return displayAssociationList(model.value, persistentProperty.referencedDomainClass)
+			} else {
+				return displayAssociation(model.value, persistentProperty.referencedDomainClass)
+			}
+		}
+
 		switch (model.type) {
 			case Boolean.TYPE:
 			case Boolean:
@@ -534,7 +538,34 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 	}
 
-    private boolean isEditable(constraints) {
+	private CharSequence displayEmbedded(bean, GrailsDomainClass domainClass, Map attrs) {
+		def buffer = new FastStringWriter()
+		def properties = domainClass.persistentProperties.sort(new DomainClassPropertyComparator(domainClass))
+		buffer << render(template: "/templates/_fields/list", model:[domainClass:domainClass, domainProperties: properties]) { prop ->
+			def propertyAccessor = resolveProperty(bean, prop.name)
+			def model = buildModel(propertyAccessor, attrs)
+			out << raw(renderForDisplay(propertyAccessor, model, attrs))
+		}
+		buffer.buffer
+	}
+
+	private CharSequence displayAssociationList(values, GrailsDomainClass referencedDomainClass) {
+		def buffer = new FastStringWriter()
+		buffer << '<ul>'
+		for (value in values) {
+			buffer << '<li>'
+			buffer << displayAssociation(value, referencedDomainClass)
+			buffer << '</li>'
+		}
+		buffer << '</ul>'
+		buffer.buffer
+	}
+
+	private CharSequence displayAssociation(value, GrailsDomainClass referencedDomainClass) {
+		g.link(controller: referencedDomainClass.propertyName, action: "show", id: value.id, value.toString().encodeAsHTML())
+	}
+
+	private boolean isEditable(constraints) {
         !constraints || constraints.editable
     }
 

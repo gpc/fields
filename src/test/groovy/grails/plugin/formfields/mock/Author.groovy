@@ -8,7 +8,9 @@ class Author {
 	String name
 	List<Book> books
 	String placeOfBirth
-	
+
+	@Override
+	String toString() { name }
 	static hasMany = [books: Book]
 	
 	static constraints = {

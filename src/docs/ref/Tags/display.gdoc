@@ -2,13 +2,17 @@ h1. f:display
 
 h2. Description
 
-_f:display_ renders an a property for display. If there is no _\_display_ template in scope the tag will simply render the property value.
+_f:display_ renders one or all properties for display. If there is no _\_display_ template in scope the tag will simply render the property value.
 
 If the _f:display_ tag has a body its output is used as the value passed as the _value_ model to the _\_display_ template. If there is no body then the 'raw' property value is passed to _g:fieldValue_, _g:formatDate_ or _g:formatBoolean_ depending on its type and the result is passed as the _value_ model to the _\_display_ template.
 
 h2. Examples
 
 {code}
+<f:display bean="person"/>
+
+<f:display bean="person" displayStyle="table"/>
+
 <f:display bean="person" property="name"/>
 
 <f:display bean="person" property="dateOfBirth">
@@ -18,4 +22,14 @@ h2. Examples
 
 h2. Attributes
 
-_f:display_ accepts exactly the same attributes as the _f:[field|Tags]_ tag.
+{table}
+*Name* | *Required?* | *Description*
+*bean* | yes if not inside _f:with_ | The bean whose property is being rendered. This can be the object itself or the name of a page-scope variable.
+*property* | | The path to the property. This can include any level of nesting and numeric or string indexes. For example @employees\[0\].address\[home\].street@ is a valid path. If absent, all properties will be displayed.
+*value* | | Overrides the actual value of the property.
+*default* | | A default value for the property that will be used if the actual property value is _falsy_.
+*label* | | Overrides the field label passed to the template. This value may either be an i18n key or a literal string.
+*displayStyle* | | When specified and different from the string _default_, this tag will try to use a _\_display-${displayStyle}_ template with a _\_display_ template as fallback. _displayStyle="table"_ will render embedded components by default with _toString()_ in stead of rendering all nested properties.
+{table}
+
+Any additional attributes are passed to the rendered template.

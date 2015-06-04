@@ -1,14 +1,17 @@
 package grails.plugin.formfields.taglib
 
+import grails.plugin.formfields.FormFieldsTagLib
+import grails.plugin.formfields.FormFieldsTemplateService
+import grails.plugin.formfields.mock.Author
+import grails.plugin.formfields.mock.Book
 import grails.plugin.formfields.mock.Person
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
 import spock.lang.Issue
-import grails.plugin.formfields.*
 
 @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/45')
 @TestFor(FormFieldsTagLib)
-@Mock(Person)
+@Mock([Person, Author, Book])
 class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
 
 	def mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
@@ -30,7 +33,7 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
 		then:"The result is a list"
 			result.contains '<ol class="property-list person">'
 			result.contains '<span id="gender-label" class="property-label">Gender</span>'
-			result.contains '<span class="property-value" aria-labelledby="gender-label">Male</span>'
+			result.contains '<div class="property-value" aria-labelledby="gender-label">Male</div>'
 	}
 
 
@@ -61,6 +64,22 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
 
 		expect:
 		applyTemplate('<f:display bean="personInstance" property="name"/>', [personInstance: personInstance]) == '<dt>Name</dt><dd>Bart Simpson</dd>'
+	}
+
+	void 'displayStyle attribute allows to use a specific template'() {
+		given:
+		views["/_fields/default/_display.gsp"] = '<dt>${label}</dt><dd>${value}</dd>'
+		views["/_fields/default/_display-custom.gsp"] = 'Custom: ${value}'
+
+		and:
+		mockFormFieldsTemplateService.findTemplate(_, 'display') >> [path: '/_fields/default/display']
+		mockFormFieldsTemplateService.findTemplate(_, 'display-custom') >> [path: '/_fields/default/display-custom']
+
+		expect: "'default' displayStyle uses 'display' template"
+		applyTemplate('<f:display bean="personInstance" property="name" displayStyle="default"/>', [personInstance: personInstance]) == '<dt>Name</dt><dd>Bart Simpson</dd>'
+
+		and: "'custom' displayStyle uses 'display-custom' template"
+		applyTemplate('<f:display bean="personInstance" property="name" displayStyle="custom"/>', [personInstance: personInstance]) == 'Custom: Bart Simpson'
 	}
 
 	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/88')
@@ -99,6 +118,43 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
         expect:
         applyTemplate('<f:display bean="personInstance" property="transientText"/>', [personInstance: personInstance]) == personInstance.transientText
     }
+
+	void 'renders all embedded components properties'() {
+		when: "display an embedded address"
+		def result= applyTemplate('<f:display bean="personInstance" property="address"/>', [personInstance: personInstance])
+
+		then: "the result contains all embedded address properties"
+		result.contains('<ol class="property-list address">')
+		result.contains('<span id="street-label" class="property-label">Street</span>')
+		result.contains('<div class="property-value" aria-labelledby="street-label">94 Evergreen Terrace</div>')
+		result.contains('<div class="property-value" aria-labelledby="city-label">Springfield</div>')
+		result.contains('<div class="property-value" aria-labelledby="country-label">USA</div>')
+	}
+
+	void 'renders many-side associations as a list of links'() {
+		given:
+		def book1 = new Book(title: 'book 1')
+		def book2 = new Book(title: 'book 2')
+		def author = new Author().addToBooks(book1).addToBooks(book2)
+
+		when:
+		def result = applyTemplate('<f:display bean="author"/>', [author: author])
+
+		then:
+		result.contains('<div class="property-value" aria-labelledby="books-label"><ul><li><a href="/book/show">book 1</a></li><li><a href="/book/show">book 2</a></li></ul></div>')
+	}
+
+	void 'renders one-side associations as a link'() {
+		given:
+		def book=new Book(title: 'the title')
+		new Author(name: 'Bart Simpson').addToBooks(book)
+
+		when:
+		def result = applyTemplate('<f:display bean="book"/>', [book: book])
+
+		then:
+		result.contains('<div class="property-value" aria-labelledby="author-label"><a href="/author/show">Bart Simpson</a></div>')
+	}
 
 
 }

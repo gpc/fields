@@ -370,7 +370,10 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 				}
 			}
 			// TODO: encoding information of widget gets lost - don't use MarkupBuilder
-			mkp.yieldUnescaped model.widget 
+			if(model?.widget) {
+				mkp.yieldUnescaped model.widget 	
+			}
+			
 		}
 		writer.buffer
 	}

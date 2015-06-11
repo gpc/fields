@@ -1,10 +1,10 @@
 language: groovy
+sudo: false
 jdk:
 - openjdk7
-before_script:
-- rm -rf target
-- echo 'TESTING VARIABLES'
-- echo "${TRAVIS_BRANCH:1}"
+cache:
+  directories:
+    - $HOME/.gradle
 script: ./travis-build.sh
 env:
   global:
@@ -24,4 +24,5 @@ deploy:
   on:
     repo: grails3-plugins/fields
     tags: true
-    all_branches: true    
+    all_branches: true  
+

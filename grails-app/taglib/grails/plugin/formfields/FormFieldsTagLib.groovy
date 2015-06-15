@@ -315,19 +315,28 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	private List<GrailsDomainClassProperty> resolvePersistentProperties(GrailsDomainClass domainClass, attrs) {
-		def properties = domainClass.persistentProperties as List
+		def properties
 
-		def blacklist = attrs.except?.tokenize(',')*.trim() ?: []
-		blacklist << 'dateCreated' << 'lastUpdated'
-		def scaffoldProp = getStaticPropertyValue(domainClass.clazz, 'scaffold')
-		if (scaffoldProp) {
-			blacklist.addAll(scaffoldProp.exclude)
+		if(attrs.order) {
+			if(attrs.except) {
+				throwTagError('The [except] and [order] attributes may not be used together.')
+			}
+		    def orderBy = attrs.order?.tokenize(',')*.trim() ?: []
+			properties = orderBy.collect { propertyName -> domainClass.getPersistentProperty(propertyName) }
+		} else {
+			properties = domainClass.persistentProperties as List
+			def blacklist = attrs.except?.tokenize(',')*.trim() ?: []
+			blacklist << 'dateCreated' << 'lastUpdated'
+			def scaffoldProp = getStaticPropertyValue(domainClass.clazz, 'scaffold')
+			if (scaffoldProp) {
+				blacklist.addAll(scaffoldProp.exclude)
+			}
+			properties.removeAll { it.name in blacklist }
+			properties.removeAll { !it.domainClass.constrainedProperties[it.name]?.display }
+			properties.removeAll { it.derived }
+
+			Collections.sort(properties, new org.grails.validation.DomainClassPropertyComparator(domainClass))
 		}
-		properties.removeAll { it.name in blacklist }
-		properties.removeAll { !it.domainClass.constrainedProperties[it.name]?.display }
-        properties.removeAll { it.derived }
-
-		Collections.sort(properties, new org.grails.validation.DomainClassPropertyComparator(domainClass))
 		properties
 	}
 

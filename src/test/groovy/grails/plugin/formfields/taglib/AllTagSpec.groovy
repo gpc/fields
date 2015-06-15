@@ -3,6 +3,7 @@ package grails.plugin.formfields.taglib
 import grails.plugin.formfields.mock.Person
 import grails.plugin.formfields.*
 import grails.test.mixin.*
+import org.grails.taglib.GrailsTagException
 import spock.lang.*
 
 @TestFor(FormFieldsTagLib)
@@ -68,4 +69,29 @@ class AllTagSpec extends AbstractFormFieldsTagLibSpec {
 		!output.contains('minor')
 	}
 
+	@Issue('https://github.com/grails3-plugins/fields/issues/9')
+	void 'all tag respects the order attribute'() {
+		given:
+		views["/_fields/default/_field.gsp"] = '|${property}|'
+
+		when:
+		def output = applyTemplate('<f:all bean="personInstance" order="name, minor, gender"/>', [personInstance: personInstance])
+
+		then:
+		output == '|name||minor||gender|'
+
+	}
+
+	@Issue('https://github.com/grails3-plugins/fields/issues/9')
+	void 'order attribute and except attribute are mutually exclusive'() {
+		given:
+		views["/_fields/default/_field.gsp"] = '|${property}|'
+
+		when:
+		applyTemplate('<f:all bean="personInstance" except="password" order="name, minor, gender"/>', [personInstance: personInstance])
+
+		then:
+		GrailsTagException e = thrown()
+		e.message.contains 'The [except] and [order] attributes may not be used together.'
+	}
 }

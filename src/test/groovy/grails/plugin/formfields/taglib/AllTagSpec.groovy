@@ -11,87 +11,87 @@ import spock.lang.*
 @Unroll
 class AllTagSpec extends AbstractFormFieldsTagLibSpec {
 
-	def mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
+    def mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
 
-	def setupSpec() {
-		configurePropertyAccessorSpringBean()
-	}
+    def setupSpec() {
+        configurePropertyAccessorSpringBean()
+    }
 
-	def setup() {
-		def taglib = applicationContext.getBean(FormFieldsTagLib)
+    def setup() {
+        def taglib = applicationContext.getBean(FormFieldsTagLib)
 
-		mockFormFieldsTemplateService.findTemplate(_, 'field') >> [path: '/_fields/default/field']
-		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
+        mockFormFieldsTemplateService.findTemplate(_, 'field') >> [path: '/_fields/default/field']
+        taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 
-		mockEmbeddedSitemeshLayout(taglib)
-	}
+        mockEmbeddedSitemeshLayout(taglib)
+    }
 
-	void "all tag renders fields for all properties"() {
-		given:
-		views["/_fields/default/_field.gsp"] = '${property} '
+    void "all tag renders fields for all properties"() {
+        given:
+        views["/_fields/default/_field.gsp"] = '${property} '
 
-		when:
-		def output = applyTemplate('<f:all bean="personInstance"/>', [personInstance: personInstance])
+        when:
+        def output = applyTemplate('<f:all bean="personInstance"/>', [personInstance: personInstance])
 
-		then:
-		output =~ /\bname\b/
-		output =~ /\bpassword\b/
-		output =~ /\bgender\b/
-		output =~ /\bdateOfBirth\b/
-		output =~ /\bminor\b/
-	}
+        then:
+        output =~ /\bname\b/
+        output =~ /\bpassword\b/
+        output =~ /\bgender\b/
+        output =~ /\bdateOfBirth\b/
+        output =~ /\bminor\b/
+    }
 
-	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/21')
-	void 'all tag skips #property property'() {
-		given:
-		views["/_fields/default/_field.gsp"] = '${property} '
+    @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/21')
+    void 'all tag skips #property property'() {
+        given:
+        views["/_fields/default/_field.gsp"] = '${property} '
 
-		when:
-		def output = applyTemplate('<f:all bean="personInstance"/>', [personInstance: personInstance])
+        when:
+        def output = applyTemplate('<f:all bean="personInstance"/>', [personInstance: personInstance])
 
-		then:
-		!output.contains(property)
+        then:
+        !output.contains(property)
 
-		where:
-		property << ['id', 'version', 'onLoad', 'lastUpdated', 'excludedProperty', 'displayFalseProperty']
-	}
+        where:
+        property << ['id', 'version', 'onLoad', 'lastUpdated', 'excludedProperty', 'displayFalseProperty']
+    }
 
-	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/12')
-	void 'all tag skips properties listed with the except attribute'() {
-		given:
-		views["/_fields/default/_field.gsp"] = '${property} '
+    @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/12')
+    void 'all tag skips properties listed with the except attribute'() {
+        given:
+        views["/_fields/default/_field.gsp"] = '${property} '
 
-		when:
-		def output = applyTemplate('<f:all bean="personInstance" except="password, minor"/>', [personInstance: personInstance])
+        when:
+        def output = applyTemplate('<f:all bean="personInstance" except="password, minor"/>', [personInstance: personInstance])
 
-		then:
-		!output.contains('password')
-		!output.contains('minor')
-	}
+        then:
+        !output.contains('password')
+        !output.contains('minor')
+    }
 
-	@Issue('https://github.com/grails3-plugins/fields/issues/9')
-	void 'all tag respects the order attribute'() {
-		given:
-		views["/_fields/default/_field.gsp"] = '|${property}|'
+    @Issue('https://github.com/grails3-plugins/fields/issues/9')
+    void 'all tag respects the order attribute'() {
+        given:
+        views["/_fields/default/_field.gsp"] = '|${property}|'
 
-		when:
-		def output = applyTemplate('<f:all bean="personInstance" order="name, minor, gender"/>', [personInstance: personInstance])
+        when:
+        def output = applyTemplate('<f:all bean="personInstance" order="name, minor, gender"/>', [personInstance: personInstance])
 
-		then:
-		output == '|name||minor||gender|'
+        then:
+        output == '|name||minor||gender|'
 
-	}
+    }
 
-	@Issue('https://github.com/grails3-plugins/fields/issues/9')
-	void 'order attribute and except attribute are mutually exclusive'() {
-		given:
-		views["/_fields/default/_field.gsp"] = '|${property}|'
+    @Issue('https://github.com/grails3-plugins/fields/issues/9')
+    void 'order attribute and except attribute are mutually exclusive'() {
+        given:
+        views["/_fields/default/_field.gsp"] = '|${property}|'
 
-		when:
-		applyTemplate('<f:all bean="personInstance" except="password" order="name, minor, gender"/>', [personInstance: personInstance])
+        when:
+        applyTemplate('<f:all bean="personInstance" except="password" order="name, minor, gender"/>', [personInstance: personInstance])
 
-		then:
-		GrailsTagException e = thrown()
-		e.message.contains 'The [except] and [order] attributes may not be used together.'
-	}
+        then:
+        GrailsTagException e = thrown()
+        e.message.contains 'The [except] and [order] attributes may not be used together.'
+    }
 }

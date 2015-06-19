@@ -145,6 +145,12 @@ class FormFieldsTemplateService {
             templateResolveOrder << appendPiecesForUri('/_fields', associationPath, templateName)
         }
 
+        // if we have a domain constraint widget look in `grails-app/views/_fields/<widget>/_field.gsp`
+        def widget = getWidget(propertyAccessor.constraints)
+        if (widget) {
+            templateResolveOrder << appendPiecesForUri("/_fields", widget, templateName)
+        }
+
         // if we have a property type look in `grails-app/views/_fields/<propertyType>/_field.gsp` and equivalent for superclasses
         if (propertyAccessor.propertyType) {
             templateResolveOrder << appendPiecesForUri("/_fields", toPropertyNameFormat(propertyAccessor.propertyType), templateName)

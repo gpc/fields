@@ -18,6 +18,7 @@ class Person {
 	Boolean grailsDeveloper
 	Byte[] picture
 	byte[] anotherPicture
+	String biography
 
     transient String getTransientText() {
         "transient text"
@@ -37,6 +38,7 @@ class Person {
 		picture nullable: true
 		anotherPicture nullable: true
 		password password: true
+		biography nullable: true, widget: 'textarea'
 	}
 
 	static scaffold = [exclude: ['excludedProperty']]

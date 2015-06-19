@@ -132,6 +132,70 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		render(template: template.path) == 'OUTPUT FOR DISPLAY'
 	}
 
+	void "resolves wrapper template for textarea widget constraint"() {
+		given:
+		views["/_fields/default/_wrapper.gsp"] = 'DEFAULT FIELD TEMPLATE'
+		views["/_fields/string/_wrapper.gsp"] = 'PROPERTY TYPE TEMPLATE'
+		views["/_fields/textarea/_wrapper.gsp"] = 'WIDGET TEMPLATE'
+
+		and:
+		def property = factory.accessorFor(personInstance, 'biography')
+
+		expect:
+		def template = service.findTemplate(property, 'wrapper', "biography")
+		template.path == '/_fields/textarea/wrapper'
+		template.plugin == null
+		render(template: template.path) == 'WIDGET TEMPLATE'
+	}
+
+    void "resolves widget template for textarea widget constraint"() {
+		given:
+		views["/_fields/default/_widget.gsp"] = 'DEFAULT FIELD WIDGET'
+		views["/_fields/string/_widget.gsp"] = 'PROPERTY TYPE WIDGET'
+		views["/_fields/textarea/_widget.gsp"] = 'INPUT WIDGET'
+
+		and:
+		def property = factory.accessorFor(personInstance, 'biography')
+
+		expect:
+		def template = service.findTemplate(property, 'widget', "biography")
+		template.path == '/_fields/textarea/widget'
+		template.plugin == null
+		render(template: template.path) == 'INPUT WIDGET'
+	}
+
+    void "resolves display wrapper template for textarea widget constraint"() {
+		given:
+		views["/_fields/default/_displayWrapper.gsp"] = 'DEFAULT DISPLAY TEMPLATE'
+		views["/_fields/string/_displayWrapper.gsp"] = 'PROPERTY TYPE TEMPLATE'
+		views["/_fields/textarea/_displayWrapper.gsp"] = 'OUTPUT TEMPLATE'
+
+		and:
+		def property = factory.accessorFor(personInstance, 'biography')
+
+		expect:
+		def template = service.findTemplate(property, 'displayWrapper', "biography")
+		template.path == '/_fields/textarea/displayWrapper'
+		template.plugin == null
+		render(template: template.path) == 'OUTPUT TEMPLATE'
+	}
+
+    void "resolves display widget template for textarea widget constraint"() {
+		given:
+		views["/_fields/default/_displayWidget.gsp"] = 'DEFAULT FIELD FOR DISPLAY'
+		views["/_fields/string/_displayWidget.gsp"] = 'PROPERTY TYPE FOR DISPLAY'
+		views["/_fields/textarea/_displayWidget.gsp"] = 'OUTPUT FOR DISPLAY'
+
+		and:
+		def property = factory.accessorFor(personInstance, 'biography')
+
+		expect:
+		def template = service.findTemplate(property, 'displayWidget', "biography")
+		template.path == '/_fields/textarea/displayWidget'
+		template.plugin == null
+		render(template: template.path) == 'OUTPUT FOR DISPLAY'
+	}
+
 	void "resolves template for domain class property"() {
 		given:
 		views["/_fields/default/_wrapper.gsp"] = 'DEFAULT FIELD TEMPLATE'

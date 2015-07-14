@@ -19,6 +19,6 @@ description "Installs scaffolding templates that use f:all to render properties"
 updateStatus "Copying fields templates"
 copy {
 	from templates("fields/scaffolding/*.gsp")
-	into "src/templates/scaffolding"
+	into "src/main/templates/scaffolding"
 }
 addStatus "Template installation complete"

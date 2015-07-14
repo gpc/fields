@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-description "Installs scaffolding templates that use f:all to render properties", "grails install-form-fields-templates"
+description "Installs scaffolding templates that use f:all to render properties", "grails install-templates"
 
 updateStatus "Copying fields templates"
 copy {

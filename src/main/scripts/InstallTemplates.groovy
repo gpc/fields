@@ -16,7 +16,16 @@
 
 description "Installs scaffolding templates that use f:all to render properties", "grails install-templates"
 
-updateStatus "Copying fields templates"
+updateStatus "Copying scaffolding templates"
+mkdir "src/main/templates/scaffolding"
+copy {
+	from templates("scaffolding/*.gsp")
+	into "src/main/templates/scaffolding"
+}
+copy {
+	from templates("scaffolding/*.groovy")
+	into "src/main/templates/scaffolding"
+}
 copy {
 	from templates("fields/scaffolding/*.gsp")
 	into "src/main/templates/scaffolding"

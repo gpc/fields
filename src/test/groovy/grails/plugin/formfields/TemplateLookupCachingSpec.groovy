@@ -34,13 +34,13 @@ class TemplateLookupCachingSpec extends Specification {
 
 	void 'a template is looked up the first time it is required'() {
 		given:
-		def templateResource = new GroovyPageResourceScriptSource('/_fields/person/name/_input.gsp', new ByteArrayResource('PERSON NAME TEMPLATE'.getBytes('UTF-8')))
+		def templateResource = new GroovyPageResourceScriptSource('/_fields/person/name/_widget.gsp', new ByteArrayResource('PERSON NAME TEMPLATE'.getBytes('UTF-8')))
 
 		and:
 		def property = beanPropertyAccessorFactory.accessorFor(person, 'name')
 
 		when:
-		def template = service.findTemplate(property, 'input')
+		def template = service.findTemplate(property, 'input', null)
 
 		then:
 		template.path == '/_fields/person/name/input'
@@ -54,7 +54,7 @@ class TemplateLookupCachingSpec extends Specification {
 		def property = beanPropertyAccessorFactory.accessorFor(person, 'name')
 
 		when:
-		def template = service.findTemplate(property, 'input')
+		def template = service.findTemplate(property, 'input', null)
 
 		then:
 		template.path == '/_fields/person/name/input'
@@ -65,13 +65,13 @@ class TemplateLookupCachingSpec extends Specification {
 
 	void 'a template for a different property is cached separately'() {
 		given:
-		def templateResource = new GroovyPageResourceScriptSource('/_fields/person/password/_input.gsp', new ByteArrayResource('PERSON PASSWORD TEMPLATE'.getBytes('UTF-8')))
+		def templateResource = new GroovyPageResourceScriptSource('/_fields/person/password/_widget.gsp', new ByteArrayResource('PERSON PASSWORD TEMPLATE'.getBytes('UTF-8')))
 
 		and:
 		def property = beanPropertyAccessorFactory.accessorFor(person, 'password')
 
 		when:
-		def template = service.findTemplate(property, 'input')
+		def template = service.findTemplate(property, 'input', null)
 
 		then:
 		template.path == '/_fields/person/password/input'
@@ -82,13 +82,13 @@ class TemplateLookupCachingSpec extends Specification {
 
 	void 'a different template for the same property is cached separately'() {
 		given:
-		def templateResource = new GroovyPageResourceScriptSource('/_fields/person/name/_input.gsp', new ByteArrayResource('PERSON NAME TEMPLATE 2'.getBytes('UTF-8')))
+		def templateResource = new GroovyPageResourceScriptSource('/_fields/person/name/_widget.gsp', new ByteArrayResource('PERSON NAME TEMPLATE 2'.getBytes('UTF-8')))
 
 		and:
 		def property = beanPropertyAccessorFactory.accessorFor(person, 'name')
 		
 		when:
-		def template = service.findTemplate(property, 'field')
+		def template = service.findTemplate(property, 'field', null)
 		
 		then:
 		template.path == '/_fields/person/name/field'

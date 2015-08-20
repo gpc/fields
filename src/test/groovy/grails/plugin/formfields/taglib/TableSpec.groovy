@@ -81,7 +81,7 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
     void "table tag uses custom display template when displayStyle is specified"() {
         given:
         views["/_fields/display/_custom.gsp"] = 'Custom: ${value}'
-        mockFormFieldsTemplateService.findTemplate(_, 'display-custom') >> [path: '/_fields/display/custom']
+        mockFormFieldsTemplateService.findTemplate(_, 'displayWidget-custom', _) >> [path: '/_fields/display/custom']
 
         when:
 

@@ -2,9 +2,14 @@ h1. f:display
 
 h2. Description
 
-_f:display_ renders one or all properties for display. If there is no _\_display_ template in scope the tag will simply render the property value.
+_f:display_ renders a property for display. If there is no _\_displayWrapper_ template in scope the tag will simply render the property value.
+
+_f:display_ template will look for a _\_displayWrapper_ for the wrapper itself and a _\_displayWidget_ for the widget used inside the wrapper template.
 
 If the _f:display_ tag has a body its output is used as the value passed as the _value_ model to the _\_display_ template. If there is no body then the 'raw' property value is passed to _g:fieldValue_, _g:formatDate_ or _g:formatBoolean_ depending on its type and the result is passed as the _value_ model to the _\_display_ template.
+
+In version 1.5 new attributes were added:
+Since then you can specify the folders where the templates are located. You can do this for the wrapper folder, the widget folder ot both (if they are located on the same folder).
 
 h2. Examples
 
@@ -14,6 +19,15 @@ h2. Examples
 <f:display bean="person" displayStyle="table"/>
 
 <f:display bean="person" property="name"/>
+
+// renders _fields/bootstrap3/_displayWrapper.gsp:
+<f:display bean="person" property="name" wrapper="bootstrap3"/>
+
+// renders _fields/maskedInput/_displayWidget.gsp:
+<f:display bean="person" property="name" widget="maskedInput"/>
+
+// renders _fields/maskedInput/_displayWrapper.gsp and _fields/maskedInput/_displayWidget.gsp:
+<f:display bean="person" property="name" templates="maskedInput"/>
 
 <f:display bean="person" property="dateOfBirth">
     <g:formatDate format="dd MMM yyyy" date="${value}"/>

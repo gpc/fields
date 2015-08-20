@@ -20,7 +20,9 @@ class AllTagSpec extends AbstractFormFieldsTagLibSpec {
     def setup() {
         def taglib = applicationContext.getBean(FormFieldsTagLib)
 
-        mockFormFieldsTemplateService.findTemplate(_, 'field') >> [path: '/_fields/default/field']
+        mockFormFieldsTemplateService.getTemplateFor(_) >> { args -> args[0]}
+        mockFormFieldsTemplateService.findTemplate(_, 'widget', _) >> [path: '/_fields/default/field']
+        mockFormFieldsTemplateService.findTemplate(_, 'wrapper', _) >> [path: '/_fields/default/wrapper']
         taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 
         mockEmbeddedSitemeshLayout(taglib)
@@ -29,6 +31,7 @@ class AllTagSpec extends AbstractFormFieldsTagLibSpec {
     void "all tag renders fields for all properties"() {
         given:
         views["/_fields/default/_field.gsp"] = '${property} '
+        views["/_fields/default/_wrapper.gsp"] = '${widget}'
 
         when:
         def output = applyTemplate('<f:all bean="personInstance"/>', [personInstance: personInstance])
@@ -42,24 +45,28 @@ class AllTagSpec extends AbstractFormFieldsTagLibSpec {
     }
 
     @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/21')
-    void 'all tag skips #property property'() {
+    void 'all tag skips #excluded property and includes #included property'() {
         given:
         views["/_fields/default/_field.gsp"] = '${property} '
+        views["/_fields/default/_wrapper.gsp"] = '${widget}'
 
         when:
         def output = applyTemplate('<f:all bean="personInstance"/>', [personInstance: personInstance])
 
         then:
-        !output.contains(property)
+        !output.contains(excluded)
+        output.contains(included)
 
         where:
-        property << ['id', 'version', 'onLoad', 'lastUpdated', 'excludedProperty', 'displayFalseProperty']
+        excluded << ['id', 'version', 'onLoad', 'lastUpdated', 'excludedProperty', 'displayFalseProperty']
+        included << ['salutation', 'name', 'password', 'gender', 'dateOfBirth', 'address.street']
     }
 
     @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/12')
     void 'all tag skips properties listed with the except attribute'() {
         given:
         views["/_fields/default/_field.gsp"] = '${property} '
+        views["/_fields/default/_wrapper.gsp"] = '${widget}'
 
         when:
         def output = applyTemplate('<f:all bean="personInstance" except="password, minor"/>', [personInstance: personInstance])
@@ -73,6 +80,7 @@ class AllTagSpec extends AbstractFormFieldsTagLibSpec {
     void 'all tag respects the order attribute'() {
         given:
         views["/_fields/default/_field.gsp"] = '|${property}|'
+        views["/_fields/default/_wrapper.gsp"] = '${widget}'
 
         when:
         def output = applyTemplate('<f:all bean="personInstance" order="name, minor, gender"/>', [personInstance: personInstance])
@@ -86,6 +94,7 @@ class AllTagSpec extends AbstractFormFieldsTagLibSpec {
     void 'order attribute and except attribute are mutually exclusive'() {
         given:
         views["/_fields/default/_field.gsp"] = '|${property}|'
+        views["/_fields/default/_wrapper.gsp"] = '${widget}'
 
         when:
         applyTemplate('<f:all bean="personInstance" except="password" order="name, minor, gender"/>', [personInstance: personInstance])

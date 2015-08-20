@@ -1,45 +1,67 @@
 #!/bin/bash
-function load_gvm {
-	if [ ! -f ~/.gvm/etc/config ]; then
-		# ~/.gvm is some golang related tool in Travis CI, just remove it and install gvm
-		rm -rf ~/.gvm
-		curl -s get.gvmtool.net | bash
-		perl -i -p -e 's/gvm_auto_answer=false/gvm_auto_answer=true/' ~/.gvm/etc/config
-	fi
-
-	source ~/.gvm/bin/gvm-init.sh
-}
-
-function install_and_use_grails {
-	grails_version=$1
-	load_gvm
-	gvm install grails $grails_version
-	if [ $? -ne 0 ]; then
-		# grails version not available in gvm yet, download directly from s3
-		set -e
-		(
-		set -e
-		cd /tmp
-		curl -O http://dist.springframework.org.s3.amazonaws.com/release/GRAILS/grails-${grails_version}.zip
-		unzip grails-${grails_version}.zip -d ~/.gvm/grails/ 
-		mv ~/.gvm/grails/{grails-${grails_version},${grails_version}}
-		rm grails-${grails_version}.zip
-		)	
-	fi
-	gvm default grails $grails_version
-	gvm use grails $grails_version
-}
-
-use_grails_version="${GRAILS_VERSION:-2.4.4}"
-install_and_use_grails $use_grails_version
-perl -i -p -e "s/app\\.grails\\.version=.*/app.grails.version=$use_grails_version/" application.properties
-
-
 set -e
-grails refresh-dependencies --non-interactive
-grails test-app --non-interactive :unit
-grails test-app --non-interactive -echoOut -echoErr :cli
-grails package-plugin --non-interactive
-grails maven-install --non-interactive
+rm -rf *.zip
+./gradlew clean test assemble
 
-exit 0
+filename=$(find build/libs -name "*.jar" | head -1)
+filename=$(basename "$filename")
+
+EXIT_STATUS=0
+echo "Publishing archives for branch $TRAVIS_BRANCH"
+if [[ -n $TRAVIS_TAG ]] || [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then
+
+  echo "Publishing archives"
+
+  if [[ -n $TRAVIS_TAG ]]; then
+      ./gradlew bintrayUpload || EXIT_STATUS=$?
+  else
+      ./gradlew publish || EXIT_STATUS=$?
+  fi
+
+  ./gradlew docs || EXIT_STATUS=$?
+
+  git config --global user.name "$GIT_NAME"
+  git config --global user.email "$GIT_EMAIL"
+  git config --global credential.helper "store --file=~/.git-credentials"
+  echo "https://$GH_TOKEN:@github.com" > ~/.git-credentials
+
+  git clone https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git -b gh-pages gh-pages --single-branch > /dev/null
+  cd gh-pages
+
+  # If this is the master branch then update the snapshot
+  if [[ $TRAVIS_BRANCH == 'master' ]]; then
+    mkdir -p snapshot
+    cp -r ../build/docs/manual/. ./snapshot/
+
+    git add snapshot/*
+  fi
+
+    # If there is a tag present then this becomes the latest
+    if [[ -n $TRAVIS_TAG ]]; then
+        git rm -rf latest/
+        mkdir -p latest
+        cp -r ../build/docs/manual/. ./latest/
+        git add latest/*
+
+        version="$TRAVIS_TAG"
+        version=${version:1}
+        majorVersion=${version:0:4}
+        majorVersion="${majorVersion}x"
+
+        mkdir -p "$version"
+        cp -r ../build/docs/manual/. "./$version/"
+        git add "$version/*"
+
+        mkdir -p "$majorVersion"
+        cp -r ../build/docs/manual/. "./$majorVersion/"
+        git add "$majorVersion/*"
+
+    fi
+
+    git commit -a -m "Updating docs for Travis build: https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID"
+    git push origin HEAD
+    cd ..
+    rm -rf gh-pages
+fi
+
+exit $EXIT_STATUS

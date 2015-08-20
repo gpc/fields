@@ -16,19 +16,21 @@
 
 package grails.plugin.formfields
 
+import grails.core.GrailsApplication
+import grails.core.GrailsDomainClass
+import grails.core.GrailsDomainClassProperty
+import grails.core.support.GrailsApplicationAware
 import groovy.xml.MarkupBuilder
 import org.apache.commons.lang.StringUtils
-import org.codehaus.groovy.grails.commons.GrailsApplication
-import org.codehaus.groovy.grails.commons.GrailsDomainClass
-import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
-import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
-import org.codehaus.groovy.grails.web.pages.FastStringWriter
-import org.codehaus.groovy.grails.web.pages.GroovyPage
-
-import static FormFieldsTemplateService.toPropertyNameFormat
-import static org.codehaus.groovy.grails.commons.GrailsClassUtils.getStaticPropertyValue
+import org.grails.buffer.FastStringWriter
+import org.grails.gsp.GroovyPage
+import org.grails.validation.DomainClassPropertyComparator
 
 import java.sql.Blob
+
+import static FormFieldsTemplateService.toPropertyNameFormat
+import static grails.util.GrailsClassUtils.getStaticPropertyValue
+
 class FormFieldsTagLib implements GrailsApplicationAware {
 
 	static final namespace = 'f'
@@ -137,8 +139,9 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			def wrapperAttrs = [:]
 			def widgetAttrs = [:]
 
+            String prefixAttribute = formFieldsTemplateService.getWidgetPrefix() ?: 'widget-'
 			attrs.each { k, v ->
-				String prefixAttribute = formFieldsTemplateService.getWidgetPrefix()
+				
 				if (k?.startsWith(prefixAttribute))
 					widgetAttrs[k.replace(prefixAttribute, '')] = v
 				else
@@ -151,7 +154,9 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 				model.widget = renderWidget(propertyAccessor, model, widgetAttrs, widgetFolder?:templatesFolder)
 			}
 
-			def template = formFieldsTemplateService.findTemplate(propertyAccessor, formFieldsTemplateService.getTemplateFor("wrapper"), fieldFolder?:templatesFolder)
+
+			def templateName = formFieldsTemplateService.getTemplateFor("wrapper")
+			def template = formFieldsTemplateService.findTemplate(propertyAccessor, templateName, fieldFolder?:templatesFolder)
 			if (template) {
 				out << render(template: template.path, plugin: template.plugin, model: model + [attrs: wrapperAttrs] + wrapperAttrs)
 			} else {
@@ -159,7 +164,40 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			}
 		}
 	}
-
+    /**
+      * Renders a collection of beans in a table
+      *
+      * @attr collection REQUIRED The collection of beans to render
+      * @attr domainClass The FQN of the domain class of the elements in the collection.
+      * Defaults to the class of the first element in the collection.
+      * @attr properties The list of properties to be shown (table columns).
+      * Defaults to the first 7 (or less) properties of the domain class ordered by the domain class' constraints.
+      * @attr displayStyle OPTIONAL Determines the display template used for the bean's properties.
+      * Defaults to 'table', meaning that 'display-table' templates will be used when available.
+      */
+    def table = { attrs, body ->
+        def collection = resolveBean(attrs.remove('collection'))
+        def domainClass
+        if (attrs.containsKey('domainClass')) {
+            domainClass = grailsApplication.getDomainClass(attrs.remove('domainClass'))
+        } else {
+            domainClass = (collection instanceof Collection) && collection ? resolveDomainClass(collection.iterator().next()) : null
+        }
+        if (domainClass) {
+         def properties
+         if (attrs.containsKey('properties')) {
+            properties = attrs.remove('properties').collect { domainClass.getPropertyByName(it) }
+         } else {
+            properties = domainClass.persistentProperties.sort(new DomainClassPropertyComparator(domainClass))
+            if (properties.size() > 6) {
+                properties = properties[0..6]
+            }
+         }
+         def displayStyle = attrs.remove('displayStyle')
+         out << render(template: "/templates/_fields/table",
+                 model: [domainClass: domainClass, domainProperties: properties, collection: collection, displayStyle: displayStyle])
+        }
+    }
 	/**
 	 * @deprecated since version 1.5 - Use widget instead
 	 * @attr bean Name of the source bean in the GSP model.
@@ -216,41 +254,58 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	def display = { attrs, body ->
 		def bean = resolveBean(attrs.remove('bean'))
 		if (!bean) throwTagError("Tag [display] is missing required attribute [bean]")
-		if (!attrs.property) throwTagError("Tag [display] is missing required attribute [property]")
 
 		def property = attrs.remove('property')
+		def templatesFolder = attrs.remove('templates')
 
-        def templatesFolder = attrs.remove('templates')
-        def displayFolder = attrs.remove('wrapper')
-        def widgetFolder = attrs.remove('widget')
-
-		def propertyAccessor = resolveProperty(bean, property)
-		def model = buildModel(propertyAccessor, attrs)
-
-		def wrapperAttrs = [:]
-		def widgetAttrs = [:]
-
-		attrs.each { k, v ->
-			String prefixAttribute = formFieldsTemplateService.getWidgetPrefix()
-			if (k?.startsWith(prefixAttribute))
-				widgetAttrs[k.replace(prefixAttribute, '')] = v
-			else
-				wrapperAttrs[k] = v
-		}
-
-        if (hasBody(body)) {
-			model.widget = raw(body(model + [attrs: widgetAttrs] + widgetAttrs))
-			model.value = body(model)
+		if (property == null) {
+			GrailsDomainClass domainClass = resolveDomainClass(bean)
+			if (domainClass) {
+				def properties = domainClass.persistentProperties.sort(new DomainClassPropertyComparator(domainClass))
+				out << render(template: "/templates/_fields/list", model: [domainClass: domainClass, domainProperties: properties]) { prop ->
+					def propertyAccessor = resolveProperty(bean, prop.name)
+					def model = buildModel(propertyAccessor, attrs)
+					out << raw(renderDisplayWidget(propertyAccessor, model, attrs,templatesFolder))
+				}
+			}
 		} else {
-            model.widget = renderDisplayWidget(propertyAccessor, model, widgetAttrs, widgetFolder?:templatesFolder)
+            def displayFolder = attrs.remove('wrapper')
+            def widgetFolder = attrs.remove('widget')
+
+            def propertyAccessor = resolveProperty(bean, property)
+            def model = buildModel(propertyAccessor, attrs)
+
+            def wrapperAttrs = [:]
+            def widgetAttrs = [:]
+
+            String prefixAttribute = formFieldsTemplateService.getWidgetPrefix() ?: 'widget-'
+            attrs.each { k, v ->            
+                if (k?.startsWith(prefixAttribute))
+                    widgetAttrs[k.replace(prefixAttribute, '')] = v
+                else
+                    wrapperAttrs[k] = v
+            }
+
+
+			def wrapperFolderTouse = displayFolder ?: templatesFolder
+			def widgetsFolderToUse = widgetFolder ?: templatesFolder
+			if (hasBody(body)) {
+                model.widget = raw(body(model + [attrs: widgetAttrs] + widgetAttrs))
+                model.value = body(model)
+            } else {
+                model.widget = renderDisplayWidget(propertyAccessor, model, widgetAttrs, widgetsFolderToUse)
+            }
+
+
+			def displayWrapperTemplateName = formFieldsTemplateService.getTemplateFor("displayWrapper")
+			def template = formFieldsTemplateService.findTemplate(propertyAccessor, displayWrapperTemplateName, wrapperFolderTouse)
+            if (template) {
+                out << render(template: template.path, plugin: template.plugin, model: model + [attrs: wrapperAttrs] + wrapperAttrs)
+            } else {
+				out << raw(renderDisplayWidget(propertyAccessor, model, attrs, widgetsFolderToUse))
+            }
         }
 
-        def template = formFieldsTemplateService.findTemplate(propertyAccessor, formFieldsTemplateService.getTemplateFor("displayWrapper"), displayFolder?:templatesFolder)
-        if (template) {
-            out << render(template: template.path, plugin: template.plugin, model: model + [attrs: wrapperAttrs] + wrapperAttrs)
-        } else {
-            out << raw(model.widget)
-        }
 	}
 
     private void renderEmbeddedProperties(bean, BeanPropertyAccessor propertyAccessor, attrs) {
@@ -287,7 +342,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
     private CharSequence renderWidget(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:], String widgetFolder) {
-		def template = formFieldsTemplateService.findTemplate(propertyAccessor, formFieldsTemplateService.getTemplateFor("widget"), widgetFolder)
+		def widgetTemplateName = formFieldsTemplateService.getTemplateFor("widget")
+		def template = formFieldsTemplateService.findTemplate(propertyAccessor, widgetTemplateName, widgetFolder)
 		if (template) {
 			render template: template.path, plugin: template.plugin, model: model + [attrs: attrs] + attrs
 		} else {
@@ -296,11 +352,21 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	private CharSequence renderDisplayWidget(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:], String widgetFolder) {
-		def template = formFieldsTemplateService.findTemplate(propertyAccessor, formFieldsTemplateService.getTemplateFor("displayWidget"), widgetFolder)
+		def displayStyle = attrs.displayStyle
+
+		def template = null
+		if (displayStyle && displayStyle != 'default') {
+			template = formFieldsTemplateService.findTemplate(propertyAccessor, "displayWidget-$attrs.displayStyle", widgetFolder)
+		}
+		if (!template) {
+			def displayWidgetTemplateName = formFieldsTemplateService.getTemplateFor("displayWidget")
+			template = formFieldsTemplateService.findTemplate(propertyAccessor, displayWidgetTemplateName, widgetFolder)
+		}
+
 		if (template) {
 			render template: template.path, plugin: template.plugin, model: model + [attrs: attrs] + attrs
 		} else if (!(model.value instanceof CharSequence)) {
-			renderDefaultDisplay(model, attrs)
+			renderDefaultDisplay(model, attrs, widgetFolder)
 		} else {
 			model.value
 		}
@@ -336,22 +402,31 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		grailsApplication.getDomainClass(beanClass.name)
 	}
 
-	private List<GrailsDomainClassProperty> resolvePersistentProperties(GrailsDomainClass domainClass, attrs) {
-		def properties = domainClass.persistentProperties as List
+    private List<GrailsDomainClassProperty> resolvePersistentProperties(GrailsDomainClass domainClass, attrs) {
+        def properties
 
-		def blacklist = attrs.except?.tokenize(',')*.trim() ?: []
-		blacklist << 'dateCreated' << 'lastUpdated'
-		def scaffoldProp = getStaticPropertyValue(domainClass.clazz, 'scaffold')
-		if (scaffoldProp) {
-			blacklist.addAll(scaffoldProp.exclude)
-		}
-		properties.removeAll { it.name in blacklist }
-		properties.removeAll { !it.domainClass.constrainedProperties[it.name]?.display }
-        properties.removeAll { it.derived }
+        if(attrs.order) {
+            if(attrs.except) {
+                throwTagError('The [except] and [order] attributes may not be used together.')
+            }
+            def orderBy = attrs.order?.tokenize(',')*.trim() ?: []
+            properties = orderBy.collect { propertyName -> domainClass.getPersistentProperty(propertyName) }
+        } else {
+            properties = domainClass.persistentProperties as List
+            def blacklist = attrs.except?.tokenize(',')*.trim() ?: []
+            blacklist << 'dateCreated' << 'lastUpdated'
+            def scaffoldProp = getStaticPropertyValue(domainClass.clazz, 'scaffold')
+            if (scaffoldProp) {
+                blacklist.addAll(scaffoldProp.exclude)
+            }
+            properties.removeAll { it.name in blacklist }
+            properties.removeAll { !it.domainClass.constrainedProperties[it.name]?.display }
+            properties.removeAll { it.derived }
 
-		Collections.sort(properties, new DomainClassPropertyComparator(domainClass))
-		properties
-	}
+            Collections.sort(properties, new org.grails.validation.DomainClassPropertyComparator(domainClass))
+        }
+        properties
+    }
 
 	private boolean hasBody(Closure body) {
 		return body && !body.is(GroovyPage.EMPTY_BODY_CLOSURE)
@@ -392,7 +467,11 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 				}
 			}
 			// TODO: encoding information of widget gets lost - don't use MarkupBuilder
-			mkp.yieldUnescaped model.widget
+            def widget = model.widget
+            if(widget != null) {
+                mkp.yieldUnescaped widget    
+            }
+			
 		}
 		writer.buffer
 	}
@@ -430,123 +509,163 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		}
 	}
 
+
     private CharSequence renderDateTimeInput(Map model, Map attrs) {
-		attrs.precision = model.type == java.sql.Time ? "minute" : "day"
-		if (!model.required) {
-			attrs.noSelection = ["": ""]
-			attrs.default = "none"
-		}
-		return g.datePicker(attrs)
-	}
+        attrs.precision = model.type == java.sql.Time ? "minute" : "day"
+        if (!model.required) {
+            attrs.noSelection = ["": ""]
+            attrs.default = "none"
+        }
+        return g.datePicker(attrs)
+    }
 
-	private CharSequence renderStringInput(Map model, Map attrs) {
-		if (!attrs.type) {
-			if (model.constraints?.inList) {
-				attrs.from = model.constraints.inList
-				if (!model.required) attrs.noSelection = ["": ""]
-				return g.select(attrs)
-			}
-			else if (model.constraints?.password) {
-				attrs.type = "password"
-				attrs.remove('value')
-			}
-			else if (model.constraints?.email) attrs.type = "email"
-			else if (model.constraints?.url) attrs.type = "url"
-			else attrs.type = "text"
-		}
+    private CharSequence renderStringInput(Map model, Map attrs) {
+        if (!attrs.type) {
+            if (model.constraints?.inList) {
+                attrs.from = model.constraints.inList
+                if (!model.required) attrs.noSelection = ["": ""]
+                return g.select(attrs)
+            } else if (model.constraints?.password) {
+                attrs.type = "password"
+                attrs.remove('value')
+            } else if (model.constraints?.email) attrs.type = "email"
+            else if (model.constraints?.url) attrs.type = "url"
+            else attrs.type = "text"
+        }
 
-		if (model.constraints?.matches) attrs.pattern = model.constraints.matches
-		if (model.constraints?.maxSize) attrs.maxlength = model.constraints.maxSize
+        if (model.constraints?.matches) attrs.pattern = model.constraints.matches
+        if (model.constraints?.maxSize) attrs.maxlength = model.constraints.maxSize
 
-		if (model.constraints?.widget == 'textarea') {
-			attrs.remove('type')
-			return g.textArea(attrs)
-		}
-		return g.field(attrs)
-	}
+        if (model.constraints?.widget == 'textarea') {
+            attrs.remove('type')
+            return g.textArea(attrs)
+        }
+        return g.field(attrs)
+    }
 
-	private CharSequence renderNumericInput(Map model, Map attrs) {
-		if (!attrs.type && model.constraints?.inList) {
-			attrs.from = model.constraints.inList
-			if (!model.required) attrs.noSelection = ["": ""]
-			return g.select(attrs)
-		} else if (model.constraints?.range) {
-			attrs.type = attrs.type ?: "range"
-			attrs.min = model.constraints.range.from
-			attrs.max = model.constraints.range.to
-		} else {
-			attrs.type = attrs.type ?: "number"
-			if (model.constraints?.scale != null) attrs.step = "0.${'0' * (model.constraints.scale - 1)}1"
-			if (model.constraints?.min != null) attrs.min = model.constraints.min
-			if (model.constraints?.max != null) attrs.max = model.constraints.max
-		}
-		return g.field(attrs)
-	}
+    private CharSequence renderNumericInput(Map model, Map attrs) {
+        if (!attrs.type && model.constraints?.inList) {
+            attrs.from = model.constraints.inList
+            if (!model.required) attrs.noSelection = ["": ""]
+            return g.select(attrs)
+        } else if (model.constraints?.range) {
+            attrs.type = attrs.type ?: "range"
+            attrs.min = model.constraints.range.from
+            attrs.max = model.constraints.range.to
+        } else {
+            attrs.type = attrs.type ?: "number"
+            if (model.constraints?.scale != null) attrs.step = "0.${'0' * (model.constraints.scale - 1)}1"
+            if (model.constraints?.min != null) attrs.min = model.constraints.min
+            if (model.constraints?.max != null) attrs.max = model.constraints.max
+        }
+        return g.field(attrs)
+    }
 
-	private CharSequence renderEnumInput(Map model, Map attrs) {
-		if (attrs.value instanceof Enum)
-			attrs.value = attrs.value.name()
-		if (!model.required) attrs.noSelection = ["": ""]
+    private CharSequence renderEnumInput(Map model, Map attrs) {
+        if (attrs.value instanceof Enum)
+            attrs.value = attrs.value.name()
+        if (!model.required) attrs.noSelection = ["": ""]
 
-		if ( model.constraints?.inList) {
-			attrs.keys = model.constraints.inList*.name()
-			attrs.from = model.constraints.inList
-		} else {
-			attrs.keys = model.type.values()*.name()
-			attrs.from = model.type.values()
-		}
-		return g.select(attrs)
-	}
+        if (model.constraints?.inList) {
+            attrs.keys = model.constraints.inList*.name()
+            attrs.from = model.constraints.inList
+        } else {
+            attrs.keys = model.type.values()*.name()
+            attrs.from = model.type.values()
+        }
+        return g.select(attrs)
+    }
 
-	private CharSequence renderAssociationInput(Map model, Map attrs) {
-		attrs.id = (model.prefix ?: '') + model.property
-		attrs.from = null != attrs.from ? attrs.from : model.persistentProperty.referencedPropertyType.list()
-		attrs.optionKey = "id" // TODO: handle alternate id names
-		if (model.persistentProperty.manyToMany) {
-			attrs.multiple = ""
-			attrs.value = model.value*.id
-			attrs.name = "${model.prefix ?: ''}${model.property}"
-		} else {
-			if (!model.required) attrs.noSelection = ["null": ""]
-			attrs.value = model.value?.id
-			attrs.name = "${model.prefix ?: ''}${model.property}.id"
-		}
-		return g.select(attrs)
-	}
+    private CharSequence renderAssociationInput(Map model, Map attrs) {
+        attrs.id = (model.prefix ?: '') + model.property
+        attrs.from = null != attrs.from ? attrs.from : model.persistentProperty.referencedPropertyType.list()
+        attrs.optionKey = "id" // TODO: handle alternate id names
+        if (model.persistentProperty.manyToMany) {
+            attrs.multiple = ""
+            attrs.value = model.value*.id
+            attrs.name = "${model.prefix ?: ''}${model.property}"
+        } else {
+            if (!model.required) attrs.noSelection = ["null": ""]
+            attrs.value = model.value?.id
+            attrs.name = "${model.prefix ?: ''}${model.property}.id"
+        }
+        return g.select(attrs)
+    }
 
-	private CharSequence renderOneToManyInput(Map model, Map attrs) {
-		def buffer = new FastStringWriter()
-		buffer << '<ul>'
-		def referencedDomainClass = model.persistentProperty.referencedDomainClass
-		def controllerName = referencedDomainClass.propertyName
-		attrs.value.each {
-			buffer << '<li>'
-			buffer << g.link(controller: controllerName, action: "show", id: it.id, it.toString().encodeAsHTML())
-			buffer << '</li>'
-		}
-		buffer << '</ul>'
-		def referencedTypeLabel = message(code: "${referencedDomainClass.propertyName}.label", default: referencedDomainClass.shortName)
-		def addLabel = g.message(code: 'default.add.label', args: [referencedTypeLabel])
-		buffer << g.link(controller: controllerName, action: "create", params: [("${model.beanClass.propertyName}.id".toString()): model.bean.id], addLabel)
-		buffer.buffer
-	}
+    private CharSequence renderOneToManyInput(Map model, Map attrs) {
+        def buffer = new FastStringWriter()
+        buffer << '<ul>'
+        def referencedDomainClass = model.persistentProperty.referencedDomainClass
+        def controllerName = referencedDomainClass.propertyName
+        attrs.value.each {
+            buffer << '<li>'
+            buffer << g.link(controller: controllerName, action: "show", id: it.id, it.toString().encodeAsHTML())
+            buffer << '</li>'
+        }
+        buffer << '</ul>'
+        def referencedTypeLabel = message(code: "${referencedDomainClass.propertyName}.label", default: referencedDomainClass.shortName)
+        def addLabel = g.message(code: 'default.add.label', args: [referencedTypeLabel])
+        buffer << g.link(controller: controllerName, action: "create", params: [("${model.beanClass.propertyName}.id".toString()): model.bean.id], addLabel)
+        buffer.buffer
+    }
 
-	private CharSequence renderDefaultDisplay(Map model, Map attrs = [:]) {
-		switch (model.type) {
-			case Boolean.TYPE:
-			case Boolean:
-				g.formatBoolean(boolean: model.value)
-				break
-			case Calendar:
-			case Date:
-			case java.sql.Date:
-			case java.sql.Time:
-				g.formatDate(date: model.value)
-				break
-			default:
-				g.fieldValue bean: model.bean, field: model.property
-		}
-	}
+    private CharSequence renderDefaultDisplay(Map model, Map attrs = [:], String templatesFolder) {
+        def persistentProperty = model.persistentProperty
+        if (persistentProperty?.association) {
+            if (persistentProperty.embedded) {
+                return (attrs.displayStyle == 'table') ? model.value?.toString().encodeAsHTML() :
+                        displayEmbedded(model.value, persistentProperty.component, attrs, templatesFolder)
+            } else if (persistentProperty.oneToMany || persistentProperty.manyToMany) {
+                return displayAssociationList(model.value, persistentProperty.referencedDomainClass)
+            } else {
+                return displayAssociation(model.value, persistentProperty.referencedDomainClass)
+            }
+        }
+
+        switch (model.type) {
+            case Boolean.TYPE:
+            case Boolean:
+                g.formatBoolean(boolean: model.value)
+                break
+            case Calendar:
+            case Date:
+            case java.sql.Date:
+            case java.sql.Time:
+                g.formatDate(date: model.value)
+                break
+            default:
+                g.fieldValue bean: model.bean, field: model.property
+        }
+    }
+
+    private CharSequence displayEmbedded(bean, GrailsDomainClass domainClass, Map attrs, String templatesFolder) {
+        def buffer = new FastStringWriter()
+        def properties = domainClass.persistentProperties.sort(new DomainClassPropertyComparator(domainClass))
+        buffer << render(template: "/templates/_fields/list", model: [domainClass: domainClass, domainProperties: properties]) { prop ->
+            def propertyAccessor = resolveProperty(bean, prop.name)
+            def model = buildModel(propertyAccessor, attrs)
+            out << raw(renderDisplayWidget(propertyAccessor, model, attrs, templatesFolder))
+        }
+        buffer.buffer
+    }
+
+    private CharSequence displayAssociationList(values, GrailsDomainClass referencedDomainClass) {
+        def buffer = new FastStringWriter()
+        buffer << '<ul>'
+        for (value in values) {
+            buffer << '<li>'
+            buffer << displayAssociation(value, referencedDomainClass)
+            buffer << '</li>'
+        }
+        buffer << '</ul>'
+        buffer.buffer
+    }
+
+    private CharSequence displayAssociation(value, GrailsDomainClass referencedDomainClass) {
+        if(value) {
+            g.link(controller: referencedDomainClass.propertyName, action: "show", id: value.id, value.toString().encodeAsHTML())    
+        }        
+    }
 
     private boolean isEditable(constraints) {
         !constraints || constraints.editable

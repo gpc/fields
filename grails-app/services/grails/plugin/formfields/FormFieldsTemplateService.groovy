@@ -17,21 +17,23 @@
 package grails.plugin.formfields
 
 import grails.util.GrailsNameUtils
-import org.codehaus.groovy.grails.plugins.GrailsPluginManager
-import org.codehaus.groovy.grails.validation.ConstrainedProperty
-import org.codehaus.groovy.grails.web.pages.discovery.GrailsConventionGroovyPageLocator
-import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
+import grails.core.GrailsApplication
+import grails.plugins.GrailsPluginManager
+import grails.validation.ConstrainedProperty
+import org.grails.web.gsp.io.GrailsConventionGroovyPageLocator
+import org.grails.web.servlet.mvc.GrailsWebRequest
+import org.grails.web.util.GrailsApplicationAttributes
 import org.springframework.web.context.request.RequestAttributes
 import org.springframework.web.context.request.RequestContextHolder
 
-import static org.codehaus.groovy.grails.io.support.GrailsResourceUtils.appendPiecesForUri
+import static org.grails.io.support.GrailsResourceUtils.appendPiecesForUri
 
 class FormFieldsTemplateService {
 
     static transactional = false
+    public static final String SETTING_WIDGET_PREFIX = 'grails.plugin.fields.widgetPrefix'
 
-    def grailsApplication
+    GrailsApplication grailsApplication
 
     GrailsConventionGroovyPageLocator groovyPageLocator
     GrailsPluginManager pluginManager
@@ -45,7 +47,7 @@ class FormFieldsTemplateService {
     private Closure getWidgetPrefixName = shouldCache() ? getWidgetPrefixNameCacheable.memoize() : getWidgetPrefixNameCacheable
 
     private Closure getWidgetPrefixNameCacheable = { ->
-        return grailsApplication?.config?.grails?.plugin?.fields?.widgetPrefix ?: 'widget-'
+        return grailsApplication?.config?.getProperty(SETTING_WIDGET_PREFIX, 'widget-')
     }
 
     Map findTemplate(BeanPropertyAccessor propertyAccessor, String templateName, String templatesFolder) {
@@ -63,7 +65,7 @@ class FormFieldsTemplateService {
     private Closure getTemplateName = shouldCache() ? getTemplateNameCacheable.memoize() : getTemplateNameCacheable
 
     private getTemplateNameCacheable = { String templateProperty ->
-        return grailsApplication?.config?.grails?.plugin?.fields[templateProperty] ?: templateProperty
+        return grailsApplication?.config?.getProperty("grails.plugin.fields.$templateProperty", templateProperty) ?: templateProperty
     }
 
     @Lazy

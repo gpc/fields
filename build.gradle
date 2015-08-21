@@ -13,7 +13,7 @@ buildscript {
 }
 
 plugins {
-    id "io.spring.dependency-management" version "0.5.1.RELEASE"
+    id "io.spring.dependency-management" version "0.5.2.RELEASE"
     id "com.jfrog.bintray" version "1.2"
 }
 
@@ -21,11 +21,22 @@ version "2.1.1-SNAPSHOT"
 group "org.grails.plugins"
 
 bintray {
+    user = System.getenv('BINTRAY_USER') ?: project.hasProperty('bintrayUser') ? project.bintrayUser : ''
+    key = System.getenv('BINTRAY_KEY') ?: project.hasProperty('bintrayKey') ? project.bintrayKey : ''
+    publications = ['maven']
+    publish = true
     pkg {
+        repo = 'plugins'
         userOrg = 'grails'
         name = "org.grails.plugins:$project.name"
-        issueTrackerUrl = "https://github.com/grails-fields-plugin/grails-fields/issues"
-        vcsUrl = "https://github.com/grails-fields-plugin/grails-fields"
+        desc = "Grails $project.name plugin"
+        issueTrackerUrl = 'https://github.com/grails-fields-plugin/grails-fields/issues'
+        vcsUrl = 'https://github.com/grails-fields-plugin/grails-fields'
+
+        version {
+            attributes = ['grails-plugin': "org.grails.plugins:$project.name"]
+            name = project.version
+        }
     }
 }
 

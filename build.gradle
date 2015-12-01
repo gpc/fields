@@ -28,13 +28,13 @@ bintray {
     pkg {
         repo = 'plugins'
         userOrg = 'grails'
-        name = "org.grails.plugins:$project.name"
+        name = project.name
         desc = "Grails $project.name plugin"
         issueTrackerUrl = 'https://github.com/grails-fields-plugin/grails-fields/issues'
         vcsUrl = 'https://github.com/grails-fields-plugin/grails-fields'
 
         version {
-            attributes = ['grails-plugin': "org.grails.plugins:$project.name"]
+            attributes = ['grails-plugin': project.name]
             name = project.version
         }
     }

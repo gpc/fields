@@ -20,6 +20,7 @@ import grails.core.GrailsApplication
 import grails.core.GrailsDomainClass
 import grails.core.GrailsDomainClassProperty
 import grails.core.support.GrailsApplicationAware
+import groovy.transform.CompileStatic
 import groovy.xml.MarkupBuilder
 import org.apache.commons.lang.StringUtils
 import org.grails.buffer.FastStringWriter
@@ -35,6 +36,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 	static final namespace = 'f'
     static final String STACK_PAGE_SCOPE_VARIABLE = 'f:with:stack'
+	private static final List<String> DECIMAL_TYPES = ['double', 'float', 'bigdecimal']
 
 	FormFieldsTemplateService formFieldsTemplateService
 	GrailsApplication grailsApplication
@@ -553,7 +555,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
             attrs.min = model.constraints.range.from
             attrs.max = model.constraints.range.to
         } else {
-            attrs.type = attrs.type ?: "number"
+            attrs.type = attrs.type ?: getDefaultNumberType(model )
             if (model.constraints?.scale != null) attrs.step = "0.${'0' * (model.constraints.scale - 1)}1"
             if (model.constraints?.min != null) attrs.min = model.constraints.min
             if (model.constraints?.max != null) attrs.max = model.constraints.max
@@ -561,7 +563,21 @@ class FormFieldsTagLib implements GrailsApplicationAware {
         return g.field(attrs)
     }
 
-    private CharSequence renderEnumInput(Map model, Map attrs) {
+	@CompileStatic
+	protected String getDefaultNumberType(Map model) {
+		Class modelType = (Class)model.type
+
+		def typeName = modelType.simpleName.toLowerCase()
+		if(typeName in DECIMAL_TYPES) {
+			return "number decimal"
+		}
+		else {
+			return "number"
+		}
+
+	}
+
+	private CharSequence renderEnumInput(Map model, Map attrs) {
         if (attrs.value instanceof Enum)
             attrs.value = attrs.value.name()
         if (!model.required) attrs.noSelection = ["": ""]

@@ -48,6 +48,11 @@ class DefaultInputRenderingSpec extends Specification {
 		boolean | /input type="checkbox"/
 		int     | /input type="number"/
 		Integer | /input type="number"/
+		BigDecimal | /input type="number decimal"/
+		Double | /input type="number decimal"/
+		Float | /input type="number decimal"/
+		float | /input type="number decimal"/
+		double | /input type="number decimal"/
 		URL     | /input type="url"/
 		Byte[]  | /input type="file"/
 		byte[]  | /input type="file"/

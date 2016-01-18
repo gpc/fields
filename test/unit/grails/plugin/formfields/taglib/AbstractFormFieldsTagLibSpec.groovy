@@ -1,7 +1,6 @@
 package grails.plugin.formfields.taglib
 
 import grails.plugin.formfields.BeanPropertyAccessorFactory
-import grails.plugin.formfields.LegacyGrailsSupport
 import org.codehaus.groovy.grails.support.proxy.DefaultProxyHandler
 import org.codehaus.groovy.grails.validation.DefaultConstraintEvaluator
 import spock.lang.Specification
@@ -47,12 +46,6 @@ abstract class AbstractFormFieldsTagLibSpec extends Specification {
 	 		}
 	 		null // stops default return
 	 	}
-	}
-
-	protected void addRawMethodIfRequired(tagLib) {
-		if (LegacyGrailsSupport.supportedLegacyGrailsVersion) {
-			LegacyGrailsSupport.addRawMethodImplementation tagLib
-		}
 	}
 
 }

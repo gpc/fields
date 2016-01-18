@@ -23,7 +23,6 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
         mockFormFieldsTemplateService.getTemplateFor('displayWidget') >> "displayWidget"
 
 		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
-        addRawMethodIfRequired tagLib
 	}
 
 	void 'renders value using g:fieldValue if no template is present'() {

@@ -15,7 +15,6 @@
  */
 
 import grails.plugin.formfields.BeanPropertyAccessorFactory
-import grails.plugin.formfields.LegacyGrailsSupport
 import org.codehaus.groovy.grails.validation.ConstraintsEvaluator
 
 class FieldsGrailsPlugin {
@@ -36,7 +35,7 @@ class FieldsGrailsPlugin {
 	def scm = [system: 'GitHub', url: 'https://github.com/grails-fields-plugin/grails-fields']
     def organization = [ name: "Grails Fields Plugin Developers Group", url: "https://github.com/grails-fields-plugin" ]
 
-	def developers = [
+	def developers = [ 
 		[ name: "Rob Fletcher", email: "rob@freeside.co" ],
 		[ name: "Erik Pragt", email: "erik.pragt@gmail.com" ],
 		[ name: "Dónal Murtagh", email: "domurtag@yahoo.co.uk" ],
@@ -52,12 +51,5 @@ class FieldsGrailsPlugin {
 			proxyHandler = ref('proxyHandler')
 		}
 	}
-
-	def doWithApplicationContext = { ctx ->
-		if (LegacyGrailsSupport.supportedLegacyGrailsVersion) {
-			def formFieldsTagLib = ctx.getBean('grails.plugin.formfields.FormFieldsTagLib')
-			LegacyGrailsSupport.addRawMethodImplementation(formFieldsTagLib)
-		}
-	}
-
+	
 }

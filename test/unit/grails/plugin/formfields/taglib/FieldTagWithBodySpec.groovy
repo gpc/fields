@@ -26,7 +26,6 @@ class FieldTagWithBodySpec extends AbstractFormFieldsTagLibSpec {
         mockFormFieldsTemplateService.getTemplateFor('displayWidget') >> "displayWidget"
         mockFormFieldsTemplateService.getWidgetPrefix() >> 'input-'
 		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
-        addRawMethodIfRequired tagLib
 	}
 
     void 'tag body can be used instead of the input'() {

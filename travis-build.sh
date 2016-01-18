@@ -37,7 +37,8 @@ perl -i -p -e "s/app\\.grails\\.version=.*/app.grails.version=$use_grails_versio
 
 set -e
 grails refresh-dependencies --non-interactive
-grails test-app --non-interactive :unit
+grails test-app --non-interactive unit:
+grails test-app --non-interactive integration:
 grails test-app --non-interactive -echoOut -echoErr :cli
 grails package-plugin --non-interactive
 grails maven-install --non-interactive

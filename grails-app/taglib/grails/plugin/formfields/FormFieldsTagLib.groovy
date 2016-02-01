@@ -349,7 +349,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		if (template) {
 			render template: template.path, plugin: template.plugin, model: model + [attrs: attrs] + attrs
 		} else {
-			renderDefaultInput model, attrs
+			renderDefaultInput propertyAccessor, model, attrs
 		}
 	}
 
@@ -479,6 +479,10 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	private CharSequence renderDefaultInput(Map model, Map attrs = [:]) {
+		renderDefaultInput(null, model, attrs)
+	}
+
+	private CharSequence renderDefaultInput(BeanPropertyAccessor propertyAccessor,Map model, Map attrs = [:]) {
 		attrs.name = (model.prefix ?: '') + model.property
 		attrs.value = model.value
 		if (model.required) attrs.required = "" // TODO: configurable how this gets output? Some people prefer required="required"
@@ -490,7 +494,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		} else if (model.type in [boolean, Boolean]) {
 			return g.checkBox(attrs)
 		} else if (model.type.isPrimitive() || model.type in Number) {
-			return renderNumericInput(model, attrs)
+			return renderNumericInput(propertyAccessor, model, attrs)
 		} else if (model.type in URL) {
 			return g.field(attrs + [type: "url"])
 		} else if (model.type.isEnum()) {
@@ -545,7 +549,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
         return g.field(attrs)
     }
 
-    private CharSequence renderNumericInput(Map model, Map attrs) {
+    private CharSequence renderNumericInput(BeanPropertyAccessor propertyAccessor,Map model, Map attrs) {
         if (!attrs.type && model.constraints?.inList) {
             attrs.from = model.constraints.inList
             if (!model.required) attrs.noSelection = ["": ""]
@@ -560,6 +564,10 @@ class FormFieldsTagLib implements GrailsApplicationAware {
             if (model.constraints?.min != null) attrs.min = model.constraints.min
             if (model.constraints?.max != null) attrs.max = model.constraints.max
         }
+
+		if(propertyAccessor != null && attrs.value) {
+			attrs.value = g.fieldValue(bean: propertyAccessor.rootBean, field: propertyAccessor.propertyName)
+		}
         return g.field(attrs)
     }
 

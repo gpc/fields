@@ -2,9 +2,9 @@
 function load_sdkman {
 	if [ ! -e ~/.sdkman ]; then
 		curl -s http://get.sdkman.io | bash
-		perl -i -p -e 's/sdkman_auto_answer=false/sdkman_auto_answer=false/' ~/.sdkman/etc/config
 	fi
 
+    perl -i -p -e 's/sdkman_auto_answer=false/sdkman_auto_answer=true/' ~/.sdkman/etc/config
 	export SDKMAN_DIR=~/.sdkman && source ~/.sdkman/bin/sdkman-init.sh
 }
 

@@ -25,10 +25,11 @@ import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
 import org.codehaus.groovy.grails.web.pages.FastStringWriter
 import org.codehaus.groovy.grails.web.pages.GroovyPage
 
+import java.sql.Blob
+
 import static FormFieldsTemplateService.toPropertyNameFormat
 import static org.codehaus.groovy.grails.commons.GrailsClassUtils.getStaticPropertyValue
 
-import java.sql.Blob
 class FormFieldsTagLib implements GrailsApplicationAware {
 
 	static final namespace = 'f'

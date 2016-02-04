@@ -42,7 +42,8 @@ class FieldsGrailsPlugin {
 		[ name: "Dónal Murtagh", email: "domurtag@yahoo.co.uk" ],
 		[ name: "Craig Burke", email: "craig@craigburke.com" ],
 		[ name: "Soeren Glasius", email: "soeren@glasius.dk" ],
-		[ name: "Martín Pablo Caballero", email: "mpccolorado@gmail.com" ]
+		[ name: "Martín Pablo Caballero", email: "mpccolorado@gmail.com" ],
+		[ name: "Tom Crossland", email: "tom.crossland@gmail.com" ]
 	]
 
 

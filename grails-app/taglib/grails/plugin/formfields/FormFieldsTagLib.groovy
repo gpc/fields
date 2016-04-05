@@ -43,6 +43,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
     class BeanAndPrefix {
         Object bean
         String prefix
+		Map<String, Object> innerAttributes = [:]
     }
 
     class BeanAndPrefixStack extends Stack<BeanAndPrefix> {
@@ -53,6 +54,10 @@ class FormFieldsTagLib implements GrailsApplicationAware {
         String getPrefix() {
             empty() ? null : peek().prefix
         }
+
+		Map<String, Object> getInnerAttributes() {
+            empty() ? [:] : peek().innerAttributes
+		}
 
         String toString() {
             bean?.toString() ?: ''
@@ -72,7 +77,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	 */
 	def with = { attrs, body ->
 		if (!attrs.bean) throwTagError("Tag [with] is missing required attribute [bean]")
-        BeanAndPrefix beanPrefix = resolveBeanAndPrefix(attrs.bean, attrs.prefix)
+        BeanAndPrefix beanPrefix = resolveBeanAndPrefix(attrs.bean, attrs.prefix, attrs)
 		try {
             beanStack.push(beanPrefix)
 			out << body()
@@ -89,15 +94,24 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	 */
 	def all = { attrs ->
 		if (!attrs.bean) throwTagError("Tag [all] is missing required attribute [bean]")
-		def bean = resolveBean(attrs.bean)
-		def prefix = resolvePrefix(attrs.prefix)
-		def domainClass = resolveDomainClass(bean)
-		if (domainClass) {
-			for (property in resolvePersistentProperties(domainClass, attrs)) {
-				out << field(bean: bean, property: property.name, prefix: prefix)
+		BeanAndPrefix beanPrefix = resolveBeanAndPrefix(attrs.bean, attrs.prefix, attrs)
+		try {
+			beanStack.push(beanPrefix)
+			def bean = resolveBean(attrs.bean)
+			def prefix = resolvePrefix(attrs.prefix)
+			def domainClass = resolveDomainClass(bean)
+			def innerAttributes = beanStack.innerAttributes
+			if (domainClass) {
+				for (property in resolvePersistentProperties(domainClass, attrs)) {
+					Map fieldAttributes = [bean: bean, property: property.name, prefix: prefix]
+					fieldAttributes = innerAttributes + fieldAttributes
+					out << field(fieldAttributes)
+				}
+			} else {
+				throwTagError('Tag [all] currently only supports domain types')
 			}
-		} else {
-			throwTagError('Tag [all] currently only supports domain types')
+		} finally {
+			beanStack.pop()
 		}
 	}
 
@@ -120,6 +134,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	 * @attr templates Specify the folder inside _fields where to look up for the wrapper and widget template.
 	 */
 	def field = { attrs, body ->
+		attrs = beanStack.innerAttributes + attrs
 		if (attrs.containsKey('bean') && !attrs.bean) throwTagError("Tag [field] requires a non-null value for attribute [bean]")
 		if (!attrs.property) throwTagError("Tag [field] is missing required attribute [property]")
 
@@ -214,6 +229,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	 * against the specified bean or the bean in the current scope.
 	 */
 	def display = { attrs, body ->
+		attrs = beanStack.innerAttributes + attrs
 		def bean = resolveBean(attrs.remove('bean'))
 		if (!bean) throwTagError("Tag [display] is missing required attribute [bean]")
 		if (!attrs.property) throwTagError("Tag [display] is missing required attribute [property]")
@@ -311,10 +327,16 @@ class FormFieldsTagLib implements GrailsApplicationAware {
         attributeName?.toString() ? pageScope.variables[attributeName] : null
     }
 
-    private BeanAndPrefix resolveBeanAndPrefix(beanAttribute, prefixAttribute) {
+    private BeanAndPrefix resolveBeanAndPrefix(beanAttribute, prefixAttribute, attributes) {
         def bean = resolvePageScopeVariable(beanAttribute) ?: beanAttribute
         def prefix = resolvePageScopeVariable(prefixAttribute) ?: prefixAttribute
-        new BeanAndPrefix(bean: bean, prefix: prefix)
+
+		def innerAttributes = attributes.clone()
+		innerAttributes.remove('bean')
+		innerAttributes.remove('prefix')
+		//'except' is a reserved word for the 'all' tag: https://github.com/grails-fields-plugin/grails-fields/issues/12
+		innerAttributes.remove('except')
+        new BeanAndPrefix(bean: bean, prefix: prefix, innerAttributes: innerAttributes)
     }
 
 	private Object resolveBean(beanAttribute) {

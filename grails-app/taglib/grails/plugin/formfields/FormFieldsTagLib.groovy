@@ -100,12 +100,9 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			def bean = resolveBean(attrs.bean)
 			def prefix = resolvePrefix(attrs.prefix)
 			def domainClass = resolveDomainClass(bean)
-			def innerAttributes = beanStack.innerAttributes
 			if (domainClass) {
 				for (property in resolvePersistentProperties(domainClass, attrs)) {
-					Map fieldAttributes = [bean: bean, property: property.name, prefix: prefix]
-					fieldAttributes = innerAttributes + fieldAttributes
-					out << field(fieldAttributes)
+					out << field([bean: bean, property: property.name, prefix: prefix])
 				}
 			} else {
 				throwTagError('Tag [all] currently only supports domain types')

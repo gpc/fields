@@ -192,6 +192,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		if (!bean) throwTagError("Tag [input] is missing required attribute [bean]")
 		if (!attrs.property) throwTagError("Tag [input] is missing required attribute [property]")
 
+		attrs = getPrefixedAttributes(beanStack.innerAttributes) + attrs
+
 		def property = attrs.remove('property')
         def widgetFolder = attrs.remove('widget')
 
@@ -210,6 +212,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		def bean = resolveBean(attrs.remove('bean'))
 		if (!bean) throwTagError("Tag [displayWidget] is missing required attribute [bean]")
 		if (!attrs.property) throwTagError("Tag [displayWidget] is missing required attribute [property]")
+
+		attrs = getPrefixedAttributes(beanStack.innerAttributes) + attrs
 
 		def property = attrs.remove('property')
         def widgetFolder = attrs.remove('widget')
@@ -264,6 +268,16 @@ class FormFieldsTagLib implements GrailsApplicationAware {
         } else {
             out << raw(model.widget)
         }
+	}
+
+	private Map getPrefixedAttributes(attrs){
+		Map widgetAttrs = [:]
+		attrs.each { k, v ->
+			String prefixAttribute = formFieldsTemplateService.getWidgetPrefix()
+			if (k?.startsWith(prefixAttribute))
+				widgetAttrs[k.replace(prefixAttribute, '')] = v
+		}
+		return widgetAttrs
 	}
 
     private void renderEmbeddedProperties(bean, BeanPropertyAccessor propertyAccessor, attrs) {

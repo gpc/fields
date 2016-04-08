@@ -130,4 +130,56 @@ class AttributesOfWithAndAllTagsArePropagatedSpec extends AbstractFormFieldsTagL
 			 '<wrapper attr="override-attr"><widget>taxRate</widget></wrapper>' +
 			 '<displayWrapper attr="general-attr"><displayWidget>tax</displayWidget></displayWrapper>'
 	}
+
+	void "An attribute of the <f:with> tag (prefixed with 'widget-') is present on an inner <f:widget> tag"() {
+		given:
+		views["/_fields/default/_widget.gsp"] = '<widget attr="${attribute}">${property}</widget>'
+
+		expect:
+		applyTemplate(
+				'<f:with bean="productInstance" widget-attribute="cool">' +
+						'<f:widget property="name"/>' +
+				'</f:with>',
+				[productInstance: productInstance]
+		) == '<widget attr="cool">name</widget>'
+	}
+
+	void "An attribute of the <f:with> tag (prefixed with 'widget-') is present on an inner <f:displayWidget> tag"() {
+		given:
+		views["/_fields/default/_displayWidget.gsp"] = '<displayWidget attr="${attribute}">${property}</displayWidget>'
+
+		expect:
+		applyTemplate(
+				'<f:with bean="productInstance" widget-attribute="cool">' +
+						'<f:displayWidget property="name"/>' +
+				'</f:with>',
+				[productInstance: productInstance]
+		) == '<displayWidget attr="cool">name</displayWidget>'
+	}
+
+	void "An attribute inside an <f:widget> tag can override an extra attribute of his parent <f:with>"() {
+		given:
+		views["/_fields/default/_widget.gsp"] = '<widget attr="${attribute}">${property}</widget>'
+
+		expect:
+		applyTemplate(
+				'<f:with bean="productInstance" widget-attribute="cool">' +
+						'<f:widget property="name" attribute="very cool"/>' +
+				'</f:with>',
+				[productInstance: productInstance]
+		) == '<widget attr="very cool">name</widget>'
+	}
+
+	void "An attribute inside an <f:displayWidget> tag can override an extra attribute of his parent <f:with>"() {
+		given:
+		views["/_fields/default/_displayWidget.gsp"] = '<displayWidget attr="${attribute}">${property}</displayWidget>'
+
+		expect:
+		applyTemplate(
+				'<f:with bean="productInstance" widget-attribute="cool">' +
+						'<f:displayWidget property="name" attribute="very cool"/>' +
+				'</f:with>',
+				[productInstance: productInstance]
+		) == '<displayWidget attr="very cool">name</displayWidget>'
+	}
 }

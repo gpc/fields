@@ -14,3 +14,19 @@ h2. Attributes
 *except* | | A comma-separated list of properties that should be skipped (in addition to the defaults).
 *prefix* | String | A string (including the trailing period) that should be appended before the input name such as @name="${prefix}propertyName"@.  The label is also modified.
 {table}
+
+h2. Extra attributes (Since version 1.5.2)
+
+You can pass extra attributes to the *all* tag that will be propagated to the inner fields.
+
+h3. Example
+
+{code}
+<f:all bean="person" wrapper="someWrapper"/>
+{code}
+
+In that way all the fields are going to be executed as if they were executed with the extra attribute on them.
+
+{note}
+    Remember that if you want to use some of those attributes in the *widget* templates you need to prefix them with the *widget-* word (unless you have configured another prefix)
+{note}

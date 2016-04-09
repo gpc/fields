@@ -5,7 +5,7 @@ function load_gvm {
 		perl -i -p -e 's/sdkman_auto_answer=false/sdkman_auto_answer=true/' ~/.sdkman/etc/config
 	fi
 
-	source ~/.sdkman/bin/gvm-init.sh
+	source ~/.sdkman/bin/sdkman-init.sh
 }
 
 function install_and_use_grails {
@@ -13,7 +13,7 @@ function install_and_use_grails {
 	source ~/.sdkman/bin/sdkman-init.sh
 	sdk install grails $grails_version
 	if [ $? -ne 0 ]; then
-		# grails version not available in gvm yet, download directly from s3
+		# grails version not available in sdkman yet, download directly from s3
 		set -e
 		(
 		set -e

@@ -1,5 +1,5 @@
 #!/bin/bash
-function load_gvm {
+function load_sdkman {
 	if [ ! -f ~/.sdkman/etc/config ]; then
 		curl -s get.sdkman.io | bash
 		perl -i -p -e 's/sdkman_auto_answer=false/sdkman_auto_answer=true/' ~/.sdkman/etc/config
@@ -10,7 +10,7 @@ function load_gvm {
 
 function install_and_use_grails {
 	grails_version=$1
-	source ~/.sdkman/bin/sdkman-init.sh
+	load_sdkman()
 	sdk install grails $grails_version
 	if [ $? -ne 0 ]; then
 		# grails version not available in sdkman yet, download directly from s3

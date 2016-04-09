@@ -10,7 +10,7 @@ function load_sdkman {
 
 function install_and_use_grails {
 	grails_version=$1
-	load_sdkman()
+	load_sdkman
 	sdk install grails $grails_version
 	if [ $? -ne 0 ]; then
 		# grails version not available in sdkman yet, download directly from s3

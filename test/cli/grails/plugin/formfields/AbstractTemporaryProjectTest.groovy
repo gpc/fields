@@ -46,7 +46,6 @@ abstract class AbstractTemporaryProjectTest extends AbstractCliTestCase {
 
 	@After
 	void tearDown() {
-		super.tearDown()
 		tempDir.deleteDir()
 	}
 
@@ -91,7 +90,7 @@ grails.project.dependency.resolution = {
         compile ":$pluginName:$pluginVersion"
         if(grailsVersion.startsWith("2.3.")) {
           compile ":scaffolding:2.0.3"
-        } else if (grailsVersion.startsWith("2.4.")) {
+        } else if (grailsVersion.startsWith("2.4.") || grailsVersion.startsWith("2.5.")) {
           compile ":scaffolding:2.1.2"
         }
     }

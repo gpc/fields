@@ -113,6 +113,32 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	/**
+	 * @attr bean REQUIRED Name of the source bean in the GSP model.
+	 * @attr except A comma-separated list of properties to exclude from
+	 * the generated list of input fields.
+	 * @attr prefix Prefix to add to input element names.
+	 */
+	def displayAll = { attrs ->
+		if (!attrs.bean) throwTagError("Tag [displayAll] is missing required attribute [bean]")
+		BeanAndPrefix beanPrefix = resolveBeanAndPrefix(attrs.bean, attrs.prefix, attrs)
+		try {
+			beanStack.push(beanPrefix)
+			def bean = resolveBean(attrs.bean)
+			def prefix = resolvePrefix(attrs.prefix)
+			def domainClass = resolveDomainClass(bean)
+			if (domainClass) {
+				for (property in resolvePersistentProperties(domainClass, attrs)) {
+					out << display([bean: bean, property: property.name, prefix: prefix])
+				}
+			} else {
+				throwTagError('Tag [displayAll] currently only supports domain types')
+			}
+		} finally {
+			beanStack.pop()
+		}
+	}
+
+	/**
 	 * @attr bean Name of the source bean in the GSP model.
 	 * @attr property REQUIRED The name of the property to display. This is resolved
 	 * against the specified bean or the bean in the current scope.

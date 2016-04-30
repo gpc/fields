@@ -77,11 +77,10 @@ class AttributesOfWithAndAllTagsArePropagatedSpec extends AbstractFormFieldsTagL
 			 '<wrapper attr="cool"><widget>tax</widget></wrapper>'
 	}
 
-	@Ignore("It is not possible to use the <f:all> tag for printing displays instead of fields")
 	void "An attribute of the <f:displayAll> tag is present on inner displays tag"() {
 		expect:
 		applyTemplate(
-				'<f:displayAll bean="productInstance" wrapper="cool"/>',
+				'<f:displayAll bean="productInstance" attribute="cool"/>',
 				[productInstance: productInstance]
 		) == '<displayWrapper attr="cool"><displayWidget>name</displayWidget></displayWrapper>' +
 			 '<displayWrapper attr="cool"><displayWidget>netPrice</displayWidget></displayWrapper>' +

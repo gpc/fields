@@ -1,0 +1,32 @@
+h1. f:displayAll
+
+h2. Description
+
+Renders displays for all properties of an object by using _f:display_ for each property.
+
+The _id_, _version_, _dateCreated_ and _lastUpdated_ properties are skipped on domain classes. Additionally any property with a @display: false@ constraint set will be skipped.
+
+h2. Attributes
+
+{table}
+*Name* | *Required?* | *Description*
+*bean* | if not inside _f:with_ | The bean whose property is being rendered. This can be the object itself or the name of a page-scope variable.
+*except* | | A comma-separated list of properties that should be skipped (in addition to the defaults).
+*prefix* | String | A string (including the trailing period) that should be appended before the input name such as @name="${prefix}propertyName"@.  The label is also modified.
+{table}
+
+h2. Extra attributes (Since version 1.5.2)
+
+You can pass extra attributes to the *displayAll* tag that will be propagated to the inner fields.
+
+h3. Example
+
+{code}
+<f:displayAll bean="person" wrapper="someWrapper"/>
+{code}
+
+In that way all the displays are going to be executed as if they were executed with the extra attribute on them.
+
+{note}
+    Remember that if you want to use some of those attributes in the *widget* templates you need to prefix them with the *widget-* word (unless you have configured another prefix)
+{note}

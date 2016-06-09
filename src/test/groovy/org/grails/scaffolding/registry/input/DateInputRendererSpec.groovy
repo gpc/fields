@@ -41,6 +41,6 @@ class DateInputRendererSpec extends ClosureCaptureSpecification {
 
         then:
         closureCapture.calls[0].name == "input"
-        closureCapture.calls[0].args[0] == ["type": "date"]
+        closureCapture.calls[0].args[0] == ["type": "date", "placeholder": "YYYY-MM-DD"]
     }
 }

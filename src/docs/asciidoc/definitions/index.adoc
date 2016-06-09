@@ -1,0 +1,21 @@
+== Definitions
+
+The scaffolding classes provided by this module use words that have special meaning in the context of rendering HTML.
+
+=== Input
+
+Input is defined as a means for a user to input data. Typically this will come in the form of HTML elements like select or textarea. The definition is not limited to input elements because all facets of rendering inputs can be changed to include whatever makes sense for your plugin.
+
+=== Output
+
+Output is defined as a means for a user to view data. How this is represented is entirely based on whatever template rendering technology you are using. For Groovy pages it may look like `${domain.property}`. For Angular templates it may look like `{{domain.property}}`.
+
+=== Context
+
+Context is defined as the markup that surrounds or is rendered alongside domain properties. There are several different contexts this module defines. All contexts are rendered by the LINKTOCONTEXTMARKUPRENDERER.
+
+
+==== ListOutputContext
+
+Used to define how a list of domain class instances will be rendered. Examples are a table or a grid
+

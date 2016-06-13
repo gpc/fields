@@ -33,7 +33,7 @@ class DomainMarkupRendererSpec extends Specification {
         }
         List props = [prop1, prop2, prop3]
         renderer.domainModelService = Mock(DomainModelService) {
-            1 * getShortListVisibleProperties(_ as PersistentEntity) >> props
+            1 * getListOutputProperties(_ as PersistentEntity) >> props
         }
         renderer.contextMarkupRenderer = Mock(ContextMarkupRenderer) {
             1 * listOutputContext(_ as PersistentEntity, props, _ as Closure) >> { entity, properties, closure ->
@@ -74,8 +74,8 @@ class DomainMarkupRendererSpec extends Specification {
             1 * getName() >> "prop3"
         }
         renderer.domainModelService = Mock(DomainModelService) {
-            1 * getEditableProperties(domain) >> [prop1, prop2]
-            1 * getEditableProperties(embedded) >> [prop3]
+            1 * getInputProperties(domain) >> [prop1, prop2]
+            1 * getInputProperties(embedded) >> [prop3]
         }
         renderer.contextMarkupRenderer = Mock(ContextMarkupRenderer) {
             2 * inputContext(_ as DomainProperty, _ as Closure) >> { DomainProperty prop, Closure c ->
@@ -124,8 +124,8 @@ class DomainMarkupRendererSpec extends Specification {
             1 * getName() >> "prop3"
         }
         renderer.domainModelService = Mock(DomainModelService) {
-            1 * getVisibleProperties(domain) >> [prop1, prop2]
-            1 * getVisibleProperties(embedded) >> [prop3]
+            1 * getOutputProperties(domain) >> [prop1, prop2]
+            1 * getOutputProperties(embedded) >> [prop3]
         }
         renderer.contextMarkupRenderer = Mock(ContextMarkupRenderer) {
             2 * outputContext(_ as DomainProperty, _ as Closure) >> { DomainProperty prop, Closure c ->

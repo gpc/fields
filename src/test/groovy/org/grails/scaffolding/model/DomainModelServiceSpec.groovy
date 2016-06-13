@@ -39,7 +39,7 @@ class DomainModelServiceSpec extends Specification implements MocksDomain {
         1 * domainClass.getPersistentProperties() >> [bar]
 
         when:
-        List<DomainProperty> properties = domainModelService.getEditableProperties(domainClass).toList()
+        List<DomainProperty> properties = domainModelService.getInputProperties(domainClass).toList()
 
         then: "properties that are excluded in the scaffolded property aren't included"
         properties.size() == 1
@@ -48,7 +48,7 @@ class DomainModelServiceSpec extends Specification implements MocksDomain {
 
     /*
     TODO: Wait until derived is added to next version of GORM
-    void "test getEditableProperties derived"() {
+    void "test getInputProperties derived"() {
         given:
         GrailsDomainClass domainClass = Mock {
             1 * getClazz() >> ScaffoldedDomain
@@ -61,7 +61,7 @@ class DomainModelServiceSpec extends Specification implements MocksDomain {
         domainClass.getConstrainedProperties() >> ["bar": Mock(ConstrainedProperty) { 1 * isDisplay() >> true }]
 
         when:
-        List<GrailsDomainClassProperty> properties = domainModelService.getEditableProperties(domainClass).toList()
+        List<GrailsDomainClassProperty> properties = domainModelService.getInputProperties(domainClass).toList()
 
         then: "properties that are excluded in the scaffolded property aren't included"
         properties.empty
@@ -90,7 +90,7 @@ class DomainModelServiceSpec extends Specification implements MocksDomain {
         1 * domainClass.getPersistentProperties() >> [persistentProperty1, persistentProperty2, persistentProperty3]
 
         when:
-        List<DomainProperty> properties = domainModelService.getEditableProperties(domainClass).toList()
+        List<DomainProperty> properties = domainModelService.getInputProperties(domainClass).toList()
 
         then: "properties that are excluded by default are excluded"
         properties.empty
@@ -109,7 +109,7 @@ class DomainModelServiceSpec extends Specification implements MocksDomain {
         1 * domainClass.getPersistentProperties() >> [bar]
 
         when:
-        List<DomainProperty> properties = domainModelService.getEditableProperties(domainClass).toList()
+        List<DomainProperty> properties = domainModelService.getInputProperties(domainClass).toList()
 
         then: "properties that are excluded in the scaffolded property aren't included"
         properties.empty
@@ -127,7 +127,7 @@ class DomainModelServiceSpec extends Specification implements MocksDomain {
         1 * domainClass.getPersistentProperties() >> [foo]
 
         when:
-        List<DomainProperty> properties = domainModelService.getEditableProperties(domainClass).toList()
+        List<DomainProperty> properties = domainModelService.getInputProperties(domainClass).toList()
 
         then: "properties that are excluded in the scaffolded property aren't included"
         properties.empty
@@ -142,13 +142,13 @@ class DomainModelServiceSpec extends Specification implements MocksDomain {
         domainModelService.domainPropertyFactory = domainPropertyFactory
 
         expect:
-        domainModelService.hasEditableProperty(persistentEntity) { DomainProperty p ->
+        domainModelService.hasInputProperty(persistentEntity) { DomainProperty p ->
             p.name == "timeZone"
         }
-        domainModelService.hasEditableProperty(persistentEntity) { DomainProperty p ->
+        domainModelService.hasInputProperty(persistentEntity) { DomainProperty p ->
             p.name == "locale"
         }
-        !domainModelService.hasEditableProperty(persistentEntity) { DomainProperty p ->
+        !domainModelService.hasInputProperty(persistentEntity) { DomainProperty p ->
             p.name == "not here"
         }
     }
@@ -157,24 +157,25 @@ class DomainModelServiceSpec extends Specification implements MocksDomain {
         given:
         PersistentProperty persistentProperty1 = Mock(PersistentProperty)
         PersistentProperty persistentProperty2 = Mock(PersistentProperty)
-        DomainProperty foo = Stub(DomainProperty) {
-            getName() >> "foo"
+        DomainProperty bar = Stub(DomainProperty) {
+            getName() >> "bar"
+            getConstraints() >> Mock(ConstrainedProperty) { 1 * isDisplay() >> true }
         }
         DomainProperty version = Stub(DomainProperty) {
             getName() >> "version"
         }
         domainModelService.domainPropertyFactory = Mock(DomainPropertyFactoryImpl) {
-            1 * build(persistentProperty1) >> foo
+            1 * build(persistentProperty1) >> bar
             1 * build(persistentProperty2) >> version
         }
         1 * domainClass.getPersistentProperties() >> [persistentProperty1, persistentProperty2]
 
         when:
-        List<DomainProperty> properties = domainModelService.getVisibleProperties(domainClass).toList()
+        List<DomainProperty> properties = domainModelService.getOutputProperties(domainClass).toList()
 
         then: "version is excluded"
         properties.size() == 1
-        properties[0].name == "foo"
+        properties[0].name == "bar"
     }
 
     void "test getShortListVisibleProperties"() {
@@ -185,6 +186,7 @@ class DomainModelServiceSpec extends Specification implements MocksDomain {
         List domainProperties = (1..10).collect { num ->
             Stub(DomainProperty) {
                 getName() >> num.toString()
+                getConstraints() >> Mock(ConstrainedProperty) { 1 * isDisplay() >> true }
             }
         }
         domainProperties.add(Stub(DomainProperty) {
@@ -201,7 +203,7 @@ class DomainModelServiceSpec extends Specification implements MocksDomain {
         1 * domainClass.getIdentity() >> identity
 
         when:
-        List<DomainProperty> properties = domainModelService.getShortListVisibleProperties(domainClass).toList()
+        List<DomainProperty> properties = domainModelService.getListOutputProperties(domainClass).toList()
 
         then: "Identity is added to the beginning list after trimmed to 6. Version is excluded"
         properties.size() == 7

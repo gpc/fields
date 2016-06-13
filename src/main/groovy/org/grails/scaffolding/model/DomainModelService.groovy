@@ -11,35 +11,40 @@ import org.grails.datastore.mapping.model.PersistentEntity
 interface DomainModelService {
 
     /**
+     * The list of {@link DomainProperty} instances that allow for user input
+     *
      * @param domainClass The persistent entity
-     * @return The list of {@link DomainProperty} instances that are editable
      */
-    List<DomainProperty> getEditableProperties(PersistentEntity domainClass)
+    List<DomainProperty> getInputProperties(PersistentEntity domainClass)
 
     /**
+     * The list of {@link DomainProperty} instances that are to be visible
+     *
      * @param domainClass The persistent entity
-     * @return The list of {@link DomainProperty} instances that are visible
      */
-    List<DomainProperty> getVisibleProperties(PersistentEntity domainClass)
+    List<DomainProperty> getOutputProperties(PersistentEntity domainClass)
 
     /**
+     * The list of {@link DomainProperty} instances that are to be visible in a list context
+     *
      * @param domainClass The persistent entity
-     * @return The list of {@link DomainProperty} instances that are designed to be shown in a list context
      */
-    List<DomainProperty> getShortListVisibleProperties(PersistentEntity domainClass)
+    List<DomainProperty> getListOutputProperties(PersistentEntity domainClass)
 
     /**
+     * The list of {@link DomainProperty} instances that allow for user input and the closure returns true for
+     *
      * @param domainClass The persistent entity
      * @param closure The closure that will be executed for each editable property
-     * @return The list of editable {@link DomainProperty} instances that the closure returns true for
      */
-    List<DomainProperty> findEditableProperties(PersistentEntity domainClass, Closure closure)
+    List<DomainProperty> findInputProperties(PersistentEntity domainClass, Closure closure)
 
     /**
+     * Determines if the closure returns true for any input {@link DomainProperty}
+     *
      * @param domainClass The persistent entity
      * @param closure The closure that will be executed for each property
-     * @return Whether or not the closure returns true for any editable property
      */
-    Boolean hasEditableProperty(PersistentEntity domainClass, Closure closure)
+    Boolean hasInputProperty(PersistentEntity domainClass, Closure closure)
 
 }

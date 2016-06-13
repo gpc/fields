@@ -10,13 +10,14 @@ import org.grails.datastore.mapping.model.PersistentEntity
  * the display of a domain property on the page.
  *
  * An example of what might be returned with {@link #inputContext(DomainProperty,Closure)}
+ * <pre>{@code
  * { ->
  *      div([class: "form-group"]) {
  *          label('', [for: property.name])
  *          content.delegate = delegate
  *          content.call()
- *      }
- * }
+ *      }}
+ * }</pre>
  *
  * @author James Kleeh
  */

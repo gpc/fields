@@ -19,11 +19,21 @@ class DomainModelServiceImpl implements DomainModelService {
     @Autowired
     DomainPropertyFactory domainPropertyFactory
 
-    List<DomainProperty> getEditableProperties(PersistentEntity domainClass) {
+    /**
+     * <p>Retrieves persistent properties and excludes:<ul>
+     * <li>Any properties listed in the {@code static scaffold = [exclude: []]} property on the domain class
+     * <li>Any properties that have the constraint {@code [display: false]}
+     * <li>Any properties whose name exist in the blackList
+     * </ul><p>
+     *
+     * @see {@link DomainModelService#getInputProperties}
+     * @param domainClass The persistent entity
+     * @param blackList The list of domain class property names to exclude
+     */
+    protected List<DomainProperty> getProperties(PersistentEntity domainClass, List<String> blacklist) {
         List<DomainProperty> properties = domainClass.persistentProperties.collect {
             domainPropertyFactory.build(it)
         }
-        List blacklist = ['version', 'dateCreated', 'lastUpdated']
         Object scaffoldProp = GrailsClassUtils.getStaticPropertyValue(domainClass.javaClass, 'scaffold')
         if (scaffoldProp instanceof Map) {
             Map scaffold = (Map)scaffoldProp
@@ -37,23 +47,44 @@ class DomainModelServiceImpl implements DomainModelService {
         }
         properties.removeAll { it.name in blacklist }
         properties.removeAll { !it.constraints.display }
-        //TODO Wait for Graeme to implement access to determine if a property is derived
-        //properties.removeAll { it.mapping instanceof PropertyConfig classMapping.mappedForm..properties.derived }
         properties.sort()
         properties
     }
 
-    List<DomainProperty> getVisibleProperties(PersistentEntity domainClass) {
-        List<DomainProperty> properties = domainClass.persistentProperties.collect {
-            domainPropertyFactory.build(it)
-        }
-        properties.removeAll { it.name == 'version' }
-        properties.sort()
-        properties
+    /**
+     * <p>Blacklist:<ul>
+     * <li>version
+     * <li>dateCreated
+     * <li>lastUpdated
+     * </ul><p>
+     *
+     * @see {@link DomainModelServiceImpl#getProperties}
+     * @param domainClass The persistent entity
+     */
+    List<DomainProperty> getInputProperties(PersistentEntity domainClass) {
+        getProperties(domainClass, ['version', 'dateCreated', 'lastUpdated'])
     }
 
-    List<DomainProperty> getShortListVisibleProperties(PersistentEntity domainClass) {
-        List<DomainProperty> properties = getVisibleProperties(domainClass)
+    /**
+     * <p>Blacklist:<ul>
+     * <li>version
+     * </ul><p>
+     *
+     * @see {@link DomainModelServiceImpl#getProperties}
+     * @param domainClass The persistent entity
+     */
+    List<DomainProperty> getOutputProperties(PersistentEntity domainClass) {
+        getProperties(domainClass, ['version'])
+    }
+
+    /**
+     * <p>Trims the number of properties to 6 and prepends the identifier<p>
+     *
+     * @see {@link DomainModelServiceImpl#getOutputProperties}
+     * @param domainClass The persistent entity
+     */
+    List<DomainProperty> getListOutputProperties(PersistentEntity domainClass) {
+        List<DomainProperty> properties = getOutputProperties(domainClass)
         if (properties.size() > 5) {
             properties = properties[0..5]
         }
@@ -61,12 +92,20 @@ class DomainModelServiceImpl implements DomainModelService {
         properties
     }
 
-    List<DomainProperty> findEditableProperties(PersistentEntity domainClass, Closure closure) {
+    /**
+     * Will return all properties in a domain class that the provided closure returns
+     * true for. Searches embedded properties
+     *
+     * @see {@link DomainModelService#findInputProperties}
+     * @param domainClass The persistent entity
+     * @param closure The closure that will be executed for each editable property
+     */
+    List<DomainProperty> findInputProperties(PersistentEntity domainClass, Closure closure) {
         List<DomainProperty> properties = []
-        getEditableProperties(domainClass).each { DomainProperty domainProperty ->
+        getInputProperties(domainClass).each { DomainProperty domainProperty ->
             PersistentProperty property = domainProperty.persistentProperty
             if (property instanceof Embedded) {
-                getEditableProperties(((Embedded)property).associatedEntity).each { DomainProperty embedded ->
+                getInputProperties(((Embedded)property).associatedEntity).each { DomainProperty embedded ->
                     embedded.rootProperty = domainProperty
                     if (closure.call(embedded)) {
                         properties.add(embedded)
@@ -81,8 +120,16 @@ class DomainModelServiceImpl implements DomainModelService {
         properties
     }
 
-    Boolean hasEditableProperty(PersistentEntity domainClass, Closure closure) {
-        findEditableProperties(domainClass, closure).size() > 0
+    /**
+     * Returns true if the provided closure returns true for any domain class
+     * property. Searches embedded properties
+     *
+     * @see {@link DomainModelService#hasInputProperty}
+     * @param domainClass The persistent entity
+     * @param closure The closure that will be executed for each editable property
+     */
+    Boolean hasInputProperty(PersistentEntity domainClass, Closure closure) {
+        findInputProperties(domainClass, closure).size() > 0
     }
 
 }

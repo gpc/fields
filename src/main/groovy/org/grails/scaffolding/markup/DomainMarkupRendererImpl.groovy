@@ -64,7 +64,7 @@ class DomainMarkupRendererImpl implements DomainMarkupRenderer {
         List<DomainProperty> domainProperties = domainModelService.getListOutputProperties(domainClass)
         domainProperties.each { DomainProperty property ->
             if (property.persistentProperty instanceof Embedded) {
-                domainModelService.getListOutputProperties(((Embedded)property.persistentProperty).associatedEntity).each { DomainProperty embedded ->
+                domainModelService.getOutputProperties(((Embedded)property.persistentProperty).associatedEntity).each { DomainProperty embedded ->
                     embedded.rootProperty = property
                     tableProperties.add(embedded)
                 }

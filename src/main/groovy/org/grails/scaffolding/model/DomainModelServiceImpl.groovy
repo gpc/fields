@@ -1,5 +1,6 @@
 package org.grails.scaffolding.model
 
+import grails.validation.Constrained
 import org.grails.scaffolding.model.property.DomainProperty
 import org.grails.scaffolding.model.property.DomainPropertyFactory
 import grails.util.GrailsClassUtils
@@ -46,7 +47,10 @@ class DomainModelServiceImpl implements DomainModelService {
             }
         }
         properties.removeAll { it.name in blacklist }
-        properties.removeAll { !it.constraints.display }
+        properties.removeAll {
+            Constrained constrained = it.constraints
+            constrained && !constrained.display
+        }
         properties.sort()
         properties
     }

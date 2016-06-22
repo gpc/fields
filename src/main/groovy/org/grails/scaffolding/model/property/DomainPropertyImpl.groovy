@@ -113,7 +113,7 @@ class DomainPropertyImpl implements DomainProperty {
 
         Constrained cp2 = o2.constraints
 
-        if (constraints == null & cp2 == null) {
+        if (constraints == null && cp2 == null) {
             return name.compareTo(o2.name);
         }
 

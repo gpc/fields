@@ -178,7 +178,7 @@ class DomainModelServiceSpec extends Specification implements MocksDomain {
         properties[0].name == "bar"
     }
 
-    void "test getShortListVisibleProperties"() {
+    void "test getListOutputProperties"() {
         given:
         List persistentProperties = (1..10).collect {
             Mock(PersistentProperty)
@@ -205,10 +205,10 @@ class DomainModelServiceSpec extends Specification implements MocksDomain {
         when:
         List<DomainProperty> properties = domainModelService.getListOutputProperties(domainClass).toList()
 
-        then: "Identity is added to the beginning list after trimmed to 6. Version is excluded"
-        properties.size() == 7
+        then: "Identity is added to the beginning of the list"
+        properties.size() == 11
         properties[0].name == "id"
-        properties[6].name == "6"
+        properties[10].name == "10"
     }
 
     class ScaffoldedDomain {

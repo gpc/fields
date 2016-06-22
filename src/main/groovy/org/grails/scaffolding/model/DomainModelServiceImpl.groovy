@@ -85,9 +85,6 @@ class DomainModelServiceImpl implements DomainModelService {
      */
     List<DomainProperty> getListOutputProperties(PersistentEntity domainClass) {
         List<DomainProperty> properties = getOutputProperties(domainClass)
-        if (properties.size() > 5) {
-            properties = properties[0..5]
-        }
         properties.add(0, domainPropertyFactory.build(domainClass.identity))
         properties
     }

@@ -22,21 +22,54 @@ class DomainMarkupRendererSpec extends Specification {
 
     void "test renderListOutput"() {
         given:
+        PersistentEntity persistentEntity = Mock(PersistentEntity)
+        PersistentEntity embeddedEntity = Mock(PersistentEntity)
         DomainProperty prop1 = Mock(DomainProperty) {
             1 * getName() >> "prop1"
+            1 * getPersistentProperty() >> Mock(PersistentProperty)
         }
         DomainProperty prop2 = Mock(DomainProperty) {
             1 * getName() >> "prop2"
+            1 * getPersistentProperty() >> Mock(PersistentProperty)
         }
         DomainProperty prop3 = Mock(DomainProperty) {
-            1 * getName() >> "prop3"
+            0 * getName() >> "prop3"
+            2 * getPersistentProperty() >> Mock(Embedded) {
+                1 * getAssociatedEntity() >> embeddedEntity
+            }
         }
-        List props = [prop1, prop2, prop3]
+        DomainProperty prop4 = Mock(DomainProperty) {
+            1 * getName() >> "prop4"
+            1 * getPersistentProperty() >> Mock(PersistentProperty)
+        }
+        DomainProperty prop5 = Mock(DomainProperty) {
+            1 * getName() >> "prop5"
+            1 * getPersistentProperty() >> Mock(PersistentProperty)
+        }
+        DomainProperty prop6 = Mock(DomainProperty) {
+            0 * getName() >> "prop6"
+            1 * getPersistentProperty() >> Mock(PersistentProperty)
+        }
+        DomainProperty embeddedProp1 = Mock(DomainProperty) {
+            1 * getName() >> "embeddedProp1"
+            0 * getPersistentProperty()
+        }
+        DomainProperty embeddedProp2 = Mock(DomainProperty) {
+            1 * getName() >> "embeddedProp2"
+            0 * getPersistentProperty()
+        }
+        DomainProperty embeddedProp3 = Mock(DomainProperty) {
+            1 * getName() >> "embeddedProp3"
+            0 * getPersistentProperty()
+        }
+        List props = [prop1, prop2, prop3, prop4, prop5, prop6]
+        List embeddedProps = [embeddedProp1, embeddedProp2, embeddedProp3]
         renderer.domainModelService = Mock(DomainModelService) {
-            1 * getListOutputProperties(_ as PersistentEntity) >> props
+            1 * getListOutputProperties(persistentEntity) >> props
+            1 * getListOutputProperties(embeddedEntity) >> embeddedProps
         }
         renderer.contextMarkupRenderer = Mock(ContextMarkupRenderer) {
-            1 * listOutputContext(_ as PersistentEntity, props, _ as Closure) >> { entity, properties, closure ->
+            1 * listOutputContext(_ as PersistentEntity, [prop1, prop2, embeddedProp1, embeddedProp2, embeddedProp3, prop4, prop5], _ as Closure) >> { entity, properties, closure ->
                 return { ->
                     properties.each { DomainProperty prop ->
                         div(closure.call(prop))
@@ -45,16 +78,18 @@ class DomainMarkupRendererSpec extends Specification {
             }
         }
         renderer.propertyMarkupRenderer = Mock(PropertyMarkupRenderer) {
-            3 * renderListOutput(_ as DomainProperty) >> { DomainProperty prop ->
+            7 * renderListOutput(_ as DomainProperty) >> { DomainProperty prop ->
                 return { -> span(prop.name) }
             }
         }
 
         when:
-        String output = renderer.renderListOutput(Mock(PersistentEntity))
+        String output = renderer.renderListOutput(persistentEntity)
 
         then:
-        output == "<div>\n  <span>prop1</span>\n</div>\n<div>\n  <span>prop2</span>\n</div>\n<div>\n  <span>prop3</span>\n</div>"
+        output == ["prop1", "prop2", "embeddedProp1", "embeddedProp2", "embeddedProp3", "prop4", "prop5"].collect {
+            "<div>\n  <span>$it</span>\n</div>"
+        }.join("\n")
     }
 
     void "test renderForm"() {

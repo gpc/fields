@@ -52,8 +52,29 @@ class DomainMarkupRendererImpl implements DomainMarkupRenderer {
         contextMarkupRenderer.outputContext(property, propertyMarkupRenderer.renderOutput(property))
     }
 
+    /**
+     * Determines how many properties will be included in the list output
+     */
+    protected int getMaxListOutputSize() {
+        7
+    }
+
     String renderListOutput(PersistentEntity domainClass) {
-        List<DomainProperty> tableProperties = domainModelService.getListOutputProperties(domainClass)
+        List<DomainProperty> tableProperties = []
+        List<DomainProperty> domainProperties = domainModelService.getListOutputProperties(domainClass)
+        domainProperties.each { DomainProperty property ->
+            if (property.persistentProperty instanceof Embedded) {
+                domainModelService.getListOutputProperties(((Embedded)property.persistentProperty).associatedEntity).each { DomainProperty embedded ->
+                    embedded.rootProperty = property
+                    tableProperties.add(embedded)
+                }
+            } else {
+                tableProperties.add(property)
+            }
+        }
+        if (tableProperties.size() > maxListOutputSize) {
+            tableProperties = tableProperties[0..(maxListOutputSize-1)]
+        }
         outputMarkupContent (
             contextMarkupRenderer.listOutputContext(domainClass, tableProperties) { DomainProperty domainProperty ->
                 propertyMarkupRenderer.renderListOutput(domainProperty)

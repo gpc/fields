@@ -82,7 +82,7 @@ class DomainModelServiceImpl implements DomainModelService {
     }
 
     /**
-     * <p>Trims the number of properties to 6 and prepends the identifier<p>
+     * <p>The same as {@link #getOutputProperties(org.grails.datastore.mapping.model.PersistentEntity)} except the identifier is prepended<p>
      *
      * @see {@link DomainModelServiceImpl#getOutputProperties}
      * @param domainClass The persistent entity

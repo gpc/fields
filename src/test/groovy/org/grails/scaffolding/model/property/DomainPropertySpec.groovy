@@ -1,7 +1,7 @@
 package org.grails.scaffolding.model.property
 
+import org.grails.orm.hibernate.cfg.HibernateMappingContext
 import org.grails.scaffolding.model.MocksDomain
-import grails.validation.ConstrainedProperty
 import org.grails.datastore.mapping.keyvalue.mapping.config.KeyValueMappingContext
 import org.grails.datastore.mapping.model.MappingContext
 import org.grails.datastore.mapping.model.PersistentEntity
@@ -155,6 +155,33 @@ class DomainPropertySpec extends Specification implements MocksDomain {
         property.defaultLabel == "Foo Bar"
     }
 
+    void "test sort"() {
+        given:
+        Embedded property = (Embedded)mappingContext.addExternalPersistentEntity(ScaffoldedDomainEntity).getPropertyByName("props")
+        List<DomainProperty> properties = property.associatedEntity.persistentProperties.collect {
+            new DomainPropertyImpl(it, mappingContext)
+        }
+        properties.sort()
+
+        expect:
+        properties[0].name == "firstName"
+        properties[1].name == "lastName"
+        properties.size() == 2
+    }
+
+    void "test sort w/ Hibernate embedded"() {
+        given:
+        List<DomainProperty> properties = new HibernateMappingContext().createEmbeddedEntity(EmbeddedClassEntity).persistentProperties.collect {
+            new DomainPropertyImpl(it, mappingContext)
+        }
+        properties.sort()
+
+        expect:
+        properties[0].name == "firstName"
+        properties[1].name == "lastName"
+        properties.size() == 2
+    }
+
     class ScaffoldedDomain {
         Long id
         Long version
@@ -178,7 +205,19 @@ class DomainPropertySpec extends Specification implements MocksDomain {
         }
     }
 
+    class ScaffoldedDomainEntity {
+        Long id
+        Long version
+        EmbeddedClassEntity props
+        static embedded = ['props']
+    }
+
     class EmbeddedClass {
         String name
+    }
+
+    class EmbeddedClassEntity {
+        String lastName
+        String firstName
     }
 }

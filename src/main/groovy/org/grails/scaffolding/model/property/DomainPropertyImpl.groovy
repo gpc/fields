@@ -104,10 +104,10 @@ class DomainPropertyImpl implements DomainProperty {
 
     public int compareTo(DomainProperty o2) {
 
-        if (domainClass.mapping.identifier.identifierName.contains(name)) {
+        if (domainClass.mapping.identifier?.identifierName?.contains(name)) {
             return -1;
         }
-        if (domainClass.mapping.identifier.identifierName.contains(o2.name)) {
+        if (domainClass.mapping.identifier?.identifierName?.contains(o2.name)) {
             return 1;
         }
 

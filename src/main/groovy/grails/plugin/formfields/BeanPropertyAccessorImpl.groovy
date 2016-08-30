@@ -66,8 +66,7 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
      * @return
      */
     private boolean getDataBindingConfigParamValue(String paramName, boolean defaultParamValue = true) {
-        def paramValue = grailsApplication.config.grails.databinding."$paramName"
-        paramValue ? paramValue as Boolean : defaultParamValue
+        grailsApplication.config.getProperty("grails.databinding.$paramName", Boolean, defaultParamValue)
     }
 
 	List<Class> getBeanSuperclasses() {

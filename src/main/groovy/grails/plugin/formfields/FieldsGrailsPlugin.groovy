@@ -15,7 +15,7 @@ package grails.plugin.formfields
  * limitations under the License.
  */
 
-import org.codehaus.groovy.grails.validation.ConstraintsEvaluator
+import grails.validation.ConstraintsEvaluator
 
 class FieldsGrailsPlugin {
 

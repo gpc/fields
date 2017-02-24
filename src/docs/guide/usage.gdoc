@@ -8,6 +8,14 @@ In the simplest case you can use _f:all_ to render a field for every property of
 </g:form>
 {code}
 
+If you want to render displays instead of fields (for read only values)  you can use _f:displayAll_ to render a display for every property of a bean:
+
+{code}
+<g:form…>
+    <f:displayAll bean="person"/>
+</g:form>
+{code}
+
 To render individual fields you use the _f:field_ tag:
 
 {code}
@@ -70,6 +78,11 @@ By default _f:display_ simply renders the property value but if you supply a _\_
 <dt>${label}</dt>
 <dd>${value}</dd>
 {code}
+
+h2. Extra attributes (Since version 1.5.2)
+
+You can pass any number of extra attributes to the *with* and *all* tags that will be propagated to the inner fields and displays.
+See the [with tag reference|ref:with] and the [all tag reference|ref:all] sections for more information.
 
 h2. Breaking changes
 

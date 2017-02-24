@@ -1,8 +1,8 @@
-h1. f:all
+h1. f:displayAll
 
 h2. Description
 
-Renders fields for all properties of an object by using _f:field_ for each property.
+Renders displays for all properties of an object by using _f:display_ for each property.
 
 The _id_, _version_, _dateCreated_ and _lastUpdated_ properties are skipped on domain classes. Additionally any property with a @display: false@ constraint set will be skipped.
 
@@ -17,15 +17,15 @@ h2. Attributes
 
 h2. Extra attributes (Since version 1.5.2)
 
-You can pass extra attributes to the *all* tag that will be propagated to the inner fields.
+You can pass extra attributes to the *displayAll* tag that will be propagated to the inner fields.
 
 h3. Example
 
 {code}
-<f:all bean="person" wrapper="someWrapper"/>
+<f:displayAll bean="person" wrapper="someWrapper"/>
 {code}
 
-In that way all the fields are going to be executed as if they were executed with the extra attribute on them.
+In that way all the displays are going to be executed as if they were executed with the extra attribute on them.
 
 {note}
     Remember that if you want to use some of those attributes in the *widget* templates you need to prefix them with the *widget-* word (unless you have configured another prefix)

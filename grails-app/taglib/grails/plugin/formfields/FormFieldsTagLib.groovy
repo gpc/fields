@@ -482,7 +482,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		} else if (model.type in [byte[], Byte[], Blob]) {
 			return g.field(attrs + [type: "file"])
 		} else if (model.type in [TimeZone, Currency, Locale]) {
-			if (!model.required) attrs.noSelection = ["": ""]
+			if (!model.required) attrs.noSelection = attrs.noSelection ?: ["": ""]
 			return g."${StringUtils.uncapitalize(model.type.simpleName)}Select"(attrs)
 		} else {
 			return null
@@ -492,7 +492,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
     private CharSequence renderDateTimeInput(Map model, Map attrs) {
 		attrs.precision = model.type == java.sql.Time ? "minute" : "day"
 		if (!model.required) {
-			attrs.noSelection = ["": ""]
+			attrs.noSelection = attrs.noSelection ?: ["": ""]
 			attrs.default = "none"
 		}
 		return g.datePicker(attrs)
@@ -502,7 +502,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		if (!attrs.type) {
 			if (model.constraints?.inList) {
 				attrs.from = model.constraints.inList
-				if (!model.required) attrs.noSelection = ["": ""]
+				if (!model.required) attrs.noSelection = attrs.noSelection ?: ["": ""]
 				return g.select(attrs)
 			}
 			else if (model.constraints?.password) {
@@ -527,7 +527,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	private CharSequence renderNumericInput(Map model, Map attrs) {
 		if (!attrs.type && model.constraints?.inList) {
 			attrs.from = model.constraints.inList
-			if (!model.required) attrs.noSelection = ["": ""]
+			if (!model.required) attrs.noSelection = attrs.noSelection ?: ["": ""]
 			return g.select(attrs)
 		} else if (model.constraints?.range) {
 			attrs.type = attrs.type ?: "range"
@@ -545,7 +545,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	private CharSequence renderEnumInput(Map model, Map attrs) {
 		if (attrs.value instanceof Enum)
 			attrs.value = attrs.value.name()
-		if (!model.required) attrs.noSelection = ["": ""]
+
+        if (!model.required) attrs.noSelection = attrs.noSelection ?: ["": ""]
 
 		if ( model.constraints?.inList) {
 			attrs.keys = model.constraints.inList*.name()
@@ -566,10 +567,11 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			attrs.value = model.value*.id
 			attrs.name = "${model.prefix ?: ''}${model.property}"
 		} else {
-			if (!model.required) attrs.noSelection = ["null": ""]
+			if (!model.required) attrs.noSelection = attrs.noSelection ?: ["": ""]
 			attrs.value = model.value?.id
 			attrs.name = "${model.prefix ?: ''}${model.property}.id"
 		}
+
 		return g.select(attrs)
 	}
 

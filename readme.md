@@ -4,5 +4,11 @@ A spiritual successor to the [bean-fields plugin](http://grails.org/plugin/bean-
 
 This work comes from [GRAILS-7635](http://jira.grails.org/browse/GRAILS-7635) and one of the major advantages would be to prolong the useful lifetime of dynamic scaffolding as developers can customize individual fields, add support for new property types, etc. whilst allowing scaffolding to continue laying out the overall page.
 
-For further information please see the [full documentation](https://grails-fields-plugin.github.io/grails-fields).
+For further information please see the full documentation.
+
+Documentation can be found here:
+
+- [Grails 2.x](https://grails-fields-plugin.github.io/grails-fields) version
+- [Grails 3.x](http://grails3-plugins.github.io/fields/snapshot/) version
+
 

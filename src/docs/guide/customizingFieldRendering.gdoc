@@ -34,6 +34,12 @@ h1. Locating Field Templates by Convention
 The template for a field is chosen by a convention using the names of the controller, action, bean
 class, bean property, etc. All the tags will look for templates in the following directories in decreasing order of preference:
 
+# @grails-app/views/*controllerNamespace*/*controllerName*/*actionName*/*propertyName*/@
+# @grails-app/views/*controllerNamespace*/*controllerName*/*actionName*/*propertyType*/@
+# @grails-app/views/*controllerNamespace*/*controllerName*/*actionName*/@
+# @grails-app/views/*controllerNamespace*/*controllerName*/*propertyName*/@
+# @grails-app/views/*controllerNamespace*/*controllerName*/*propertyType*/@
+# @grails-app/views/*controllerNamespace*/*controllerName*/@
 # @grails-app/views/*controllerName*/*actionName*/*propertyName*/@
 # @grails-app/views/*controllerName*/*actionName*/*propertyType*/@
 # @grails-app/views/*controllerName*/*actionName*/@

@@ -15,14 +15,14 @@ import spock.lang.Unroll
 @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/210')
 class AttributesOfWithAndAllTagsArePropagatedSpec extends AbstractFormFieldsTagLibSpec {
 
-	def mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
+	FormFieldsTemplateService mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
 
 	def setupSpec() {
 		configurePropertyAccessorSpringBean()
 	}
 
 	def setup() {
-		def taglib = applicationContext.getBean(FormFieldsTagLib)
+		FormFieldsTagLib taglib = applicationContext.getBean(FormFieldsTagLib)
 
 		mockFormFieldsTemplateService.getWidgetPrefix() >> "widget-"
 		mockFormFieldsTemplateService.getTemplateFor("wrapper") >> 'wrapper'
@@ -30,11 +30,11 @@ class AttributesOfWithAndAllTagsArePropagatedSpec extends AbstractFormFieldsTagL
 		mockFormFieldsTemplateService.getTemplateFor("widget") >> 'widget'
 		mockFormFieldsTemplateService.getTemplateFor("displayWidget") >> 'displayWidget'
 
-		mockFormFieldsTemplateService.findTemplate(_, 'wrapper', null) >> [path: '/_fields/default/wrapper']
-		mockFormFieldsTemplateService.findTemplate(_, 'displayWrapper', null) >> [path: '/_fields/default/displayWrapper']
+		mockFormFieldsTemplateService.findTemplate(_, 'wrapper', null, null) >> [path: '/_fields/default/wrapper']
+		mockFormFieldsTemplateService.findTemplate(_, 'displayWrapper', null, null) >> [path: '/_fields/default/displayWrapper']
 
-		mockFormFieldsTemplateService.findTemplate(_, 'widget', null) >> [path: '/_fields/default/widget']
-		mockFormFieldsTemplateService.findTemplate(_, 'displayWidget', null) >> [path: '/_fields/default/displayWidget']
+		mockFormFieldsTemplateService.findTemplate(_, 'widget', null, null) >> [path: '/_fields/default/widget']
+		mockFormFieldsTemplateService.findTemplate(_, 'displayWidget', null, null) >> [path: '/_fields/default/displayWidget']
 
 		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 

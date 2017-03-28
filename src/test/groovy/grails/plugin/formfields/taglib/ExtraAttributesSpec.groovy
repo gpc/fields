@@ -19,8 +19,8 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
 	def setup() {
 		def taglib = applicationContext.getBean(FormFieldsTagLib)
 
-		mockFormFieldsTemplateService.findTemplate(_, 'wrapper', null) >> [path: '/_fields/default/wrapper']
-		mockFormFieldsTemplateService.findTemplate(_, 'displayWrapper', null) >> [path: '/_fields/default/displayWrapper']
+		mockFormFieldsTemplateService.findTemplate(_, 'wrapper', null, null) >> [path: '/_fields/default/wrapper']
+		mockFormFieldsTemplateService.findTemplate(_, 'displayWrapper', null, null) >> [path: '/_fields/default/displayWrapper']
         mockFormFieldsTemplateService.getTemplateFor('wrapper') >> "wrapper"
         mockFormFieldsTemplateService.getTemplateFor('widget') >> "widget"
         mockFormFieldsTemplateService.getTemplateFor('displayWrapper') >> "displayWrapper"
@@ -51,7 +51,7 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
         views["/_fields/person/name/_widget.gsp"] = '<span>${foo}${attrs?.foo}</span>'
 
 		and:
-		mockFormFieldsTemplateService.findTemplate(_, 'widget', null) >> [path: '/_fields/person/name/widget']
+		mockFormFieldsTemplateService.findTemplate(_, 'widget', null, null) >> [path: '/_fields/person/name/widget']
 
         expect:
         applyTemplate('<f:field bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == '<span></span>'
@@ -63,7 +63,7 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
         views["/_fields/person/name/_displayWidget.gsp"] = '<span>${foo}${attrs?.foo}</span>'
 
 		and:
-		mockFormFieldsTemplateService.findTemplate(_, 'displayWidget', null) >> [path: '/_fields/person/name/displayWidget']
+		mockFormFieldsTemplateService.findTemplate(_, 'displayWidget', null, null) >> [path: '/_fields/person/name/displayWidget']
 
         expect:
         applyTemplate('<f:display bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == '<span></span>'
@@ -83,7 +83,7 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
         views["/_fields/default/_wrapper.gsp"] = '<foo>${attrs["widget-foo"]}</foo>'
 
         and:
-        mockFormFieldsTemplateService.findTemplate(_, 'wrapper', null) >> [path: '/_fields/default/wrapper']
+        mockFormFieldsTemplateService.findTemplate(_, 'wrapper', null, null) >> [path: '/_fields/default/wrapper']
 
         expect:
         applyTemplate('<f:field bean="personInstance" property="name" widget-foo="bar" />', [personInstance: personInstance]) == '<foo>bar</foo>'
@@ -103,7 +103,7 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
         views["/_fields/default/_displayWidget.gsp"] = '${foo}'
 
         and:
-        mockFormFieldsTemplateService.findTemplate(_, 'displayWidget', null) >> [path: '/_fields/default/displayWidget']
+        mockFormFieldsTemplateService.findTemplate(_, 'displayWidget', null, null) >> [path: '/_fields/default/displayWidget']
 
         expect:
         applyTemplate('<f:display bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == ''
@@ -114,7 +114,7 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
         views["/_fields/default/_displayWrapper.gsp"] = '${foo}'
 
         and:
-        mockFormFieldsTemplateService.findTemplate(_, 'displayWrapper', null) >> [path: '/_fields/default/displayWrapper']
+        mockFormFieldsTemplateService.findTemplate(_, 'displayWrapper', null, null) >> [path: '/_fields/default/displayWrapper']
 
         expect:
         applyTemplate('<f:display bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == 'bar'
@@ -125,7 +125,7 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
         views["/_fields/default/_displayWrapper.gsp"] = '${attrs.foo}'
 
         and:
-        mockFormFieldsTemplateService.findTemplate(_, 'displayWrapper', null) >> [path: '/_fields/default/displayWrapper']
+        mockFormFieldsTemplateService.findTemplate(_, 'displayWrapper', null, null) >> [path: '/_fields/default/displayWrapper']
 
         expect:
         applyTemplate('<f:display bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == 'bar'
@@ -136,7 +136,7 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
 		views["/_fields/person/name/_widget.gsp"] = '${foo}'
 
 		and:
-		mockFormFieldsTemplateService.findTemplate(_, 'widget', null) >> [path: '/_fields/person/name/widget']
+		mockFormFieldsTemplateService.findTemplate(_, 'widget', null, null) >> [path: '/_fields/person/name/widget']
 
 		expect:
 		applyTemplate('<f:input bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == 'bar'
@@ -147,7 +147,7 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
 		views["/_fields/person/name/_displayWidget.gsp"] = '${foo}'
 
 		and:
-		mockFormFieldsTemplateService.findTemplate(_, 'displayWidget', null) >> [path: '/_fields/person/name/displayWidget']
+		mockFormFieldsTemplateService.findTemplate(_, 'displayWidget', null, null) >> [path: '/_fields/person/name/displayWidget']
 
 		expect:
 		applyTemplate('<f:displayWidget bean="personInstance" property="name" foo="bar"/>', [personInstance: personInstance]) == 'bar'
@@ -189,7 +189,7 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
         views["/_fields/default/_displayWrapper.gsp"] = '<foo>${attrs["widget-foo"]}</foo>'
 
         and:
-        mockFormFieldsTemplateService.findTemplate(_, 'displayWrapper', null) >> [path: '/_fields/default/displayWrapper']
+        mockFormFieldsTemplateService.findTemplate(_, 'displayWrapper', null, null) >> [path: '/_fields/default/displayWrapper']
 
         expect:
         applyTemplate('<f:display bean="personInstance" property="name" widget-foo="bar" />', [personInstance: personInstance]) == '<foo>bar</foo>'
@@ -201,7 +201,7 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
         views["/_fields/person/name/_widget.gsp"] = '<span>${foo}</span>'
 
 		and:
-		mockFormFieldsTemplateService.findTemplate(_, 'widget', null) >> [path: '/_fields/person/name/widget']
+		mockFormFieldsTemplateService.findTemplate(_, 'widget', null, null) >> [path: '/_fields/person/name/widget']
 
         expect:
         applyTemplate('<f:field bean="personInstance" property="name" input-foo="bar"/>', [personInstance: personInstance]) == '<span>bar</span>'
@@ -213,7 +213,7 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
         views["/_fields/person/name/_displayWidget.gsp"] = '<span>${foo}</span>'
 
 		and:
-		mockFormFieldsTemplateService.findTemplate(_, 'displayWidget', null) >> [path: '/_fields/person/name/displayWidget']
+		mockFormFieldsTemplateService.findTemplate(_, 'displayWidget', null, null) >> [path: '/_fields/person/name/displayWidget']
 
         expect:
         applyTemplate('<f:display bean="personInstance" property="name" input-foo="bar"/>', [personInstance: personInstance]) == '<span>bar</span>'
@@ -225,7 +225,7 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
         views["/_fields/person/name/_widget.gsp"] = '<span>${attrs.foo}</span>'
 
 		and:
-		mockFormFieldsTemplateService.findTemplate(_, 'widget', null) >> [path: '/_fields/person/name/widget']
+		mockFormFieldsTemplateService.findTemplate(_, 'widget', null, null) >> [path: '/_fields/person/name/widget']
 
         expect:
         applyTemplate('<f:field bean="personInstance" property="name" input-foo="bar"/>', [personInstance: personInstance]) == '<span>bar</span>'
@@ -237,7 +237,7 @@ class ExtraAttributesSpec extends AbstractFormFieldsTagLibSpec {
         views["/_fields/person/name/_displayWidget.gsp"] = '<span>${attrs.foo}</span>'
 
 		and:
-		mockFormFieldsTemplateService.findTemplate(_, 'displayWidget', null) >> [path: '/_fields/person/name/displayWidget']
+		mockFormFieldsTemplateService.findTemplate(_, 'displayWidget', null, null) >> [path: '/_fields/person/name/displayWidget']
 
         expect:
         applyTemplate('<f:display bean="personInstance" property="name" input-foo="bar"/>', [personInstance: personInstance]) == '<span>bar</span>'

@@ -32,8 +32,26 @@ grails.plugin.fields.displayWidget = "displayWidget"
 h1. Locating Field Templates by Convention
 
 The template for a field is chosen by a convention using the names of the controller, action, bean
-class, bean property, etc. All the tags will look for templates in the following directories in decreasing order of preference:
+class, bean property, theme, etc. All the tags will look for templates in the following directories in decreasing order of preference:
 
+# @grails-app/views/*controllerNamespace*/*controllerName*/*actionName*/*propertyName*/\_themes/*themeName*/@
+# @grails-app/views/*controllerNamespace*/*controllerName*/*actionName*/\_themes/*themeName*/*propertyType*/@
+# @grails-app/views/*controllerNamespace*/*controllerName*/*actionName*/\_themes/*themeName*/@
+# @grails-app/views/*controllerNamespace*/*controllerName*/*propertyName*/\_themes/*themeName*/@
+# @grails-app/views/*controllerNamespace*/*controllerName*/\_themes/*themeName*/*propertyType*/@
+# @grails-app/views/*controllerNamespace*/*controllerName*/\_themes/*themeName*/@
+# @grails-app/views/*controllerName*/*actionName*/*propertyName*/\_themes/*themeName*/@
+# @grails-app/views/*controllerName*/*actionName*/\_themes/*themeName*/*propertyType*/@
+# @grails-app/views/*controllerName*/*actionName*/\_themes/*themeName*/@
+# @grails-app/views/*controllerName*/*propertyName*/\_themes/*themeName*/@
+# @grails-app/views/*controllerName*/\_themes/*themeName*/*propertyType*/@
+# @grails-app/views/*controllerName*/\_themes/*themeName*/@
+# @grails-app/views/\_fields/\_themes/*themeName*/*class*/*propertyName*/@
+# @grails-app/views/\_fields/\_themes/*themeName*/*superclass*/*propertyName*/@
+# @grails-app/views/\_fields/\_themes/*themeName*/*associationType*/@
+# @grails-app/views/\_fields/\_themes/*themeName*/*propertyType*/@
+# @grails-app/views/\_fields/\_themes/*themeName*/*propertySuperclass*/@
+# @grails-app/views/\_fields/\_themes/*themeName*/default/@
 # @grails-app/views/*controllerNamespace*/*controllerName*/*actionName*/*propertyName*/@
 # @grails-app/views/*controllerNamespace*/*controllerName*/*actionName*/*propertyType*/@
 # @grails-app/views/*controllerNamespace*/*controllerName*/*actionName*/@
@@ -59,6 +77,7 @@ The variables referenced in these paths are:
 *Name* | *Description*
 *controllerName* | The name of the current controller (if any).
 *actionName* | The name of the current action (if any).
+*themeName* | Theme name specified as value of theme attribute (Optional).
 *class* | The bean class. For simple properties this is the class of the object passed to the _bean_ attribute of the _f:field_ or _f:widget_ tag but when the _property_ attribute was nested this is the class at the end of the chain. For example, if the property path was _employees\[0\].address.street_ this will be the class of _address_.
 *superclass* | Any superclass or interface of _class_ excluding _Object_, _GroovyObject_, _Serializable_, _Comparable_ and _Cloneable_.
 *propertyName* | The property name at the end of the chain passed to the _property_ attribute of the _f:field_ or _f:widget_ tag. For example, if the property path was _employees\[0\].address.street_ then this will be _street_.
@@ -186,12 +205,25 @@ is equivalent to:
 <f:field property="startDate" wrapper="bootstrap3" widget="bootstrap3" />
 {code}
 
+if theme is specified, theme will be searched first to find the templates
+For example
+
+{code}
+<f:field property="startDate" templates="custom" theme="bs-horizontal"/>
+{code}
+
+Will search the templates first in _\_fields/_themes/bs-horizontal/custom_ and then _\_fields/custom_
+
 If a direct location is specified, and the templates cannot be found therein, the plugin will fall back to locating templates
 by convention.
 
 h2. Locating Templates Directly Example
 
 {code}
+
+// renders _fields/\_themes/bs-horizontal/custom/_wrapper.gsp:
+<f:field property="startDate" wrapper="custom" theme="bs-horizontal"/>
+
 // renders _fields/bootstrap3/_wrapper.gsp:
 <f:field property="startDate" wrapper="bootstrap3"/>
    
@@ -200,6 +232,9 @@ h2. Locating Templates Directly Example
 
 // renders _fields/time/_wrapper.gsp and _fields/time/_widget.gsp:
 <f:field property="startDate" templates="time"/>
+
+// renders _fields/\_themes/bs-horizontal/custom/_displayWrapper.gsp:
+<f:display property="startDate" wrapper="custom" theme="bs-horizontal"/>
 
 
 // renders _fields/bootstrap3/_displayWrapper.gsp:

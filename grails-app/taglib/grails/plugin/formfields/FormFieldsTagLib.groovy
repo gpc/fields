@@ -139,6 +139,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	 * @attr wrapper Specify the folder inside _fields where to look up for the wrapper template.
 	 * @attr widget Specify the folder inside _fields where to look up for the widget template.
 	 * @attr templates Specify the folder inside _fields where to look up for the wrapper and widget template.
+	 * @attr theme Theme name
 	 */
 	def field = { attrs, body ->
 		attrs = beanStack.innerAttributes + attrs
@@ -195,6 +196,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
       * Defaults to the first 7 (or less) properties of the domain class ordered by the domain class' constraints.
       * @attr displayStyle OPTIONAL Determines the display template used for the bean's properties.
       * Defaults to 'table', meaning that 'display-table' templates will be used when available.
+	 *  @attr theme Theme name
       */
     def table = { attrs, body ->
         def collection = resolveBean(attrs.remove('collection'))
@@ -234,6 +236,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	 * @attr bean Name of the source bean in the GSP model.
 	 * @attr property REQUIRED The name of the property to display. This is resolved
 	 * against the specified bean or the bean in the current scope.
+	 * @attr theme Theme name
 	 */
 	def widget = { attrs ->
 		def bean = resolveBean(attrs.remove(BEAN_ATTR))
@@ -256,6 +259,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	 * @attr bean Name of the source bean in the GSP model.
 	 * @attr property REQUIRED The name of the property to display. This is resolved
 	 * against the specified bean or the bean in the current scope.
+	 * @attr theme Theme name
 	 */
 	def displayWidget = { attrs ->
 		def bean = resolveBean(attrs.remove(BEAN_ATTR))
@@ -278,6 +282,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	 * @attr bean Name of the source bean in the GSP model.
 	 * @attr property REQUIRED The name of the property to display. This is resolved
 	 * against the specified bean or the bean in the current scope.
+	 * @attr theme Theme name
 	 */
 	def display = { attrs, body ->
 		attrs = beanStack.innerAttributes + attrs

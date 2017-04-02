@@ -39,7 +39,7 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
         def table = new XmlSlurper().parseText(output)
 
         then:
-        table.thead.tr.th.a.collect {it.text().trim()} == ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Excluded Property', 'Display False Property', 'Grails Developer']
+        table.thead.tr.th.a.collect {it.text().trim()} == ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', "Picture", "Another Picture"]
         table.tbody.tr.collect { it.td[1].text() } == ['Bart Simpson', 'Marge Simpson']
     }
 
@@ -53,7 +53,7 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
         def table = new XmlSlurper().parseText(output)
 
         then:
-        table.thead.tr.th.a.collect {it.text().trim()} == ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Excluded Property', 'Display False Property', 'Grails Developer']
+        table.thead.tr.th.a.collect {it.text().trim()} == ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', "Picture", "Another Picture"]
         table.tbody.tr.collect { it.td[1].text() } == ['Homer Simpson', 'Bart Simpson', 'Marge Simpson']
     }
 
@@ -66,6 +66,27 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
         then:
         table.thead.tr.th.a.collect {it.text().trim()} == ['Gender', 'Name']
         table.tbody.tr.collect { it.td[0].text() } == ['Male', 'Female']
+    }
+
+    void "table tag allows to specify the order"() {
+        when:
+        def output = applyTemplate('<f:table collection="collection" order="name,gender"/>', [collection: personList])
+        def table = new XmlSlurper().parseText(output)
+
+        then:
+        table.thead.tr.th.a.collect {it.text().trim()} == ['Name', 'Gender']
+        table.tbody.tr.collect { it.td[0].text() } == ['Bart Simpson', 'Marge Simpson']
+        table.tbody.tr.collect { it.td[1].text() } == ['Male', 'Female']
+    }
+
+    void "table tag allows to specify the except"() {
+        when:
+        def output = applyTemplate('<f:table collection="collection" except="salutation,grailsDeveloper,picture,anotherPicture,password"/>', [collection: personList])
+        def table = new XmlSlurper().parseText(output)
+
+        then:
+        table.thead.tr.th.a.collect {it.text().trim()} == ['Name', 'Date Of Birth', 'Address', "Biography", "Emails", "Gender", "Minor"]
+        table.tbody.tr.collect { it.td[0].text() } == ['Bart Simpson', 'Marge Simpson']
     }
 
     void "table tag displays embedded properties by default with toString"() {

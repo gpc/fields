@@ -92,8 +92,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 	/**
 	 * @attr bean REQUIRED Name of the source bean in the GSP model.
-	 * @attr except A comma-separated list of properties to exclude from
-	 * the generated list of input fields.
+	 * @attr order A comma-separated list of properties to include in provided order
+	 * @attr except A comma-separated list of properties to exclude from the generated list of input fields
 	 * @attr prefix Prefix to add to input element names.
 	 */
 	def all = { attrs ->
@@ -188,6 +188,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
       * Defaults to the first 7 (or less) properties of the domain class ordered by the domain class' constraints.
       * @attr displayStyle OPTIONAL Determines the display template used for the bean's properties.
       * Defaults to 'table', meaning that 'display-table' templates will be used when available.
+	  * @attr order A comma-separated list of properties to include in provided order
+	  * @attr except A comma-separated list of properties to exclude
       */
     def table = { attrs, body ->
         def collection = resolveBean(attrs.remove('collection'))
@@ -202,7 +204,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
          if (attrs.containsKey('properties')) {
             properties = attrs.remove('properties').collect { domainClass.getPropertyByName(it) }
          } else {
-            properties = domainClass.persistentProperties.sort(new DomainClassPropertyComparator(domainClass))
+            properties = resolvePersistentProperties(domainClass, attrs)
             if (properties.size() > 6) {
                 properties = properties[0..6]
             }
@@ -266,8 +268,9 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 	/**
 	 * @attr bean Name of the source bean in the GSP model.
-	 * @attr property REQUIRED The name of the property to display. This is resolved
-	 * against the specified bean or the bean in the current scope.
+	 * @attr property The name of the property to display. This is resolved against the specified bean or the bean in the current scope.
+	 * @attr order A comma-separated list of properties to include in provided order
+	 * @attr except A comma-separated list of properties to exclude
 	 */
 	def display = { attrs, body ->
 		attrs = beanStack.innerAttributes + attrs
@@ -280,7 +283,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		if (property == null) {
 			GrailsDomainClass domainClass = resolveDomainClass(bean)
 			if (domainClass) {
-				def properties = domainClass.persistentProperties.sort(new DomainClassPropertyComparator(domainClass))
+				List properties = resolvePersistentProperties(domainClass, attrs)
 				out << render(template: "/templates/_fields/list", model: [domainClass: domainClass, domainProperties: properties]) { prop ->
 					def propertyAccessor = resolveProperty(bean, prop.name)
 					def model = buildModel(propertyAccessor, attrs)
@@ -436,8 +439,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		grailsApplication.getDomainClass(beanClass.name)
 	}
 
-    private List<GrailsDomainClassProperty> resolvePersistentProperties(GrailsDomainClass domainClass, attrs) {
-        def properties
+    private List<GrailsDomainClassProperty> resolvePersistentProperties(GrailsDomainClass domainClass, Map attrs) {
+        List<GrailsDomainClassProperty> properties
 
         if(attrs.order) {
             if(attrs.except) {
@@ -449,7 +452,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
             properties = domainClass.persistentProperties as List
             def blacklist = attrs.except?.tokenize(',')*.trim() ?: []
             blacklist << 'dateCreated' << 'lastUpdated'
-            def scaffoldProp = getStaticPropertyValue(domainClass.clazz, 'scaffold')
+            Map scaffoldProp = getStaticPropertyValue(domainClass.clazz, 'scaffold')
             if (scaffoldProp) {
                 blacklist.addAll(scaffoldProp.exclude)
             }
@@ -459,7 +462,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
             Collections.sort(properties, new org.grails.validation.DomainClassPropertyComparator(domainClass))
         }
-        properties
+
+		return properties
     }
 
 	private boolean hasBody(Closure body) {

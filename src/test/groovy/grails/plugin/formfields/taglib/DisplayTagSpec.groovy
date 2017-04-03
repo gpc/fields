@@ -53,12 +53,12 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
 
 	void "display tag allows to specify the except"() {
 		when:
-		def result = applyTemplate('<f:display bean="personInstance" except="salutation,grailsDeveloper,picture,anotherPicture,password"/>', [personInstance: personInstance])
+		def result = applyTemplate('<f:display bean="personInstance" except="salutation,grailsDeveloper,picture,anotherPicture,password,dateOfBirth"/>', [personInstance: personInstance])
 		def ol = new XmlSlurper().parseText(result)
 
 		then:
-		ol.li.span.collect {it.text().trim()} == ['Name', 'Date Of Birth', 'Address', "Biography", "Emails", "Gender", "Minor"]
-		ol.li.div.collect {it.text().trim()} == ["Bart Simpson", "1987-04-19 00:00:00 IST", "Street94 Evergreen TerraceCitySpringfieldCountryUSA","" , "[:]", "Male", "True"]
+		ol.li.span.collect {it.text().trim()} == ['Name', 'Address', "Biography", "Emails", "Gender", "Minor"]
+		ol.li.div.collect {it.text().trim()} == ["Bart Simpson", "Street94 Evergreen TerraceCitySpringfieldCountryUSA","" , "[:]", "Male", "True"]
 	}
 
 

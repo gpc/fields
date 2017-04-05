@@ -113,6 +113,8 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 	private Class resolveDomainPropertyType(GrailsDomainClass beanClass, String propertyName) {
 		def propertyNameWithoutIndex = stripIndex(propertyName)
 		def persistentProperty = beanClass.getPersistentProperty(propertyNameWithoutIndex)
+		//TODO: Verify this, a @Transient field should be usable with f:fiels in views
+		//Maybe the if statement is not needed at all...
 		if (!persistentProperty) throw new NotReadablePropertyException(beanClass.clazz, propertyNameWithoutIndex)
 		boolean isIndexed = propertyName =~ INDEXED_PROPERTY_PATTERN
 		boolean isCollection = persistentProperty.isBasicCollectionType() || persistentProperty.isAssociation()

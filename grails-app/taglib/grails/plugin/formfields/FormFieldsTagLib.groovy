@@ -33,10 +33,11 @@ import static FormFieldsTemplateService.toPropertyNameFormat
 import static grails.util.GrailsClassUtils.getStaticPropertyValue
 
 class FormFieldsTagLib implements GrailsApplicationAware {
-
 	static final namespace = 'f'
+
     static final String STACK_PAGE_SCOPE_VARIABLE = 'f:with:stack'
 	private static final List<String> DECIMAL_TYPES = ['double', 'float', 'bigdecimal']
+
 	private static final String THEME_ATTR = "theme"
 	private static final String WIDGET_ATTR = "widget"
 	private static final String WRAPPER_ATTR = "wrapper"
@@ -86,7 +87,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	 * @attr prefix Prefix to add to input element names.
 	 */
 	def with = { attrs, body ->
-		if (!attrs[BEAN_ATTR]) throwTagError("Tag [with] is missing required attribute [bean]")
+		if (!attrs[BEAN_ATTR]) throwTagError("Tag [with] is missing required attribute [$BEAN_ATTR]")
         BeanAndPrefix beanPrefix = resolveBeanAndPrefix(attrs[BEAN_ATTR], attrs.prefix, attrs)
 		try {
             beanStack.push(beanPrefix)
@@ -103,7 +104,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	 * @attr prefix Prefix to add to input element names.
 	 */
 	def all = { attrs ->
-		if (!attrs[BEAN_ATTR]) throwTagError("Tag [all] is missing required attribute [bean]")
+		if (!attrs[BEAN_ATTR]) throwTagError("Tag [all] is missing required attribute [$BEAN_ATTR]")
 		BeanAndPrefix beanPrefix = resolveBeanAndPrefix(attrs[BEAN_ATTR], attrs.prefix, attrs)
 		try {
 			beanStack.push(beanPrefix)
@@ -143,14 +144,14 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	 */
 	def field = { attrs, body ->
 		attrs = beanStack.innerAttributes + attrs
-		if (attrs.containsKey(BEAN_ATTR) && !attrs[BEAN_ATTR]) throwTagError("Tag [field] requires a non-null value for attribute [bean]")
+		if (attrs.containsKey(BEAN_ATTR) && !attrs[BEAN_ATTR]) throwTagError("Tag [field] requires a non-null value for attribute [$BEAN_ATTR]")
 		if (!attrs[PROPERTY_ATTR]) throwTagError("Tag [field] is missing required attribute [$PROPERTY_ATTR]")
 
 		def bean = resolveBean(attrs.remove(BEAN_ATTR))
-		def property = attrs.remove(PROPERTY_ATTR)
-        def templatesFolder = attrs.remove(TEMPLATES_ATTR)
-        def fieldFolder = attrs.remove(WRAPPER_ATTR)
-        def widgetFolder = attrs.remove(WIDGET_ATTR)
+		String property = attrs.remove(PROPERTY_ATTR)
+        String templatesFolder = attrs.remove(TEMPLATES_ATTR)
+        String fieldFolder = attrs.remove(WRAPPER_ATTR)
+        String widgetFolder = attrs.remove(WIDGET_ATTR)
 		String theme = attrs.remove(THEME_ATTR)
 
 		BeanPropertyAccessor propertyAccessor = resolveProperty(bean, property)
@@ -177,8 +178,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			}
 
 
-			def templateName = formFieldsTemplateService.getTemplateFor("wrapper")
-			def template = formFieldsTemplateService.findTemplate(propertyAccessor, templateName, fieldFolder?:templatesFolder, theme)
+			String templateName = formFieldsTemplateService.getTemplateFor("wrapper")
+			Map template = formFieldsTemplateService.findTemplate(propertyAccessor, templateName, fieldFolder?:templatesFolder, theme)
 			if (template) {
 				out << render(template: template.path, plugin: template.plugin, model: model + [attrs: wrapperAttrs] + wrapperAttrs)
 			} else {
@@ -218,8 +219,10 @@ class FormFieldsTagLib implements GrailsApplicationAware {
                 properties = properties[0..6]
             }
          }
-         def displayStyle = attrs.remove('displayStyle')
+
+         String displayStyle = attrs.remove('displayStyle')
 		 String theme = attrs.remove(THEME_ATTR)
+
          out << render(template: "/templates/_fields/table",
                  model: [domainClass: domainClass, domainProperties: properties, collection: collection, displayStyle: displayStyle, theme:theme])
         }
@@ -242,17 +245,17 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	 */
 	def widget = { attrs ->
 		def bean = resolveBean(attrs.remove(BEAN_ATTR))
-		if (!bean) throwTagError("Tag [input] is missing required attribute [bean]")
+		if (!bean) throwTagError("Tag [input] is missing required attribute [$BEAN_ATTR]")
 		if (!attrs.property) throwTagError("Tag [input] is missing required attribute [property]")
 
 		attrs = getPrefixedAttributes(beanStack.innerAttributes) + attrs
 
-		def property = attrs.remove(PROPERTY_ATTR)
-        def widgetFolder = attrs.remove(WIDGET_ATTR)
+		String property = attrs.remove(PROPERTY_ATTR)
+        String widgetFolder = attrs.remove(WIDGET_ATTR)
 		String theme = attrs.remove(THEME_ATTR)
 
-		def propertyAccessor = resolveProperty(bean, property)
-		def model = buildModel(propertyAccessor, attrs)
+		BeanPropertyAccessor propertyAccessor = resolveProperty(bean, property)
+		Map model = buildModel(propertyAccessor, attrs)
 
 		out << renderWidget(propertyAccessor, model, attrs, widgetFolder, theme)
 	}
@@ -265,17 +268,17 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	 */
 	def displayWidget = { attrs ->
 		def bean = resolveBean(attrs.remove(BEAN_ATTR))
-		if (!bean) throwTagError("Tag [displayWidget] is missing required attribute [bean]")
+		if (!bean) throwTagError("Tag [displayWidget] is missing required attribute [$BEAN_ATTR]")
 		if (!attrs[PROPERTY_ATTR]) throwTagError("Tag [displayWidget] is missing required attribute [property]")
 
 		attrs = getPrefixedAttributes(beanStack.innerAttributes) + attrs
 
-		def property = attrs.remove(PROPERTY_ATTR)
-        def widgetFolder = attrs.remove(WIDGET_ATTR)
+		String property = attrs.remove(PROPERTY_ATTR)
+        String widgetFolder = attrs.remove(WIDGET_ATTR)
 		String theme = attrs.remove(THEME_ATTR)
 
-		def propertyAccessor = resolveProperty(bean, property)
-		def model = buildModel(propertyAccessor, attrs)
+		BeanPropertyAccessor propertyAccessor = resolveProperty(bean, property)
+		Map model = buildModel(propertyAccessor, attrs)
 
 		out << renderDisplayWidget(propertyAccessor, model, attrs, widgetFolder, theme)
 	}
@@ -290,10 +293,10 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	def display = { attrs, body ->
 		attrs = beanStack.innerAttributes + attrs
 		def bean = resolveBean(attrs.remove(BEAN_ATTR))
-		if (!bean) throwTagError("Tag [display] is missing required attribute [bean]")
+		if (!bean) throwTagError("Tag [display] is missing required attribute [$BEAN_ATTR]")
 
-		def property = attrs.remove(PROPERTY_ATTR)
-		def templatesFolder = attrs.remove(TEMPLATES_ATTR)
+		String property = attrs.remove(PROPERTY_ATTR)
+		String templatesFolder = attrs.remove(TEMPLATES_ATTR)
 		String theme = attrs.remove(THEME_ATTR)
 
 		if (property == null) {
@@ -307,8 +310,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 				}
 			}
 		} else {
-            def displayFolder = attrs.remove(WRAPPER_ATTR)
-            def widgetFolder = attrs.remove(WIDGET_ATTR)
+            String displayFolder = attrs.remove(WRAPPER_ATTR)
+            String widgetFolder = attrs.remove(WIDGET_ATTR)
 
 			BeanPropertyAccessor propertyAccessor = resolveProperty(bean, property)
             Map model = buildModel(propertyAccessor, attrs)
@@ -401,9 +404,9 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	private CharSequence renderDisplayWidget(BeanPropertyAccessor propertyAccessor, Map model, Map attrs = [:], String widgetFolder, String theme) {
-		def displayStyle = attrs.displayStyle
+		String displayStyle = attrs.displayStyle
 
-		def template = null
+		Map template = null
 		if (displayStyle && displayStyle != 'default') {
 			template = formFieldsTemplateService.findTemplate(propertyAccessor, "displayWidget-$attrs.displayStyle", widgetFolder, theme)
 		}
@@ -499,7 +502,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		if (!labelText) {
 			labelText = propertyAccessor.defaultLabel
 		}
-		labelText
+		return labelText
 	}
 
 	private CharSequence resolveMessage(List<String> keysInPreferenceOrder, String defaultMessage) {
@@ -510,11 +513,11 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	private CharSequence renderDefaultField(Map model) {
-		def classes = ['fieldcontain']
+		List classes = ['fieldcontain']
 		if (model.invalid) classes << 'error'
 		if (model.required) classes << 'required'
 
-		def writer = new FastStringWriter()
+		Writer writer = new FastStringWriter()
 		new MarkupBuilder(writer).div(class: classes.join(' ')) {
 			label(for: (model.prefix ?: '') + model.property, model.label) {
 				if (model.required) {
@@ -670,7 +673,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
     }
 
     private CharSequence renderOneToManyInput(Map model, Map attrs) {
-        def buffer = new FastStringWriter()
+        Writer buffer = new FastStringWriter()
         buffer << '<ul>'
         def referencedDomainClass = model.persistentProperty.referencedDomainClass
         def controllerName = referencedDomainClass.propertyName
@@ -716,7 +719,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
     }
 
     private CharSequence displayEmbedded(bean, GrailsDomainClass domainClass, Map attrs, String templatesFolder, String theme) {
-        def buffer = new FastStringWriter()
+        Writer buffer = new FastStringWriter()
         def properties = domainClass.persistentProperties.sort(new DomainClassPropertyComparator(domainClass))
         buffer << render(template: "/templates/_fields/list", model: [domainClass: domainClass, domainProperties: properties]) { prop ->
             def propertyAccessor = resolveProperty(bean, prop.name)
@@ -727,7 +730,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
     }
 
     private CharSequence displayAssociationList(values, GrailsDomainClass referencedDomainClass) {
-        def buffer = new FastStringWriter()
+        Writer buffer = new FastStringWriter()
         buffer << '<ul>'
         for (value in values) {
             buffer << '<li>'

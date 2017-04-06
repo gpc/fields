@@ -10,7 +10,7 @@ import spock.lang.*
 @Mock(Product)
 class DerivedPropertySpec extends AbstractFormFieldsTagLibSpec {
 
-    def mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
+    FormFieldsTemplateService mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
     Product productInstance
 
     def setupSpec() {

@@ -20,6 +20,8 @@ h2. Examples
 
 <f:display bean="person" property="name"/>
 
+<f:display bean="person" property="name" theme="purecss"/>
+
 // renders _fields/bootstrap3/_displayWrapper.gsp:
 <f:display bean="person" property="name" wrapper="bootstrap3"/>
 
@@ -46,6 +48,7 @@ h2. Attributes
 *displayStyle* | | When specified and different from the string _default_, this tag will try to use a _\_display-${displayStyle}_ template with a _\_display_ template as fallback. _displayStyle="table"_ will render embedded components by default with _toString()_ in stead of rendering all nested properties.
 *except* | | A comma-separated list of properties that should be skipped.
 *order* | | A comma-separated list of properties which represents the order in which the tag should display them.
+*theme* | String | Theme to use if available.
 {table}
 
 Any additional attributes are passed to the rendered template.

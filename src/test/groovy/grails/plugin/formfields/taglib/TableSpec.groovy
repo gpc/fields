@@ -102,7 +102,7 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
     void "table tag uses custom display template when displayStyle is specified"() {
         given:
         views["/_fields/display/_custom.gsp"] = 'Custom: ${value}'
-        mockFormFieldsTemplateService.findTemplate(_, 'displayWidget-custom', _) >> [path: '/_fields/display/custom']
+        mockFormFieldsTemplateService.findTemplate(_, 'displayWidget-custom', _, null) >> [path: '/_fields/display/custom']
 
         when:
 
@@ -112,6 +112,21 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
         then:
         table.thead.tr.th.a.collect {it.text().trim()} == ['Address']
         table.tbody.tr.collect { it.td[0].text() } == ["Custom: $address"] * 2
+    }
+
+    void "table tag uses custom display template from theme when displayStyle and theme is specified"() {
+        given:
+        views["/_fields/_themes/test/display/_custom.gsp"] = 'Theme: ${value}'
+        mockFormFieldsTemplateService.findTemplate(_, 'displayWidget-custom', _, "test") >> [path: '/_fields/_themes/test/display/custom']
+
+        when:
+
+        def output = applyTemplate('<f:table collection="collection" properties="[\'address\']" displayStyle="custom" theme="test"/>', [collection: personList])
+        def table = new XmlSlurper().parseText(output)
+
+        then:
+        table.thead.tr.th.a.collect {it.text().trim()} == ['Address']
+        table.tbody.tr.collect { it.td[0].text() } == ["Theme: $address"] * 2
     }
 
     void "table renders full embedded beans when displayStyle= 'default'"() {

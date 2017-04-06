@@ -11,7 +11,7 @@ import grails.plugin.formfields.mock.User
 @Mock(User)
 class TransientPropertySpec extends AbstractFormFieldsTagLibSpec {
 
-    def mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
+    FormFieldsTemplateService mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
     User userInstance
 
     def setupSpec() {
@@ -21,7 +21,7 @@ class TransientPropertySpec extends AbstractFormFieldsTagLibSpec {
     def setup() {
         def taglib = applicationContext.getBean(FormFieldsTagLib)
 
-        mockFormFieldsTemplateService.findTemplate(_, 'wrapper', null) >> [path: '/_fields/default/wrapper']
+        mockFormFieldsTemplateService.findTemplate(_, 'wrapper', null, null) >> [path: '/_fields/default/wrapper']
         mockFormFieldsTemplateService.getTemplateFor('wrapper') >> "wrapper"
         taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 

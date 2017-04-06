@@ -38,8 +38,22 @@ class AssociationTypeTemplatesSpec extends Specification {
 		def property = factory.accessorFor(authorInstance, 'books')
 
 		expect:
-		def template = service.findTemplate(property, 'wrapper', null)
+		def template = service.findTemplate(property, 'wrapper', null, null)
 		render(template: template.path) == 'ASSOCIATION TYPE TEMPLATE'
+	}
+
+	void 'theme: resolves template for association type'() {
+		given:
+		views['/_fields/_themes/test/default/_wrapper.gsp'] = 'THEME DEFAULT FIELD TEMPLATE'
+		views['/_fields/_themes/test/list/_wrapper.gsp'] = 'THEME PROPERTY TYPE TEMPLATE'
+		views['/_fields/_themes/test/oneToMany/_wrapper.gsp'] = 'THEME ASSOCIATION TYPE TEMPLATE'
+
+		and:
+		def property = factory.accessorFor(authorInstance, 'books')
+
+		expect:
+		def template = service.findTemplate(property, 'wrapper', null, "test")
+		render(template: template.path) == 'THEME ASSOCIATION TYPE TEMPLATE'
 	}
 
 	void 'property name trumps association type'() {
@@ -53,8 +67,23 @@ class AssociationTypeTemplatesSpec extends Specification {
 		def property = factory.accessorFor(authorInstance, 'books')
 
 		expect:
-		def template = service.findTemplate(property, 'wrapper', null)
+		def template = service.findTemplate(property, 'wrapper', null, null)
 		render(template: template.path) == 'PROPERTY NAME TEMPLATE'
+	}
+
+	void 'theme: property name trumps association type'() {
+		given:
+		views['/_fields/_themes/test/default/_wrapper.gsp'] = 'DEFAULT FIELD TEMPLATE'
+		views['/_fields/_themes/test/list/_wrapper.gsp'] = 'PROPERTY TYPE TEMPLATE'
+		views['/_fields/_themes/test/oneToMany/_wrapper.gsp'] = 'ASSOCIATION TYPE TEMPLATE'
+		views['/_fields/_themes/test/author/books/_wrapper.gsp'] = 'THEME PROPERTY NAME TEMPLATE'
+
+		and:
+		def property = factory.accessorFor(authorInstance, 'books')
+
+		expect:
+		def template = service.findTemplate(property, 'wrapper', null, "test")
+		render(template: template.path) == 'THEME PROPERTY NAME TEMPLATE'
 	}
 
 }

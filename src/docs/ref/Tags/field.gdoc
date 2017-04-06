@@ -30,6 +30,10 @@ In which case the tag will use _f:widget_ to generate an appropriate input. Alte
 Since version 1.5 you can specify which specific templates are going to be used on the view.
 You can accomplish this using new attributes: _wrapper_, _widget_ and _templates_. (See attributes section)
 
+Since version 2.1.4 you can specify the theme to be used.
+<f:field bean="person" property="name" theme="bs-horizontal"/>
+
+
 {code}
 // renders _fields/bootstrap3/_wrapper.gsp:
 <f:field bean="person" property="name" wrapper="bootstrap3"/>
@@ -60,6 +64,7 @@ h2. Attributes
 *wrapper* | | Specifies the name of the folder inside _\_fields_ where the _\_wrapper.gsp_ template is located.
 *widget* | | Specifies the name of the folder inside _\_fields_ where the _\_widget.gsp_ template is located.
 *templates* | | Specifies the name of the folder inside _\_fields_ where the _\_wrapper.gsp_ and _\_widget.gsp_ templates are located. It is a shorthand for specifying both (_wrapper_ and _widget_).
+*theme* | String | Theme to use if available.
 {table}
 
 Any additional attributes are passed to the rendered template. Any additional attributes prefixed with @widget-@ are instead passed to the widget template or rendered on the default input.

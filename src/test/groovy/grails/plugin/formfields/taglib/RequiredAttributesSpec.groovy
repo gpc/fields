@@ -18,7 +18,7 @@ class RequiredAttributesSpec extends AbstractFormFieldsTagLibSpec {
 	def setup() {
 		def taglib = applicationContext.getBean(FormFieldsTagLib)
 
-		mockFormFieldsTemplateService.findTemplate(_, 'wrapper', null) >> [path: '/_fields/default/wrapper']
+		mockFormFieldsTemplateService.findTemplate(_, 'wrapper', null, null) >> [path: '/_fields/default/wrapper']
         mockFormFieldsTemplateService.getTemplateFor('wrapper') >> "wrapper"
         mockFormFieldsTemplateService.getTemplateFor('widget') >> "widget"
         mockFormFieldsTemplateService.getTemplateFor('displayWrapper') >> "displayWrapper"

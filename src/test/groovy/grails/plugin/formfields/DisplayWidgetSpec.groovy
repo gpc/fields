@@ -1,7 +1,5 @@
 package grails.plugin.formfields
 
-import grails.plugin.formfields.FormFieldsTagLib
-import grails.plugin.formfields.FormFieldsTemplateService
 import grails.plugin.formfields.mock.Person
 import grails.plugin.formfields.taglib.AbstractFormFieldsTagLibSpec
 import grails.test.mixin.Mock
@@ -54,10 +52,22 @@ class DisplayWidgetSpec extends AbstractFormFieldsTagLibSpec {
         views["/_fields/person/name/_displayWidget.gsp"] = 'Some displayWidget'
 
         and:
-        mockFormFieldsTemplateService.findTemplate(_, 'displayWidget', null) >> [path: '/_fields/person/name/displayWidget']
+        mockFormFieldsTemplateService.findTemplate(_, 'displayWidget', null, null) >> [path: '/_fields/person/name/displayWidget']
 
         expect:
 		applyTemplate('<f:displayWidget bean="personInstance" property="name"/>', [personInstance: personInstance]) == 'Some displayWidget'
+	}
+
+	void 'f:displayWidget with a template and theme renders the template from theme'() {
+		given:
+		views["/_fields/person/name/_displayWidget.gsp"] = 'Some displayWidget'
+		views["/_fields/_themes/test/person/name/_displayWidget.gsp"] = 'theme displayWidget'
+
+		and:
+		mockFormFieldsTemplateService.findTemplate(_, 'displayWidget', null, "test") >> [path: '/_fields/_themes/test/person/name/displayWidget']
+
+		expect:
+		applyTemplate('<f:displayWidget bean="personInstance" property="name" theme="test"/>', [personInstance: personInstance]) == 'theme displayWidget'
 	}
 
 }

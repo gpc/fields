@@ -11,7 +11,7 @@ import spock.lang.*
 @Unroll
 class AllTagSpec extends AbstractFormFieldsTagLibSpec {
 
-    def mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
+    FormFieldsTemplateService mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
 
     def setupSpec() {
         configurePropertyAccessorSpringBean()
@@ -21,8 +21,8 @@ class AllTagSpec extends AbstractFormFieldsTagLibSpec {
         def taglib = applicationContext.getBean(FormFieldsTagLib)
 
         mockFormFieldsTemplateService.getTemplateFor(_) >> { args -> args[0]}
-        mockFormFieldsTemplateService.findTemplate(_, 'widget', _) >> [path: '/_fields/default/field']
-        mockFormFieldsTemplateService.findTemplate(_, 'wrapper', _) >> [path: '/_fields/default/wrapper']
+        mockFormFieldsTemplateService.findTemplate(_, 'widget', _, null) >> [path: '/_fields/default/field']
+        mockFormFieldsTemplateService.findTemplate(_, 'wrapper', _, null) >> [path: '/_fields/default/wrapper']
         taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 
         mockEmbeddedSitemeshLayout(taglib)
@@ -102,5 +102,25 @@ class AllTagSpec extends AbstractFormFieldsTagLibSpec {
         then:
         GrailsTagException e = thrown()
         e.message.contains 'The [except] and [order] attributes may not be used together.'
+    }
+
+    void "f:all tag supports theme"() {
+        given:
+        mockFormFieldsTemplateService.findTemplate(_, 'widget', _, "test") >> [path: '/_fields/_themes/test/default/field']
+        mockFormFieldsTemplateService.findTemplate(_, 'wrapper', _, "test") >> [path: '/_fields/_themes/test/default/wrapper']
+
+        and:
+        views["/_fields/_themes/test/default/_field.gsp"] = 'theme-${property} '
+        views["/_fields/_themes/test/default/_wrapper.gsp"] = 'theme-${widget}'
+
+        when:
+        def output = applyTemplate('<f:all bean="personInstance" theme="test"/>', [personInstance: personInstance])
+
+        then:
+        output =~ /\btheme-name\b/
+        output =~ /\btheme-password\b/
+        output =~ /\btheme-gender\b/
+        output =~ /\btheme-dateOfBirth\b/
+        output =~ /\btheme-minor\b/
     }
 }

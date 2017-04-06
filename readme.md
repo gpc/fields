@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/grails3-plugins/fields.svg?branch=master)](https://travis-ci.org/grails3-plugins/fields)
+[![Build Status](https://travis-ci.org/grails-fields-plugin/grails-fields.svg?branch=master)](https://travis-ci.org/grails-fields-plugin/grails-fields)
 
 Note: `master` branch is now Grails 3.x. Grails 2.x has its own branch `grails2.x`
 

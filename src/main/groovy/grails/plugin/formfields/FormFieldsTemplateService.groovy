@@ -20,6 +20,7 @@ import grails.util.GrailsNameUtils
 import grails.core.GrailsApplication
 import grails.plugins.GrailsPluginManager
 import grails.validation.ConstrainedProperty
+import groovy.util.logging.Slf4j
 import org.grails.web.gsp.io.GrailsConventionGroovyPageLocator
 import org.grails.web.servlet.mvc.GrailsWebRequest
 import org.grails.web.util.GrailsApplicationAttributes
@@ -28,9 +29,8 @@ import org.springframework.web.context.request.RequestContextHolder
 
 import static org.grails.io.support.GrailsResourceUtils.appendPiecesForUri
 
+@Slf4j
 class FormFieldsTemplateService {
-    static transactional = false
-
     public static final String SETTING_WIDGET_PREFIX = 'grails.plugin.fields.widgetPrefix'
     private static final String THEMES_FOLDER = "_themes"
 
@@ -84,7 +84,7 @@ class FormFieldsTemplateService {
         }
 
         candidatePaths.findResult {String path ->
-            log.debug "looking for template with path $path"
+            FormFieldsTemplateService.log.debug "looking for template with path $path"
             def source = groovyPageLocator.findTemplateByPath(path)
             if (source) {
                 Map template = [path: path]
@@ -92,7 +92,7 @@ class FormFieldsTemplateService {
                     source.URI.startsWith(it.pluginPath)
                 }
                 template.plugin = plugin?.name
-                log.info "found template $template.path ${plugin ? "in $template.plugin plugin" : ''}"
+                FormFieldsTemplateService.log.info "found template $template.path ${plugin ? "in $template.plugin plugin" : ''}"
                 return template
             } else {
                 null

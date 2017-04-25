@@ -47,8 +47,8 @@ class CommandPropertyAccessorSpec extends Specification {
 		def propertyAccessor = factory.accessorFor(command, 'stringProperty')
 
 		expect:
-		propertyAccessor.constraints.nullable
-		!propertyAccessor.required
+		!propertyAccessor.constraints.nullable
+		propertyAccessor.required
 		!propertyAccessor.invalid
 
 		where:
@@ -260,7 +260,7 @@ class CommandPropertyAccessorSpec extends Specification {
 
 		expect:
 		propertyAccessor.constraints
-		propertyAccessor.constraints.nullable
+		!propertyAccessor.constraints.nullable
 		propertyAccessor.constraints.blank
 	}
 

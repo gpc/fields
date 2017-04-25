@@ -85,7 +85,7 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
         def table = new XmlSlurper().parseText(output)
 
         then:
-        table.thead.tr.th.a.collect {it.text().trim()} == ['Name', 'Date Of Birth', 'Address', "Biography", "Emails", "Gender", "Minor"]
+        table.thead.tr.th.a.collect {it.text().trim()}.sort() == ["Address", "Biography", "Date Of Birth", "Emails", "Gender", "Minor", "Name"]
         table.tbody.tr.collect { it.td[0].text() } == ['Bart Simpson', 'Marge Simpson']
     }
 

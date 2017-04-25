@@ -57,8 +57,8 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
 		def ol = new XmlSlurper().parseText(result)
 
 		then:
-		ol.li.span.collect {it.text().trim()} == ['Name', 'Address', "Biography", "Emails", "Gender", "Minor"]
-		ol.li.div.collect {it.text().trim()} == ["Bart Simpson", "Street94 Evergreen TerraceCitySpringfieldCountryUSA","" , "[:]", "Male", "True"]
+		ol.li.span.collect {it.text().trim()}.sort() == ["Address", "Biography", "Emails", "Gender", "Minor", "Name"]
+		ol.li.div.collect {it.text().trim()}.sort() == ["", "Bart Simpson", "Male", "Street94 Evergreen TerraceCitySpringfieldCountryUSA", "True",  "[:]"]
 	}
 
 

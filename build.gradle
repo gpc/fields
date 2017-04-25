@@ -12,46 +12,13 @@ buildscript {
     }
 }
 
-plugins {
-    id "io.spring.dependency-management" version "0.5.2.RELEASE"
-    id "com.jfrog.bintray" version "1.2"
-}
-
 version "2.1.4-SNAPSHOT"
 group "org.grails.plugins"
 
-bintray {
-    user = System.getenv('BINTRAY_USER') ?: project.hasProperty('bintrayUser') ? project.bintrayUser : ''
-    key = System.getenv('BINTRAY_KEY') ?: project.hasProperty('bintrayKey') ? project.bintrayKey : ''
-    publications = ['maven']
-    publish = true
-    pkg {
-        repo = 'plugins'
-        userOrg = 'grails'
-        name = project.name
-        desc = "Grails $project.name plugin"
-        issueTrackerUrl = 'https://github.com/grails-fields-plugin/grails-fields/issues'
-        vcsUrl = 'https://github.com/grails-fields-plugin/grails-fields'
-
-        version {
-            attributes = ['grails-plugin': project.name]
-            name = project.version
-        }
-    }
-}
-
-apply plugin: 'maven-publish'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
-apply plugin: "spring-boot"
-apply plugin: "asset-pipeline"
-apply plugin: "org.grails.grails-plugin"
-apply plugin: "org.grails.grails-gsp"
+apply plugin:"org.grails.grails-plugin"
+apply plugin:"org.grails.grails-plugin-publish"
 
 apply plugin: "org.grails.grails-doc"
-// Used for publishing to central repository, remove if not needed
-apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/grailsCentralPublishing.gradle'
-apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/bintrayPublishing.gradle'
 
 ext {
   grailsVersion = project.grailsVersion
@@ -68,12 +35,6 @@ repositories {
   maven { url "https://repo.grails.org/grails/core" }
 }
 
-dependencyManagement {
-    imports {
-        mavenBom "org.grails:grails-bom:$grailsVersion"
-    }
-    applyMavenExclusions false
-}
 
 dependencies {
   provided 'org.springframework.boot:spring-boot-starter-logging'
@@ -96,14 +57,14 @@ dependencies {
   }
 }
 
-eclipse {
-    classpath {
-        plusConfigurations += [configurations.provided]
+grailsPublish {
+    userOrg = "grails"
+    githubSlug = 'grails-fields-plugin/grails-fields'
+    license {
+        name = 'Apache-2.0'
     }
-}
+    title = "Grails Fields Plugin"
+    desc = "Customizable form-field rendering based on overrideable GSP template"
 
-idea {
-    module {
-        scopes.PROVIDED.plus += [configurations.provided]
-    }
+    developers = [graemerocher:"Graeme Rocher", robfletcher:"Rob Fletcher"]
 }

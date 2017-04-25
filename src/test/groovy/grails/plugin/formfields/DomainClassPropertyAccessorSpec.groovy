@@ -351,6 +351,8 @@ class DomainClassPropertyAccessorSpec extends Specification {
 										   it.simpleName != 'WebDataBinding' &&
 										   it.simpleName != 'GormEntity' &&
 										   it.simpleName != 'GormValidateable' &&
+											it.simpleName != 'GormEntityApi' &&
+				 						   it.simpleName != 'Entity' &&
 										   !it.simpleName.contains('$') &&									   										   
 										   it.simpleName != 'StaticQueryMethods'}
 

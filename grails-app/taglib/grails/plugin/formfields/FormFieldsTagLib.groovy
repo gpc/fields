@@ -534,11 +534,11 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		writer.buffer
 	}
 
-	private CharSequence renderDefaultInput(Map model, Map attrs = [:]) {
+	CharSequence renderDefaultInput(Map model, Map attrs = [:]) {
 		renderDefaultInput(null, model, attrs)
 	}
 
-	private CharSequence renderDefaultInput(BeanPropertyAccessor propertyAccessor,Map model, Map attrs = [:]) {
+	CharSequence renderDefaultInput(BeanPropertyAccessor propertyAccessor,Map model, Map attrs = [:]) {
 		attrs.name = (model.prefix ?: '') + model.property
 		attrs.value = model.value
 		if (model.required) attrs.required = "" // TODO: configurable how this gets output? Some people prefer required="required"
@@ -572,7 +572,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 
-    private CharSequence renderDateTimeInput(Map model, Map attrs) {
+    CharSequence renderDateTimeInput(Map model, Map attrs) {
         attrs.precision = model.type == java.sql.Time ? "minute" : "day"
         if (!model.required) {
             attrs.noSelection = ["": ""]
@@ -581,7 +581,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
         return g.datePicker(attrs)
     }
 
-    private CharSequence renderStringInput(Map model, Map attrs) {
+    CharSequence renderStringInput(Map model, Map attrs) {
         if (!attrs.type) {
             if (model.constraints?.inList) {
                 attrs.from = model.constraints.inList
@@ -605,7 +605,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
         return g.field(attrs)
     }
 
-    private CharSequence renderNumericInput(BeanPropertyAccessor propertyAccessor,Map model, Map attrs) {
+    CharSequence renderNumericInput(BeanPropertyAccessor propertyAccessor,Map model, Map attrs) {
         if (!attrs.type && model.constraints?.inList) {
             attrs.from = model.constraints.inList
             if (!model.required) attrs.noSelection = ["": ""]

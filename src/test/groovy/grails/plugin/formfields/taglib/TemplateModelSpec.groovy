@@ -3,6 +3,7 @@ package grails.plugin.formfields.taglib
 import grails.plugin.formfields.*
 import grails.plugin.formfields.mock.*
 import grails.test.mixin.*
+import org.grails.plugins.web.DefaultGrailsTagDateHelper
 import spock.lang.*
 
 @TestFor(FormFieldsTagLib)

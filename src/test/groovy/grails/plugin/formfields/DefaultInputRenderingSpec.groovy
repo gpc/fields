@@ -2,10 +2,14 @@ package grails.plugin.formfields
 
 import grails.core.GrailsDomainClass
 import grails.core.GrailsDomainClassProperty
+import grails.core.support.proxy.DefaultProxyHandler
 import grails.plugin.formfields.mock.Person
+import grails.test.runtime.DirtiesRuntime
 import grails.util.Environment
 import grails.test.mixin.*
 import org.grails.core.DefaultGrailsDomainClass
+import org.grails.plugins.web.DefaultGrailsTagDateHelper
+import org.grails.validation.DefaultConstraintEvaluator
 import spock.lang.*
 import java.sql.Blob
 
@@ -25,6 +29,9 @@ class DefaultInputRenderingSpec extends Specification {
 	void setupSpec() {
 		people = ["Bart Simpson", "Homer Simpson", "Monty Burns"].collect {
 			new Person(name: it)
+		}
+		defineBeans {
+			grailsTagDateHelper(DefaultGrailsTagDateHelper)
 		}
 	}
 	

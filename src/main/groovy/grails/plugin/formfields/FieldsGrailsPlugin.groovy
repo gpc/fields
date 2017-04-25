@@ -1,4 +1,3 @@
-package grails.plugin.formfields
 /*
  * Copyright 2012 Rob Fletcher
  *
@@ -14,41 +13,23 @@ package grails.plugin.formfields
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package grails.plugin.formfields
+
+import grails.plugins.Plugin
+
 
 import grails.validation.ConstraintsEvaluator
 
-class FieldsGrailsPlugin {
+class FieldsGrailsPlugin extends Plugin {
 
 	def grailsVersion = '3.0 > *'
-	def dependsOn = [:]
-	def pluginExcludes = []
 
-	def title = 'Fields Plugin'
-	def author = 'Rob Fletcher'
-	def authorEmail = 'rob@freeside.co'
-	def description = 'Customizable form-field rendering based on overrideable GSP template'
-
-	def documentation = 'https://grails-fields-plugin.github.io/grails-fields'
-	def license = 'APACHE'
-	def issueManagement = [system: 'GitHub', url: 'https://github.com/grails-fields-plugin/grails-fields/issues']
-	def scm = [system: 'GitHub', url: 'https://github.com/grails-fields-plugin/grails-fields']
-    def organization = [ name: "Grails Fields Plugin Developers Group", url: "https://github.com/grails-fields-plugin" ]
-
-	def developers = [ 
-		[ name: "Rob Fletcher", email: "rob@freeside.co" ],
-		[ name: "Erik Pragt", email: "erik.pragt@gmail.com" ],
-		[ name: "Dónal Murtagh", email: "domurtag@yahoo.co.uk" ],
-		[ name: "Craig Burke", email: "craig@craigburke.com" ],
-		[ name: "Soeren Glasius", email: "soeren@glasius.dk" ],
-		[ name: "Martín Pablo Caballero", email: "mpccolorado@gmail.com" ]
-	]
-
-
-	def doWithSpring = {
+	@Override
+	Closure doWithSpring() {{->
 		beanPropertyAccessorFactory(BeanPropertyAccessorFactory) {
 			constraintsEvaluator = ref(ConstraintsEvaluator.BEAN_NAME)
 			proxyHandler = ref('proxyHandler')
 		}
-	}
-	
+		formFieldsTemplateService(FormFieldsTemplateService)
+	}}
 }

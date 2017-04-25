@@ -2,6 +2,7 @@ package grails.plugin.formfields.taglib
 
 import grails.core.support.proxy.DefaultProxyHandler
 import grails.plugin.formfields.BeanPropertyAccessorFactory
+import org.grails.plugins.web.DefaultGrailsTagDateHelper
 import org.grails.validation.DefaultConstraintEvaluator
 import spock.lang.Specification
 import grails.plugin.formfields.mock.*
@@ -28,6 +29,7 @@ abstract class AbstractFormFieldsTagLibSpec extends Specification {
 	
 	protected void configurePropertyAccessorSpringBean() {
 		defineBeans {
+			grailsTagDateHelper(DefaultGrailsTagDateHelper)
 			constraintsEvaluator(DefaultConstraintEvaluator)
 			beanPropertyAccessorFactory(BeanPropertyAccessorFactory) {
 				constraintsEvaluator = ref('constraintsEvaluator')

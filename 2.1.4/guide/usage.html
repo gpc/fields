@@ -1,0 +1,324 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>2 Usage 2.1.4</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <div class="navTitle">
+        
+        Grails Fields Plugin
+    </div>
+    <div class="navLinks">
+        <ul>
+            <li>
+                <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                    <a href="../guide/index.html" class="button">Table of contents</a>
+
+                    <div id="nav-summary-childs" style="display:none;">
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/usage.html"><strong>2</strong><span>Usage</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/customizingFieldRendering.html"><strong>3</strong><span>Customizing Field Rendering</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/embeddedProperties.html"><strong>4</strong><span>Embedded Properties</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/scaffolding.html"><strong>5</strong><span>Scaffolding</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/themes.html"><strong>6</strong><span>Themes</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/includingTemplatesInPlugins.html"><strong>7</strong><span>Including Templates in Plugins</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/performance.html"><strong>8</strong><span>Performance</span></a>
+                        </div>
+                        
+                    </div>
+                </div>
+            </li>
+            <li class="separator selected">
+                <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+            </li>
+        </ul>
+    </div>
+
+
+</div>
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/customizingFieldRendering.html"><strong>3</strong><span>Customizing Field Rendering</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>2 Usage</h1>
+
+                    <p><strong>Version:</strong> 2.1.4</p>
+                </div>
+
+                
+
+                
+<a name="2. Usage"><!-- Legacy link --></a>
+<h1 id="usage">2 Usage</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/grails-fields-plugin/grails-fields/edit/master/src/main/docs/guide/usage.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The plugin provides a set of tags you can use to render the fields in a form.</p>
+</div>
+<div class="paragraph">
+<p>In the simplest case you can use <em>f:all</em> to render a field for every property of a bean (the domain object or command the form will bind to):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;<span class="key">g</span>:form<span class="error">…</span>&gt;
+    &lt;<span class="key">f</span>:all bean=<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span>/&gt;
+&lt;<span class="regexp"><span class="delimiter">/</span><span class="content">g:form&gt;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To render individual fields you use the <em>f:field</em> tag:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;<span class="key">g</span>:form<span class="error">…</span>&gt;
+    &lt;<span class="key">f</span>:field bean=<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span> property=<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>/&gt;
+    &lt;<span class="key">f</span>:field bean=<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span> property=<span class="string"><span class="delimiter">&quot;</span><span class="content">address</span><span class="delimiter">&quot;</span></span>/&gt;
+    &lt;<span class="key">f</span>:field bean=<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span> property=<span class="string"><span class="delimiter">&quot;</span><span class="content">dateOfBirth</span><span class="delimiter">&quot;</span></span>/&gt;
+&lt;<span class="regexp"><span class="delimiter">/</span><span class="content">g:form&gt;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <em>f:field</em> tag will automatically handle embedded domain properties recursively:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;<span class="key">f</span>:field bean=<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span> property=<span class="string"><span class="delimiter">&quot;</span><span class="content">address</span><span class="delimiter">&quot;</span></span>/&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If there is no bean object backing a form but you still want to render the surrounding field markup you can give <em>f:field</em> a body:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;<span class="key">f</span>:field property=<span class="string"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>&gt;
+    &lt;<span class="key">g</span>:password name=<span class="string"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>/&gt;
+&lt;<span class="regexp"><span class="delimiter">/</span><span class="content">f:field&gt;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It should be an unusual case but to render just the widget without its surrounding container you can use the <em>f:widget</em> tag:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;<span class="key">f</span>:widget bean=<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span> property=<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>/&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To make it more convenient when rendering lots of properties of the same <em>bean</em> you can use the <em>f:with</em> tag to avoid having to specify <em>bean</em> on any tags nested inside:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;<span class="key">g</span>:form<span class="error">…</span>&gt;
+    &lt;<span class="key">f</span>:with bean=<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span>&gt;
+        &lt;<span class="key">f</span>:field property=<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>/&gt;
+        &lt;<span class="key">f</span>:field property=<span class="string"><span class="delimiter">&quot;</span><span class="content">address</span><span class="delimiter">&quot;</span></span>/&gt;
+        &lt;<span class="key">f</span>:field property=<span class="string"><span class="delimiter">&quot;</span><span class="content">dateOfBirth</span><span class="delimiter">&quot;</span></span>/&gt;
+    &lt;<span class="regexp"><span class="delimiter">/</span><span class="content">f:with&gt;</span></span><span class="error">
+</span>&lt;<span class="regexp"><span class="delimiter">/</span><span class="content">g:form&gt;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you need to render a property for display purposes you can use <em>f:display</em>. It will internally use <em>g:fieldValue</em>, <em>g:formatBoolean</em> or <em>g:formatDate</em> to format the value.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;<span class="key">f</span>:display bean=<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span> property=<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>/&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you need to render the value in a different way you can give <em>f:display</em> a body instead.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;<span class="key">f</span>:display bean=<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span> property=<span class="string"><span class="delimiter">&quot;</span><span class="content">dateOfBirth</span><span class="delimiter">&quot;</span></span>&gt;
+    &lt;<span class="key">g</span>:formatDate format=<span class="string"><span class="delimiter">&quot;</span><span class="content">dd MMM yyyy</span><span class="delimiter">&quot;</span></span> date=<span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>value<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>/&gt;
+&lt;<span class="regexp"><span class="delimiter">/</span><span class="content">f:display&gt;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By default <em>f:display</em> simply renders the property value but if you supply a <em>\_display.gsp</em> template you can render the value in some structured markup, e.g. a table cell or list item. See the <a href="#customizingFieldRendering">Customizing Field Rendering</a> section for how to override templates. For example to render values in a definition list you could use a template like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;dt&gt;<span class="error">$</span>{label}&lt;<span class="regexp"><span class="delimiter">/</span><span class="content">dt&gt;</span></span><span class="error">
+</span>&lt;dd&gt;<span class="error">$</span>{value}&lt;<span class="regexp"><span class="delimiter">/</span><span class="content">dd&gt;</span></span></code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_extra_attributes_since_version_2_1_4">Extra attributes (Since version 2.1.4)</h3>
+<div class="paragraph">
+<p>You can pass any number of extra attributes to the <em>f:with</em> and <em>f:all</em> tags that will be propagated to the inner fields and displays.
+See their individual tags sections for more information.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_breaking_changes">Breaking changes</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_templates">Templates</h3>
+<div class="paragraph">
+<p>The names of the templates were changed for more adequate ones:
+* _field to _wrapper
+* _input to _widget
+* _display to _displayWrapper
+* _displayWidget was added</p>
+</div>
+<div class="paragraph">
+<p>To use the old names (for backwards compatibility), configure the following in <code>Config.groovy</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">grails.plugin.fields.wrapper = <span class="string"><span class="delimiter">&quot;</span><span class="content">field</span><span class="delimiter">&quot;</span></span>
+grails.plugin.fields.displayWrapper = <span class="string"><span class="delimiter">&quot;</span><span class="content">display</span><span class="delimiter">&quot;</span></span>
+grails.plugin.fields.widget = <span class="string"><span class="delimiter">&quot;</span><span class="content">input</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_widget_attributes">Widget attributes</h3>
+<div class="paragraph">
+<p>To pass additional attributes to widgets, prefix them with 'widget-'.</p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;<span class="key">f</span>:field property=<span class="string"><span class="delimiter">&quot;</span><span class="content">birthDate</span><span class="delimiter">&quot;</span></span> widget-format=<span class="string"><span class="delimiter">&quot;</span><span class="content">dd/MM/yyyy</span><span class="delimiter">&quot;</span></span>/&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To use the old prefix (for backwards compatibility), configure the following in <code>Config.groovy</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">grails.plugin.fields.widgetPrefix = <span class="string"><span class="delimiter">&quot;</span><span class="content">input-</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_changes_in_tags">Changes in tags</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>The <em>input</em> tag was deprecated because the name was confusing. Use the new <em>widget</em> tag instead.</p>
+</li>
+<li>
+<p>The <em>displayWidget</em> tag was added. It outputs the widget for display purposes, without the wrapper (similar to the <em>widget</em> tag).</p>
+</li>
+</ul>
+</div>
+</div>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/customizingFieldRendering.html"><strong>3</strong><span>Customizing Field Rendering</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Tags</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../ref/Tags/all.html">all</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/Tags/display.html">display</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/Tags/displayWidget.html">displayWidget</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/Tags/field.html">field</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/Tags/input.html">input</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/Tags/table.html">table</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/Tags/widget.html">widget</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/Tags/with.html">with</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

@@ -24,6 +24,7 @@ import groovy.util.logging.Slf4j
 import org.grails.web.gsp.io.GrailsConventionGroovyPageLocator
 import org.grails.web.servlet.mvc.GrailsWebRequest
 import org.grails.web.util.GrailsApplicationAttributes
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.context.request.RequestAttributes
 import org.springframework.web.context.request.RequestContextHolder
 
@@ -34,9 +35,13 @@ class FormFieldsTemplateService {
     public static final String SETTING_WIDGET_PREFIX = 'grails.plugin.fields.widgetPrefix'
     private static final String THEMES_FOLDER = "_themes"
 
+    @Autowired
     GrailsApplication grailsApplication
 
+    @Autowired
     GrailsConventionGroovyPageLocator groovyPageLocator
+
+    @Autowired
     GrailsPluginManager pluginManager
 
     String getWidgetPrefix(){

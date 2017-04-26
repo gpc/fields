@@ -621,9 +621,6 @@ class FormFieldsTagLib implements GrailsApplicationAware {
             if (model.constraints?.max != null) attrs.max = model.constraints.max
         }
 
-		if(propertyAccessor != null && attrs.value) {
-			attrs.value = g.fieldValue(bean: propertyAccessor.rootBean, field: propertyAccessor.propertyName)
-		}
         return g.field(attrs)
     }
 

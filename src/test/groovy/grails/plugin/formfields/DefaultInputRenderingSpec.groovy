@@ -3,6 +3,8 @@ package grails.plugin.formfields
 import grails.core.GrailsDomainClass
 import grails.core.GrailsDomainClassProperty
 import grails.core.support.proxy.DefaultProxyHandler
+import grails.plugin.formfields.mock.Author
+import grails.plugin.formfields.mock.Employee
 import grails.plugin.formfields.mock.Person
 import grails.test.runtime.DirtiesRuntime
 import grails.util.Environment
@@ -25,6 +27,7 @@ class DefaultInputRenderingSpec extends Specification {
 	@Shared def manyToManyProperty = new MockPersistentProperty(manyToMany: true, referencedPropertyType: Person, referencedDomainClass: personDomainClass)
 	@Shared def oneToManyProperty = new MockPersistentProperty(oneToMany: true, referencedPropertyType: Person, referencedDomainClass: personDomainClass)
 	@Shared List<Person> people
+	def factory = new BeanPropertyAccessorFactory()
 
 	void setupSpec() {
 		people = ["Bart Simpson", "Homer Simpson", "Monty Burns"].collect {
@@ -36,6 +39,10 @@ class DefaultInputRenderingSpec extends Specification {
 	}
 	
 	void setup() {
+		factory.grailsApplication = grailsApplication
+		factory.constraintsEvaluator = new DefaultConstraintEvaluator()
+		factory.proxyHandler = new DefaultProxyHandler()
+
 		people*.save(validate: false)
 	}
 
@@ -64,6 +71,26 @@ class DefaultInputRenderingSpec extends Specification {
 		Byte[]  | /input type="file"/
 		byte[]  | /input type="file"/
 		Blob    | /input type="file"/
+	}
+
+	def "input value for a #type.simpleName property matches '#outputPattern'"() {
+		given:
+		def model = [type: type, property: "salary", value:10000,constraints: [:], persistentProperty: basicProperty]
+		def object =new Employee(salary: 10000)
+		BeanPropertyAccessor accessor = factory.accessorFor(object, "salary")
+
+		expect:
+		tagLib.renderDefaultInput(accessor, model) =~ outputPattern
+
+		where:
+		type    | outputPattern
+		int     | /value="10000"/
+		Integer | /value="10000"/
+		BigDecimal | /value="10000"/
+		Double | /value="10000"/
+		Float | /value="10000"/
+		float | /value="10000"/
+		double | /value="10000"/
 	}
 
 	def "input for a #type.simpleName property with a value of '#value' matches '#outputPattern'"() {

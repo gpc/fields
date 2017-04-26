@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>Grails Fields Plugin 2.1.4-SNAPSHOT</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass(el) {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+    <style>
+        .contribute-btn {
+            bottom: 0px;
+        }
+    </style>
+</head>
+
+<body class="body" onload="addJsClass();">
+
+<div id="navigation">
+    <div class="navTitle">
+        
+        Grails Fields Plugin
+    </div>
+
+    <div class="navLinks">
+        <ul>
+            <li>
+                <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                    <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                    <div id="nav-summary-childs">
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/usage.html"><strong>2</strong><span>Usage</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/customizingFieldRendering.html"><strong>3</strong><span>Customizing Field Rendering</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/embeddedProperties.html"><strong>4</strong><span>Embedded Properties</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/scaffolding.html"><strong>5</strong><span>Scaffolding</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/themes.html"><strong>6</strong><span>Themes</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/includingTemplatesInPlugins.html"><strong>7</strong><span>Including Templates in Plugins</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/performance.html"><strong>8</strong><span>Performance</span></a>
+                        </div>
+                        
+                    </div>
+                </div>
+            </li>
+            <li class="separator selected">
+                <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="reference corner-all">
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+                
+                <div class='contribute-btn'>
+                    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/grails-fields-plugin/grails-fields/edit/master/src/main/docs/ref/Tags/table.adoc"'>
+                        <i class='fa fa-pencil-square-o'></i> Improve this doc
+                    </button>
+                </div>
+                
+
+                <div class="sect4">
+<h5 id="_f_table">f:table</h5>
+
+</div>
+<div class="sect4">
+<h5 id="_description">Description</h5>
+<div class="paragraph">
+<p><em>f:table</em> renders some or all properties of a collection of beans in a table. If there is no <em>\_display</em> template in scope the tag will simply render the property values.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_examples">Examples</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;<span class="key">f</span>:table collection=<span class="string"><span class="delimiter">&quot;</span><span class="content">personList</span><span class="delimiter">&quot;</span></span>/&gt;
+
+&lt;<span class="key">f</span>:table collection=<span class="string"><span class="delimiter">&quot;</span><span class="content">personList</span><span class="delimiter">&quot;</span></span> properties=<span class="string"><span class="delimiter">&quot;</span><span class="content">['firstName', 'lastName']</span><span class="delimiter">&quot;</span></span>/&gt;
+
+&lt;<span class="key">f</span>:table collection=<span class="string"><span class="delimiter">&quot;</span><span class="content">catsAndDogsList</span><span class="delimiter">&quot;</span></span> domainClass=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.zoo.Animal</span><span class="delimiter">&quot;</span></span>/&gt;
+
+&lt;<span class="key">f</span>:table collection=<span class="string"><span class="delimiter">&quot;</span><span class="content">catsAndDogsList</span><span class="delimiter">&quot;</span></span> domainClass=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.zoo.Animal</span><span class="delimiter">&quot;</span></span> theme=<span class="string"><span class="delimiter">&quot;</span><span class="content">bs-horizontal</span><span class="delimiter">&quot;</span></span>/&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When <strong>theme</strong> is specified, the <em>\_display</em> template will be searched first in <strong>theme</strong>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_attributes">Attributes</h5>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Required?</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>collection</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The collection of beans to be displayed</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>domainClass</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The FQN of the domain class of the elements in the collection. Defaults to the class of the first element in the collection.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>properties</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The list of properties to be shown (table columns). Defaults to the first 7 (or less) properties of the domain class ordered by the domain class' constraints.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>displayStyle</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Determines the display template used for the bean&#8217;s properties. Defaults to <em>table</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">meaning that <em>\_display-table</em> templates will be used when available.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>except</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A comma-separated list of properties that should be skipped.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>order</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A comma-separated list of properties which represents the order in which the tag should display them.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>theme</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+</tr>
+</tbody>
+</table>
+<div class="literalblock">
+<div class="content">
+<pre>Any additional attributes are passed to the rendered template.</pre>
+</div>
+</div>
+</div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                    <div class="menu-block">
+                        <h1 class="menu-title" onclick="toggleRef(nextElement(this))">Tags</h1>
+                        <div class="menu-sub selected">
+                            
+                            
+                            <div class="menu-item"><a href="../../ref/Tags/all.html">all</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../../ref/Tags/display.html">display</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../../ref/Tags/displayWidget.html">displayWidget</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../../ref/Tags/field.html">field</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../../ref/Tags/input.html">input</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../../ref/Tags/table.html">table</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../../ref/Tags/widget.html">widget</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../../ref/Tags/with.html">with</a>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+
+<script type="text/javascript" src="../../js/docs.js"></script>
+
+</body>
+</html>

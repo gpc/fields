@@ -1,0 +1,1290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>Grails Fields Plugin</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8" />
+    <script src="../js/docs.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.13/clipboard.min.js"></script>
+    <script type="text/javascript">
+        function addJsClass(el) {
+            var classes = document.body.className.split(" ");
+            classes.push("js");
+            document.body.className = classes.join(" ");
+        }
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <div class="navTitle">
+        
+        Grails Fields Plugin
+    </div>
+    <div class="navLinks">
+        <ul>
+            <li>
+                <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                    <a href="../guide/index.html" class="button">Table of contents</a>
+                    <div id="nav-summary-childs" style="display:none;">
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="#introduction"><strong>1</strong><span>Introduction</span></a></div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="#usage"><strong>2</strong><span>Usage</span></a></div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="#customizingFieldRendering"><strong>3</strong><span>Customizing Field Rendering</span></a></div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="#embeddedProperties"><strong>4</strong><span>Embedded Properties</span></a></div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="#scaffolding"><strong>5</strong><span>Scaffolding</span></a></div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="#themes"><strong>6</strong><span>Themes</span></a></div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="#includingTemplatesInPlugins"><strong>7</strong><span>Including Templates in Plugins</span></a></div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="#performance"><strong>8</strong><span>Performance</span></a></div>
+                        
+                    </div>
+                </div>
+            </li>
+            <li>
+                <a href="../api/index.html" class="button">API Reference</a>
+            </li>
+        </ul>
+
+    </div>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                <div class="project">
+                    <h1>Grails Fields Plugin</h1>
+                    <p></p>
+                    <p>Customizable form-field rendering based on overrideable GSP template</p>
+                    <p><strong>Version:</strong> 2.1.4</p>
+
+                </div>
+                
+                <div id="table-of-content">
+                    <h2>Table of Contents</h2>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#introduction"><strong>1</strong><span>Introduction</span></a></div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#usage"><strong>2</strong><span>Usage</span></a></div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#customizingFieldRendering"><strong>3</strong><span>Customizing Field Rendering</span></a></div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#embeddedProperties"><strong>4</strong><span>Embedded Properties</span></a></div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#scaffolding"><strong>5</strong><span>Scaffolding</span></a></div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#themes"><strong>6</strong><span>Themes</span></a></div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#includingTemplatesInPlugins"><strong>7</strong><span>Including Templates in Plugins</span></a></div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#performance"><strong>8</strong><span>Performance</span></a></div>
+                    
+                    <div style="clear:both" ></div>
+                </div>
+                
+                
+<a name="1. Introduction"><!-- Legacy link --></a>
+<h1 id="introduction">1 Introduction</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/grails-fields-plugin/grails-fields/edit/master/src/main/docs/guide/introduction.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The <em>Fields plugin</em> allows you to customize the rendering of input fields for properties of domain objects, command beans and POGOs based on their type, name, etc. The plugin aims to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Use good defaults for fields.</p>
+</li>
+<li>
+<p>Make it very easy to override the field rendering for particular properties or property types without having to replace entire form templates.</p>
+</li>
+<li>
+<p>Not require you to copy and paste markup for containers, labels and error messages just because you need a different input type.</p>
+</li>
+<li>
+<p>Support inputs for property paths of arbitrary depth and with indexing.</p>
+</li>
+<li>
+<p>Enable other plugins to provide field rendering for special property types that gets picked up automatically (e.g. the <em>Joda Time</em> plugin can provide templates for the various date/time types).</p>
+</li>
+<li>
+<p>Support embedded properties of <em>GORM</em> domain classes.</p>
+</li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="_changelog">Changelog</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_version_2_1_4">Version 2.1.4</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Upgrade to Grails 3.2.8</p>
+</li>
+<li>
+<p>Convert documentation to Asciidoc</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_version_2_0">Version 2.0</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Redesign for Grails 3.0</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_version_1_5">Version 1.5</h3>
+<div class="paragraph">
+<p><em>2015_04_26</em></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>See <a href="https://github.com/grails-fields-plugin/grails-fields/issues?q=milestone%3A1.5+is%3Aclosed">Browse issues</a></p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+See <a href="#usage">Usage</a> and <a href="#customizingFieldRendering">Customizing Field Rendering</a> for breaking changes.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_version_1_4">Version 1.4</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Upgraded plugin to work with Grails 2.3.x (Issue #122)</p>
+</li>
+<li>
+<p>Fixed missing property exception (Issue #134)</p>
+</li>
+<li>
+<p>Fixed encoding in tag libraries (Issue #137)</p>
+</li>
+<li>
+<p>Configuring caching in dev mode (Issue #139)</p>
+</li>
+<li>
+<p>byte[] and Byte[] arrays types now look for files in byteArray folders (general for all array types) (Issue #144)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/grails-fields-plugin/grails-fields/issues?q=is%3Aissue+milestone%3A1.4+is%3Aclosed">Browse issues</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_version_1_3">Version 1.3</h3>
+<div class="paragraph">
+<p><em>2012-07-31</em></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Adds the <em>f:display</em> tag.</p>
+</li>
+<li>
+<p>Supports overriding templates by property type or by default in individual controllers and actions.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/grails-fields-plugin/grails-fields/issues?milestone=9&amp;state=closed">Browse issues</a>
+Thanks to <a href="https://github.com/cdeszaq" class="bare">https://github.com/cdeszaq</a>,[Rick Jensen] <a href="https://github.com/delight" class="bare">https://github.com/delight</a>,[Konstantinos Kostarellis] <a href="https://github.com/guspower">Gus Power</a> and <a href="https://github.com/eliotsykes">Eliot Sykes</a> for their contributions.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_version_1_2">Version 1.2</h3>
+<div class="paragraph">
+<p><em>2012-03-16</em></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Pass attributes from <code>f:field</code> to the rendered input using <code>input-</code> prefix.</p>
+</li>
+<li>
+<p>Optionally use entire property path for label key.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/grails-fields-plugin/grails-fields/issues?milestone=8&amp;state=closed">Browse issues</a>
+Thanks to <a href="https://github.com/bluesliverx">Brian Saville</a> and <a href="https://github.com/OverZealous">OverZealous</a> for contributions.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_version_1_1">Version 1.1</h3>
+<div class="paragraph">
+<p><em>2012-03-11</em></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Adds the <em>prefix</em> attribute.</p>
+</li>
+<li>
+<p>Support <code>widget:'textarea'</code> constraint.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/grails-fields-plugin/grails-fields/issues?milestone=7&amp;state=closed">Browse issues</a>
+Thanks to <a href="https://github.com/bluesliverx">Brian Saville</a> for contributions.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_version_1_0_4">Version 1.0.4</h3>
+<div class="paragraph">
+<p><em>2012-02-13</em>: Bugfix release.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/grails-fields-plugin/grails-fields/issues?milestone=5&amp;state=closed">Browse issues</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_version_1_0_3">Version 1.0.3</h3>
+<div class="paragraph">
+<p><em>2012-02-09</em>: Bugfix release.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/grails-fields-plugin/grails-fields/issues?milestone=4&amp;state=closed">Browse issues</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_version_1_0_2">Version 1.0.2</h3>
+<div class="paragraph">
+<p><em>2012-02-07</em>: Bugfix release.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/grails-fields-plugin/grails-fields/issues?milestone=3&amp;state=closed">Browse issues</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_version_1_0_1">Version 1.0.1</h3>
+<div class="paragraph">
+<p><em>2012-02-03</em>: Bugfix release.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/grails-fields-plugin/grails-fields/issues?milestone=2&amp;state=closed">Browse issues</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_version_1">Version 1</h3>
+<div class="paragraph">
+<p><em>2012-02-01</em>: Initial release.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/grails-fields-plugin/grails-fields/issues?milestone=1&amp;state=closed">Browse issues</a></p>
+</div>
+</div>
+</div>
+</div>
+
+<a name="2. Usage"><!-- Legacy link --></a>
+<h1 id="usage">2 Usage</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/grails-fields-plugin/grails-fields/edit/master/src/main/docs/guide/usage.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The plugin provides a set of tags you can use to render the fields in a form.</p>
+</div>
+<div class="paragraph">
+<p>In the simplest case you can use <em>f:all</em> to render a field for every property of a bean (the domain object or command the form will bind to):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;<span class="key">g</span>:form<span class="error">…</span>&gt;
+    &lt;<span class="key">f</span>:all bean=<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span>/&gt;
+&lt;<span class="regexp"><span class="delimiter">/</span><span class="content">g:form&gt;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To render individual fields you use the <em>f:field</em> tag:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;<span class="key">g</span>:form<span class="error">…</span>&gt;
+    &lt;<span class="key">f</span>:field bean=<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span> property=<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>/&gt;
+    &lt;<span class="key">f</span>:field bean=<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span> property=<span class="string"><span class="delimiter">&quot;</span><span class="content">address</span><span class="delimiter">&quot;</span></span>/&gt;
+    &lt;<span class="key">f</span>:field bean=<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span> property=<span class="string"><span class="delimiter">&quot;</span><span class="content">dateOfBirth</span><span class="delimiter">&quot;</span></span>/&gt;
+&lt;<span class="regexp"><span class="delimiter">/</span><span class="content">g:form&gt;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <em>f:field</em> tag will automatically handle embedded domain properties recursively:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;<span class="key">f</span>:field bean=<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span> property=<span class="string"><span class="delimiter">&quot;</span><span class="content">address</span><span class="delimiter">&quot;</span></span>/&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If there is no bean object backing a form but you still want to render the surrounding field markup you can give <em>f:field</em> a body:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;<span class="key">f</span>:field property=<span class="string"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>&gt;
+    &lt;<span class="key">g</span>:password name=<span class="string"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>/&gt;
+&lt;<span class="regexp"><span class="delimiter">/</span><span class="content">f:field&gt;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It should be an unusual case but to render just the widget without its surrounding container you can use the <em>f:widget</em> tag:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;<span class="key">f</span>:widget bean=<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span> property=<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>/&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To make it more convenient when rendering lots of properties of the same <em>bean</em> you can use the <em>f:with</em> tag to avoid having to specify <em>bean</em> on any tags nested inside:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;<span class="key">g</span>:form<span class="error">…</span>&gt;
+    &lt;<span class="key">f</span>:with bean=<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span>&gt;
+        &lt;<span class="key">f</span>:field property=<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>/&gt;
+        &lt;<span class="key">f</span>:field property=<span class="string"><span class="delimiter">&quot;</span><span class="content">address</span><span class="delimiter">&quot;</span></span>/&gt;
+        &lt;<span class="key">f</span>:field property=<span class="string"><span class="delimiter">&quot;</span><span class="content">dateOfBirth</span><span class="delimiter">&quot;</span></span>/&gt;
+    &lt;<span class="regexp"><span class="delimiter">/</span><span class="content">f:with&gt;</span></span><span class="error">
+</span>&lt;<span class="regexp"><span class="delimiter">/</span><span class="content">g:form&gt;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you need to render a property for display purposes you can use <em>f:display</em>. It will internally use <em>g:fieldValue</em>, <em>g:formatBoolean</em> or <em>g:formatDate</em> to format the value.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;<span class="key">f</span>:display bean=<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span> property=<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>/&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you need to render the value in a different way you can give <em>f:display</em> a body instead.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;<span class="key">f</span>:display bean=<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span> property=<span class="string"><span class="delimiter">&quot;</span><span class="content">dateOfBirth</span><span class="delimiter">&quot;</span></span>&gt;
+    &lt;<span class="key">g</span>:formatDate format=<span class="string"><span class="delimiter">&quot;</span><span class="content">dd MMM yyyy</span><span class="delimiter">&quot;</span></span> date=<span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>value<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>/&gt;
+&lt;<span class="regexp"><span class="delimiter">/</span><span class="content">f:display&gt;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By default <em>f:display</em> simply renders the property value but if you supply a <em>\_display.gsp</em> template you can render the value in some structured markup, e.g. a table cell or list item. See the <a href="#customizingFieldRendering">Customizing Field Rendering</a> section for how to override templates. For example to render values in a definition list you could use a template like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;dt&gt;<span class="error">$</span>{label}&lt;<span class="regexp"><span class="delimiter">/</span><span class="content">dt&gt;</span></span><span class="error">
+</span>&lt;dd&gt;<span class="error">$</span>{value}&lt;<span class="regexp"><span class="delimiter">/</span><span class="content">dd&gt;</span></span></code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_extra_attributes_since_version_2_1_4">Extra attributes (Since version 2.1.4)</h3>
+<div class="paragraph">
+<p>You can pass any number of extra attributes to the <em>f:with</em> and <em>f:all</em> tags that will be propagated to the inner fields and displays.
+See their individual tags sections for more information.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_breaking_changes">Breaking changes</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_templates">Templates</h3>
+<div class="paragraph">
+<p>The names of the templates were changed for more adequate ones:
+* _field to _wrapper
+* _input to _widget
+* _display to _displayWrapper
+* _displayWidget was added</p>
+</div>
+<div class="paragraph">
+<p>To use the old names (for backwards compatibility), configure the following in <code>Config.groovy</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">grails.plugin.fields.wrapper = <span class="string"><span class="delimiter">&quot;</span><span class="content">field</span><span class="delimiter">&quot;</span></span>
+grails.plugin.fields.displayWrapper = <span class="string"><span class="delimiter">&quot;</span><span class="content">display</span><span class="delimiter">&quot;</span></span>
+grails.plugin.fields.widget = <span class="string"><span class="delimiter">&quot;</span><span class="content">input</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_widget_attributes">Widget attributes</h3>
+<div class="paragraph">
+<p>To pass additional attributes to widgets, prefix them with 'widget-'.</p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;<span class="key">f</span>:field property=<span class="string"><span class="delimiter">&quot;</span><span class="content">birthDate</span><span class="delimiter">&quot;</span></span> widget-format=<span class="string"><span class="delimiter">&quot;</span><span class="content">dd/MM/yyyy</span><span class="delimiter">&quot;</span></span>/&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To use the old prefix (for backwards compatibility), configure the following in <code>Config.groovy</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">grails.plugin.fields.widgetPrefix = <span class="string"><span class="delimiter">&quot;</span><span class="content">input-</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_changes_in_tags">Changes in tags</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>The <em>input</em> tag was deprecated because the name was confusing. Use the new <em>widget</em> tag instead.</p>
+</li>
+<li>
+<p>The <em>displayWidget</em> tag was added. It outputs the widget for display purposes, without the wrapper (similar to the <em>widget</em> tag).</p>
+</li>
+</ul>
+</div>
+</div>
+
+<a name="3. Customizing Field Rendering"><!-- Legacy link --></a>
+<h1 id="customizingFieldRendering">3 Customizing Field Rendering</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/grails-fields-plugin/grails-fields/edit/master/src/main/docs/guide/customizingFieldRendering.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The plugin resolves the GSP template used for each property according to conventions. You can override the rendering based
+on the class and property name or the property type. The <code>f:field</code> tag looks for a template called <code>_wrapper.gsp</code>, the <code>f:widget</code>
+tag looks for a template called <code>_widget.gsp</code>, the <code>f:display</code> tag looks for a template called <code>_displayWrapper.gsp</code>.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Breaking changes in version 1.5
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In version 1.5 a new template was introduced <code>_displayWidget.gsp</code>. This is the corollary of <code>_widget.gsp</code> for fields that
+are read-only, i.e. it is responsible for rendering just the markup for the field itself. Furthermore, the default names
+of all the templates were changed in this version, in the interest of clarity and consistency. The changes to the template
+names are summarized below:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 1. Template Name Changes</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Old Template Name (before v.1.5)</th>
+<th class="tableblock halign-left valign-top">New Template Name (v.1.5 onwards)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_field.gsp</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_wrapper.gsp</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_display.gsp</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_displayWrapper.gsp</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_displayWidget.gsp</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Users upgrading to 1.5 from a previous version should either rename their templates (recommended) or add the following
+to <code>grails-app/conf/application.yml</code> to change the default templates names to the old names</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="key">grails</span>:
+    <span class="key">plugin</span>:
+        <span class="key">fields</span>:
+            <span class="key">wrapper</span>: field
+            <span class="key">displayWrapper</span>: display
+            <span class="key">widget</span>: input
+            <span class="key">displayWidget</span>: displayWidget</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_locating_field_templates_by_convention">Locating Field Templates by Convention</h3>
+<div class="paragraph">
+<p>The template for a field is chosen by a convention using the names of the controller, action, bean class, bean property, theme, etc. All the tags will look for templates in the following directories in decreasing order of preference:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>grails-app/views/<strong>controllerNamespace</strong>/<strong>controllerName</strong>/<strong>actionName</strong>/<strong>propertyName</strong>/_themes/<strong>themeName</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerNamespace</strong>/<strong>controllerName</strong>/<strong>actionName</strong>/_themes/<strong>themeName</strong>/<strong>propertyType</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerNamespace</strong>/<strong>controllerName</strong>/<strong>actionName</strong>/_themes/<strong>themeName</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerNamespace</strong>/<strong>controllerName</strong>/<strong>propertyName</strong>/_themes/<strong>themeName</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerNamespace</strong>/<strong>controllerName</strong>/_themes/<strong>themeName</strong>/<strong>propertyType</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerNamespace</strong>/<strong>controllerName</strong>/_themes/<strong>themeName</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/<strong>actionName</strong>/<strong>propertyName</strong>/_themes/<strong>themeName</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/<strong>actionName</strong>/_themes/<strong>themeName</strong>/<strong>propertyType</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/<strong>actionName</strong>/_themes/<strong>themeName</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/<strong>propertyName</strong>/_themes/<strong>themeName</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/_themes/<strong>themeName</strong>/<strong>propertyType</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/_themes/<strong>themeName</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/_fields/_themes/<strong>themeName</strong>/<strong>class</strong>/<strong>propertyName</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/_fields/_themes/<strong>themeName</strong>/<strong>superclass</strong>/<strong>propertyName</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/_fields/_themes/<strong>themeName</strong>/<strong>associationType</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/_fields/_themes/<strong>themeName</strong>/<strong>propertyType</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/_fields/_themes/<strong>themeName</strong>/<strong>propertySuperclass</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/_fields/_themes/<strong>themeName</strong>/default/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerNamespace</strong>/<strong>controllerName</strong>/<strong>actionName</strong>/<strong>propertyName</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerNamespace</strong>/<strong>controllerName</strong>/<strong>actionName</strong>/<strong>propertyType</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerNamespace</strong>/<strong>controllerName</strong>/<strong>actionName</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerNamespace</strong>/<strong>controllerName</strong>/<strong>propertyName</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerNamespace</strong>/<strong>controllerName</strong>/<strong>propertyType</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerNamespace</strong>/<strong>controllerName</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/<strong>actionName</strong>/<strong>propertyName</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/<strong>actionName</strong>/<strong>propertyType</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/<strong>actionName</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/<strong>propertyName</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/<strong>propertyType</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/_fields/<strong>class</strong>/<strong>propertyName</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/_fields/<strong>superclass</strong>/<strong>propertyName</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/_fields/<strong>associationType</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/_fields/<strong>propertyType</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/_fields/<strong>propertySuperclass</strong>/</code></p>
+</li>
+<li>
+<p><code>grails-app/views/_fields/default/</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The variables referenced in these paths are:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 2. Referenced Variables</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>controllerName</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the current controller (if any).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>actionName</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the current action (if any).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>themeName</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Theme name specified as value of theme attribute (Optional).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>class</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The bean class. For simple properties this is the class of the object passed to the <code>bean</code> attribute of the <code>f:field</code> or <code>f:widget</code> tag but when the <code>property</code> attribute was nested this is the class at the end of the chain. For example, if the property path was <code>employees[0].address.street</code> this will be the class of <code>address</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>superclass</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Any superclass or interface of <code>class</code> excluding <code>Object</code>, <code>GroovyObject</code>, <code>Serializable</code>, <code>Comparable</code> and <code>Cloneable</code> and those from GORM.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>propertyName</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The property name at the end of the chain passed to the <code>property</code> attribute of the <code>f:field</code> or <code>f:widget</code> tag. For example, if the property path was <code>employees[0].address.street</code> then this will be <code>street</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>propertyType</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type of the property at the end of the chain passed to the <code>property</code> attribute of the <code>f:field</code> or <code>f:widget</code> tag. For example, for a <code>java.lang.String</code> property this would be <code>string</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>propertySuperclass</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Any superclass or interface of <code>propertyType</code> excluding <code>Object</code>, <code>GroovyObject</code>, <code>Serializable</code>, <code>Comparable</code> and <code>Cloneable</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>associationType</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">One of <code>'oneToOne'</code>, <code>'oneToMany'</code>, <code>'manyToMany'</code> or <code>'manyToOne'</code>. Only relevant if the property is a domain class association.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>All class names are camel-cased simple forms. For example <code>java.lang.String</code> = <code>string</code>, <code>com.project.HomeAddress</code> = <code>homeAddress</code>.</p>
+</div>
+<div class="paragraph">
+<p>Templates are resolved in this order so that you can override in the more specific circumstance and fall back to successively more general defaults. For example, you can define a field template for all <code>java.lang.String</code> properties but override a specific property of a particular class to use more specialized rendering.</p>
+</div>
+<div class="paragraph">
+<p>Templates in plugins are resolved as well. This means plugins such as <code>Joda Time</code> can provide default rendering for special property types. A template in your application will take precedence over a template in a plugin at the same 'level'. For example if a plugin provides a <code>grails-app/views/_fields/string/_widget.gsp</code> the same template in your application will override it but if the plugin provides <code>grails-app/views/_fields/person/name/_widget.gsp</code> it would be used in preference to the more general template in your application.</p>
+</div>
+<div class="paragraph">
+<p>For most properties the out-of-the-box defaults should provide a good starting point.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_locating_templates_conventionally_example">Locating Templates Conventionally Example</h3>
+<div class="paragraph">
+<p>Imagine an object of class <code>Employee</code> that extends the class <code>Person</code> and has a <code>String name</code> property.</p>
+</div>
+<div class="paragraph">
+<p>You can override the template <code>f:field</code> uses with any of these:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/<strong>actionName</strong>/name/_themes/<strong>themeName</strong>/_wrapper.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/<strong>actionName</strong>/name/_wrapper.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/<strong>actionName</strong>/string/_wrapper.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/<strong>actionName</strong>/_wrapper.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/name/_wrapper.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/string/_wrapper.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/_wrapper.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/_fields/employee/name/_wrapper.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/_fields/person/name/_wrapper.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/_fields/string/_wrapper.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/_fields/default/_wrapper.gsp</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>override the template <code>f:widget</code> uses with any of these:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/<strong>actionName</strong>/name/_themes/<strong>themeName</strong>/_widget.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/<strong>actionName</strong>/name/_widget.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/<strong>actionName</strong>/string/_widget.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/<strong>actionName</strong>/_widget.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/name/_widget.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/string/_widget.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/_widget.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/_fields/employee/name/_widget.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/_fields/person/name/_widget.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/_fields/string/_widget.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/_fields/default/_widget.gsp</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>And override the template <em>f:display</em> uses with any of these:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/<strong>actionName</strong>/name/_themes/<strong>themeName</strong>/_displayWrapper.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/<strong>actionName</strong>/name/_displayWrapper.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/<strong>actionName</strong>/string/_displayWrapper.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/<strong>actionName</strong>/_displayWrapper.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/name/_displayWrapper.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/string/_displayWrapper.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/<strong>controllerName</strong>/_displayWrapper.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/_fields/employee/name/_displayWrapper.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/_fields/person/name/_displayWrapper.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/_fields/string/_displayWrapper.gsp</code></p>
+</li>
+<li>
+<p><code>grails-app/views/_fields/default/_displayWrapper.gsp</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>During template development it is usually recommended to disable template caching in order to allow the plugin to recognize new/renamed/moved templates without restarting the application. See the "Performance" section of the guide for the exact settings.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_default_behaviour_using_grails_widget_tags">Default Behaviour - Using Grails Widget Tags</h3>
+<div class="paragraph">
+<p>If no template override is found the plugin will use the standard grails input tags (e.g. <code>g:select</code>, <code>g:checkbox</code>, <code>g:field</code>) for rendering input controls.
+Using <code>f:field</code> you can pass extra arguments (e.g. <code>optionKey</code>, <code>optionValue</code>) through to these tags by prefixing them with <code>widget-</code>, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;<span class="key">f</span>:field bean=<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span> property=<span class="string"><span class="delimiter">&quot;</span><span class="content">gender</span><span class="delimiter">&quot;</span></span> widget-optionValue=<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>/&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_template_parameters">Template parameters</h3>
+<div class="paragraph">
+<p>The <code>f:field</code> and <code>f:widget</code> tags will pass the following parameters to your templates or to the body of <code>f:field</code> if you use one:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 3. Template Parameters</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>bean</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Object</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <code>bean</code> attribute as passed to the <code>f:field</code> or <code>f:widget</code> tag.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>property</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <code>property</code> attribute as passed to the <code>f:field</code> or <code>f:widget</code> tag. This would generally be useful for the <code>name</code> attribute of a form input.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>type</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Class</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The property type.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>label</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The field label text. This is based on the <code>label</code> attribute passed to the <code>f:field</code> or <code>f:widget</code> tag. If no <code>label</code> attribute was used the label is resolved by convention - see below.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>value</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Object</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the property value. This can also be overridden or defaulted if the <code>value</code> or <code>default</code> attribute was passed to <code>f:field</code> or <code>f:widget</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>constraints</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ConstrainedProperty</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The constraints for the property if the bean is a domain or command object.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>persistentProperty</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GrailsDomainClassProperty</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The persistent property object if the bean is a domain object.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>errors</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List&lt;String&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The error messages for any field errors present on the property. If there are no errors this will be an empty <em>List</em>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>required</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code> if the field is required, i.e. has a <code>nullable: false</code> or <code>blank: false</code> constraint.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>invalid</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code> if the property has any field errors.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>prefix</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A string (including the trailing period) that should be appended before the input name such as <code>name="${prefix}propertyName"</code>.  The label is also modified.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>In addition <code>f:field</code> passes the following parameters:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 4. Parameter Names from f:field</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>widget</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The output of <code>f:widget</code> for the current bean and property if <code>f:field</code> was used without a tag body, otherwise the output of the tag body.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If the <code>bean</code> attribute was not supplied to <code>f:field</code> then <code>bean</code>, <code>type</code>, <code>value</code> and <code>persistentProperty</code> will all be <code>null</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_field_labels">Field labels</h3>
+<div class="paragraph">
+<p>If the <code>label</code> attribute is not supplied to the <code>f:field</code> tag then the label string passed to the field template is resolved by convention. The plugin uses the following order of preference for the label:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>An i18n message using the key '<em>beanClass</em>.<em>path</em>`.label&#8217;. For example when using <code>&lt;f:field bean="personInstance" property="address.city"/&gt;</code> the plugin will try the i18n key <code>person.address.city.label</code>. If the property path contains any index it is removed so <code>&lt;f:field bean="authorInstance" property="books<a href="#0">[0]</a>.title"/&gt;</code> would use the key <code>author.books.title.label</code>.</p>
+</li>
+<li>
+<p>An i18n message using the key '<em>objectType</em>.<em>propertyName</em>`.label&#8217;. For example when using <code>&lt;f:field bean="personInstance" property="address.city"/&gt;</code> the plugin will try the i18n key <code>address.city.label</code>.</p>
+</li>
+<li>
+<p>The natural property name. For example when using <code>&lt;f:field bean="personInstance" property="dateOfBirth"/&gt;</code> the plugin will use the label <code>"Date Of Birth"</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_locating_field_templates_directly">Locating Field Templates Directly</h3>
+<div class="paragraph">
+<p>Rather than relying on the convention described previously to locate the template(s) to be used for a particular field, it is
+instead possible to directly specify the directory containing the templates. This feature was introduced in version 1.5.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>wrapper</code> attribute can be used with the <em>f:field</em> or <em>f:display</em> tags to specify the directory containing the <code>_wrapper.gsp</code> or <code>_displayWrapper.gsp</code> template to be used</p>
+</li>
+<li>
+<p>The <code>widget</code> attribute can be used with the <em>f:field</em> or <em>f:display</em> tags to specify the directory containing the <code>_widget.gsp</code> or <code>_displayWidget.gsp</code> template to be used</p>
+</li>
+<li>
+<p>If the wrapper and widget templates both have the same value, the <code>templates</code> attribute can be used instead as a shorthand. For example:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;<span class="key">f</span>:field property=<span class="string"><span class="delimiter">&quot;</span><span class="content">startDate</span><span class="delimiter">&quot;</span></span> templates=<span class="string"><span class="delimiter">&quot;</span><span class="content">bootstrap3</span><span class="delimiter">&quot;</span></span> /&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>is equivalent to:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;<span class="key">f</span>:field property=<span class="string"><span class="delimiter">&quot;</span><span class="content">startDate</span><span class="delimiter">&quot;</span></span> wrapper=<span class="string"><span class="delimiter">&quot;</span><span class="content">bootstrap3</span><span class="delimiter">&quot;</span></span> widget=<span class="string"><span class="delimiter">&quot;</span><span class="content">bootstrap3</span><span class="delimiter">&quot;</span></span> /&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>if theme is specified, theme will be searched first to find the templates
+For example</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;<span class="key">f</span>:field property=<span class="string"><span class="delimiter">&quot;</span><span class="content">startDate</span><span class="delimiter">&quot;</span></span> templates=<span class="string"><span class="delimiter">&quot;</span><span class="content">custom</span><span class="delimiter">&quot;</span></span> theme=<span class="string"><span class="delimiter">&quot;</span><span class="content">bs-horizontal</span><span class="delimiter">&quot;</span></span>/&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Will search the templates first in <em>\_fields/_themes/bs-horizontal/custom</em> and then <em>\_fields/custom</em></p>
+</div>
+<div class="paragraph">
+<p>If a direct location is specified, and the templates cannot be found therein, the plugin will fall back to locating templates
+by convention.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_locating_templates_directly_example">Locating Templates Directly Example</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="comment">// renders _fields/\_themes/bs-horizontal/custom/_wrapper.gsp:</span>
+&lt;<span class="key">f</span>:field property=<span class="string"><span class="delimiter">&quot;</span><span class="content">startDate</span><span class="delimiter">&quot;</span></span> wrapper=<span class="string"><span class="delimiter">&quot;</span><span class="content">custom</span><span class="delimiter">&quot;</span></span> theme=<span class="string"><span class="delimiter">&quot;</span><span class="content">bs-horizontal</span><span class="delimiter">&quot;</span></span>/&gt;
+
+<span class="comment">// renders _fields/bootstrap3/_wrapper.gsp:</span>
+&lt;<span class="key">f</span>:field property=<span class="string"><span class="delimiter">&quot;</span><span class="content">startDate</span><span class="delimiter">&quot;</span></span> wrapper=<span class="string"><span class="delimiter">&quot;</span><span class="content">bootstrap3</span><span class="delimiter">&quot;</span></span>/&gt;
+
+<span class="comment">// renders _fields/time/_widget.gsp:</span>
+&lt;<span class="key">f</span>:field property=<span class="string"><span class="delimiter">&quot;</span><span class="content">startDate</span><span class="delimiter">&quot;</span></span> widget=<span class="string"><span class="delimiter">&quot;</span><span class="content">time</span><span class="delimiter">&quot;</span></span>/&gt;
+
+<span class="comment">// renders _fields/time/_wrapper.gsp and _fields/time/_widget.gsp:</span>
+&lt;<span class="key">f</span>:field property=<span class="string"><span class="delimiter">&quot;</span><span class="content">startDate</span><span class="delimiter">&quot;</span></span> templates=<span class="string"><span class="delimiter">&quot;</span><span class="content">time</span><span class="delimiter">&quot;</span></span>/&gt;
+
+<span class="comment">// renders _fields/\_themes/bs-horizontal/custom/_displayWrapper.gsp:</span>
+&lt;<span class="key">f</span>:display property=<span class="string"><span class="delimiter">&quot;</span><span class="content">startDate</span><span class="delimiter">&quot;</span></span> wrapper=<span class="string"><span class="delimiter">&quot;</span><span class="content">custom</span><span class="delimiter">&quot;</span></span> theme=<span class="string"><span class="delimiter">&quot;</span><span class="content">bs-horizontal</span><span class="delimiter">&quot;</span></span>/&gt;
+
+
+<span class="comment">// renders _fields/bootstrap3/_displayWrapper.gsp:</span>
+&lt;<span class="key">f</span>:display property=<span class="string"><span class="delimiter">&quot;</span><span class="content">startDate</span><span class="delimiter">&quot;</span></span> wrapper=<span class="string"><span class="delimiter">&quot;</span><span class="content">bootstrap3</span><span class="delimiter">&quot;</span></span>/&gt;
+
+<span class="comment">// renders _fields/time/_displayWidget.gsp:</span>
+&lt;<span class="key">f</span>:display property=<span class="string"><span class="delimiter">&quot;</span><span class="content">startDate</span><span class="delimiter">&quot;</span></span> widget=<span class="string"><span class="delimiter">&quot;</span><span class="content">time</span><span class="delimiter">&quot;</span></span>/&gt;
+
+<span class="comment">// renders _fields/time/_displayWrapper.gsp and _fields/time/_displayWidget.gsp:</span>
+&lt;<span class="key">f</span>:display property=<span class="string"><span class="delimiter">&quot;</span><span class="content">startDate</span><span class="delimiter">&quot;</span></span> templates=<span class="string"><span class="delimiter">&quot;</span><span class="content">time</span><span class="delimiter">&quot;</span></span>/&gt;</code></pre>
+</div>
+</div>
+</div>
+
+<a name="4. Embedded Properties"><!-- Legacy link --></a>
+<h1 id="embeddedProperties">4 Embedded Properties</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/grails-fields-plugin/grails-fields/edit/master/src/main/docs/guide/embeddedProperties.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>Embedded properties are handled in a special way by the <code>f:field</code> and <code>f:all</code> tags. If the <code>property</code> attribute you pass to <code>f:field</code> is an embedded property then the tag recursively renders each individual property of the embedded class with a surrounding <code>fieldset</code>. For example if you have a <code>Person</code> class with a <code>name</code> property and an <code>Address</code> embedded class with <code>street</code>, <code>city</code> and <code>country</code> properties <code>&lt;f:field bean="person" property="address"&gt;</code> will effectively do this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">&lt;fieldset <span class="type">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">embedded address</span><span class="delimiter">&quot;</span></span>&gt;
+    &lt;<span class="class">legend</span>&gt;Address&lt;<span class="regexp"><span class="delimiter">/</span><span class="content">legend&gt;</span></span><span class="error">
+</span>    &lt;<span class="key">f</span>:field bean=<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span> property=<span class="string"><span class="delimiter">&quot;</span><span class="content">address.street</span><span class="delimiter">&quot;</span></span>/&gt;
+    &lt;<span class="key">f</span>:field bean=<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span> property=<span class="string"><span class="delimiter">&quot;</span><span class="content">address.city</span><span class="delimiter">&quot;</span></span>/&gt;
+    &lt;<span class="key">f</span>:field bean=<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span> property=<span class="string"><span class="delimiter">&quot;</span><span class="content">address.country</span><span class="delimiter">&quot;</span></span>/&gt;
+&lt;<span class="regexp"><span class="delimiter">/</span><span class="content">fieldset&gt;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can customize how embedded properties are surrounded by providing a layout at <code>grails-app/views/layouts/_fields/embedded.gsp</code> which will override the default layout provided by the plugin.</p>
+</div>
+<div class="paragraph">
+<p>When you use the <code>f:all</code> tag it will automatically handle embedded properties in this way.</p>
+</div>
+
+<a name="5. Scaffolding"><!-- Legacy link --></a>
+<h1 id="scaffolding">5 Scaffolding</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/grails-fields-plugin/grails-fields/edit/master/src/main/docs/guide/scaffolding.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>Scaffolding templates based on the <em>Fields</em> plugin are quite powerful as they will pick up field and input rendering templates from your application and any plugins that provide them. This means that the useful life of scaffolding templates should be much longer as you do not need to replace the entire <em>create.gsp</em> and/or <em>edit.gsp</em> template just because you want to do something different with a certain property of one particular class.</p>
+</div>
+<div class="paragraph">
+<p>The plugin makes the <em>renderEditor.template</em> file used by standard Grails scaffolding redundant. This template was very limited because it could not be extended by plugins or applications (only replaced) and was unable to support embedded properties of domain classes.</p>
+</div>
+<div class="paragraph">
+<p>The <em>Fields</em> plugin includes scaffolding templates you can use in your application by running:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">grails install-form-fields-templates</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will overwrite any <em>create.gsp</em> and <em>edit.gsp</em> files you have in <code>src/templates/scaffolding</code>.</p>
+</div>
+<div class="paragraph">
+<p>Alternatively, it&#8217;s very easy to modify your existing scaffolding templates to use the <em>f:all</em> tag or multiple <em>f:field</em> tags.</p>
+</div>
+
+
+<h1 id="themes">6 Themes</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/grails-fields-plugin/grails-fields/edit/master/src/main/docs/guide/themes.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>Since version 2.1.4 It is possible to create themes to provide set of templates for different css frameworks or form layouts.
+For example, a bootstrap-fields plugin can provide different themes (eg bs-horizontal, bs-vertical) to support horizontal and vertical form layouts. And another plugin can provide theme for purecss framework.</p>
+</div>
+<div class="paragraph">
+<p>Themes are put under directory <code>_fields/themes/<strong>themeName</strong>/</code>.</p>
+</div>
+<div class="paragraph">
+<p>All of the field tags supports theme attribute which accepts the name of the theme. When a theme name is specified, widget, wrapper, and display templates will be searched in theme directory first as described in <a href="#customizingFieldRendering">Customizing Field Rendering</a>.</p>
+</div>
+
+<a name="6. Including Templates in Plugins"><!-- Legacy link --></a>
+<h1 id="includingTemplatesInPlugins">7 Including Templates in Plugins</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/grails-fields-plugin/grails-fields/edit/master/src/main/docs/guide/includingTemplatesInPlugins.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>Plugins can include field and/or input level templates to support special UI rendering or non-standard property types. Just include the templates in the plugin&#8217;s <code>grails-app/views</code> directory as described in the <a href="#customizingFieldRendering">Customizing Field Rendering</a> section.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+If you supply templates in a plugin you should consider declaring a <code>&lt;%@page defaultCodec="html" %&gt;</code> directive so that any HTML unsafe property values are escaped properly regardless of the default codec used by client apps.
+</td>
+</tr>
+</table>
+</div>
+
+
+<h1 id="performance">8 Performance</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/grails-fields-plugin/grails-fields/edit/master/src/main/docs/guide/performance.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>In order to be performant, the Fields plugin caches field template lookup results by default. This makes it possible to perform the time-consuming template path resolutions only once during the runtime of the application.</p>
+</div>
+<div class="paragraph">
+<p>When template caching is active, only the first page renderings are slow, subsequent ones are fast.</p>
+</div>
+<div class="paragraph">
+<p>Due to the flexibility needed during template development, this feature can be disabled so it would be possible to recognize newly added field templates without restarting the application. As a result, with bigger webpages, containing a lot of fields, rendering may be fairly slow in development (depending on the number of fields on the page).</p>
+</div>
+<div class="paragraph">
+<p>For template development, the following configuration attribute should be placed in the development environment section of your application&#8217;s Config.groovy:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">grails.plugin.fields.disableLookupCache = <span class="predefined-constant">true</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After the template development has finished, it is recommended to re-enable the template lookup cache in order to have a performant page rendering even during development.</p>
+</div>
+
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Tags</h1><div class="menu-sub">
+                        
+                        
+                        <div class="menu-item"><a href="../ref/Tags/all.html">all</a>
+                        </div>
+                        
+                        <div class="menu-item"><a href="../ref/Tags/display.html">display</a>
+                        </div>
+                        
+                        <div class="menu-item"><a href="../ref/Tags/displayWidget.html">displayWidget</a>
+                        </div>
+                        
+                        <div class="menu-item"><a href="../ref/Tags/field.html">field</a>
+                        </div>
+                        
+                        <div class="menu-item"><a href="../ref/Tags/input.html">input</a>
+                        </div>
+                        
+                        <div class="menu-item"><a href="../ref/Tags/table.html">table</a>
+                        </div>
+                        
+                        <div class="menu-item"><a href="../ref/Tags/widget.html">widget</a>
+                        </div>
+                        
+                        <div class="menu-item"><a href="../ref/Tags/with.html">with</a>
+                        </div>
+                        
+                    </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+
+</body>
+</html>

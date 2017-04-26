@@ -8,17 +8,21 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-        classpath 'com.bertramlabs.plugins:asset-pipeline-gradle:2.1.1'
+        classpath "org.grails:gdoc-to-asciidoc:1.0.1"
     }
 }
+plugins {
+    id 'org.asciidoctor.convert' version '1.5.3'
+}
+
 
 version "2.1.4-SNAPSHOT"
 group "org.grails.plugins"
 
 apply plugin:"org.grails.grails-plugin"
 apply plugin:"org.grails.grails-plugin-publish"
+apply from:"https://raw.githubusercontent.com/grails/grails-common-build/6c658fc85b6f9f6efac75f8ca160a339f844013e/common-docs.gradle"
 
-apply plugin: "org.grails.grails-doc"
 
 ext {
   grailsVersion = project.grailsVersion
@@ -34,6 +38,7 @@ repositories {
   mavenCentral()
   maven { url "https://repo.grails.org/grails/core" }
 }
+
 
 
 dependencies {
@@ -59,12 +64,12 @@ dependencies {
 
 grailsPublish {
     userOrg = "grails"
-    githubSlug = 'grails-fields-plugin/grails-fields'
+    githubSlug = project.githubSlug
     license {
         name = 'Apache-2.0'
     }
-    title = "Grails Fields Plugin"
-    desc = "Customizable form-field rendering based on overrideable GSP template"
+    title = project.title
+    desc = project.projectDesc
 
     developers = [graemerocher:"Graeme Rocher", robfletcher:"Rob Fletcher"]
 }

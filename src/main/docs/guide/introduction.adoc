@@ -1,0 +1,113 @@
+
+The _Fields plugin_ allows you to customize the rendering of input fields for properties of domain objects, command beans and POGOs based on their type, name, etc. The plugin aims to:
+
+* Use good defaults for fields.
+* Make it very easy to override the field rendering for particular properties or property types without having to replace entire form templates.
+* Not require you to copy and paste markup for containers, labels and error messages just because you need a different input type.
+* Support inputs for property paths of arbitrary depth and with indexing.
+* Enable other plugins to provide field rendering for special property types that gets picked up automatically (e.g. the _Joda Time_ plugin can provide templates for the various date/time types).
+* Support embedded properties of _GORM_ domain classes.
+
+
+== Changelog
+
+
+=== Version 1.5
+
+
+_2015_04_26_
+
+* Changelog will be completed shortly. 
+
+WARNING: See <<usage,Usage>> and <<customizingFieldRendering,Customizing Field Rendering>> for breaking changes.
+
+https://github.com/grails-fields-plugin/grails-fields/issues?q=milestone%3A1.5+is%3Aclosed[Browse issues] 
+
+
+=== Version 2.0
+
+
+* Redesign for Grails 3.0
+
+
+=== Version 1.4
+
+
+* Upgraded plugin to work with Grails 2.3.x (Issue #122)
+* Fixed missing property exception (Issue #134)
+* Fixed encoding in tag libraries (Issue #137)
+* Configuring caching in dev mode (Issue #139)
+* byte[] and Byte[] arrays types now look for files in byteArray folders (general for all array types) (Issue #144)
+
+https://github.com/grails-fields-plugin/grails-fields/issues?q=is%3Aissue+milestone%3A1.4+is%3Aclosed[Browse issues] 
+
+=== Version 1.3
+
+
+_2012-07-31_
+
+* Adds the _f:display_ tag.
+* Supports overriding templates by property type or by default in individual controllers and actions.
+
+https://github.com/grails-fields-plugin/grails-fields/issues?milestone=9&state=closed[Browse issues] 
+Thanks to https://github.com/cdeszaq,[Rick Jensen] https://github.com/delight,[Konstantinos Kostarellis] https://github.com/guspower[Gus Power] and https://github.com/eliotsykes[Eliot Sykes] for their contributions.
+
+
+=== Version 1.2
+
+
+_2012-03-16_
+
+* Pass attributes from `f:field` to the rendered input using `input-` prefix.
+* Optionally use entire property path for label key.
+
+https://github.com/grails-fields-plugin/grails-fields/issues?milestone=8&state=closed[Browse issues] 
+Thanks to https://github.com/bluesliverx[Brian Saville] and https://github.com/OverZealous[OverZealous] for contributions.
+
+
+=== Version 1.1
+
+
+_2012-03-11_
+
+* Adds the _prefix_ attribute.
+* Support `widget:'textarea'` constraint.
+
+https://github.com/grails-fields-plugin/grails-fields/issues?milestone=7&state=closed[Browse issues] 
+Thanks to https://github.com/bluesliverx[Brian Saville] for contributions.
+
+
+=== Version 1.0.4
+
+
+_2012-02-13_: Bugfix release.
+
+https://github.com/grails-fields-plugin/grails-fields/issues?milestone=5&state=closed[Browse issues] 
+
+=== Version 1.0.3
+
+
+_2012-02-09_: Bugfix release.
+
+https://github.com/grails-fields-plugin/grails-fields/issues?milestone=4&state=closed[Browse issues] 
+
+=== Version 1.0.2
+
+
+_2012-02-07_: Bugfix release.
+
+https://github.com/grails-fields-plugin/grails-fields/issues?milestone=3&state=closed[Browse issues] 
+
+=== Version 1.0.1
+
+
+_2012-02-03_: Bugfix release.
+
+https://github.com/grails-fields-plugin/grails-fields/issues?milestone=2&state=closed[Browse issues] 
+
+=== Version 1
+
+
+_2012-02-01_: Initial release.
+
+https://github.com/grails-fields-plugin/grails-fields/issues?milestone=1&state=closed[Browse issues] 

@@ -2,45 +2,51 @@ The plugin provides a set of tags you can use to render the fields in a form.
 
 In the simplest case you can use _f:all_ to render a field for every property of a bean (the domain object or command the form will bind to):
 
-{code}
+[source,groovy]
+----
 <g:form…>
     <f:all bean="person"/>
 </g:form>
-{code}
+----
 
 To render individual fields you use the _f:field_ tag:
 
-{code}
+[source,groovy]
+----
 <g:form…>
     <f:field bean="person" property="name"/>
     <f:field bean="person" property="address"/>
     <f:field bean="person" property="dateOfBirth"/>
 </g:form>
-{code}
+----
 
 The _f:field_ tag will automatically handle embedded domain properties recursively:
 
-{code}
+[source,groovy]
+----
 <f:field bean="person" property="address"/>
-{code}
+----
 
 If there is no bean object backing a form but you still want to render the surrounding field markup you can give _f:field_ a body:
 
-{code}
+[source,groovy]
+----
 <f:field property="password">
     <g:password name="password"/>
 </f:field>
-{code}
+----
 
 It should be an unusual case but to render just the widget without its surrounding container you can use the _f:widget_ tag:
 
-{code}
+[source,groovy]
+----
 <f:widget bean="person" property="name"/>
-{code}
+----
 
 To make it more convenient when rendering lots of properties of the same _bean_ you can use the _f:with_ tag to avoid having to specify _bean_ on any tags nested inside:
 
-{code}
+[source,groovy]
+----
 <g:form…>
     <f:with bean="person">
         <f:field property="name"/>
@@ -48,64 +54,80 @@ To make it more convenient when rendering lots of properties of the same _bean_ 
         <f:field property="dateOfBirth"/>
     </f:with>
 </g:form>
-{code}
+----
 
 If you need to render a property for display purposes you can use _f:display_. It will internally use _g:fieldValue_, _g:formatBoolean_ or _g:formatDate_ to format the value.
 
-{code}
+[source,groovy]
+----
 <f:display bean="person" property="name"/>
-{code}
+----
 
 If you need to render the value in a different way you can give _f:display_ a body instead.
 
-{code}
+[source,groovy]
+----
 <f:display bean="person" property="dateOfBirth">
     <g:formatDate format="dd MMM yyyy" date="${value}"/>
 </f:display>
-{code}
+----
 
-By default _f:display_ simply renders the property value but if you supply a _\_display.gsp_ template you can render the value in some structured markup, e.g. a table cell or list item. See the [Customizing Field Rendering|guide:customizingFieldRendering] section for how to override templates. For example to render values in a definition list you could use a template like this:
+By default _f:display_ simply renders the property value but if you supply a _\_display.gsp_ template you can render the value in some structured markup, e.g. a table cell or list item. See the <<customizingFieldRendering,Customizing Field Rendering>> section for how to override templates. For example to render values in a definition list you could use a template like this:
 
-{code}
+[source,groovy]
+----
 <dt>${label}</dt>
 <dd>${value}</dd>
-{code}
+----
 
-h2. Extra attributes (Since version 2.1.4)
+
+=== Extra attributes (Since version 2.1.4)
+
 
 You can pass any number of extra attributes to the _f:with_ and _f:all_ tags that will be propagated to the inner fields and displays.
 See their individual tags sections for more information.
 
-h2. Breaking changes
 
-h3. Templates
+=== Breaking changes
+
+
+
+=== Templates
+
 The names of the templates were changed for more adequate ones:
 * _field to _wrapper
 * _input to _widget
 * _display to _displayWrapper
 * _displayWidget was added
 
-To use the old names (for backwards compatibility), configure the following in @Config.groovy@
+To use the old names (for backwards compatibility), configure the following in `Config.groovy`
 
-{code}
+[source,groovy]
+----
 grails.plugin.fields.wrapper = "field"
 grails.plugin.fields.displayWrapper = "display"
 grails.plugin.fields.widget = "input"
-{code}
+----
 
-h3. Widget attributes
+
+=== Widget attributes
+
 To pass additional attributes to widgets, prefix them with 'widget-'.
 
 Example:
-{code}
+[source,groovy]
+----
 <f:field property="birthDate" widget-format="dd/MM/yyyy"/>
-{code}
+----
 
-To use the old prefix (for backwards compatibility), configure the following in @Config.groovy@:
-{code}
+To use the old prefix (for backwards compatibility), configure the following in `Config.groovy`:
+[source,groovy]
+----
 grails.plugin.fields.widgetPrefix = "input-"
-{code}
+----
 
-h3. Changes in tags
+
+=== Changes in tags
+
 * The _input_ tag was deprecated because the name was confusing. Use the new _widget_ tag instead.
 * The _displayWidget_ tag was added. It outputs the widget for display purposes, without the wrapper (similar to the _widget_ tag).

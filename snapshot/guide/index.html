@@ -1096,7 +1096,7 @@ by convention.</p>
 
 
 <div class="paragraph">
-<p>Embedded properties are handled in a special way by the <em>f:field</em> and <em>f:all</em> tags. If the <em>property</em> attribute you pass to <em>f:field</em> is an embedded property then the tag recursively renders each individual property of the embedded class with a surrounding <em>fieldset</em>. For example if you have a <em>Person</em> class with a <em>name</em> property and an <em>Address</em> embedded class with <em>street</em>, <em>city</em> and <em>country</em> properties <code>&lt;f:field bean="person" property="address"&gt;</code> will effectively do this:</p>
+<p>Embedded properties are handled in a special way by the <code>f:field</code> and <code>f:all</code> tags. If the <code>property</code> attribute you pass to <code>f:field</code> is an embedded property then the tag recursively renders each individual property of the embedded class with a surrounding <code>fieldset</code>. For example if you have a <code>Person</code> class with a <code>name</code> property and an <code>Address</code> embedded class with <code>street</code>, <code>city</code> and <code>country</code> properties <code>&lt;f:field bean="person" property="address"&gt;</code> will effectively do this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1109,10 +1109,10 @@ by convention.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>You can customize how embedded properties are surrounded by providing a layout at <code>grails-app/views/layouts/\_fields/embedded.gsp</code> which will override the default layout provided by the plugin.</p>
+<p>You can customize how embedded properties are surrounded by providing a layout at <code>grails-app/views/layouts/_fields/embedded.gsp</code> which will override the default layout provided by the plugin.</p>
 </div>
 <div class="paragraph">
-<p>When you use the <em>f:all</em> tag it will automatically handle embedded properties in this way.</p>
+<p>When you use the <code>f:all</code> tag it will automatically handle embedded properties in this way.</p>
 </div>
 
 <a name="5. Scaffolding"><!-- Legacy link --></a>

@@ -16,12 +16,17 @@
 
 package grails.plugin.formfields
 
+import grails.gorm.Entity
 import grails.util.GrailsNameUtils
+import grails.web.databinding.WebDataBinding
 import groovy.transform.Canonical
+import groovy.transform.CompileStatic
 import org.apache.commons.lang.ClassUtils
 import grails.core.*
 import grails.plugins.VersionComparator
 import grails.validation.ConstrainedProperty
+import org.grails.datastore.gorm.GormEntity
+import org.grails.datastore.mapping.dirty.checking.DirtyCheckable
 import org.springframework.validation.FieldError
 
 import static grails.validation.ConstrainedProperty.BLANK_CONSTRAINT
@@ -115,11 +120,20 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
 		!errors.isEmpty()
 	}
 
+	@CompileStatic
 	private List<Class> getSuperclassesAndInterfaces(Class type) {
-		def superclasses = []
+		List<Class> superclasses = []
 		superclasses.addAll(ClassUtils.getAllSuperclasses(ClassUtils.primitiveToWrapper(type)))
-		superclasses.addAll(ClassUtils.getAllInterfaces(type))
-		superclasses.removeAll([Object, GroovyObject, Serializable, Cloneable, Comparable])
-		superclasses
+		for(Object it in ClassUtils.getAllInterfaces(type)) {
+			Class interfaceCls = (Class)it
+			String name = interfaceCls.name
+			if(name.indexOf('$') == -1) {
+				if(interfaceCls.package != GormEntity.package) {
+					superclasses.add(interfaceCls)
+				}
+			}
+		}
+		superclasses.removeAll([Object, GroovyObject, Serializable, Cloneable, Comparable, WebDataBinding, DirtyCheckable, Entity])
+		return superclasses.unique()
 	}
 }

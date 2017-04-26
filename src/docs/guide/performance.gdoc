@@ -1,0 +1,13 @@
+In order to be performant, the Fields plugin caches field template lookup results by default. This makes it possible to perform the time-consuming template path resolutions only once during the runtime of the application.
+
+When template caching is active, only the first page renderings are slow, subsequent ones are fast. 
+
+Due to the flexibility needed during template development, this feature can be disabled so it would be possible to recognize newly added field templates without restarting the application. As a result, with bigger webpages, containing a lot of fields, rendering may be fairly slow in development (depending on the number of fields on the page).
+
+For template development, the following configuration attribute should be placed in the development environment section of your application's Config.groovy:
+
+{code}
+grails.plugin.fields.disableLookupCache = true
+{code}
+
+After the template development has finished, it is recommended to re-enable the template lookup cache in order to have a performant page rendering even during development.

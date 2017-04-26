@@ -1,0 +1,54 @@
+h1. f:display
+
+h2. Description
+
+_f:display_ renders a property for display. If there is no _\_displayWrapper_ template in scope the tag will simply render the property value.
+
+_f:display_ template will look for a _\_displayWrapper_ for the wrapper itself and a _\_displayWidget_ for the widget used inside the wrapper template.
+
+If the _f:display_ tag has a body its output is used as the value passed as the _value_ model to the _\_display_ template. If there is no body then the 'raw' property value is passed to _g:fieldValue_, _g:formatDate_ or _g:formatBoolean_ depending on its type and the result is passed as the _value_ model to the _\_display_ template.
+
+In version 1.5 new attributes were added:
+Since then you can specify the folders where the templates are located. You can do this for the wrapper folder, the widget folder ot both (if they are located on the same folder).
+
+h2. Examples
+
+{code}
+<f:display bean="person"/>
+
+<f:display bean="person" displayStyle="table"/>
+
+<f:display bean="person" property="name"/>
+
+<f:display bean="person" property="name" theme="purecss"/>
+
+// renders _fields/bootstrap3/_displayWrapper.gsp:
+<f:display bean="person" property="name" wrapper="bootstrap3"/>
+
+// renders _fields/maskedInput/_displayWidget.gsp:
+<f:display bean="person" property="name" widget="maskedInput"/>
+
+// renders _fields/maskedInput/_displayWrapper.gsp and _fields/maskedInput/_displayWidget.gsp:
+<f:display bean="person" property="name" templates="maskedInput"/>
+
+<f:display bean="person" property="dateOfBirth">
+    <g:formatDate format="dd MMM yyyy" date="${value}"/>
+</f:display>
+{code}
+
+h2. Attributes
+
+{table}
+*Name* | *Required?* | *Description*
+*bean* | yes if not inside _f:with_ | The bean whose property is being rendered. This can be the object itself or the name of a page-scope variable.
+*property* | | The path to the property. This can include any level of nesting and numeric or string indexes. For example @employees\[0\].address\[home\].street@ is a valid path. If absent, all properties will be displayed.
+*value* | | Overrides the actual value of the property.
+*default* | | A default value for the property that will be used if the actual property value is _falsy_.
+*label* | | Overrides the field label passed to the template. This value may either be an i18n key or a literal string.
+*displayStyle* | | When specified and different from the string _default_, this tag will try to use a _\_display-${displayStyle}_ template with a _\_display_ template as fallback. _displayStyle="table"_ will render embedded components by default with _toString()_ in stead of rendering all nested properties.
+*except* | | A comma-separated list of properties that should be skipped.
+*order* | | A comma-separated list of properties which represents the order in which the tag should display them.
+*theme* | String | Theme to use if available.
+{table}
+
+Any additional attributes are passed to the rendered template.

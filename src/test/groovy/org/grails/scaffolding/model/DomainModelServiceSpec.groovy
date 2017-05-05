@@ -1,5 +1,7 @@
 package org.grails.scaffolding.model
 
+import org.grails.datastore.mapping.config.Property
+import org.grails.datastore.mapping.model.PropertyMapping
 import org.grails.scaffolding.model.property.DomainProperty
 import org.grails.scaffolding.model.property.DomainPropertyFactory
 import org.grails.scaffolding.model.property.DomainPropertyFactoryImpl
@@ -26,12 +28,17 @@ class DomainModelServiceSpec extends Specification implements MocksDomain {
         }
     }
 
-    void "test getEditableProperties valid property"() {
+    void "test getInputProperties valid property"() {
         given:
         PersistentProperty bar = Mock()
         DomainProperty domainProperty = Mock(DomainProperty) {
             1 * getConstraints() >> Mock(ConstrainedProperty) { 1 * isDisplay() >> true }
             1 * getName() >> "bar"
+            1 * getMapping() >> Mock(PropertyMapping) {
+                1 * getMappedForm() >> Mock(Property) {
+                    1 * isDerived() >> false
+                }
+            }
         }
         domainModelService.domainPropertyFactory = Mock(DomainPropertyFactoryImpl) {
             1 * build(bar) >> domainProperty
@@ -46,27 +53,30 @@ class DomainModelServiceSpec extends Specification implements MocksDomain {
         properties[0] == domainProperty
     }
 
-    /*
-    TODO: Wait until derived is added to next version of GORM
     void "test getInputProperties derived"() {
         given:
-        GrailsDomainClass domainClass = Mock {
-            1 * getClazz() >> ScaffoldedDomain
+        PersistentProperty bar = Mock()
+        DomainProperty domainProperty = Mock(DomainProperty) {
+            1 * getConstraints() >> Mock(ConstrainedProperty) { 1 * isDisplay() >> true }
+            1 * getName() >> "bar"
+            1 * getMapping() >> Mock(PropertyMapping) {
+                1 * getMappedForm() >> Mock(Property) {
+                    1 * isDerived() >> true
+                }
+            }
         }
-        GrailsDomainClassProperty bar = Mock {
-            2 * getName() >> "bar"
-            1 * isDerived() >> true
+        domainModelService.domainPropertyFactory = Mock(DomainPropertyFactoryImpl) {
+            1 * build(bar) >> domainProperty
         }
         1 * domainClass.getPersistentProperties() >> [bar]
-        domainClass.getConstrainedProperties() >> ["bar": Mock(ConstrainedProperty) { 1 * isDisplay() >> true }]
 
         when:
-        List<GrailsDomainClassProperty> properties = domainModelService.getInputProperties(domainClass).toList()
+        List<DomainProperty> properties = domainModelService.getInputProperties(domainClass).toList()
 
-        then: "properties that are excluded in the scaffolded property aren't included"
-        properties.empty
+        then: "derived properties aren't included"
+        properties.size() == 0
     }
-    */
+
 
     void "test getEditableProperties excluded by default"() {
         given:

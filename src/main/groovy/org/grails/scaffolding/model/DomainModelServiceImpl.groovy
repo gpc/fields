@@ -1,6 +1,7 @@
 package org.grails.scaffolding.model
 
 import grails.validation.Constrained
+import org.grails.datastore.mapping.config.Property
 import org.grails.scaffolding.model.property.DomainProperty
 import org.grails.scaffolding.model.property.DomainPropertyFactory
 import grails.util.GrailsClassUtils
@@ -9,6 +10,8 @@ import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
 import org.grails.datastore.mapping.model.types.Embedded
 import org.springframework.beans.factory.annotation.Autowired
+
+import java.lang.reflect.Method
 
 /**
  * @see {@link DomainModelService}
@@ -19,6 +22,16 @@ class DomainModelServiceImpl implements DomainModelService {
 
     @Autowired
     DomainPropertyFactory domainPropertyFactory
+
+    private static Method derivedMethod
+
+    static {
+        try {
+            derivedMethod = Property.class.getMethod("isDerived", (Class<?>[]) null)
+        } catch (NoSuchMethodException | SecurityException e) {
+            // no-op
+        }
+    }
 
     /**
      * <p>Retrieves persistent properties and excludes:<ul>
@@ -46,10 +59,23 @@ class DomainModelServiceImpl implements DomainModelService {
                 }
             }
         }
-        properties.removeAll { it.name in blacklist }
+
         properties.removeAll {
+            if (it.name in blacklist) {
+                return true
+            }
             Constrained constrained = it.constraints
-            constrained && !constrained.display
+            if (constrained && !constrained.display) {
+                return true
+            }
+            if (derivedMethod != null) {
+                Property property = it.mapping.mappedForm
+                if (derivedMethod.invoke(property, (Object[]) null)) {
+                    return true
+                }
+            }
+
+            false
         }
         properties.sort()
         properties

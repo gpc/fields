@@ -18,7 +18,7 @@ import java.sql.Blob
 @TestFor(FormFieldsTagLib)
 @Mock(Person)
 @Unroll
-class DefaultInputRenderingSpec extends Specification {
+class DefaultInputRenderingSpec extends Specification implements BuildsAccessorFactory {
 
 	@Shared def personDomainClass = new DefaultGrailsDomainClass(Person)
 	@Shared def basicProperty = new MockPersistentProperty()
@@ -27,7 +27,8 @@ class DefaultInputRenderingSpec extends Specification {
 	@Shared def manyToManyProperty = new MockPersistentProperty(manyToMany: true, referencedPropertyType: Person, referencedDomainClass: personDomainClass)
 	@Shared def oneToManyProperty = new MockPersistentProperty(oneToMany: true, referencedPropertyType: Person, referencedDomainClass: personDomainClass)
 	@Shared List<Person> people
-	def factory = new BeanPropertyAccessorFactory()
+	def factory
+
 
 	void setupSpec() {
 		people = ["Bart Simpson", "Homer Simpson", "Monty Burns"].collect {
@@ -39,9 +40,7 @@ class DefaultInputRenderingSpec extends Specification {
 	}
 	
 	void setup() {
-		factory.grailsApplication = grailsApplication
-		factory.constraintsEvaluator = new DefaultConstraintEvaluator()
-		factory.proxyHandler = new DefaultProxyHandler()
+		factory = buildFactory(grailsApplication)
 
 		people*.save(validate: false)
 	}

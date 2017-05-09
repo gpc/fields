@@ -58,7 +58,7 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
 
 		then:
 		ol.li.span.collect {it.text().trim()}.sort() == ["Address", "Biography", "Emails", "Gender", "Minor", "Name"]
-		ol.li.div.collect {it.text().trim()}.sort() == ["", "Bart Simpson", "Male", "Street94 Evergreen TerraceCitySpringfieldCountryUSA", "True",  "[:]"]
+		ol.li.div.collect {it.text().trim()}.sort() == ["", "", "Bart Simpson", "CitySpringfieldCountryUSAStreet94 Evergreen Terrace", "Male", "True"]
 	}
 
 

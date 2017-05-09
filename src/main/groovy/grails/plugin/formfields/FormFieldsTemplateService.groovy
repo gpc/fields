@@ -21,12 +21,17 @@ import grails.core.GrailsApplication
 import grails.plugins.GrailsPluginManager
 import grails.validation.ConstrainedProperty
 import groovy.util.logging.Slf4j
+import org.grails.datastore.mapping.model.types.ManyToMany
+import org.grails.datastore.mapping.model.types.ManyToOne
+import org.grails.datastore.mapping.model.types.OneToMany
+import org.grails.datastore.mapping.model.types.OneToOne
 import org.grails.web.gsp.io.GrailsConventionGroovyPageLocator
 import org.grails.web.servlet.mvc.GrailsWebRequest
 import org.grails.web.util.GrailsApplicationAttributes
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.context.request.RequestAttributes
 import org.springframework.web.context.request.RequestContextHolder
+
 
 import static org.grails.io.support.GrailsResourceUtils.appendPiecesForUri
 
@@ -183,10 +188,10 @@ class FormFieldsTemplateService {
 
     private String getAssociationPath(BeanPropertyAccessor propertyAccessor) {
         String associationPath = null
-        if (propertyAccessor.persistentProperty?.oneToOne) associationPath = 'oneToOne'
-        if (propertyAccessor.persistentProperty?.oneToMany) associationPath = 'oneToMany'
-        if (propertyAccessor.persistentProperty?.manyToMany) associationPath = 'manyToMany'
-        if (propertyAccessor.persistentProperty?.manyToOne) associationPath = 'manyToOne'
+        if (propertyAccessor.domainProperty instanceof OneToOne) associationPath = 'oneToOne'
+        if (propertyAccessor.domainProperty instanceof OneToMany) associationPath = 'oneToMany'
+        if (propertyAccessor.domainProperty instanceof ManyToMany) associationPath = 'manyToMany'
+        if (propertyAccessor.domainProperty instanceof ManyToOne) associationPath = 'manyToOne'
         associationPath
     }
 

@@ -20,17 +20,23 @@ import grails.core.GrailsApplication
 import grails.core.GrailsDomainClass
 import grails.core.GrailsDomainClassProperty
 import grails.core.support.GrailsApplicationAware
+import grails.validation.Constrained
 import groovy.transform.CompileStatic
 import groovy.xml.MarkupBuilder
 import org.apache.commons.lang.StringUtils
 import org.grails.buffer.FastStringWriter
+import org.grails.datastore.mapping.model.MappingContext
+import org.grails.datastore.mapping.model.PersistentEntity
+import org.grails.datastore.mapping.model.PersistentProperty
+import org.grails.datastore.mapping.model.types.*
 import org.grails.gsp.GroovyPage
-import org.grails.validation.DomainClassPropertyComparator
+import org.grails.scaffolding.model.DomainModelService
+import org.grails.scaffolding.model.DomainModelServiceImpl
+import org.grails.scaffolding.model.property.DomainPropertyFactory
 
 import java.sql.Blob
 
 import static FormFieldsTemplateService.toPropertyNameFormat
-import static grails.util.GrailsClassUtils.getStaticPropertyValue
 
 class FormFieldsTagLib implements GrailsApplicationAware {
 	static final namespace = 'f'
@@ -48,6 +54,17 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	FormFieldsTemplateService formFieldsTemplateService
 	GrailsApplication grailsApplication
 	BeanPropertyAccessorFactory beanPropertyAccessorFactory
+	DomainPropertyFactory fieldsDomainPropertyFactory
+	MappingContext grailsDomainClassMappingContext
+
+	private DomainModelService _domainModelService
+
+	protected DomainModelService getDomainModelService() {
+		if (!_domainModelService) {
+			_domainModelService = new DomainModelServiceImpl(domainPropertyFactory: fieldsDomainPropertyFactory)
+		}
+		_domainModelService
+	}
 
 	static defaultEncodeAs = [taglib:'raw']
 
@@ -155,7 +172,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		String theme = attrs.remove(THEME_ATTR)
 
 		BeanPropertyAccessor propertyAccessor = resolveProperty(bean, property)
-		if (propertyAccessor.persistentProperty?.embedded) {
+		if (propertyAccessor.domainProperty instanceof Embedded) {
 			renderEmbeddedProperties(bean, propertyAccessor, attrs + [templates: templatesFolder, field: fieldFolder, input: widgetFolder, theme:theme])
 		} else {
 			Map model = buildModel(propertyAccessor, attrs)
@@ -203,27 +220,30 @@ class FormFieldsTagLib implements GrailsApplicationAware {
       */
     def table = { attrs, body ->
         def collection = resolveBean(attrs.remove('collection'))
-        def domainClass
+		PersistentEntity domainClass
         if (attrs.containsKey('domainClass')) {
-            domainClass = grailsApplication.getDomainClass(attrs.remove('domainClass'))
+            domainClass = grailsDomainClassMappingContext.getPersistentEntity((String)attrs.remove('domainClass'))
         } else {
             domainClass = (collection instanceof Collection) && collection ? resolveDomainClass(collection.iterator().next()) : null
         }
         if (domainClass) {
-         def properties
-         if (attrs.containsKey('properties')) {
-            properties = attrs.remove('properties').collect { domainClass.getPropertyByName(it) }
-         } else {
+        def properties
+
+        if (attrs.containsKey('properties')) {
+            properties = attrs.remove('properties').collect {
+				fieldsDomainPropertyFactory.build(domainClass.getPropertyByName(it))
+			}
+        } else {
             properties = resolvePersistentProperties(domainClass, attrs)
             if (properties.size() > 6) {
                 properties = properties[0..6]
             }
-         }
+        }
 
-         String displayStyle = attrs.remove('displayStyle')
-		 String theme = attrs.remove(THEME_ATTR)
+        String displayStyle = attrs.remove('displayStyle')
+		String theme = attrs.remove(THEME_ATTR)
 
-         out << render(template: "/templates/_fields/table",
+        out << render(template: "/templates/_fields/table",
                  model: [domainClass: domainClass, domainProperties: properties, collection: collection, displayStyle: displayStyle, theme:theme])
         }
     }
@@ -300,7 +320,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		String theme = attrs.remove(THEME_ATTR)
 
 		if (property == null) {
-			GrailsDomainClass domainClass = resolveDomainClass(bean)
+			PersistentEntity domainClass = resolveDomainClass(bean)
 			if (domainClass) {
 				List properties = resolvePersistentProperties(domainClass, attrs)
 				out << render(template: "/templates/_fields/list", model: [domainClass: domainClass, domainProperties: properties]) { prop ->
@@ -363,7 +383,8 @@ class FormFieldsTagLib implements GrailsApplicationAware {
     private void renderEmbeddedProperties(bean, BeanPropertyAccessor propertyAccessor, attrs) {
 		def legend = resolveMessage(propertyAccessor.labelKeys, propertyAccessor.defaultLabel)
 		out << applyLayout(name: '_fields/embedded', params: [type: toPropertyNameFormat(propertyAccessor.propertyType), legend: legend]) {
-			for (embeddedProp in resolvePersistentProperties(propertyAccessor.persistentProperty.component, attrs)) {
+			Embedded prop = (Embedded)propertyAccessor.domainProperty
+			for (embeddedProp in resolvePersistentProperties(prop.associatedEntity, attrs)) {
 				def propertyPath = "${propertyAccessor.pathFromRoot}.${embeddedProp.name}"
 				out << field(bean: bean, property: propertyPath, prefix: attrs.prefix, default: attrs.default, field: attrs.field, widget: attrs.widget, theme:attrs[THEME_ATTR])
 			}
@@ -381,11 +402,11 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			bean: propertyAccessor.rootBean,
 			property: propertyAccessor.pathFromRoot,
 			type: propertyAccessor.propertyType,
-			beanClass: propertyAccessor.beanClass,
+			beanClass: propertyAccessor.entity,
 			label: resolveLabelText(propertyAccessor, attrs),
 			value: (value instanceof Number || value instanceof Boolean || value) ? value : valueDefault,
 			constraints: propertyAccessor.constraints,
-			persistentProperty: propertyAccessor.persistentProperty,
+			persistentProperty: propertyAccessor.domainProperty,
 			errors: propertyAccessor.errors.collect { message(error: it) },
 			required: attrs.containsKey("required") ? Boolean.valueOf(attrs.remove('required')) : propertyAccessor.required,
 			invalid: attrs.containsKey("invalid") ? Boolean.valueOf(attrs.remove('invalid')) : propertyAccessor.invalid,
@@ -451,40 +472,35 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		prefix ?: ''
 	}
 
-	private GrailsDomainClass resolveDomainClass(bean) {
+	private PersistentEntity resolveDomainClass(bean) {
 		resolveDomainClass(bean.getClass())
 	}
 
-	private GrailsDomainClass resolveDomainClass(Class beanClass) {
-		grailsApplication.getDomainClass(beanClass.name)
+	private PersistentEntity resolveDomainClass(Class beanClass) {
+		grailsDomainClassMappingContext.getPersistentEntity(beanClass.name)
 	}
 
-    private List<GrailsDomainClassProperty> resolvePersistentProperties(GrailsDomainClass domainClass, Map attrs) {
-        List<GrailsDomainClassProperty> properties
+    private List<PersistentProperty> resolvePersistentProperties(PersistentEntity domainClass, Map attrs) {
+        List<PersistentProperty> properties
 
         if(attrs.order) {
             if(attrs.except) {
                 throwTagError('The [except] and [order] attributes may not be used together.')
             }
             def orderBy = attrs.order?.tokenize(',')*.trim() ?: []
-            properties = orderBy.collect { propertyName -> domainClass.getPersistentProperty(propertyName) }
+            properties = orderBy.collect { propertyName ->
+				fieldsDomainPropertyFactory.build(domainClass.getPropertyByName(propertyName))
+			}
         } else {
-            properties = domainClass.persistentProperties as List
+			properties = domainModelService.getInputProperties(domainClass)
             def blacklist = attrs.except?.tokenize(',')*.trim() ?: []
-            blacklist << 'dateCreated' << 'lastUpdated'
-            Map scaffoldProp = getStaticPropertyValue(domainClass.clazz, 'scaffold')
-            if (scaffoldProp) {
-                blacklist.addAll(scaffoldProp.exclude)
-            }
-            properties.removeAll { it.name in blacklist }
-            properties.removeAll { !it.domainClass.constrainedProperties[it.name]?.display }
-            properties.removeAll { it.derived }
-
-            Collections.sort(properties, new org.grails.validation.DomainClassPropertyComparator(domainClass))
+			properties.removeAll { it.name in blacklist }
         }
 
 		return properties
     }
+
+
 
 	private boolean hasBody(Closure body) {
 		return body && !body.is(GroovyPage.EMPTY_BODY_CLOSURE)
@@ -545,6 +561,27 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		if (model.invalid) attrs.invalid = ""
 		if (!isEditable(model.constraints)) attrs.readonly = ""
 
+		boolean oneToOne = false
+		boolean manyToOne = false
+		boolean manyToMany = false
+		boolean oneToMany = false
+		if (model.containsKey('persistentProperty')) {
+			if (model.persistentProperty instanceof GrailsDomainClassProperty) {
+				log.warn("Rendering an input with a GrailsDomainClassProperty is deprecated. Use a PersistentProperty instead.")
+				GrailsDomainClassProperty gdcp = (GrailsDomainClassProperty)model.persistentProperty
+				oneToOne = gdcp.oneToOne
+				manyToOne = gdcp.manyToOne
+				manyToMany = gdcp.manyToMany
+				oneToMany = gdcp.oneToMany
+			} else if (model.persistentProperty instanceof PersistentProperty) {
+				PersistentProperty prop = (PersistentProperty)model.persistentProperty
+				oneToOne = prop instanceof OneToOne
+				manyToOne = prop instanceof ManyToOne
+				manyToMany = prop instanceof ManyToMany
+				oneToMany = prop instanceof OneToMany
+			}
+		}
+
 		if (model.type in [String, null]) {
 			return renderStringInput(model, attrs)
 		} else if (model.type in [boolean, Boolean]) {
@@ -555,9 +592,9 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			return g.field(attrs + [type: "url"])
 		} else if (model.type.isEnum()) {
 			return renderEnumInput(model,attrs)
-		} else if (model.persistentProperty?.oneToOne || model.persistentProperty?.manyToOne || model.persistentProperty?.manyToMany) {
+		} else if (oneToOne || manyToOne || manyToMany) {
 			return renderAssociationInput(model, attrs)
-		} else if (model.persistentProperty?.oneToMany) {
+		} else if (oneToMany) {
 			return renderOneToManyInput(model, attrs)
 		} else if (model.type in [Date, Calendar, java.sql.Date, java.sql.Time]) {
 			return renderDateTimeInput(model, attrs)
@@ -688,14 +725,14 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
     private CharSequence renderDefaultDisplay(Map model, Map attrs = [:], String templatesFolder, String theme) {
         def persistentProperty = model.persistentProperty
-        if (persistentProperty?.association) {
+        if (persistentProperty instanceof Association) {
             if (persistentProperty.embedded) {
                 return (attrs.displayStyle == 'table') ? model.value?.toString().encodeAsHTML() :
-                        displayEmbedded(model.value, persistentProperty.component, attrs, templatesFolder, theme)
-            } else if (persistentProperty.oneToMany || persistentProperty.manyToMany) {
-                return displayAssociationList(model.value, persistentProperty.referencedDomainClass)
+                        displayEmbedded(model.value, persistentProperty.associatedEntity, attrs, templatesFolder, theme)
+            } else if (persistentProperty instanceof OneToMany || persistentProperty instanceof ManyToMany) {
+                return displayAssociationList(model.value, ((Association)persistentProperty).associatedEntity)
             } else {
-                return displayAssociation(model.value, persistentProperty.referencedDomainClass)
+                return displayAssociation(model.value, ((Association)persistentProperty).associatedEntity)
             }
         }
 
@@ -715,9 +752,9 @@ class FormFieldsTagLib implements GrailsApplicationAware {
         }
     }
 
-    private CharSequence displayEmbedded(bean, GrailsDomainClass domainClass, Map attrs, String templatesFolder, String theme) {
+    private CharSequence displayEmbedded(bean, PersistentEntity domainClass, Map attrs, String templatesFolder, String theme) {
         Writer buffer = new FastStringWriter()
-        def properties = domainClass.persistentProperties.sort(new DomainClassPropertyComparator(domainClass))
+		def properties = domainModelService.getOutputProperties(domainClass)
         buffer << render(template: "/templates/_fields/list", model: [domainClass: domainClass, domainProperties: properties]) { prop ->
             def propertyAccessor = resolveProperty(bean, prop.name)
             def model = buildModel(propertyAccessor, attrs)
@@ -726,7 +763,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
         buffer.buffer
     }
 
-    private CharSequence displayAssociationList(values, GrailsDomainClass referencedDomainClass) {
+    private CharSequence displayAssociationList(values, PersistentEntity referencedDomainClass) {
         Writer buffer = new FastStringWriter()
         buffer << '<ul>'
         for (value in values) {
@@ -738,9 +775,9 @@ class FormFieldsTagLib implements GrailsApplicationAware {
         buffer.buffer
     }
 
-    private CharSequence displayAssociation(value, GrailsDomainClass referencedDomainClass) {
+    private CharSequence displayAssociation(value, PersistentEntity referencedDomainClass) {
         if(value) {
-            g.link(controller: referencedDomainClass.propertyName, action: "show", id: value.id, value.toString().encodeAsHTML())
+            g.link(controller: referencedDomainClass.decapitalizedName, action: "show", id: value.id, value.toString().encodeAsHTML())
         }
     }
 

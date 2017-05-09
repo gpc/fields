@@ -138,7 +138,7 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
 
         then:
         table.thead.tr.th.a.collect {it.text().trim()} == ['Address']
-        table.tbody.tr.td.a.ol.li.collect { it.div.text() } == [address.street, address.city, address.country]
+        table.tbody.tr.td.a.ol.li.collect { it.div.text() } == [address.city, address.country, address.street]
     }
 
 }

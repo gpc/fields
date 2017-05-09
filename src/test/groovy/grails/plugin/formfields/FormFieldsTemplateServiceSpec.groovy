@@ -10,13 +10,14 @@ import spock.lang.*
 
 @TestMixin(GroovyPageUnitTestMixin)
 @TestFor(FormFieldsTemplateService)
-class FormFieldsTemplateServiceSpec extends Specification {
+class FormFieldsTemplateServiceSpec extends Specification implements BuildsAccessorFactory {
 
 	Person personInstance
 	Employee employeeInstance
-	def factory = new BeanPropertyAccessorFactory()
+	def factory
 	
 	void setup() {
+		factory = buildFactory(grailsApplication)
 
 		webRequest.controllerName = 'foo'
 		webRequest.actionName = 'bar'
@@ -25,10 +26,6 @@ class FormFieldsTemplateServiceSpec extends Specification {
 		personInstance.address = new Address(street: "94 Evergreen Terrace", city: "Springfield", country: "USA")
 
 		employeeInstance = new Employee(salutation: Salutation.MR, name: "Waylon Smithers", salary: 10)
-
-		factory.grailsApplication = grailsApplication
-		factory.constraintsEvaluator = new DefaultConstraintEvaluator()
-		factory.proxyHandler = new DefaultProxyHandler()
 	}
 
 	void cleanup() {

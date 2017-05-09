@@ -38,7 +38,7 @@ class EmbeddedPropertiesSpec extends AbstractFormFieldsTagLibSpec {
 		def output = applyTemplate('<f:field bean="personInstance" property="address"/>', [personInstance: personInstance])
 
 		then:
-		output.contains('address.street address.city address.country')
+		output.contains('address.city address.country address.street')
 	}
 
 	void "field tag wraps embedded properties in a container"() {
@@ -46,7 +46,7 @@ class EmbeddedPropertiesSpec extends AbstractFormFieldsTagLibSpec {
 		views["/_fields/default/_wrapper.gsp"] = '${property} '
 
 		expect:
-		applyTemplate('<f:field bean="personInstance" property="address"/>', [personInstance: personInstance]) == '<fieldset class="embedded address"><legend>Address</legend>address.street address.city address.country </fieldset>'
+		applyTemplate('<f:field bean="personInstance" property="address"/>', [personInstance: personInstance]) == '<fieldset class="embedded address"><legend>Address</legend>address.city address.country address.street </fieldset>'
 	}
 
 	void "embedded property label is resolved from message bundle"() {

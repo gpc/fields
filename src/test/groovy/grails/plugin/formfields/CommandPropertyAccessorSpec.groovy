@@ -4,19 +4,20 @@ import grails.core.support.proxy.DefaultProxyHandler
 import grails.test.mixin.web.ControllerUnitTestMixin
 import grails.plugin.formfields.mock.*
 import grails.test.mixin.*
+import org.grails.scaffolding.model.property.DomainPropertyFactoryImpl
 import org.grails.validation.DefaultConstraintEvaluator
 import spock.lang.*
 
 @TestMixin(ControllerUnitTestMixin)
 @Mock(Person)
 @Unroll
-class CommandPropertyAccessorSpec extends Specification {
+class CommandPropertyAccessorSpec extends Specification implements BuildsAccessorFactory {
 
-	BeanPropertyAccessorFactory factory = new BeanPropertyAccessorFactory(
-			grailsApplication: grailsApplication,
-			constraintsEvaluator: new DefaultConstraintEvaluator(),
-			proxyHandler: new DefaultProxyHandler()
-	)
+	BeanPropertyAccessorFactory factory
+
+	void setup() {
+		factory = buildFactory(grailsApplication)
+	}
 
 	void 'resolves a basic property'() {
 		given:
@@ -247,8 +248,8 @@ class CommandPropertyAccessorSpec extends Specification {
 		def propertyAccessor = factory.accessorFor(command, 'person.name')
 
 		expect:
-		propertyAccessor.persistentProperty
-		propertyAccessor.persistentProperty.name == 'name'
+		propertyAccessor.domainProperty
+		propertyAccessor.domainProperty.name == 'name'
 	}
 
 	void 'constraints are defaulted for classes that have no constraints property'() {

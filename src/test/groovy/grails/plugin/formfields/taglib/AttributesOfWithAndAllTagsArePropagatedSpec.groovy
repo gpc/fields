@@ -73,8 +73,7 @@ class AttributesOfWithAndAllTagsArePropagatedSpec extends AbstractFormFieldsTagL
 				[productInstance: productInstance]
 		) == '<wrapper attr="cool"><widget>name</widget></wrapper>' +
 				'<wrapper attr="cool"><widget>netPrice</widget></wrapper>' +
-				'<wrapper attr="cool"><widget>taxRate</widget></wrapper>' +
-				'<wrapper attr="cool"><widget>tax</widget></wrapper>'
+				'<wrapper attr="cool"><widget>taxRate</widget></wrapper>'
 	}
 
 	@Ignore("It is not possible to use the <f:all> tag for printing displays instead of fields")

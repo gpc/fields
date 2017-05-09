@@ -1,8 +1,6 @@
 package grails.plugin.formfields
 
-import grails.core.support.proxy.DefaultProxyHandler
 import grails.test.mixin.web.ControllerUnitTestMixin
-import org.grails.validation.DefaultConstraintEvaluator
 import org.springframework.beans.NotReadablePropertyException
 import grails.plugin.formfields.mock.*
 import grails.test.mixin.*
@@ -11,19 +9,17 @@ import spock.lang.*
 @TestMixin(ControllerUnitTestMixin)
 @Mock([Person, Author, Book, Employee])
 @Unroll
-class DomainClassPropertyAccessorSpec extends Specification {
+class DomainClassPropertyAccessorSpec extends Specification implements BuildsAccessorFactory {
 
-	BeanPropertyAccessorFactory factory = new BeanPropertyAccessorFactory(
-		grailsApplication: grailsApplication,
-		constraintsEvaluator: new DefaultConstraintEvaluator(),
-		proxyHandler: new DefaultProxyHandler()
-	)
+	BeanPropertyAccessorFactory factory
 	@Shared Address address
 	@Shared Person person
 	@Shared Employee employee
 	@Shared Author author
 
 	void setup() {
+		factory = buildFactory(grailsApplication)
+
 		address = new Address(street: "94 Evergreen Terrace", city: "Springfield", country: "USA")
 		person = new Person(name: "Bart Simpson", password: "bartman", gender: Gender.Male, dateOfBirth: new Date(87, 3, 19), address: address)
 		person.emails = [home: "bart@thesimpsons.net", school: "bart.simpson@springfieldelementary.edu"]
@@ -54,13 +50,12 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		expect:
 		propertyAccessor.value == person.name
 		propertyAccessor.rootBeanType == Person
-		propertyAccessor.rootBeanClass.clazz == Person // TODO: should we really be testing these non-interface fields?
 		propertyAccessor.beanType == Person
-		propertyAccessor.beanClass.clazz == Person
+		propertyAccessor.entity.javaClass == Person
 		propertyAccessor.pathFromRoot == "name"
 		propertyAccessor.propertyName == "name"
 		propertyAccessor.propertyType == String
-		propertyAccessor.persistentProperty.name == "name"
+		propertyAccessor.domainProperty.name == "name"
 	}
 
 	void "resolves embedded property"() {
@@ -70,13 +65,12 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		expect:
 		propertyAccessor.value == address.city
 		propertyAccessor.rootBeanType == Person
-		propertyAccessor.rootBeanClass.clazz == Person
 		propertyAccessor.beanType == Address
-		propertyAccessor.beanClass == null // TODO: check if this is really the case when not mocked
+		propertyAccessor.entity == null // TODO: check if this is really the case when not mocked
 		propertyAccessor.pathFromRoot == "address.city"
 		propertyAccessor.propertyName == "city"
 		propertyAccessor.propertyType == String
-		propertyAccessor.persistentProperty == null
+		propertyAccessor.domainProperty == null
 	}
 
 	void "resolves property of indexed association"() {
@@ -86,13 +80,12 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		expect:
 		propertyAccessor.value == "Pattern Recognition"
 		propertyAccessor.rootBeanType == Author
-		propertyAccessor.rootBeanClass.clazz == Author
 		propertyAccessor.beanType == Book
-		propertyAccessor.beanClass.clazz == Book
+		propertyAccessor.entity.javaClass == Book
 		propertyAccessor.pathFromRoot == "books[0].title"
 		propertyAccessor.propertyName == "title"
 		propertyAccessor.propertyType == String
-		propertyAccessor.persistentProperty.name == "title"
+		propertyAccessor.domainProperty.name == "title"
 	}
 
 	void "resolves other side of many-to-one association"() {
@@ -102,13 +95,12 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		expect:
 		propertyAccessor.value == author.name
 		propertyAccessor.rootBeanType == Book
-		propertyAccessor.rootBeanClass.clazz == Book
 		propertyAccessor.beanType == Author
-		propertyAccessor.beanClass.clazz == Author
+		propertyAccessor.entity.javaClass == Author
 		propertyAccessor.pathFromRoot == "author.name"
 		propertyAccessor.propertyName == "name"
 		propertyAccessor.propertyType == String
-		propertyAccessor.persistentProperty.name == "name"
+		propertyAccessor.domainProperty.name == "name"
 	}
 
 	void "resolves property of simple mapped association"() {
@@ -122,7 +114,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		propertyAccessor.pathFromRoot == "emails[home]"
 		propertyAccessor.propertyName == "emails"
 		propertyAccessor.propertyType == String
-		propertyAccessor.persistentProperty.name == "emails"
+		propertyAccessor.domainProperty.name == "emails"
 	}
 
 	void "resolves basic property when value is null"() {
@@ -137,7 +129,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		propertyAccessor.pathFromRoot == "name"
 		propertyAccessor.propertyName == "name"
 		propertyAccessor.propertyType == String
-		propertyAccessor.persistentProperty.name == "name"
+		propertyAccessor.domainProperty.name == "name"
 	}
 
 	void "resolves embedded property when intervening path is null"() {
@@ -152,7 +144,7 @@ class DomainClassPropertyAccessorSpec extends Specification {
 		propertyAccessor.pathFromRoot == "address.city"
 		propertyAccessor.propertyName == "city"
 		propertyAccessor.propertyType == String
-		propertyAccessor.persistentProperty == null
+		propertyAccessor.domainProperty == null
 	}
 
 	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/37')
@@ -298,11 +290,11 @@ class DomainClassPropertyAccessorSpec extends Specification {
         propertyAccessor.value == person.transientText
         propertyAccessor.rootBeanType == Person
         propertyAccessor.beanType == Person
-        propertyAccessor.beanClass.clazz == Person
+        propertyAccessor.entity.javaClass == Person
         propertyAccessor.pathFromRoot == "transientText"
         propertyAccessor.propertyName == "transientText"
         propertyAccessor.propertyType == String
-        propertyAccessor.persistentProperty.name == "transientText"
+        propertyAccessor.domainProperty == null
         propertyAccessor.constraints.nullable
         propertyAccessor.constraints.propertyName == 'transientText'
     }
@@ -316,11 +308,11 @@ class DomainClassPropertyAccessorSpec extends Specification {
         propertyAccessor.value == person.id
         propertyAccessor.rootBeanType == Person
         propertyAccessor.beanType == Person
-        propertyAccessor.beanClass.clazz == Person
+        propertyAccessor.entity.javaClass == Person
         propertyAccessor.pathFromRoot == "id"
         propertyAccessor.propertyName == "id"
         propertyAccessor.propertyType == Long
-        propertyAccessor.persistentProperty.name == "id"
+        propertyAccessor.domainProperty.name == "id"
         propertyAccessor.constraints == null
     }
 

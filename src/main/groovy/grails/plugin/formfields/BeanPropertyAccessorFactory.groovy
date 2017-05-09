@@ -22,6 +22,14 @@ import grails.core.support.GrailsApplicationAware
 import grails.core.support.proxy.ProxyHandler
 import grails.validation.ConstrainedProperty
 import grails.validation.ConstraintsEvaluator
+import org.grails.datastore.mapping.model.MappingContext
+import org.grails.datastore.mapping.model.PersistentEntity
+import org.grails.datastore.mapping.model.PersistentProperty
+import org.grails.datastore.mapping.model.types.Association
+import org.grails.datastore.mapping.model.types.Basic
+import org.grails.scaffolding.model.property.DomainProperty
+import org.grails.scaffolding.model.property.DomainPropertyFactory
+import org.grails.scaffolding.model.property.DomainPropertyFactoryImpl
 import org.springframework.beans.BeanWrapper
 import org.springframework.beans.BeanWrapperImpl
 import org.springframework.beans.NotReadablePropertyException
@@ -35,60 +43,74 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 	GrailsApplication grailsApplication
 	ConstraintsEvaluator constraintsEvaluator
 	ProxyHandler proxyHandler
+	DomainPropertyFactory fieldsDomainPropertyFactory
+	MappingContext grailsDomainClassMappingContext
 
 	BeanPropertyAccessor accessorFor(bean, String propertyPath) {
 		if (bean == null) {
 			new PropertyPathAccessor(propertyPath)
 		} else {
-			def params = [rootBean: bean, rootBeanType: bean.getClass(), pathFromRoot: propertyPath, grailsApplication: grailsApplication]
-			params.rootBeanClass = resolveDomainClass(bean.getClass())
-
-			resolvePropertyFromPath(bean, propertyPath, params)
-
-			new BeanPropertyAccessorImpl(params)
+			resolvePropertyFromPath(bean, propertyPath)
 		}
 	}
 
-	private GrailsDomainClass resolveDomainClass(Class beanClass) {
-		grailsApplication.getDomainClass(beanClass.name)
+	private PersistentEntity resolveDomainClass(Class beanClass) {
+		grailsDomainClassMappingContext.getPersistentEntity(beanClass.name)
 	}
 
-	private void resolvePropertyFromPath(bean, String propertyPath, Map params) {
+	private BeanPropertyAccessor resolvePropertyFromPath(bean, String pathFromRoot) {
 		def beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(bean)
-		def pathElements = propertyPath.tokenize(".")
-		resolvePropertyFromPathComponents(beanWrapper, pathElements, params)
+		def pathElements = pathFromRoot.tokenize(".")
+
+		def params = [rootBean: bean, rootBeanType: bean.getClass(), pathFromRoot: pathFromRoot, grailsApplication: grailsApplication]
+
+		DomainProperty domainProperty = resolvePropertyFromPathComponents(beanWrapper, pathElements, params)
+
+		if (domainProperty != null) {
+			new DelegatingBeanPropertyAccessorImpl(bean, params.value, params.propertyType, pathFromRoot, domainProperty)
+		} else {
+			new BeanPropertyAccessorImpl(params)
+		}
+
 	}
 
-	private void resolvePropertyFromPathComponents(BeanWrapper beanWrapper, List<String> pathElements, Map params) {
+	private DomainProperty resolvePropertyFromPathComponents(BeanWrapper beanWrapper, List<String> pathElements, params) {
 		def propertyName = pathElements.remove(0)
 		def beanClass = resolveDomainClass(beanWrapper.wrappedClass)
 		def propertyType = resolvePropertyType(beanWrapper, beanClass, propertyName)
 		def value = beanWrapper.getPropertyValue(propertyName)
 		if (pathElements.empty) {
-			params.beanType = beanWrapper.wrappedClass
-			params.beanClass = beanClass
 			params.value = value
 			params.propertyType = propertyType
-			params.propertyName = stripIndex(propertyName)
-			params.persistentProperty = beanClass?.getPersistentProperty(params.propertyName)
-			params.constraints = resolveConstraints(beanWrapper, beanClass, params.propertyName)
+
+			PersistentProperty persistentProperty
+			String nameWithoutIndex = stripIndex(propertyName)
+			if (beanClass != null) {
+				persistentProperty = beanClass.getPropertyByName(nameWithoutIndex)
+				if (!persistentProperty && beanClass.isIdentityName(nameWithoutIndex)) {
+					persistentProperty = beanClass.identity
+				}
+			}
+
+			if (persistentProperty != null) {
+				fieldsDomainPropertyFactory.build(persistentProperty)
+			} else {
+				params.entity = beanClass
+				params.beanType = beanWrapper.wrappedClass
+				params.propertyType = propertyType
+				params.propertyName = nameWithoutIndex
+				params.persistentProperty = null
+				params.constraints = resolveConstraints(beanWrapper, params.propertyName)
+				null
+			}
 		} else {
 			resolvePropertyFromPathComponents(beanWrapperFor(propertyType, value), pathElements, params)
 		}
 	}
 
-	private ConstrainedProperty resolveConstraints(BeanWrapper beanWrapper, GrailsDomainClass beanClass, String propertyName) {
-        if (beanClass) {
-			def constrainedProperty = beanClass.constrainedProperties[propertyName] as ConstrainedProperty
-
-            if(!constrainedProperty && propertyName in beanClass.getPropertyValue(GrailsDomainClassProperty.TRANSIENT, List.class)) {
-                constrainedProperty = createDefaultConstraint(beanWrapper, propertyName)
-            }
-            return constrainedProperty
-		} else {
-			// TODO: possibly a better way to get constraints direct from a command object rather than re-evaluating them
+	private ConstrainedProperty resolveConstraints(BeanWrapper beanWrapper, String propertyName) {
 			return constraintsEvaluator.evaluate(beanWrapper.wrappedClass)[propertyName] as ConstrainedProperty ?: createDefaultConstraint(beanWrapper, propertyName)
-        }
+
 	}
 
     private ConstrainedProperty createDefaultConstraint(BeanWrapper beanWrapper, String propertyName) {
@@ -97,7 +119,7 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
         defaultConstraint
     }
 
-    private Class resolvePropertyType(BeanWrapper beanWrapper, GrailsDomainClass beanClass, String propertyName) {
+    private Class resolvePropertyType(BeanWrapper beanWrapper, PersistentEntity beanClass, String propertyName) {
 		Class propertyType = null
 		if (beanClass) {
 			propertyType = resolveDomainPropertyType(beanClass, propertyName)
@@ -108,14 +130,22 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 		propertyType
 	}
 
-	private Class resolveDomainPropertyType(GrailsDomainClass beanClass, String propertyName) {
+	private Class resolveDomainPropertyType(PersistentEntity beanClass, String propertyName) {
 		def propertyNameWithoutIndex = stripIndex(propertyName)
-		def persistentProperty = beanClass.getPersistentProperty(propertyNameWithoutIndex)
-		if (!persistentProperty) throw new NotReadablePropertyException(beanClass.clazz, propertyNameWithoutIndex)
+		def persistentProperty = beanClass.getPropertyByName(propertyNameWithoutIndex)
+		if (!persistentProperty && beanClass.isIdentityName(propertyNameWithoutIndex)) {
+			persistentProperty = beanClass.identity
+		}
+		if (!persistentProperty) {
+			return null
+		}
 		boolean isIndexed = propertyName =~ INDEXED_PROPERTY_PATTERN
-		boolean isCollection = persistentProperty.isBasicCollectionType() || persistentProperty.isAssociation()
-		if (isIndexed && isCollection) {
-			persistentProperty.referencedPropertyType
+		if (isIndexed) {
+			if (persistentProperty instanceof Basic) {
+				persistentProperty.componentType
+			} else if (persistentProperty instanceof Association) {
+				persistentProperty.associatedEntity.javaClass
+			}
 		} else {
 			persistentProperty.type
 		}

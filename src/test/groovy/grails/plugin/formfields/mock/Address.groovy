@@ -9,8 +9,8 @@ class Address {
 	String toString() { "$street, $city - $country" }
 
 	static constraints = {
-		street blank: false
-		city blank: false
-		country inList: ["USA", "UK", "Canada"]
+		street blank: false, order: 1
+		city blank: false, order: 2
+		country inList: ["USA", "UK", "Canada"], order: 3
 	}
 }

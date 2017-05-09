@@ -13,19 +13,16 @@ import spock.lang.*
 @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/5')
 @TestMixin(GrailsUnitTestMixin)
 @Stepwise
-class TemplateLookupCachingSpec extends Specification {
+class TemplateLookupCachingSpec extends Specification implements BuildsAccessorFactory {
 
 	@Shared def service = new FormFieldsTemplateService()
 	def mockGroovyPageLocator = Mock(GrailsConventionGroovyPageLocator)
-	@Shared def beanPropertyAccessorFactory = new BeanPropertyAccessorFactory()
+	@Shared def beanPropertyAccessorFactory
 	def person = new Person(name: 'Bart Simpson', password: 'eatmyshorts')
 
 	def setupSpec() {
 		service.pluginManager = applicationContext.pluginManager
-
-		beanPropertyAccessorFactory.grailsApplication = grailsApplication
-		beanPropertyAccessorFactory.constraintsEvaluator = new DefaultConstraintEvaluator()
-		beanPropertyAccessorFactory.proxyHandler = new DefaultProxyHandler()
+		beanPropertyAccessorFactory = buildFactory(grailsApplication)
 	}
 
 	def setup() {

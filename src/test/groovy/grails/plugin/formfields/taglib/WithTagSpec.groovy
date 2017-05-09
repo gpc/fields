@@ -59,7 +59,7 @@ class WithTagSpec extends AbstractFormFieldsTagLibSpec {
         def output = applyTemplate('<f:with bean="personInstance"><f:field property="address"/></f:with>', [personInstance: personInstance])
 
         then:
-        output.contains('address.street address.city address.country')
+        output.contains('address.city address.country address.street')
     }
 
 }

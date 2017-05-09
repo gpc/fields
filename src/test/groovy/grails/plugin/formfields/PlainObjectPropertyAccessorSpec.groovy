@@ -9,13 +9,13 @@ import grails.test.mixin.*
 
 @TestMixin(GrailsUnitTestMixin)
 @Mock(Person)
-class PlainObjectPropertyAccessorSpec extends Specification {
+class PlainObjectPropertyAccessorSpec extends Specification implements BuildsAccessorFactory {
 
-	BeanPropertyAccessorFactory factory = new BeanPropertyAccessorFactory(
-			grailsApplication: grailsApplication,
-			constraintsEvaluator: new DefaultConstraintEvaluator(),
-			proxyHandler: new DefaultProxyHandler()
-	)
+	BeanPropertyAccessorFactory factory
+
+	void setup() {
+		factory = buildFactory(grailsApplication)
+	}
 
 	void 'resolves a basic property'() {
 		given:
@@ -210,8 +210,8 @@ class PlainObjectPropertyAccessorSpec extends Specification {
 		def propertyAccessor = factory.accessorFor(bean, 'person.name')
 
 		expect:
-		propertyAccessor.persistentProperty
-		propertyAccessor.persistentProperty.name == 'name'
+		propertyAccessor.domainProperty
+		propertyAccessor.domainProperty.name == 'name'
 	}
 
 }

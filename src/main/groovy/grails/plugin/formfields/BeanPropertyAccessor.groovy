@@ -17,6 +17,8 @@
 package grails.plugin.formfields
 
 import grails.validation.ConstrainedProperty
+import org.grails.datastore.mapping.model.PersistentEntity
+import org.grails.datastore.mapping.model.PersistentProperty
 import org.springframework.validation.FieldError
 import grails.core.*
 
@@ -49,8 +51,15 @@ interface BeanPropertyAccessor {
 
 	/**
 	 * @return the GORM domain type of `beanType`. This will be null if `beanType` is not a domain class.
+	 * @deprecated use {@link #getEntity}
 	 */
+	@Deprecated
 	GrailsDomainClass getBeanClass()
+
+	/**
+	 * @return the GORM domain type of `beanType`. This will be null if `beanType` is not a domain class.
+	 */
+	PersistentEntity getEntity()
 
 	/**
 	 * @return all superclasses and interfaces of `beanType` excluding `Object`, `Serializable`, `Comparable` and `Cloneable`.
@@ -74,8 +83,15 @@ interface BeanPropertyAccessor {
 
 	/**
 	 * @return the GORM persistent property descriptor for the property at the end of the path, e.g. for `address.home.street` then the descriptor of `street` is returned. This will be null for non-domain properties.
+	 * @deprecated use {@link #getDomainProperty}
 	 */
+	@Deprecated
 	GrailsDomainClassProperty getPersistentProperty()
+
+	/**
+	 * @return the GORM persistent property descriptor for the property at the end of the path, e.g. for `address.home.street` then the descriptor of `street` is returned. This will be null for non-domain properties.
+	 */
+	PersistentProperty getDomainProperty()
 
 	/**
 	 * @return the constraints of the property at the end of the path, e.g. for `address.home.street` then the constraints of `street` are returned. This will be null for non-domain properties.

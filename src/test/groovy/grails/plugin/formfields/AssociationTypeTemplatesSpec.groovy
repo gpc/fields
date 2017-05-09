@@ -1,25 +1,21 @@
 package grails.plugin.formfields
 
-import grails.core.support.proxy.DefaultProxyHandler
 import grails.test.mixin.web.GroovyPageUnitTestMixin
 import grails.plugin.formfields.mock.*
 import grails.test.mixin.*
-import org.grails.validation.DefaultConstraintEvaluator
 import spock.lang.*
 
 @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/39')
 @TestMixin(GroovyPageUnitTestMixin)
 @TestFor(FormFieldsTemplateService)
 @Mock([Book, Author])
-class AssociationTypeTemplatesSpec extends Specification {
+class AssociationTypeTemplatesSpec extends Specification implements BuildsAccessorFactory {
 
-	def factory = new BeanPropertyAccessorFactory()
+	def factory
 	Author authorInstance
 
 	void setup() {
-		factory.grailsApplication = grailsApplication
-		factory.constraintsEvaluator = new DefaultConstraintEvaluator()
-		factory.proxyHandler = new DefaultProxyHandler()
+		factory = buildFactory(grailsApplication)
 
 		authorInstance = new Author(name: 'William Gibson')
 		authorInstance.addToBooks new Book(title: 'Pattern Recognition')

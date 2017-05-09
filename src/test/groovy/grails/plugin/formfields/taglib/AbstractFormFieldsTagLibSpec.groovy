@@ -2,7 +2,11 @@ package grails.plugin.formfields.taglib
 
 import grails.core.support.proxy.DefaultProxyHandler
 import grails.plugin.formfields.BeanPropertyAccessorFactory
+import grails.plugin.formfields.MappingContextBuilder
+import grails.plugin.formfields.MappingContextBuilderFactoryBean
 import org.grails.plugins.web.DefaultGrailsTagDateHelper
+import org.grails.scaffolding.model.property.DomainPropertyFactory
+import org.grails.scaffolding.model.property.DomainPropertyFactoryImpl
 import org.grails.validation.DefaultConstraintEvaluator
 import spock.lang.Specification
 import grails.plugin.formfields.mock.*
@@ -31,10 +35,14 @@ abstract class AbstractFormFieldsTagLibSpec extends Specification {
 		defineBeans {
 			grailsTagDateHelper(DefaultGrailsTagDateHelper)
 			constraintsEvaluator(DefaultConstraintEvaluator)
+			fieldsDomainPropertyFactory(DomainPropertyFactoryImpl)
 			beanPropertyAccessorFactory(BeanPropertyAccessorFactory) {
 				constraintsEvaluator = ref('constraintsEvaluator')
 				proxyHandler = new DefaultProxyHandler()
+				grailsDomainClassMappingContext = ref("grailsDomainClassMappingContext")
+				fieldsDomainPropertyFactory = ref("fieldsDomainPropertyFactory")
 			}
+			grailsDomainClassMappingContext(MappingContextBuilderFactoryBean)
 		}
 	}
 	

@@ -19,6 +19,7 @@ import grails.plugins.Plugin
 
 
 import grails.validation.ConstraintsEvaluator
+import org.grails.scaffolding.model.property.DomainPropertyFactoryImpl
 
 class FieldsGrailsPlugin extends Plugin {
 
@@ -31,5 +32,6 @@ class FieldsGrailsPlugin extends Plugin {
 			proxyHandler = ref('proxyHandler')
 		}
 		formFieldsTemplateService(FormFieldsTemplateService)
+		fieldsDomainPropertyFactory(DomainPropertyFactoryImpl)
 	}}
 }

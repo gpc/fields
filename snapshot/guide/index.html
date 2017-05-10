@@ -67,7 +67,7 @@
                     <h1>Grails Fields Plugin</h1>
                     <p></p>
                     <p>Customizable form-field rendering based on overrideable GSP template</p>
-                    <p><strong>Version:</strong> 2.1.6-SNAPSHOT</p>
+                    <p><strong>Version:</strong> 2.2.0-SNAPSHOT</p>
 
                 </div>
                 
@@ -132,6 +132,16 @@
 <div class="sect1">
 <h2 id="_changelog">Changelog</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_version_2_2_0">Version 2.2.0</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Conversion to the Mapping Context API. Usages of the GrailsDomainClass and GrailsDomainClassProperty classes have been removed. If you extend a template that relies on those classes, they have been replaced with <a href="http://gorm.grails.org/latest/hibernate/api/org/grails/datastore/mapping/model/PersistentEntity.html">PersistentEntity</a> and <a href="http://grails.github.io/scaffolding/latest/api/org/grails/scaffolding/model/property/DomainProperty.html">DomainProperty</a> respectively.</p>
+</li>
+</ul>
+</div>
+</div>
 <div class="sect2">
 <h3 id="_version_2_1_4">Version 2.1.4</h3>
 <div class="ulist">
@@ -934,7 +944,7 @@ Using <code>f:field</code> you can pass extra arguments (e.g. <code>optionKey</c
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>persistentProperty</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">GrailsDomainClassProperty</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://grails.github.io/scaffolding/latest/api/org/grails/scaffolding/model/property/DomainProperty.html">DomainProperty</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The persistent property object if the bean is a domain object.</p></td>
 </tr>
 <tr>

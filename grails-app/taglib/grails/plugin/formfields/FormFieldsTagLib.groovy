@@ -166,9 +166,9 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 		def bean = resolveBean(attrs.remove(BEAN_ATTR))
 		String property = attrs.remove(PROPERTY_ATTR)
-        String templatesFolder = attrs.remove(TEMPLATES_ATTR)
-        String fieldFolder = attrs.remove(WRAPPER_ATTR)
-        String widgetFolder = attrs.remove(WIDGET_ATTR)
+        	String templatesFolder = attrs.remove(TEMPLATES_ATTR)
+        	String fieldFolder = attrs.remove(WRAPPER_ATTR)
+        	String widgetFolder = attrs.remove(WIDGET_ATTR)
 		String theme = attrs.remove(THEME_ATTR)
 
 		BeanPropertyAccessor propertyAccessor = resolveProperty(bean, property)
@@ -235,9 +235,17 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			}
         } else {
             properties = resolvePersistentProperties(domainClass, attrs)
-            if (properties.size() > 6) {
-                properties = properties[0..6]
-            }
+	    if(attrs.containsKey('maxProperties') {
+		def maxPropCountString = attrs.remove('maxProperties')
+		    if(maxPropCountString.isInteger()) {
+		    	def maxPropCount = maxPropCountString as Integer
+		    		if (properties.size() > maxPropCount) {
+                			properties = properties[0..(maxPropCount-1)]
+            			}
+		    }
+			
+	    }
+            
         }
 
         String displayStyle = attrs.remove('displayStyle')

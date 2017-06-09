@@ -226,6 +226,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
       * Defaults to the class of the first element in the collection.
       * @attr properties The list of properties to be shown (table columns).
       * @attr maxProperties Maximal number of properties to be shown ordered by the domain class' constraints.
+	  * @attr maxProperties OPTIONAL The number of properties displayed when no explicit properties are given, defaults to 7.
       * @attr displayStyle OPTIONAL Determines the display template used for the bean's properties.
       * Defaults to 'table', meaning that 'display-table' templates will be used when available.
 	  * @attr order A comma-separated list of properties to include in provided order
@@ -247,18 +248,13 @@ class FormFieldsTagLib implements GrailsApplicationAware {
             properties = attrs.remove('properties').collect {
 				fieldsDomainPropertyFactory.build(domainClass.getPropertyByName(it))
 			}
-		} else {
-			properties = resolvePersistentProperties(domainClass, attrs)
-			if (attrs.containsKey('maxProperties')) {
-				String maxProperties = attrs.remove('maxProperties')
-				if(maxProperties.isInteger()){
-					Integer maxPropertiesNumber = maxProperties as Integer
-					if (maxPropertiesNumber.abs() < properties.size()) {
-						properties = properties[0..(maxPropertiesNumber - 1)]
-					}
-				}
-			}
-		}
+        } else {
+            properties = resolvePersistentProperties(domainClass, attrs)
+			def maxProperties = attrs.containsKey('maxProperties') ? attrs.remove('maxProperties').toInteger() -1 : 6
+            if (properties.size() > maxProperties) {
+                properties = properties[0..maxProperties]
+            }
+        }
 
         String displayStyle = attrs.remove('displayStyle')
 		String theme = attrs.remove(THEME_ATTR)

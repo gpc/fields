@@ -1,4 +1,6 @@
 package grails.plugin.formfields.taglib
+
+import grails.converters.XML
 import grails.plugin.formfields.FormFieldsTagLib
 import grails.plugin.formfields.FormFieldsTemplateService
 import grails.plugin.formfields.mock.Address
@@ -33,14 +35,49 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
         mockEmbeddedSitemeshLayout(taglib)
     }
 
-    void "table tag renders columns for the first 7 properties ordered by the domain class constraints"() {
+    @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/231')
+    void "table tag renders columns set by '<f:table collection=\"collection\" maxProperties=\"#maxProperties\"/>'"() {
+        expect:
+        def table = XML.parse(applyTemplate('<f:table collection="collection" maxProperties="' + maxProperties + '"/>', [collection: personList]))
+        def renderedTableColumns = table.thead.tr.th.a.collect { it.text().trim() }
+        renderedTableColumns == expectedTableColumns
+
+        where:
+        maxProperties   |   expectedTableColumns
+        1               |   ['Salutation']
+        2               |   ['Salutation', 'Name']
+        3               |   ['Salutation', 'Name', 'Date Of Birth']
+        6               |   ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', 'Picture']
+        7               |   ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', 'Picture', 'Another Picture']
+        8               |   ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', 'Picture', 'Another Picture', 'Password']
+        -4              |   ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', 'Picture', 'Another Picture', 'Password']
+        -9              |   ['Salutation', 'Name', 'Date Of Birth']
+    }
+
+    @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/231')
+    void "table tag renders all columns '<f:table collection=\"collection\" maxProperties=\"#maxProperties\"/>'"() {
+        expect:
+        def table = XML.parse(applyTemplate('<f:table collection="collection" maxProperties="' + maxProperties + '"/>', [collection: personList]))
+        def renderedTableColumns = table.thead.tr.th.a.collect { it.text().trim() }
+        expectedTableColumns.containsAll(renderedTableColumns)
+        renderedTableColumns.containsAll(expectedTableColumns)
+
+        where:
+        maxProperties   |   expectedTableColumns
+        0               |   ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', 'Picture', 'Another Picture', 'Password', 'Biography', 'Minor', 'Gender', 'Emails']
+        1000            |   ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', 'Picture', 'Another Picture', 'Password', 'Biography', 'Minor', 'Gender', 'Emails']
+    }
+
+    @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/231')
+    void "table tag renders all columns when no maxProperties attribute is set"() {
         when:
-        def output = applyTemplate('<f:table collection="collection"/>', [collection: personList])
-        def table = new XmlSlurper().parseText(output)
+        def table = XML.parse(applyTemplate('<f:table collection="collection"/>', [collection: personList]))
+        def renderedTableColumns = table.thead.tr.th.a.collect { it.text().trim() }
+        def expectedTableColumns = ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', 'Picture', 'Another Picture', 'Password', 'Biography', 'Minor', 'Gender', 'Emails']
 
         then:
-        table.thead.tr.th.a.collect {it.text().trim()} == ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', "Picture", "Another Picture"]
-        table.tbody.tr.collect { it.td[1].text() } == ['Bart Simpson', 'Marge Simpson']
+        expectedTableColumns.containsAll(renderedTableColumns)
+        renderedTableColumns.containsAll(expectedTableColumns)
     }
 
     @Issue('https://github.com/grails3-plugins/fields/issues/3')
@@ -49,8 +86,8 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
         def mixedPersonList = [new Employee(name: "Homer Simpson", salary: 1)] + personList
 
         when:
-        def output = applyTemplate('<f:table collection="collection" domainClass="grails.plugin.formfields.mock.Person"/>', [collection: mixedPersonList])
-        def table = new XmlSlurper().parseText(output)
+        def output = applyTemplate('<f:table collection="collection" maxProperties="7" domainClass="grails.plugin.formfields.mock.Person"/>', [collection: mixedPersonList])
+        def table = XML.parse(output)
 
         then:
         table.thead.tr.th.a.collect {it.text().trim()} == ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', "Picture", "Another Picture"]
@@ -61,7 +98,7 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
     void "table tag allows to specify the properties to be shown"() {
         when:
         def output = applyTemplate('<f:table collection="collection" properties="[\'gender\', \'name\']"/>', [collection: personList])
-        def table = new XmlSlurper().parseText(output)
+        def table = XML.parse(output)
 
         then:
         table.thead.tr.th.a.collect {it.text().trim()} == ['Gender', 'Name']
@@ -71,7 +108,7 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
     void "table tag allows to specify the order"() {
         when:
         def output = applyTemplate('<f:table collection="collection" order="name,gender"/>', [collection: personList])
-        def table = new XmlSlurper().parseText(output)
+        def table = XML.parse(output)
 
         then:
         table.thead.tr.th.a.collect {it.text().trim()} == ['Name', 'Gender']
@@ -82,7 +119,7 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
     void "table tag allows to specify the except"() {
         when:
         def output = applyTemplate('<f:table collection="collection" except="salutation,grailsDeveloper,picture,anotherPicture,password"/>', [collection: personList])
-        def table = new XmlSlurper().parseText(output)
+        def table = XML.parse(output)
 
         then:
         table.thead.tr.th.a.collect {it.text().trim()}.sort() == ["Address", "Biography", "Date Of Birth", "Emails", "Gender", "Minor", "Name"]
@@ -92,7 +129,7 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
     void "table tag displays embedded properties by default with toString"() {
         when:
         def output = applyTemplate('<f:table collection="collection" properties="[\'address\']"/>', [collection: personList])
-        def table = new XmlSlurper().parseText(output)
+        def table = XML.parse(output)
 
         then:
         table.thead.tr.th.a.collect {it.text().trim()} == ['Address']
@@ -107,7 +144,7 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
         when:
 
         def output = applyTemplate('<f:table collection="collection" properties="[\'address\']" displayStyle="custom"/>', [collection: personList])
-        def table = new XmlSlurper().parseText(output)
+        def table = XML.parse(output)
 
         then:
         table.thead.tr.th.a.collect {it.text().trim()} == ['Address']
@@ -122,7 +159,7 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
         when:
 
         def output = applyTemplate('<f:table collection="collection" properties="[\'address\']" displayStyle="custom" theme="test"/>', [collection: personList])
-        def table = new XmlSlurper().parseText(output)
+        def table = XML.parse(output)
 
         then:
         table.thead.tr.th.a.collect {it.text().trim()} == ['Address']
@@ -133,7 +170,7 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
         when:
 
         def output = applyTemplate('<f:table collection="collection" properties="[\'address\']" displayStyle="default"/>', [collection: [bart]])
-        def table = new XmlSlurper().parseText(output)
+        def table = XML.parse(output)
         println output
 
         then:

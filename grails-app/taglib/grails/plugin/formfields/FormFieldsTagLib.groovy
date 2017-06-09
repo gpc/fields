@@ -166,9 +166,9 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
 		def bean = resolveBean(attrs.remove(BEAN_ATTR))
 		String property = attrs.remove(PROPERTY_ATTR)
-        	String templatesFolder = attrs.remove(TEMPLATES_ATTR)
-        	String fieldFolder = attrs.remove(WRAPPER_ATTR)
-        	String widgetFolder = attrs.remove(WIDGET_ATTR)
+        String templatesFolder = attrs.remove(TEMPLATES_ATTR)
+        String fieldFolder = attrs.remove(WRAPPER_ATTR)
+        String widgetFolder = attrs.remove(WIDGET_ATTR)
 		String theme = attrs.remove(THEME_ATTR)
 
 		BeanPropertyAccessor propertyAccessor = resolveProperty(bean, property)
@@ -233,20 +233,18 @@ class FormFieldsTagLib implements GrailsApplicationAware {
             properties = attrs.remove('properties').collect {
 				fieldsDomainPropertyFactory.build(domainClass.getPropertyByName(it))
 			}
-        } else {
-            properties = resolvePersistentProperties(domainClass, attrs)
-	    if(attrs.containsKey('maxProperties') {
-		def maxPropCountString = attrs.remove('maxProperties')
-		    if(maxPropCountString.isInteger()) {
-		    	def maxPropCount = maxPropCountString as Integer
-		    		if (properties.size() > maxPropCount) {
-                			properties = properties[0..(maxPropCount-1)]
-            			}
-		    }
-			
-	    }
-            
-        }
+		} else {
+			properties = resolvePersistentProperties(domainClass, attrs)
+			if (attrs.containsKey('maxProperties')) {
+				String maxProperties = attrs.remove('maxProperties')
+				if(maxProperties.isInteger()){
+					Integer maxPropertiesNumber = maxProperties as Integer
+					if (maxPropertiesNumber.abs() < properties.size()) {
+						properties = properties[0..(maxPropertiesNumber - 1)]
+					}
+				}
+			}
+		}
 
         String displayStyle = attrs.remove('displayStyle')
 		String theme = attrs.remove(THEME_ATTR)

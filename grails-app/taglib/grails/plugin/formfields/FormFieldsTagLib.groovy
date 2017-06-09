@@ -212,6 +212,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
       * Defaults to the class of the first element in the collection.
       * @attr properties The list of properties to be shown (table columns).
       * Defaults to the first 7 (or less) properties of the domain class ordered by the domain class' constraints.
+	  * @attr maxProperties OPTIONAL The number of properties displayed when no explicit properties are given, defaults to 7.
       * @attr displayStyle OPTIONAL Determines the display template used for the bean's properties.
       * Defaults to 'table', meaning that 'display-table' templates will be used when available.
 	  * @attr order A comma-separated list of properties to include in provided order
@@ -235,8 +236,9 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			}
         } else {
             properties = resolvePersistentProperties(domainClass, attrs)
-            if (properties.size() > 6) {
-                properties = properties[0..6]
+			def maxProperties = attrs.containsKey('maxProperties') ? attrs.remove('maxProperties').toInteger() -1 : 6
+            if (properties.size() > maxProperties) {
+                properties = properties[0..maxProperties]
             }
         }
 

@@ -68,6 +68,17 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
         table.tbody.tr.collect { it.td[0].text() } == ['Male', 'Female']
     }
 
+    @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/231')
+    void "table tag renders columns for properties until maxProperties is reached, ordered by the domain class constraints"() {
+        when:
+            def output = applyTemplate('<f:table collection="collection" maxProperties="5"/>', [collection: personList])
+            def table = new XmlSlurper().parseText(output)
+
+        then:
+            table.thead.tr.th.a.collect {it.text().trim()} == ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer']
+            table.tbody.tr.collect { it.td[1].text() } == ['Bart Simpson', 'Marge Simpson']
+    }
+
     void "table tag allows to specify the order"() {
         when:
         def output = applyTemplate('<f:table collection="collection" order="name,gender"/>', [collection: personList])

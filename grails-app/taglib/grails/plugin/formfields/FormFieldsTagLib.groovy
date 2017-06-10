@@ -225,7 +225,6 @@ class FormFieldsTagLib implements GrailsApplicationAware {
       * @attr domainClass The FQN of the domain class of the elements in the collection.
       * Defaults to the class of the first element in the collection.
       * @attr properties The list of properties to be shown (table columns).
-      * @attr maxProperties Maximal number of properties to be shown ordered by the domain class' constraints.
 	  * @attr maxProperties OPTIONAL The number of properties displayed when no explicit properties are given, defaults to 7.
       * @attr displayStyle OPTIONAL Determines the display template used for the bean's properties.
       * Defaults to 'table', meaning that 'display-table' templates will be used when available.

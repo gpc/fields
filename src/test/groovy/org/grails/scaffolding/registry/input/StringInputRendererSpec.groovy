@@ -3,7 +3,7 @@ package org.grails.scaffolding.registry.input
 import org.grails.scaffolding.ClosureCapture
 import org.grails.scaffolding.ClosureCaptureSpecification
 import org.grails.scaffolding.model.property.DomainProperty
-import grails.validation.ConstrainedProperty
+import org.grails.scaffolding.model.property.Constrained
 import spock.lang.Shared
 import spock.lang.Subject
 
@@ -45,7 +45,7 @@ class StringInputRendererSpec extends ClosureCaptureSpecification {
 
         when:
         property = Mock(DomainProperty) {
-            1 * getConstraints() >> Mock(ConstrainedProperty) {
+            1 * getConstrained() >> Mock(Constrained) {
                 1 * isPassword() >> true
                 1 * getMatches() >> null
                 1 * getMaxSize() >> null
@@ -59,7 +59,7 @@ class StringInputRendererSpec extends ClosureCaptureSpecification {
 
         when:
         property = Mock(DomainProperty) {
-            1 * getConstraints() >> Mock(ConstrainedProperty) {
+            1 * getConstrained() >> Mock(Constrained) {
                 1 * isPassword() >> false
                 1 * isEmail() >> true
                 1 * getMatches() >> null
@@ -74,7 +74,7 @@ class StringInputRendererSpec extends ClosureCaptureSpecification {
 
         when:
         property = Mock(DomainProperty) {
-            1 * getConstraints() >> Mock(ConstrainedProperty) {
+            1 * getConstrained() >> Mock(Constrained) {
                 1 * isPassword() >> false
                 1 * isEmail() >> false
                 1 * isUrl() >> true
@@ -90,7 +90,7 @@ class StringInputRendererSpec extends ClosureCaptureSpecification {
 
         when:
         property = Mock(DomainProperty) {
-            1 * getConstraints() >> Mock(ConstrainedProperty) {
+            1 * getConstrained() >> Mock(Constrained) {
                 1 * isPassword() >> false
                 1 * isEmail() >> false
                 1 * isUrl() >> false
@@ -106,7 +106,7 @@ class StringInputRendererSpec extends ClosureCaptureSpecification {
 
         when:
         property = Mock(DomainProperty) {
-            1 * getConstraints() >> Mock(ConstrainedProperty) {
+            1 * getConstrained() >> Mock(Constrained) {
                 1 * isPassword() >> false
                 1 * isEmail() >> false
                 1 * isUrl() >> false

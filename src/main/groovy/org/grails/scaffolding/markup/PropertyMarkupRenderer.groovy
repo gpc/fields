@@ -21,7 +21,7 @@ trait PropertyMarkupRenderer {
         if (property.required) {
             attributes.required = null
         }
-        if (property.constraints && !property.constraints.editable) {
+        if (property.constrained && !property.constrained.editable) {
             attributes.readonly = null
         }
         attributes.name = name

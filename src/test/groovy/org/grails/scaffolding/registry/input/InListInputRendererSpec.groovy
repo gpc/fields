@@ -3,7 +3,7 @@ package org.grails.scaffolding.registry.input
 import org.grails.scaffolding.ClosureCapture
 import org.grails.scaffolding.ClosureCaptureSpecification
 import org.grails.scaffolding.model.property.DomainProperty
-import grails.validation.Constrained
+import org.grails.scaffolding.model.property.Constrained
 import spock.lang.Shared
 import spock.lang.Subject
 
@@ -26,7 +26,7 @@ class InListInputRendererSpec extends ClosureCaptureSpecification {
 
         when:
         property = Mock(DomainProperty) {
-            1 * getConstraints() >> Mock(Constrained) {
+            1 * getConstrained() >> Mock(Constrained) {
                 1 * getInList() >> [1]
             }
         }
@@ -42,7 +42,7 @@ class InListInputRendererSpec extends ClosureCaptureSpecification {
 
         when:
         property = Mock(DomainProperty) {
-            1 * getConstraints() >> Mock(Constrained) {
+            1 * getConstrained() >> Mock(Constrained) {
                 1 * getInList() >> [1, 2]
             }
         }

@@ -3,7 +3,7 @@ package org.grails.scaffolding.registry.input
 import org.grails.scaffolding.ClosureCapture
 import org.grails.scaffolding.ClosureCaptureSpecification
 import org.grails.scaffolding.model.property.DomainProperty
-import grails.validation.ConstrainedProperty
+import org.grails.scaffolding.model.property.Constrained
 import spock.lang.Shared
 import spock.lang.Subject
 
@@ -49,7 +49,7 @@ class NumberInputRendererSpec extends ClosureCaptureSpecification {
 
         when:
         property = Mock(DomainProperty) {
-            1 * getConstraints() >> Mock(ConstrainedProperty) {
+            1 * getConstrained() >> Mock(Constrained) {
                 1 * getRange() >> (1..5)
             }
         }
@@ -62,7 +62,7 @@ class NumberInputRendererSpec extends ClosureCaptureSpecification {
         when:
         property = Mock(DomainProperty) {
             1 * getType() >> Integer
-            1 * getConstraints() >> Mock(ConstrainedProperty) {
+            1 * getConstrained() >> Mock(Constrained) {
                 1 * getRange() >> null
                 1 * getScale() >> null
                 1 * getMin() >> null
@@ -78,7 +78,7 @@ class NumberInputRendererSpec extends ClosureCaptureSpecification {
         when:
         property = Mock(DomainProperty) {
             1 * getType() >> Double
-            1 * getConstraints() >> Mock(ConstrainedProperty) {
+            1 * getConstrained() >> Mock(Constrained) {
                 1 * getRange() >> null
                 1 * getScale() >> null
                 1 * getMin() >> null
@@ -94,7 +94,7 @@ class NumberInputRendererSpec extends ClosureCaptureSpecification {
         when:
         property = Mock(DomainProperty) {
             1 * getType() >> Integer
-            1 * getConstraints() >> Mock(ConstrainedProperty) {
+            1 * getConstrained() >> Mock(Constrained) {
                 1 * getRange() >> null
                 2 * getScale() >> 3
                 1 * getMin() >> null
@@ -110,7 +110,7 @@ class NumberInputRendererSpec extends ClosureCaptureSpecification {
         when:
         property = Mock(DomainProperty) {
             1 * getType() >> Integer
-            1 * getConstraints() >> Mock(ConstrainedProperty) {
+            1 * getConstrained() >> Mock(Constrained) {
                 1 * getRange() >> null
                 1 * getScale() >> null
                 2 * getMin() >> 5

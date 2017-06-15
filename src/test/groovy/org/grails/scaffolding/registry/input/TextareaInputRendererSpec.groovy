@@ -3,7 +3,7 @@ package org.grails.scaffolding.registry.input
 import org.grails.scaffolding.ClosureCapture
 import org.grails.scaffolding.ClosureCaptureSpecification
 import org.grails.scaffolding.model.property.DomainProperty
-import grails.validation.ConstrainedProperty
+import org.grails.scaffolding.model.property.Constrained
 import spock.lang.Shared
 import spock.lang.Subject
 
@@ -21,7 +21,7 @@ class TextareaInputRendererSpec extends ClosureCaptureSpecification {
     void "test supports"() {
         given:
         DomainProperty prop = Mock(DomainProperty) {
-            1 * getConstraints() >> Mock(ConstrainedProperty) {
+            1 * getConstrained() >> Mock(Constrained) {
                 1 * getWidget() >> "textarea"
             }
         }
@@ -33,7 +33,7 @@ class TextareaInputRendererSpec extends ClosureCaptureSpecification {
     void "test render"() {
         given:
         DomainProperty property = Mock(DomainProperty) {
-            1 * getConstraints() >> Mock(ConstrainedProperty) {
+            1 * getConstrained() >> Mock(Constrained) {
                 1 * getMaxSize() >> 20
             }
         }

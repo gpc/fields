@@ -1,24 +1,8 @@
 package org.grails.scaffolding.registry
 
+import org.grails.scaffolding.model.property.Constrained
 import org.grails.scaffolding.model.property.DomainProperty
-import org.grails.scaffolding.registry.input.AssociationInputRenderer
-import org.grails.scaffolding.registry.input.BidirectionalToManyInputRenderer
-import org.grails.scaffolding.registry.input.BooleanInputRenderer
-import org.grails.scaffolding.registry.input.CurrencyInputRenderer
-import org.grails.scaffolding.registry.input.DateInputRenderer
-import org.grails.scaffolding.registry.input.DefaultInputRenderer
-import org.grails.scaffolding.registry.input.EnumInputRenderer
-import org.grails.scaffolding.registry.input.FileInputRenderer
-import org.grails.scaffolding.registry.input.InListInputRenderer
-import org.grails.scaffolding.registry.input.LocaleInputRenderer
-import org.grails.scaffolding.registry.input.NumberInputRenderer
-import org.grails.scaffolding.registry.input.StringInputRenderer
-import org.grails.scaffolding.registry.input.TextareaInputRenderer
-import org.grails.scaffolding.registry.input.TimeInputRenderer
-import org.grails.scaffolding.registry.input.TimeZoneInputRenderer
-import org.grails.scaffolding.registry.input.UrlInputRenderer
-import grails.validation.Constrained
-import grails.validation.ConstrainedProperty
+import org.grails.scaffolding.registry.input.*
 import org.grails.datastore.mapping.model.types.OneToMany
 import spock.lang.Shared
 import spock.lang.Specification
@@ -44,7 +28,7 @@ class DomainRendererRegistererSpec extends Specification {
         given:
         DomainProperty domainProperty = Stub(DomainProperty) {
             getType() >> String
-            getConstraints() >> Stub(Constrained) {
+            getConstrained() >> Stub(Constrained) {
                 getInList() >> ["foo"]
             }
         }
@@ -57,7 +41,7 @@ class DomainRendererRegistererSpec extends Specification {
         given:
         DomainProperty domainProperty = Stub(DomainProperty) {
             getType() >> String
-            getConstraints() >> Stub(ConstrainedProperty) {
+            getConstrained() >> Stub(Constrained) {
                 getWidget() >> "textarea"
             }
         }
@@ -70,7 +54,7 @@ class DomainRendererRegistererSpec extends Specification {
         given:
         DomainProperty domainProperty = Stub(DomainProperty) {
             getType() >> String
-            getConstraints() >> Stub(ConstrainedProperty)
+            getConstrained() >> Stub(Constrained)
         }
 
         expect:
@@ -91,7 +75,7 @@ class DomainRendererRegistererSpec extends Specification {
         given:
         DomainProperty domainProperty = Stub(DomainProperty) {
             getType() >> Long
-            getConstraints() >> Stub(Constrained) {
+            getConstrained() >> Stub(Constrained) {
                 getInList() >> [1L, 2L]
             }
         }
@@ -197,7 +181,7 @@ class DomainRendererRegistererSpec extends Specification {
         given:
         DomainProperty domainProperty = Stub(DomainProperty) {
             getType() >> Specification
-            getConstraints() >> Stub(ConstrainedProperty) {
+            getConstrained() >> Stub(Constrained) {
                 getWidget() >> ""
             }
         }

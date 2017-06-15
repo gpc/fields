@@ -1,5 +1,7 @@
 package org.grails.scaffolding.registry.input
 
+import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
 import org.grails.scaffolding.model.property.DomainProperty
 import org.grails.scaffolding.registry.DomainInputRenderer
 
@@ -8,16 +10,18 @@ import org.grails.scaffolding.registry.DomainInputRenderer
  *
  * @author James Kleeh
  */
+@CompileStatic
 class TextareaInputRenderer implements DomainInputRenderer {
 
     @Override
     boolean supports(DomainProperty domainProperty) {
-        domainProperty.constraints?.widget == "textarea"
+        domainProperty.constrained?.widget == "textarea"
     }
 
     @Override
+    @CompileStatic(TypeCheckingMode.SKIP)
     Closure renderInput(Map defaultAttributes, DomainProperty domainProperty) {
-        Integer maxSize = domainProperty.constraints?.maxSize
+        Integer maxSize = domainProperty.constrained?.maxSize
         if (maxSize) {
             defaultAttributes.maxlength = maxSize
         }

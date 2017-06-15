@@ -1,7 +1,7 @@
 package org.grails.scaffolding.model
 
-import grails.validation.Constrained
 import org.grails.datastore.mapping.config.Property
+import org.grails.scaffolding.model.property.Constrained
 import org.grails.scaffolding.model.property.DomainProperty
 import org.grails.scaffolding.model.property.DomainPropertyFactory
 import grails.util.GrailsClassUtils
@@ -64,7 +64,7 @@ class DomainModelServiceImpl implements DomainModelService {
             if (it.name in blacklist) {
                 return true
             }
-            Constrained constrained = it.constraints
+            Constrained constrained = it.constrained
             if (constrained && !constrained.display) {
                 return true
             }

@@ -1,8 +1,8 @@
 package org.grails.scaffolding.model.property
 
 import grails.core.GrailsDomainClass
+import grails.gorm.validation.PersistentEntityValidator
 import grails.util.GrailsNameUtils
-import grails.validation.Constrained
 import groovy.transform.CompileStatic
 import org.grails.datastore.mapping.model.MappingContext
 import org.grails.datastore.mapping.model.PersistentEntity
@@ -10,6 +10,7 @@ import org.grails.datastore.mapping.model.PersistentProperty
 import org.grails.datastore.mapping.model.types.Association
 import org.grails.datastore.mapping.model.types.Basic
 import org.grails.validation.GrailsDomainClassValidator
+import org.springframework.validation.Validator
 
 import static grails.validation.ConstrainedProperty.BLANK_CONSTRAINT
 
@@ -22,9 +23,8 @@ class DomainPropertyImpl implements DomainProperty {
 
     @Delegate PersistentProperty persistentProperty
     PersistentProperty rootProperty
-    protected GrailsDomainClass grailsDomainClass
     PersistentEntity domainClass
-    Constrained constraints
+    Constrained constrained
     String pathFromRoot
 
     protected Boolean convertEmptyStringsToNull
@@ -33,10 +33,16 @@ class DomainPropertyImpl implements DomainProperty {
     DomainPropertyImpl(PersistentProperty persistentProperty, MappingContext mappingContext) {
         this.persistentProperty = persistentProperty
         this.domainClass = persistentProperty.owner
-        this.grailsDomainClass = ((GrailsDomainClassValidator)mappingContext.getEntityValidator(domainClass))?.domainClass
-        if (this.grailsDomainClass) {
-            this.constraints = (Constrained)grailsDomainClass.constrainedProperties[name]
+        Validator validator = mappingContext.getEntityValidator(domainClass)
+        if (validator instanceof GrailsDomainClassValidator) {
+            GrailsDomainClass grailsDomainClass = ((GrailsDomainClassValidator)validator).domainClass
+            if (grailsDomainClass) {
+                this.constrained = new Constrained(null, (grails.validation.Constrained)grailsDomainClass.constrainedProperties.get(name))
+            }
+        } else if (validator instanceof PersistentEntityValidator) {
+            this.constrained = new Constrained(((PersistentEntityValidator)validator).constrainedProperties.get(name), null)
         }
+
         this.pathFromRoot = persistentProperty.name
     }
 
@@ -78,14 +84,13 @@ class DomainPropertyImpl implements DomainProperty {
         if (type in [Boolean, boolean]) {
             false
         } else if (type == String) {
-            Constrained constraints = getConstraints()
             // if the property prohibits nulls and blanks are converted to nulls, then blanks will be prohibited even if a blank
             // constraint does not exist
-            boolean hasBlankConstraint = constraints?.hasAppliedConstraint(BLANK_CONSTRAINT)
-            boolean blanksImplicityProhibited = !hasBlankConstraint && !constraints?.nullable && convertEmptyStringsToNull && trimStrings
-            !constraints?.nullable && (!constraints?.blank || blanksImplicityProhibited)
+            boolean hasBlankConstraint = constrained?.hasAppliedConstraint(BLANK_CONSTRAINT)
+            boolean blanksImplicityProhibited = !hasBlankConstraint && !constrained?.nullable && convertEmptyStringsToNull && trimStrings
+            !constrained?.nullable && (!constrained?.blank || blanksImplicityProhibited)
         } else {
-            !constraints?.nullable
+            !constrained?.nullable
         }
     }
 
@@ -111,13 +116,13 @@ class DomainPropertyImpl implements DomainProperty {
             return 1;
         }
 
-        Constrained cp2 = o2.constraints
+        Constrained cp2 = o2.constrained
 
-        if (constraints == null && cp2 == null) {
+        if (constrained == null && cp2 == null) {
             return name.compareTo(o2.name);
         }
 
-        if (constraints == null) {
+        if (constrained == null) {
             return 1;
         }
 
@@ -125,11 +130,11 @@ class DomainPropertyImpl implements DomainProperty {
             return -1;
         }
 
-        if (constraints.order > cp2.order) {
+        if (constrained.order > cp2.order) {
             return 1;
         }
 
-        if (constraints.order < cp2.order) {
+        if (constrained.order < cp2.order) {
             return -1;
         }
 

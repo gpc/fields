@@ -1,5 +1,5 @@
 package org.grails.scaffolding.model.property
-import grails.validation.Constrained
+
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
 
@@ -29,7 +29,7 @@ interface DomainProperty extends PersistentProperty, Comparable<DomainProperty> 
     /**
      * @return The constraints of the property
      */
-    Constrained getConstraints()
+    Constrained getConstrained()
 
     /**
      * @return The root property

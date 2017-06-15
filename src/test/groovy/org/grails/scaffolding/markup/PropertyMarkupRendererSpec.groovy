@@ -1,6 +1,6 @@
 package org.grails.scaffolding.markup
 
-import grails.validation.Constrained
+import org.grails.scaffolding.model.property.Constrained
 import org.grails.scaffolding.model.property.DomainProperty
 import org.grails.scaffolding.registry.DomainInputRenderer
 import org.grails.scaffolding.registry.DomainInputRendererRegistry
@@ -57,7 +57,7 @@ class PropertyMarkupRendererSpec extends Specification {
         DomainProperty property = Mock(DomainProperty) {
             1 * getPathFromRoot() >> "city"
             1 * isRequired() >> false
-            1 * getConstraints() >> null
+            1 * getConstrained() >> null
         }
 
         when:
@@ -74,7 +74,7 @@ class PropertyMarkupRendererSpec extends Specification {
         DomainProperty property = Mock(DomainProperty) {
             1 * getPathFromRoot() >> "city"
             1 * isRequired() >> false
-            1 * getConstraints() >> null
+            1 * getConstrained() >> null
         }
 
         when:
@@ -89,7 +89,7 @@ class PropertyMarkupRendererSpec extends Specification {
         DomainProperty property = Mock(DomainProperty) {
             1 * getPathFromRoot() >> "city"
             1 * isRequired() >> true
-            1 * getConstraints() >> null
+            1 * getConstrained() >> null
         }
 
         when:
@@ -104,7 +104,7 @@ class PropertyMarkupRendererSpec extends Specification {
         DomainProperty property = Mock(DomainProperty) {
             1 * getPathFromRoot() >> "city"
             1 * isRequired() >> false
-            2 * getConstraints() >> Mock(Constrained) {
+            2 * getConstrained() >> Mock(Constrained) {
                 1 * isEditable() >> false
             }
         }

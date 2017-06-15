@@ -1,14 +1,17 @@
 package org.grails.scaffolding.registry.input
 
+import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
+import org.grails.scaffolding.model.property.Constrained
 import org.grails.scaffolding.model.property.DomainProperty
 import org.grails.scaffolding.registry.DomainInputRenderer
-import grails.validation.Constrained
 
 /**
  * The default renderer for rendering {@link Number} or primitive properties
  *
  * @author James Kleeh
  */
+@CompileStatic
 class NumberInputRenderer implements DomainInputRenderer {
 
     @Override
@@ -18,8 +21,9 @@ class NumberInputRenderer implements DomainInputRenderer {
     }
 
     @Override
+    @CompileStatic(TypeCheckingMode.SKIP)
     Closure renderInput(Map attributes, DomainProperty property) {
-        Constrained constraints = property.constraints
+        Constrained constraints = property.constrained
         Range range = constraints?.range
         if (range) {
             attributes.type = "range"

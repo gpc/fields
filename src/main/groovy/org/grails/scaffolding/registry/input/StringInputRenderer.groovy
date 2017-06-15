@@ -1,14 +1,17 @@
 package org.grails.scaffolding.registry.input
 
+import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
+import org.grails.scaffolding.model.property.Constrained
 import org.grails.scaffolding.model.property.DomainProperty
 import org.grails.scaffolding.registry.DomainInputRenderer
-import grails.validation.Constrained
 
 /**
  * The default renderer for rendering {@link String} properties
  *
  * @author James Kleeh
  */
+@CompileStatic
 class StringInputRenderer implements DomainInputRenderer {
 
     @Override
@@ -17,8 +20,9 @@ class StringInputRenderer implements DomainInputRenderer {
     }
 
     @Override
+    @CompileStatic(TypeCheckingMode.SKIP)
     Closure renderInput(Map standardAttributes, DomainProperty domainProperty) {
-        Constrained constraints = domainProperty.constraints
+        Constrained constraints = domainProperty.constrained
         if (constraints?.password) {
             standardAttributes.type = "password"
         } else if (constraints?.email)  {

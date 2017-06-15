@@ -2,10 +2,10 @@ package org.grails.scaffolding.model
 
 import org.grails.datastore.mapping.config.Property
 import org.grails.datastore.mapping.model.PropertyMapping
+import org.grails.scaffolding.model.property.Constrained
 import org.grails.scaffolding.model.property.DomainProperty
 import org.grails.scaffolding.model.property.DomainPropertyFactory
 import org.grails.scaffolding.model.property.DomainPropertyFactoryImpl
-import grails.validation.ConstrainedProperty
 import org.grails.datastore.mapping.keyvalue.mapping.config.KeyValueMappingContext
 import org.grails.datastore.mapping.model.MappingContext
 import org.grails.datastore.mapping.model.PersistentEntity
@@ -32,7 +32,7 @@ class DomainModelServiceSpec extends Specification implements MocksDomain {
         given:
         PersistentProperty bar = Mock()
         DomainProperty domainProperty = Mock(DomainProperty) {
-            1 * getConstraints() >> Mock(ConstrainedProperty) { 1 * isDisplay() >> true }
+            1 * getConstrained() >> Mock(Constrained) { 1 * isDisplay() >> true }
             1 * getName() >> "bar"
             1 * getMapping() >> Mock(PropertyMapping) {
                 1 * getMappedForm() >> Mock(Property) {
@@ -57,7 +57,7 @@ class DomainModelServiceSpec extends Specification implements MocksDomain {
         given:
         PersistentProperty bar = Mock()
         DomainProperty domainProperty = Mock(DomainProperty) {
-            1 * getConstraints() >> Mock(ConstrainedProperty) { 1 * isDisplay() >> true }
+            1 * getConstrained() >> Mock(Constrained) { 1 * isDisplay() >> true }
             1 * getName() >> "bar"
             1 * getMapping() >> Mock(PropertyMapping) {
                 1 * getMappedForm() >> Mock(Property) {
@@ -111,7 +111,7 @@ class DomainModelServiceSpec extends Specification implements MocksDomain {
         PersistentProperty bar = Mock()
         DomainProperty domainProperty = Mock(DomainProperty) {
             1 * getName() >> "bar"
-            1 * getConstraints() >> Mock(ConstrainedProperty) { 1 * isDisplay() >> false }
+            1 * getConstrained() >> Mock(Constrained) { 1 * isDisplay() >> false }
         }
         domainModelService.domainPropertyFactory = Mock(DomainPropertyFactoryImpl) {
             1 * build(bar) >> domainProperty
@@ -169,7 +169,7 @@ class DomainModelServiceSpec extends Specification implements MocksDomain {
         PersistentProperty persistentProperty2 = Mock(PersistentProperty)
         DomainProperty bar = Stub(DomainProperty) {
             getName() >> "bar"
-            getConstraints() >> Mock(ConstrainedProperty) { 1 * isDisplay() >> true }
+            getConstrained() >> Mock(Constrained) { 1 * isDisplay() >> true }
         }
         DomainProperty version = Stub(DomainProperty) {
             getName() >> "version"
@@ -196,7 +196,7 @@ class DomainModelServiceSpec extends Specification implements MocksDomain {
         List domainProperties = (1..10).collect { num ->
             Stub(DomainProperty) {
                 getName() >> num.toString()
-                getConstraints() >> Mock(ConstrainedProperty) { 1 * isDisplay() >> true }
+                getConstrained() >> Mock(Constrained) { 1 * isDisplay() >> true }
             }
         }
         domainProperties.add(Stub(DomainProperty) {

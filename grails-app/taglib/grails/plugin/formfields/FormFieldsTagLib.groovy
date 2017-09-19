@@ -715,15 +715,27 @@ class FormFieldsTagLib implements GrailsApplicationAware {
     private CharSequence renderOneToManyInput(Map model, Map attrs) {
         Writer buffer = new FastStringWriter()
         buffer << '<ul>'
-        def referencedDomainClass = model.persistentProperty.referencedDomainClass
-        def controllerName = referencedDomainClass.propertyName
+		def persistentProperty = model.persistentProperty
+		def controllerName
+		def shortName
+		if (persistentProperty instanceof GrailsDomainClassProperty) {
+			log.warn("Rendering an input with a GrailsDomainClassProperty is deprecated. Use a PersistentProperty instead.")
+			GrailsDomainClassProperty gdcp = ((GrailsDomainClassProperty) persistentProperty)
+			controllerName = gdcp.referencedDomainClass.propertyName
+			shortName = gdcp.referencedDomainClass.shortName
+		} else if (persistentProperty instanceof PersistentProperty) {
+			PersistentProperty prop = ((PersistentProperty) persistentProperty)
+			controllerName = prop.owner.decapitalizedName
+			shortName = prop.owner.javaClass.simpleName
+		}
+
         attrs.value.each {
             buffer << '<li>'
             buffer << g.link(controller: controllerName, action: "show", id: it.id, it.toString().encodeAsHTML())
             buffer << '</li>'
         }
         buffer << '</ul>'
-        def referencedTypeLabel = message(code: "${referencedDomainClass.propertyName}.label", default: referencedDomainClass.shortName)
+        def referencedTypeLabel = message(code: "${controllerName}.label", default: shortName)
         def addLabel = g.message(code: 'default.add.label', args: [referencedTypeLabel])
         buffer << g.link(controller: controllerName, action: "create", params: [("${model.beanClass.propertyName}.id".toString()): model.bean.id], addLabel)
         buffer.buffer

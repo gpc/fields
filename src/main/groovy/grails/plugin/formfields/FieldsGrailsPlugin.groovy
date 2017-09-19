@@ -30,6 +30,8 @@ class FieldsGrailsPlugin extends Plugin {
 		beanPropertyAccessorFactory(BeanPropertyAccessorFactory) {
 			constraintsEvaluator = ref(ConstraintsEvaluator.BEAN_NAME)
 			proxyHandler = ref('proxyHandler')
+			fieldsDomainPropertyFactory = ref('fieldsDomainPropertyFactory')
+			grailsDomainClassMappingContext = ref('grailsDomainClassMappingContext')
 		}
 		formFieldsTemplateService(FormFieldsTemplateService)
 		fieldsDomainPropertyFactory(DomainPropertyFactoryImpl)

@@ -698,9 +698,26 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 
     private CharSequence renderAssociationInput(Map model, Map attrs) {
         attrs.id = (model.prefix ?: '') + model.property
-        attrs.from = null != attrs.from ? attrs.from : model.persistentProperty.referencedPropertyType.list()
+		def persistentProperty = model.persistentProperty
+		Class referencedPropertyType
+		boolean manyToMany = false
+		if (persistentProperty instanceof GrailsDomainClassProperty) {
+			GrailsDomainClassProperty gdcp = ((GrailsDomainClassProperty) persistentProperty)
+			referencedPropertyType = gdcp.referencedPropertyType
+			manyToMany = gdcp.manyToMany
+		} else if (persistentProperty instanceof Association) {
+			Association prop = ((Association) persistentProperty)
+			PersistentEntity entity = prop.getAssociatedEntity()
+			if (entity != null) {
+				referencedPropertyType = entity.getJavaClass()
+			} else if (prop.isBasic()) {
+				referencedPropertyType = ((Basic)prop).getComponentType()
+			}
+			manyToMany = prop instanceof ManyToMany
+		}
+        attrs.from = null != attrs.from ? attrs.from : referencedPropertyType.list()
         attrs.optionKey = "id" // TODO: handle alternate id names
-        if (model.persistentProperty.manyToMany) {
+        if (manyToMany) {
             attrs.multiple = ""
             attrs.value = model.value*.id
             attrs.name = "${model.prefix ?: ''}${model.property}"
@@ -719,14 +736,13 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		def controllerName
 		def shortName
 		if (persistentProperty instanceof GrailsDomainClassProperty) {
-			log.warn("Rendering an input with a GrailsDomainClassProperty is deprecated. Use a PersistentProperty instead.")
 			GrailsDomainClassProperty gdcp = ((GrailsDomainClassProperty) persistentProperty)
 			controllerName = gdcp.referencedDomainClass.propertyName
 			shortName = gdcp.referencedDomainClass.shortName
-		} else if (persistentProperty instanceof PersistentProperty) {
-			PersistentProperty prop = ((PersistentProperty) persistentProperty)
-			controllerName = prop.owner.decapitalizedName
-			shortName = prop.owner.javaClass.simpleName
+		} else if (persistentProperty instanceof Association) {
+			Association prop = ((Association) persistentProperty)
+			controllerName = prop.associatedEntity.decapitalizedName
+			shortName = prop.associatedEntity.javaClass.simpleName
 		}
 
         attrs.value.each {

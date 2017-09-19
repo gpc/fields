@@ -35,6 +35,7 @@ import org.springframework.beans.BeanWrapper
 import org.springframework.beans.BeanWrapperImpl
 import org.springframework.beans.NotReadablePropertyException
 import org.springframework.beans.PropertyAccessorFactory
+import org.springframework.beans.factory.annotation.Autowired
 
 import java.lang.reflect.ParameterizedType
 import java.util.regex.Pattern
@@ -44,7 +45,11 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 	GrailsApplication grailsApplication
 	ConstraintsEvaluator constraintsEvaluator
 	ProxyHandler proxyHandler
+
+	@Autowired
 	DomainPropertyFactory fieldsDomainPropertyFactory
+
+	@Autowired
 	MappingContext grailsDomainClassMappingContext
 
 	BeanPropertyAccessor accessorFor(bean, String propertyPath) {

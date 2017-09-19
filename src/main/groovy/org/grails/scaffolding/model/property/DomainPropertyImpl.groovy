@@ -42,6 +42,9 @@ class DomainPropertyImpl implements DomainProperty {
         } else if (validator instanceof PersistentEntityValidator) {
             this.constrained = new Constrained(((PersistentEntityValidator)validator).constrainedProperties.get(name), null)
         }
+        if (this.constrained?.isNull()) {
+            this.constrained = null
+        }
 
         this.pathFromRoot = persistentProperty.name
     }
@@ -107,37 +110,37 @@ class DomainPropertyImpl implements DomainProperty {
         GrailsNameUtils.getNaturalName(name)
     }
 
-    public int compareTo(DomainProperty o2) {
+    int compareTo(DomainProperty o2) {
 
         if (domainClass.mapping.identifier?.identifierName?.contains(name)) {
-            return -1;
+            return -1
         }
         if (domainClass.mapping.identifier?.identifierName?.contains(o2.name)) {
-            return 1;
+            return 1
         }
 
         Constrained cp2 = o2.constrained
 
-        if (constrained == null && cp2 == null) {
-            return name.compareTo(o2.name);
+        if (constrained == null  && cp2 == null) {
+            return name.compareTo(o2.name)
         }
 
         if (constrained == null) {
-            return 1;
+            return 1
         }
 
         if (cp2 == null) {
-            return -1;
+            return -1
         }
 
         if (constrained.order > cp2.order) {
-            return 1;
+            return 1
         }
 
         if (constrained.order < cp2.order) {
-            return -1;
+            return -1
         }
 
-        return 0;
+        return 0
     }
 }

@@ -261,4 +261,8 @@ class Constrained {
             null
         }
     }
+
+    boolean isNull() {
+        this.constrained1 == null && this.constrained2 == null
+    }
 }

@@ -540,7 +540,7 @@ class DefaultInputRenderingPersistentSpec extends Specification implements Build
 		messageSource.addMessage("default.add.label", request.locale, "Add {0}")
 
 		and:
-		def model = [bean: [id: 1337], beanClass: [propertyName: "thing"], type: Set, property: "prop", constraints: null, persistentProperty: oneToManyProperty, value: people]
+		def model = [bean: [id: 1337], beanClass: personDomainClass, type: Set, property: "prop", constraints: null, persistentProperty: oneToManyProperty, value: people]
 
 		when:
 		def output = tagLib.renderDefaultInput(model)
@@ -551,7 +551,7 @@ class DefaultInputRenderingPersistentSpec extends Specification implements Build
 		}
 
 		and:
-		output.contains("""<a href="/person/create?thing.id=1337">Add Person</a>""")
+		output.contains("""<a href="/person/create?person.id=1337">Add Person</a>""")
 	}
 	
 	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/56')

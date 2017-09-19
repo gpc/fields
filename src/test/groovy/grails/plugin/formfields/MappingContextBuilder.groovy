@@ -37,10 +37,17 @@ class MappingContextBuilder {
         for (PersistentEntity entity in entities) {
             entity.initialize()
             GrailsDomainClass gdc = grailsApplication.getArtefact(DomainClassArtefactHandler.TYPE, entity.javaClass.name)
-            Validator validator = new GrailsDomainClassValidator()
-            validator.grailsApplication = grailsApplication
-            validator.messageSource = messageSource
-            validator.domainClass = gdc
+            Validator validator
+            if (gdc) {
+                validator = new GrailsDomainClassValidator()
+                validator.grailsApplication = grailsApplication
+                validator.messageSource = messageSource
+                validator.domainClass = gdc
+            }
+            else {
+                validator = new PersistentEntityValidator(entity, messageSource, constraintEvaluator)
+            }
+
             mappingContext.addEntityValidator(entity, validator)
         }
         mappingContext

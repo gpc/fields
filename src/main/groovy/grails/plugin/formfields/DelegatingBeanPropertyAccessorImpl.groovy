@@ -14,6 +14,7 @@ import org.grails.datastore.gorm.GormValidateable
 import org.grails.datastore.mapping.dirty.checking.DirtyCheckable
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
+import org.grails.scaffolding.model.property.Constrained
 import org.grails.scaffolding.model.property.DomainProperty
 import org.springframework.validation.Errors
 import org.springframework.validation.FieldError
@@ -103,8 +104,8 @@ class DelegatingBeanPropertyAccessorImpl implements BeanPropertyAccessor {
     }
 
     @Override
-    ConstrainedProperty getConstraints() {
-        (ConstrainedProperty)domainProperty.constraints
+    Constrained getConstraints() {
+        domainProperty.constrained
     }
 
     @Override

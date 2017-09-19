@@ -25,6 +25,7 @@ import org.grails.datastore.mapping.model.types.ManyToMany
 import org.grails.datastore.mapping.model.types.ManyToOne
 import org.grails.datastore.mapping.model.types.OneToMany
 import org.grails.datastore.mapping.model.types.OneToOne
+import org.grails.scaffolding.model.property.Constrained
 import org.grails.web.gsp.io.GrailsConventionGroovyPageLocator
 import org.grails.web.servlet.mvc.GrailsWebRequest
 import org.grails.web.util.GrailsApplicationAttributes
@@ -167,7 +168,7 @@ class FormFieldsTemplateService {
         }
 
         // if we have a domain constraint widget look in `grails-app/views/_fields/<widget>/_field.gsp`
-        String widget = getWidget(propertyAccessor.constraints)
+        String widget = getWidget(propertyAccessor.constraints, propertyAccessor.propertyType)
         if (widget) {
             templateResolveOrder << appendPiecesForUri("/_fields", themeFolder, widget, templateName)
         }
@@ -195,7 +196,7 @@ class FormFieldsTemplateService {
         associationPath
     }
 
-    protected String getWidget(ConstrainedProperty cp) {
+    protected String getWidget(Constrained cp, Class propertyType) {
         if (null == cp) {
             return null
         }
@@ -204,7 +205,7 @@ class FormFieldsTemplateService {
             widget = cp.widget
         } else if (cp.password) {
             widget = 'password'
-        } else if (CharSequence.isAssignableFrom(cp.propertyType)) {
+        } else if (CharSequence.isAssignableFrom(propertyType)) {
             if (cp.url) {
                 widget = 'url'
             } else if (cp.creditCard) {

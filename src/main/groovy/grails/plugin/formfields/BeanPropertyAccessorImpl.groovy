@@ -29,6 +29,7 @@ import org.grails.datastore.gorm.GormEntity
 import org.grails.datastore.mapping.dirty.checking.DirtyCheckable
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
+import org.grails.scaffolding.model.property.Constrained
 import org.springframework.validation.FieldError
 
 import static grails.validation.ConstrainedProperty.BLANK_CONSTRAINT
@@ -44,7 +45,7 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
 	String propertyName
 	Class propertyType
 	GrailsDomainClassProperty persistentProperty
-	ConstrainedProperty constraints
+	Constrained constraints
 	Object value
 	PersistentProperty domainProperty
 	PersistentEntity entity

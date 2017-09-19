@@ -11,10 +11,11 @@ import org.springframework.beans.factory.FactoryBean
 class MappingContextBuilderFactoryBean implements FactoryBean<MappingContext>, GrailsApplicationAware {
 
     GrailsApplication grailsApplication
+    Class[] domains = [] as Class[]
 
     @Override
     MappingContext getObject() throws Exception {
-        new MappingContextBuilder(grailsApplication).build()
+        new MappingContextBuilder(grailsApplication).build(domains)
     }
 
     @Override

@@ -950,7 +950,7 @@ class FormFieldsTemplateServiceSpec extends Specification implements BuildsAcces
     @Issue('https://github.com/grails-fields-plugin/grails-fields/pull/164')
     void "does not fail if constrained property is null"() {
         expect:
-        null == service.getWidget(null)
+        null == service.getWidget(null, Object)
     }
 
     @Issue('https://github.com/gpc/grails-fields/issues/183')

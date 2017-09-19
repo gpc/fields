@@ -4,6 +4,7 @@ import grails.util.GrailsNameUtils
 import grails.validation.ConstrainedProperty
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
+import org.grails.scaffolding.model.property.Constrained
 import org.springframework.validation.FieldError
 import static grails.plugin.formfields.BeanPropertyAccessorFactory.stripIndex
 import static java.util.Collections.EMPTY_LIST
@@ -29,10 +30,10 @@ class PropertyPathAccessor implements BeanPropertyAccessor {
 	GrailsDomainClass getBeanClass() { null }
 	PersistentEntity getEntity() { null }
 	List<Class> getBeanSuperclasses() { EMPTY_LIST }
-	Class getPropertyType() { null }
+	Class getPropertyType() { Object }
 	List<Class> getPropertyTypeSuperclasses() { EMPTY_LIST }
 	Object getValue() { null }
-	ConstrainedProperty getConstraints() { new ConstrainedProperty(Object, propertyName, String) }
+	Constrained getConstraints() { new Constrained(null, new ConstrainedProperty(Object, propertyName, String)) }
 	GrailsDomainClassProperty getPersistentProperty() { null }
 	PersistentProperty getDomainProperty() { null }
 	List<String> getLabelKeys() { EMPTY_LIST }

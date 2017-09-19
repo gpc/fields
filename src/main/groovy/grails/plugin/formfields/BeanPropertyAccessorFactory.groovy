@@ -27,6 +27,7 @@ import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
 import org.grails.datastore.mapping.model.types.Association
 import org.grails.datastore.mapping.model.types.Basic
+import org.grails.scaffolding.model.property.Constrained
 import org.grails.scaffolding.model.property.DomainProperty
 import org.grails.scaffolding.model.property.DomainPropertyFactory
 import org.grails.scaffolding.model.property.DomainPropertyFactoryImpl
@@ -108,15 +109,18 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 		}
 	}
 
-	private ConstrainedProperty resolveConstraints(BeanWrapper beanWrapper, String propertyName) {
-			return constraintsEvaluator.evaluate(beanWrapper.wrappedClass)[propertyName] as ConstrainedProperty ?: createDefaultConstraint(beanWrapper, propertyName)
-
+	private Constrained resolveConstraints(BeanWrapper beanWrapper, String propertyName) {
+		grails.validation.Constrained constraint = constraintsEvaluator.evaluate(beanWrapper.wrappedClass)[propertyName]
+		if (!constraint) {
+			constraint = createDefaultConstraint(beanWrapper, propertyName)
+		}
+		new Constrained(null, constraint)
 	}
 
-    private ConstrainedProperty createDefaultConstraint(BeanWrapper beanWrapper, String propertyName) {
+    private grails.validation.Constrained createDefaultConstraint(BeanWrapper beanWrapper, String propertyName) {
         def defaultConstraint = new ConstrainedProperty(beanWrapper.wrappedClass, propertyName, beanWrapper.getPropertyType(propertyName))
         defaultConstraint.nullable = true
-        defaultConstraint
+		(grails.validation.Constrained)defaultConstraint
     }
 
     private Class resolvePropertyType(BeanWrapper beanWrapper, PersistentEntity beanClass, String propertyName) {

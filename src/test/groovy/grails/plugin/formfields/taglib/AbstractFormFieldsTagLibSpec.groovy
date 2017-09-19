@@ -4,10 +4,13 @@ import grails.core.support.proxy.DefaultProxyHandler
 import grails.plugin.formfields.BeanPropertyAccessorFactory
 import grails.plugin.formfields.MappingContextBuilder
 import grails.plugin.formfields.MappingContextBuilderFactoryBean
+import org.grails.datastore.mapping.model.MappingContext
+import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.plugins.web.DefaultGrailsTagDateHelper
 import org.grails.scaffolding.model.property.DomainPropertyFactory
 import org.grails.scaffolding.model.property.DomainPropertyFactoryImpl
 import org.grails.validation.DefaultConstraintEvaluator
+import org.grails.validation.GrailsDomainClassValidator
 import spock.lang.Specification
 import grails.plugin.formfields.mock.*
 
@@ -42,7 +45,9 @@ abstract class AbstractFormFieldsTagLibSpec extends Specification {
 				grailsDomainClassMappingContext = ref("grailsDomainClassMappingContext")
 				fieldsDomainPropertyFactory = ref("fieldsDomainPropertyFactory")
 			}
-			grailsDomainClassMappingContext(MappingContextBuilderFactoryBean)
+			grailsDomainClassMappingContext(MappingContextBuilderFactoryBean) {
+				domains = [Person, Product, Author, Book] as Class[]
+			}
 		}
 	}
 	

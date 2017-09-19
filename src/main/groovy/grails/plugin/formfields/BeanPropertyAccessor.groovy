@@ -16,7 +16,7 @@
 
 package grails.plugin.formfields
 
-import grails.validation.ConstrainedProperty
+import org.grails.scaffolding.model.property.Constrained
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
 import org.springframework.validation.FieldError
@@ -96,7 +96,7 @@ interface BeanPropertyAccessor {
 	/**
 	 * @return the constraints of the property at the end of the path, e.g. for `address.home.street` then the constraints of `street` are returned. This will be null for non-domain properties.
 	 */
-	ConstrainedProperty getConstraints()
+	Constrained getConstraints()
 
 	/**
 	 * @return the i18n keys used to resolve a label for the property at the end of the path in order of preference.

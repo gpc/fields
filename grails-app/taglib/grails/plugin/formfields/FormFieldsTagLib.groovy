@@ -17,10 +17,8 @@
 package grails.plugin.formfields
 
 import grails.core.GrailsApplication
-import grails.core.GrailsDomainClass
 import grails.core.GrailsDomainClassProperty
 import grails.core.support.GrailsApplicationAware
-import grails.validation.Constrained
 import groovy.transform.CompileStatic
 import groovy.xml.MarkupBuilder
 import org.apache.commons.lang.StringUtils
@@ -32,6 +30,7 @@ import org.grails.datastore.mapping.model.types.*
 import org.grails.gsp.GroovyPage
 import org.grails.scaffolding.model.DomainModelService
 import org.grails.scaffolding.model.DomainModelServiceImpl
+import org.grails.scaffolding.model.property.Constrained
 import org.grails.scaffolding.model.property.DomainPropertyFactory
 
 import java.sql.Blob
@@ -555,11 +554,12 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	CharSequence renderDefaultInput(BeanPropertyAccessor propertyAccessor,Map model, Map attrs = [:]) {
+		Constrained constrained = (Constrained) model.constraints
 		attrs.name = (model.prefix ?: '') + model.property
 		attrs.value = model.value
 		if (model.required) attrs.required = "" // TODO: configurable how this gets output? Some people prefer required="required"
 		if (model.invalid) attrs.invalid = ""
-		if (!isEditable(model.constraints)) attrs.readonly = ""
+		if (!isEditable(constrained)) attrs.readonly = ""
 
 		boolean oneToOne = false
 		boolean manyToOne = false
@@ -619,43 +619,47 @@ class FormFieldsTagLib implements GrailsApplicationAware {
     }
 
     CharSequence renderStringInput(Map model, Map attrs) {
-        if (!attrs.type) {
-            if (model.constraints?.inList) {
-                attrs.from = model.constraints.inList
+		Constrained constrained = (Constrained) model.constraints
+
+		if (!attrs.type) {
+            if (constrained?.inList) {
+                attrs.from = constrained.inList
                 if (!model.required) attrs.noSelection = ["": ""]
                 return g.select(attrs)
-            } else if (model.constraints?.password) {
+            } else if (constrained?.password) {
                 attrs.type = "password"
                 attrs.remove('value')
-            } else if (model.constraints?.email) attrs.type = "email"
-            else if (model.constraints?.url) attrs.type = "url"
+            } else if (constrained?.email) attrs.type = "email"
+            else if (constrained?.url) attrs.type = "url"
             else attrs.type = "text"
         }
 
-        if (model.constraints?.matches) attrs.pattern = model.constraints.matches
-        if (model.constraints?.maxSize) attrs.maxlength = model.constraints.maxSize
+        if (constrained?.matches) attrs.pattern = constrained.matches
+        if (constrained?.maxSize) attrs.maxlength = constrained.maxSize
 
-        if (model.constraints?.widget == 'textarea') {
+        if (constrained?.widget == 'textarea') {
             attrs.remove('type')
             return g.textArea(attrs)
         }
         return g.field(attrs)
     }
 
-    CharSequence renderNumericInput(BeanPropertyAccessor propertyAccessor,Map model, Map attrs) {
-        if (!attrs.type && model.constraints?.inList) {
-            attrs.from = model.constraints.inList
+    CharSequence renderNumericInput(BeanPropertyAccessor propertyAccessor, Map model, Map attrs) {
+		Constrained constrained = (Constrained) model.constraints
+
+        if (!attrs.type && constrained?.inList) {
+            attrs.from = constrained.inList
             if (!model.required) attrs.noSelection = ["": ""]
             return g.select(attrs)
-        } else if (model.constraints?.range) {
+        } else if (constrained?.range) {
             attrs.type = attrs.type ?: "range"
-            attrs.min = model.constraints.range.from
-            attrs.max = model.constraints.range.to
+            attrs.min = constrained.range.from
+            attrs.max = constrained.range.to
         } else {
             attrs.type = attrs.type ?: getDefaultNumberType(model )
-            if (model.constraints?.scale != null) attrs.step = "0.${'0' * (model.constraints.scale - 1)}1"
-            if (model.constraints?.min != null) attrs.min = model.constraints.min
-            if (model.constraints?.max != null) attrs.max = model.constraints.max
+            if (constrained?.scale != null) attrs.step = "0.${'0' * (constrained.scale - 1)}1"
+            if (constrained?.min != null) attrs.min = constrained.min
+            if (constrained?.max != null) attrs.max = constrained.max
         }
 
         return g.field(attrs)
@@ -676,13 +680,15 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	}
 
 	private CharSequence renderEnumInput(Map model, Map attrs) {
-        if (attrs.value instanceof Enum)
+		Constrained constrained = (Constrained) model.constraints
+
+		if (attrs.value instanceof Enum)
             attrs.value = attrs.value.name()
         if (!model.required) attrs.noSelection = ["": ""]
 
-        if (model.constraints?.inList) {
-            attrs.keys = model.constraints.inList*.name()
-            attrs.from = model.constraints.inList
+        if (constrained?.inList) {
+            attrs.keys = constrained.inList*.name()
+            attrs.from = constrained.inList
         } else {
             attrs.keys = model.type.values()*.name()
             attrs.from = model.type.values()
@@ -781,7 +787,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
         }
     }
 
-    private boolean isEditable(constraints) {
+    private boolean isEditable(Constrained constraints) {
         !constraints || constraints.editable
     }
 }

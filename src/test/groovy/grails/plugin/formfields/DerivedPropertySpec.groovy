@@ -26,8 +26,8 @@ class DerivedPropertySpec extends AbstractFormFieldsTagLibSpec {
         taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 
         // @Mock isn't aware of formulae so we need to set this manually
-        applicationContext.getBean("grailsDomainClassMappingContext", MappingContext).getPersistentEntity(Product.name).getPropertyByName('tax').mapping.mappedForm.derived = true
-
+        MappingContext mappingContext = applicationContext.getBean("grailsDomainClassMappingContext", MappingContext)
+        mappingContext.getPersistentEntity(Product.name).getPropertyByName('tax').mapping.mappedForm.derived = true
 
         productInstance = new Product(name: 'MacBook Pro', netPrice: 1499, taxRate: 0.2).save(failOnError: true)
     }

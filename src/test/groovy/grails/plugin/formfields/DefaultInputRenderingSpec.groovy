@@ -11,6 +11,7 @@ import grails.util.Environment
 import grails.test.mixin.*
 import grails.validation.ConstrainedProperty
 import org.grails.core.DefaultGrailsDomainClass
+import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.plugins.web.DefaultGrailsTagDateHelper
 import org.grails.scaffolding.model.property.Constrained
 import org.grails.validation.DefaultConstraintEvaluator
@@ -528,7 +529,7 @@ class DefaultInputRenderingSpec extends Specification implements BuildsAccessorF
 		messageSource.addMessage("default.add.label", request.locale, "Add {0}")
 
 		and:
-		def model = [bean: [id: 1337], beanClass: [propertyName: "thing"], type: Set, property: "prop", constraints: null, persistentProperty: oneToManyProperty, value: people]
+		def model = [bean: [id: 1337], beanClass: Mock(PersistentEntity) { getDecapitalizedName() >> "thing"}, type: Set, property: "prop", constraints: null, persistentProperty: oneToManyProperty, value: people]
 
 		when:
 		def output = tagLib.renderDefaultInput(model)

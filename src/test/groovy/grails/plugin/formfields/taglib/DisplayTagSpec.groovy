@@ -53,12 +53,12 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
 
 	void "display tag allows to specify the except"() {
 		when:
-		def result = applyTemplate('<f:display bean="personInstance" except="salutation,grailsDeveloper,picture,anotherPicture,password,dateOfBirth"/>', [personInstance: personInstance])
+		def result = applyTemplate('<f:display bean="personInstance" except="salutation,grailsDeveloper,picture,anotherPicture,password,dateOfBirth,emails"/>', [personInstance: personInstance])
 		def ol = new XmlSlurper().parseText(result)
 
 		then:
-		ol.li.span.collect {it.text().trim()}.sort() == ["Address", "Biography", "Emails", "Gender", "Minor", "Name"]
-		ol.li.div.collect {it.text().trim()}.sort() == ["", "", "Bart Simpson", "CitySpringfieldCountryUSAStreet94 Evergreen Terrace", "Male", "True"]
+		ol.li.span.collect {it.text().trim()}.sort() == ["Address", "Biography", "Gender", "Minor", "Name"]
+		ol.li.div.collect {it.text().trim()}.sort() == ["", "Bart Simpson", "CitySpringfieldCountryUSAStreet94 Evergreen Terrace", "Male", "True"]
 	}
 
 
@@ -66,6 +66,11 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
 	void 'renders value using g:fieldValue if no template is present'() {
 		expect:
 		applyTemplate('<f:display bean="personInstance" property="name"/>', [personInstance: personInstance]) == personInstance.name
+	}
+
+	void 'renders value that is an association but not to a grom entity'() {
+		expect:
+		applyTemplate('<f:display bean="personInstance" property="emails"/>', [personInstance: personInstance]) == personInstance.emails.toString()
 	}
 
 	void 'renders boolean values using g:formatBoolean'() {

@@ -811,9 +811,11 @@ class FormFieldsTagLib implements GrailsApplicationAware {
     }
 
     private CharSequence displayAssociation(value, PersistentEntity referencedDomainClass) {
-        if(value) {
+        if(value && referencedDomainClass) {
             g.link(controller: referencedDomainClass.decapitalizedName, action: "show", id: value.id, value.toString().encodeAsHTML())
-        }
+        } else if(value) {
+			value.toString()
+		}
     }
 
     private boolean isEditable(Constrained constraints) {

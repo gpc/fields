@@ -679,7 +679,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
             if (constrained?.max != null) attrs.max = constrained.max
         }
 
-        if (propertyAccessor?.value) {
+        if (propertyAccessor?.value != null) {
             attrs.value = numberFormatter.format(propertyAccessor.value)
         }
 

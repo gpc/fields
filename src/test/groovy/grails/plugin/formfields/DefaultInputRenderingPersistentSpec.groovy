@@ -1,6 +1,5 @@
 package grails.plugin.formfields
 
-
 import grails.plugin.formfields.mock.Employee
 import grails.plugin.formfields.mock.Person
 import grails.test.mixin.Mock
@@ -8,7 +7,11 @@ import grails.test.mixin.TestFor
 import grails.util.Environment
 import grails.validation.ConstrainedProperty
 import org.grails.datastore.mapping.model.PersistentEntity
-import org.grails.datastore.mapping.model.types.*
+import org.grails.datastore.mapping.model.types.Basic
+import org.grails.datastore.mapping.model.types.ManyToMany
+import org.grails.datastore.mapping.model.types.ManyToOne
+import org.grails.datastore.mapping.model.types.OneToMany
+import org.grails.datastore.mapping.model.types.OneToOne
 import org.grails.plugins.web.DefaultGrailsTagDateHelper
 import org.grails.scaffolding.model.property.Constrained
 import org.grails.validation.ScaleConstraint
@@ -105,22 +108,22 @@ class DefaultInputRenderingPersistentSpec extends Specification implements Build
 
 	def "input value for a #type.simpleName property matches '#outputPattern'"() {
 		given:
-		def model = [type: type, property: "salary", value:10000,constraints: null, persistentProperty: basicProperty]
-		def object =new Employee(salary: 10000)
+		def model = [type: type, property: "salary", value: 10000, constraints: null, persistentProperty: basicProperty]
+		def object = new Employee(salary: 10000)
 		BeanPropertyAccessor accessor = factory.accessorFor(object, "salary")
 
 		expect:
 		tagLib.renderDefaultInput(accessor, model) =~ outputPattern
 
 		where:
-		type    | outputPattern
-		int     | /value="10000"/
-		Integer | /value="10000"/
-		BigDecimal | /value="10000"/
-		Double | /value="10000"/
-		Float | /value="10000"/
-		float | /value="10000"/
-		double | /value="10000"/
+		type       | outputPattern
+		int        | /value="10,000"/
+		Integer    | /value="10,000"/
+		BigDecimal | /value="10,000"/
+		Double     | /value="10,000"/
+		Float      | /value="10,000"/
+		float      | /value="10,000"/
+		double     | /value="10,000"/
 	}
 
 	def "input for a #type.simpleName property with a value of '#value' matches '#outputPattern'"() {

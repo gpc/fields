@@ -113,6 +113,29 @@ class DefaultInputRenderingSpec extends Specification implements BuildsAccessorF
 		double     | /value="10,000"/
 	}
 
+	def "input value for a #type.simpleName property matches '#outputPattern' without localizing numbers"() {
+		given:
+		def model = [type: type, property: "salary", value: 10000, constraints: null, persistentProperty: basicProperty]
+		def object = new Employee(salary: 10000)
+		BeanPropertyAccessor accessor = factory.accessorFor(object, "salary")
+
+		and:
+		tagLib.localizeNumbers = false
+
+		expect:
+		tagLib.renderDefaultInput(accessor, model) =~ outputPattern
+
+		where:
+		type       | outputPattern
+		int        | /value="10000"/
+		Integer    | /value="10000"/
+		BigDecimal | /value="10000"/
+		Double     | /value="10000"/
+		Float      | /value="10000"/
+		float      | /value="10000"/
+		double     | /value="10000"/
+	}
+
 	def "input for a #type.simpleName property with a value of '#value' matches '#outputPattern'"() {
 		given:
 		def model = [type: type, property: "prop", constraints: null, persistentProperty: basicProperty, value: value]

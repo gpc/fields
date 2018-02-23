@@ -131,3 +131,15 @@ grails.plugin.fields.widgetPrefix = "input-"
 
 * The _input_ tag was deprecated because the name was confusing. Use the new _widget_ tag instead.
 * The _displayWidget_ tag was added. It outputs the widget for display purposes, without the wrapper (similar to the _widget_ tag).
+
+
+=== Localized numbers
+
+All numbers are now rendered localized. This means that when using `Locale.ENGLISH` the number 1000.50 is represented
+as `1,000.50` but with `Locale.GERMAN` is represented as `1.000,50`. To use the old behavior (for backwards compatibility)
+without localizing the numbers, configure the following in `Config.groovy`:
+[source,groovy]
+----
+grails.plugin.fields.localizeNumbers = false
+----
+

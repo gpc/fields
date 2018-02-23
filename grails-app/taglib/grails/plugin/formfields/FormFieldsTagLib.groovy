@@ -41,6 +41,7 @@ import org.grails.scaffolding.model.DomainModelServiceImpl
 import org.grails.scaffolding.model.property.Constrained
 import org.grails.scaffolding.model.property.DomainPropertyFactory
 import org.grails.web.servlet.mvc.GrailsWebRequest
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.servlet.LocaleResolver
 
 import javax.servlet.http.HttpServletRequest
@@ -59,6 +60,9 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	private static final String TEMPLATES_ATTR = "templates"
 	private  static final String PROPERTY_ATTR = "property"
 	private static final String BEAN_ATTR = "bean"
+
+	@Value('${grails.plugin.fields.localizeNumbers:true}')
+	Boolean localizeNumbers
 
 	FormFieldsTemplateService formFieldsTemplateService
 	GrailsApplication grailsApplication
@@ -679,7 +683,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
             if (constrained?.max != null) attrs.max = constrained.max
         }
 
-        if (propertyAccessor?.value != null) {
+        if (localizeNumbers && propertyAccessor?.value != null) {
             attrs.value = numberFormatter.format(propertyAccessor.value)
         }
 

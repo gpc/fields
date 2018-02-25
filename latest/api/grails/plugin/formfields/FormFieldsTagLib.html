@@ -233,6 +233,16 @@ if (location.href.indexOf('is-external=true') == -1) {
                         </tr>
                         
                         <tr class="altColor">
+                            <td class="colFirst"><code><strong><a href='../../../LocaleResolver.html'>LocaleResolver</a></strong></code>&nbsp;</td>
+                            <td class="colLast"><code><a href="#localeResolver">localeResolver</a></code><br></td>
+                        </tr>
+                        
+                        <tr class="rowColor">
+                            <td class="colFirst"><code><strong>java.lang.Boolean</strong></code>&nbsp;</td>
+                            <td class="colLast"><code><a href="#localizeNumbers">localizeNumbers</a></code><br></td>
+                        </tr>
+                        
+                        <tr class="altColor">
                             <td class="colFirst"><code><strong>static&nbsp;java.lang.Object</strong></code>&nbsp;</td>
                             <td class="colLast"><code><a href="#namespace">namespace</a></code><br></td>
                         </tr>
@@ -296,6 +306,18 @@ if (location.href.indexOf('is-external=true') == -1) {
                             <td class="colFirst"><code></code></td>
                             <td class="colLast"><code>protected&nbsp;<a href='../../../DomainModelService.html'>DomainModelService</a></code></td>
                             <td class="colLast"><code><strong><a href="#getDomainModelService()">getDomainModelService</a></strong>()</code><br></td>
+                        </tr>
+                        
+                        <tr class="rowColor">
+                            <td class="colFirst"><code></code></td>
+                            <td class="colLast"><code>protected&nbsp;java.util.Locale</code></td>
+                            <td class="colLast"><code><strong><a href="#getLocale()">getLocale</a></strong>()</code><br></td>
+                        </tr>
+                        
+                        <tr class="altColor">
+                            <td class="colFirst"><code></code></td>
+                            <td class="colLast"><code>protected&nbsp;java.text.NumberFormat</code></td>
+                            <td class="colLast"><code><strong><a href="#getNumberFormatter()">getNumberFormatter</a></strong>()</code><br></td>
                         </tr>
                         
                         <tr class="rowColor">
@@ -479,6 +501,23 @@ if (location.href.indexOf('is-external=true') == -1) {
                             </li>
                         </ul>
                     
+                        <a name="localeResolver"><!-- --></a>
+                        <ul class="blockListLast">
+                            <li class="blockList">
+                                <h4><a href='../../../LocaleResolver.html'>LocaleResolver</a> <strong>localeResolver</strong></h4>
+                                <p></p>
+                            </li>
+                        </ul>
+                    
+                        <a name="localizeNumbers"><!-- --></a>
+                        <ul class="blockListLast">
+                            <li class="blockList">
+                                <h4>@Value('${grails.plugin.fields.localizeNumbers:true}')
+java.lang.Boolean <strong>localizeNumbers</strong></h4>
+                                <p></p>
+                            </li>
+                        </ul>
+                    
                         <a name="namespace"><!-- --></a>
                         <ul class="blockListLast">
                             <li class="blockList">
@@ -492,8 +531,7 @@ if (location.href.indexOf('is-external=true') == -1) {
                             <li class="blockList">
                                 <h4>java.lang.Object <strong>table</strong></h4>
                                 <p> Renders a collection of beans in a table<DL><DT><B>attr:</B></DT><DD>collection REQUIRED The collection of beans to render</DD></DL><DL><DT><B>attr:</B></DT><DD>domainClass The FQN of the domain class of the elements in the collection.
- Defaults to the class of the first element in the collection.</DD></DL><DL><DT><B>attr:</B></DT><DD>properties The list of properties to be shown (table columns).
- Defaults to the first 7 (or less) properties of the domain class ordered by the domain class' constraints.</DD></DL><DL><DT><B>attr:</B></DT><DD>displayStyle OPTIONAL Determines the display template used for the bean's properties.
+ Defaults to the class of the first element in the collection.</DD></DL><DL><DT><B>attr:</B></DT><DD>properties The list of properties to be shown (table columns).</DD></DL><DL><DT><B>attr:</B></DT><DD>maxProperties Maximal number of properties to be shown ordered by the domain class' constraints.</DD></DL><DL><DT><B>attr:</B></DT><DD>displayStyle OPTIONAL Determines the display template used for the bean's properties.
  Defaults to 'table', meaning that 'display-table' templates will be used when available.</DD></DL><DL><DT><B>attr:</B></DT><DD>order A comma-separated list of properties to include in provided order</DD></DL><DL><DT><B>attr:</B></DT><DD>except A comma-separated list of properties to exclude</DD></DL><DL><DT><B>attr:</B></DT><DD>theme Theme name</DD></DL>
       </p>
                             </li>
@@ -556,6 +594,24 @@ protected&nbsp;java.lang.String <strong>getDefaultNumberType</strong>(java.util.
                         <ul class="blockListLast">
                             <li class="blockList">
                                 <h4>protected&nbsp;<a href='../../../DomainModelService.html'>DomainModelService</a> <strong>getDomainModelService</strong>()</h4>
+                                <p></p>
+                            </li>
+                        </ul>
+                    
+                        <a name="getLocale()"><!-- --></a>
+                        <ul class="blockListLast">
+                            <li class="blockList">
+                                <h4>@groovy.transform.CompileStatic
+protected&nbsp;java.util.Locale <strong>getLocale</strong>()</h4>
+                                <p></p>
+                            </li>
+                        </ul>
+                    
+                        <a name="getNumberFormatter()"><!-- --></a>
+                        <ul class="blockListLast">
+                            <li class="blockList">
+                                <h4>@groovy.transform.CompileStatic
+protected&nbsp;java.text.NumberFormat <strong>getNumberFormatter</strong>()</h4>
                                 <p></p>
                             </li>
                         </ul>

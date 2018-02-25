@@ -155,6 +155,9 @@
 <li>
 <p>Convert documentation to Asciidoc</p>
 </li>
+<li>
+<p>Add support for themes</p>
+</li>
 </ul>
 </div>
 </div>
@@ -492,6 +495,19 @@ grails.plugin.fields.widget = <span class="string"><span class="delimiter">&quot
 <p>The <em>displayWidget</em> tag was added. It outputs the widget for display purposes, without the wrapper (similar to the <em>widget</em> tag).</p>
 </li>
 </ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_localized_numbers">Localized numbers</h3>
+<div class="paragraph">
+<p>All numbers are now rendered localized. This means that when using <code>Locale.ENGLISH</code> the number 1000.50 is represented
+as <code>1,000.50</code> but with <code>Locale.GERMAN</code> is represented as <code>1.000,50</code>. To use the old behavior (for backwards compatibility)
+without localizing the numbers, configure the following in <code>Config.groovy</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">grails.plugin.fields.localizeNumbers = <span class="predefined-constant">false</span></code></pre>
+</div>
 </div>
 </div>
 

@@ -16,6 +16,8 @@
 
 package grails.plugin.formfields
 
+import static FormFieldsTemplateService.toPropertyNameFormat
+
 import grails.core.GrailsApplication
 import grails.core.GrailsDomainClassProperty
 import grails.core.support.GrailsApplicationAware
@@ -26,16 +28,25 @@ import org.grails.buffer.FastStringWriter
 import org.grails.datastore.mapping.model.MappingContext
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
-import org.grails.datastore.mapping.model.types.*
+import org.grails.datastore.mapping.model.types.Association
+import org.grails.datastore.mapping.model.types.Basic
+import org.grails.datastore.mapping.model.types.Embedded
+import org.grails.datastore.mapping.model.types.ManyToMany
+import org.grails.datastore.mapping.model.types.ManyToOne
+import org.grails.datastore.mapping.model.types.OneToMany
+import org.grails.datastore.mapping.model.types.OneToOne
 import org.grails.gsp.GroovyPage
 import org.grails.scaffolding.model.DomainModelService
 import org.grails.scaffolding.model.DomainModelServiceImpl
 import org.grails.scaffolding.model.property.Constrained
 import org.grails.scaffolding.model.property.DomainPropertyFactory
+import org.grails.web.servlet.mvc.GrailsWebRequest
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.web.servlet.LocaleResolver
 
+import javax.servlet.http.HttpServletRequest
 import java.sql.Blob
-
-import static FormFieldsTemplateService.toPropertyNameFormat
+import java.text.NumberFormat
 
 class FormFieldsTagLib implements GrailsApplicationAware {
 	static final namespace = 'f'
@@ -50,11 +61,15 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	private  static final String PROPERTY_ATTR = "property"
 	private static final String BEAN_ATTR = "bean"
 
+	@Value('${grails.plugin.fields.localizeNumbers:true}')
+	Boolean localizeNumbers
+
 	FormFieldsTemplateService formFieldsTemplateService
 	GrailsApplication grailsApplication
 	BeanPropertyAccessorFactory beanPropertyAccessorFactory
 	DomainPropertyFactory fieldsDomainPropertyFactory
 	MappingContext grailsDomainClassMappingContext
+	LocaleResolver localeResolver
 
 	private DomainModelService _domainModelService
 
@@ -668,7 +683,29 @@ class FormFieldsTagLib implements GrailsApplicationAware {
             if (constrained?.max != null) attrs.max = constrained.max
         }
 
+        if (localizeNumbers && propertyAccessor?.value != null) {
+            attrs.value = numberFormatter.format(propertyAccessor.value)
+        }
+
         return g.field(attrs)
+    }
+
+    @CompileStatic
+    protected NumberFormat getNumberFormatter() {
+        NumberFormat.getInstance(getLocale())
+    }
+
+    @CompileStatic
+    protected Locale getLocale() {
+        def locale
+        def request = GrailsWebRequest.lookup()?.currentRequest
+        if (request instanceof HttpServletRequest) {
+            locale = localeResolver?.resolveLocale(request)
+        }
+        if (locale == null) {
+            locale = Locale.default
+        }
+        return locale
     }
 
 	@CompileStatic

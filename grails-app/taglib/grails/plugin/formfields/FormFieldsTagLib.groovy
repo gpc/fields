@@ -16,11 +16,7 @@
 
 package grails.plugin.formfields
 
-import static FormFieldsTemplateService.toPropertyNameFormat
-
-import grails.core.GrailsApplication
 import grails.core.GrailsDomainClassProperty
-import grails.core.support.GrailsApplicationAware
 import groovy.transform.CompileStatic
 import groovy.xml.MarkupBuilder
 import org.apache.commons.lang.StringUtils
@@ -48,7 +44,9 @@ import javax.servlet.http.HttpServletRequest
 import java.sql.Blob
 import java.text.NumberFormat
 
-class FormFieldsTagLib implements GrailsApplicationAware {
+import static FormFieldsTemplateService.toPropertyNameFormat
+
+class FormFieldsTagLib {
 	static final namespace = 'f'
 
     static final String STACK_PAGE_SCOPE_VARIABLE = 'f:with:stack'
@@ -65,7 +63,6 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	Boolean localizeNumbers
 
 	FormFieldsTemplateService formFieldsTemplateService
-	GrailsApplication grailsApplication
 	BeanPropertyAccessorFactory beanPropertyAccessorFactory
 	DomainPropertyFactory fieldsDomainPropertyFactory
 	MappingContext grailsDomainClassMappingContext
@@ -249,18 +246,11 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 			}
         } else {
             properties = resolvePersistentProperties(domainClass, attrs)
-	    if(attrs.containsKey('maxProperties')) {
-		String maxProperties = attrs.remove('maxProperties')
-		    if(maxProperties.isInteger()) {
-		    	Integer maxPropertiesNumber = maxProperties as Integer
-		    		if (maxPropertiesNumber.abs() <properties.size() ) {
-                			properties = properties[0..(maxPropertiesNumber-1)]
-            			}
-		    }
+            int maxProperties = attrs.containsKey('maxProperties') ? attrs.remove('maxProperties').toInteger() : 7
+			if(maxProperties && properties.size() > maxProperties) {
+				properties = properties[0..<maxProperties]
 			}
-	    }
-
-
+        }
 
         String displayStyle = attrs.remove('displayStyle')
 		String theme = attrs.remove(THEME_ATTR)

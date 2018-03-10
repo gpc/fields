@@ -37,10 +37,13 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
 
     @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/231')
     void "table tag renders columns set by '<f:table collection=\"collection\" maxProperties=\"#maxProperties\"/>'"() {
-        expect:
+        when:
         def table = XML.parse(applyTemplate('<f:table collection="collection" maxProperties="' + maxProperties + '"/>', [collection: personList]))
         def renderedTableColumns = table.thead.tr.th.a.collect { it.text().trim() }
-        renderedTableColumns == expectedTableColumns
+
+		then:
+		expectedTableColumns.containsAll(renderedTableColumns)
+		renderedTableColumns.containsAll(expectedTableColumns)
 
         where:
         maxProperties   |   expectedTableColumns
@@ -56,9 +59,11 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
 
     @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/231')
     void "table tag renders all columns '<f:table collection=\"collection\" maxProperties=\"#maxProperties\"/>'"() {
-        expect:
+        when:
         def table = XML.parse(applyTemplate('<f:table collection="collection" maxProperties="' + maxProperties + '"/>', [collection: personList]))
         def renderedTableColumns = table.thead.tr.th.a.collect { it.text().trim() }
+
+		then:
         expectedTableColumns.containsAll(renderedTableColumns)
         renderedTableColumns.containsAll(expectedTableColumns)
 
@@ -73,7 +78,7 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
         when:
         def table = XML.parse(applyTemplate('<f:table collection="collection"/>', [collection: personList]))
         def renderedTableColumns = table.thead.tr.th.a.collect { it.text().trim() }
-        def expectedTableColumns = ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', 'Picture', 'Another Picture', 'Password', 'Biography', 'Minor', 'Gender', 'Emails']
+        def expectedTableColumns = ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', 'Picture', 'Another Picture']
 
         then:
         expectedTableColumns.containsAll(renderedTableColumns)

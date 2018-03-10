@@ -16,11 +16,7 @@
 
 package grails.plugin.formfields
 
-import static FormFieldsTemplateService.toPropertyNameFormat
-
-import grails.core.GrailsApplication
 import grails.core.GrailsDomainClassProperty
-import grails.core.support.GrailsApplicationAware
 import groovy.transform.CompileStatic
 import groovy.xml.MarkupBuilder
 import org.apache.commons.lang.StringUtils
@@ -48,7 +44,9 @@ import javax.servlet.http.HttpServletRequest
 import java.sql.Blob
 import java.text.NumberFormat
 
-class FormFieldsTagLib implements GrailsApplicationAware {
+import static FormFieldsTemplateService.toPropertyNameFormat
+
+class FormFieldsTagLib {
 	static final namespace = 'f'
 
     static final String STACK_PAGE_SCOPE_VARIABLE = 'f:with:stack'
@@ -65,7 +63,6 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	Boolean localizeNumbers
 
 	FormFieldsTemplateService formFieldsTemplateService
-	GrailsApplication grailsApplication
 	BeanPropertyAccessorFactory beanPropertyAccessorFactory
 	DomainPropertyFactory fieldsDomainPropertyFactory
 	MappingContext grailsDomainClassMappingContext
@@ -225,7 +222,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
       * @attr domainClass The FQN of the domain class of the elements in the collection.
       * Defaults to the class of the first element in the collection.
       * @attr properties The list of properties to be shown (table columns).
-      * @attr maxProperties Maximal number of properties to be shown ordered by the domain class' constraints.
+	  * @attr maxProperties OPTIONAL The number of properties displayed when no explicit properties are given, defaults to 7.
       * @attr displayStyle OPTIONAL Determines the display template used for the bean's properties.
       * Defaults to 'table', meaning that 'display-table' templates will be used when available.
 	  * @attr order A comma-separated list of properties to include in provided order
@@ -247,18 +244,13 @@ class FormFieldsTagLib implements GrailsApplicationAware {
             properties = attrs.remove('properties').collect {
 				fieldsDomainPropertyFactory.build(domainClass.getPropertyByName(it))
 			}
-		} else {
-			properties = resolvePersistentProperties(domainClass, attrs)
-			if (attrs.containsKey('maxProperties')) {
-				String maxProperties = attrs.remove('maxProperties')
-				if(maxProperties.isInteger()){
-					Integer maxPropertiesNumber = maxProperties as Integer
-					if (maxPropertiesNumber.abs() < properties.size()) {
-						properties = properties[0..(maxPropertiesNumber - 1)]
-					}
-				}
+        } else {
+            properties = resolvePersistentProperties(domainClass, attrs)
+            int maxProperties = attrs.containsKey('maxProperties') ? attrs.remove('maxProperties').toInteger() : 7
+			if(maxProperties && properties.size() > maxProperties) {
+				properties = properties[0..<maxProperties]
 			}
-		}
+        }
 
         String displayStyle = attrs.remove('displayStyle')
 		String theme = attrs.remove(THEME_ATTR)

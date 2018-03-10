@@ -66,16 +66,8 @@ class FormFieldsTagLib {
 	BeanPropertyAccessorFactory beanPropertyAccessorFactory
 	DomainPropertyFactory fieldsDomainPropertyFactory
 	MappingContext grailsDomainClassMappingContext
+	DomainModelService domainModelService
 	LocaleResolver localeResolver
-
-	private DomainModelService _domainModelService
-
-	protected DomainModelService getDomainModelService() {
-		if (!_domainModelService) {
-			_domainModelService = new DomainModelServiceImpl(domainPropertyFactory: fieldsDomainPropertyFactory)
-		}
-		_domainModelService
-	}
 
 	static defaultEncodeAs = [taglib: 'raw']
 
@@ -241,11 +233,11 @@ class FormFieldsTagLib {
 			def properties
 
 			if (attrs.containsKey('properties')) {
-				properties = attrs.remove('properties').collect {
-					fieldsDomainPropertyFactory.build(domainClass.getPropertyByName(it))
+				properties = attrs.remove('properties').collect { String propertyName ->
+					fieldsDomainPropertyFactory.build(domainClass.getPropertyByName(propertyName))
 				}
 			} else {
-				properties = resolvePersistentProperties(domainClass, attrs)
+				properties = resolvePersistentProperties(domainClass, attrs, true)
 				int maxProperties = attrs.containsKey('maxProperties') ? attrs.remove('maxProperties').toInteger() : 7
 				if (maxProperties && properties.size() > maxProperties) {
 					properties = properties[0..<maxProperties]
@@ -492,24 +484,38 @@ class FormFieldsTagLib {
 		grailsDomainClassMappingContext.getPersistentEntity(beanClass.name)
 	}
 
-	private List<PersistentProperty> resolvePersistentProperties(PersistentEntity domainClass, Map attrs) {
+	private List<PersistentProperty> resolvePersistentProperties(PersistentEntity domainClass, Map attrs, boolean list = false) {
 		List<PersistentProperty> properties
 
 		if (attrs.order) {
 			if (attrs.except) {
 				throwTagError('The [except] and [order] attributes may not be used together.')
 			}
-			def orderBy = attrs.order?.tokenize(',')*.trim() ?: []
+			def orderBy = getList(attrs.order)
 			properties = orderBy.collect { propertyName ->
 				fieldsDomainPropertyFactory.build(domainClass.getPropertyByName(propertyName))
 			}
 		} else {
-			properties = domainModelService.getInputProperties(domainClass)
-			def blacklist = attrs.except?.tokenize(',')*.trim() ?: []
+			properties = list ? domainModelService.getListOutputProperties(domainClass) : domainModelService.getInputProperties(domainClass)
+			// If 'except' is not set, but 'list' is, exclude 'id', 'dateCreated' and 'lastUpdated' by default
+			List<String> blacklist = getList(attrs.except, list ? ['id', 'dateCreated', 'lastUpdated'] : [])
+
 			properties.removeAll { it.name in blacklist }
 		}
 
 		return properties
+	}
+
+	private static List<String> getList(def except, List<String> defaultList = []) {
+		if(!except) {
+			return defaultList
+		} else if(except instanceof String) {
+			except?.tokenize(',')*.trim()
+		} else if(except instanceof Collection) {
+			return except as List<String>
+		} else {
+			throw new IllegalArgumentException("Must either be null, comma separated string or java.util.Collection")
+		}
 	}
 
 	private boolean hasBody(Closure body) {

@@ -7,6 +7,7 @@ import grails.plugin.formfields.MappingContextBuilderFactoryBean
 import org.grails.datastore.mapping.model.MappingContext
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.plugins.web.DefaultGrailsTagDateHelper
+import org.grails.scaffolding.model.DomainModelServiceImpl
 import org.grails.scaffolding.model.property.DomainPropertyFactory
 import org.grails.scaffolding.model.property.DomainPropertyFactoryImpl
 import org.grails.validation.DefaultConstraintEvaluator
@@ -39,6 +40,9 @@ abstract class AbstractFormFieldsTagLibSpec extends Specification {
 			grailsTagDateHelper(DefaultGrailsTagDateHelper)
 			constraintsEvaluator(DefaultConstraintEvaluator)
 			fieldsDomainPropertyFactory(DomainPropertyFactoryImpl)
+			domainModelService(DomainModelServiceImpl) {
+				domainPropertyFactory: ref(fieldsDomainPropertyFactory)
+			}
 			beanPropertyAccessorFactory(BeanPropertyAccessorFactory) {
 				constraintsEvaluator = ref('constraintsEvaluator')
 				proxyHandler = new DefaultProxyHandler()

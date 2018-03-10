@@ -18,180 +18,186 @@ import static grails.plugin.formfields.mock.Gender.Male
 @Mock(Person)
 @Unroll
 class TableSpec extends AbstractFormFieldsTagLibSpec {
-    def address = new Address(street: '742 Evergreen Terrace', city: 'Springfield', country: 'USA')
-    def bart = new Person(name: "Bart Simpson", gender: Male, address: address)
-    def marge = new Person(name: "Marge Simpson", gender: Female, address: address)
-    def personList = [bart, marge]
+	def address = new Address(street: '742 Evergreen Terrace', city: 'Springfield', country: 'USA')
+	def bart = new Person(name: "Bart Simpson", gender: Male, address: address)
+	def marge = new Person(name: "Marge Simpson", gender: Female, address: address)
+	def personList = [bart, marge]
 
-    def mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
+	def mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
 
-    def setupSpec() {
-        configurePropertyAccessorSpringBean()
-    }
+	def setupSpec() {
+		configurePropertyAccessorSpringBean()
+	}
 
-    def setup() {
-        def taglib = applicationContext.getBean(FormFieldsTagLib)
-        taglib.formFieldsTemplateService = mockFormFieldsTemplateService
-        mockEmbeddedSitemeshLayout(taglib)
-    }
+	def setup() {
+		def taglib = applicationContext.getBean(FormFieldsTagLib)
+		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
+		mockEmbeddedSitemeshLayout(taglib)
+	}
 
-    @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/231')
-    void "table tag renders columns set by '<f:table collection=\"collection\" maxProperties=\"#maxProperties\"/>'"() {
-        when:
-        def table = XML.parse(applyTemplate('<f:table collection="collection" maxProperties="' + maxProperties + '"/>', [collection: personList]))
-        def renderedTableColumns = table.thead.tr.th.a.collect { it.text().trim() }
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/231')
+	void "table tag renders columns set by '<f:table collection=\"collection\" maxProperties=\"#maxProperties\"/>'"() {
+		when:
+		def table = XML.parse(applyTemplate('<f:table collection="collection" maxProperties="' + maxProperties + '"/>', [collection: personList]))
+		def renderedTableColumns = table.thead.tr.th.a.collect { it.text().trim() }
 
 		then:
 		expectedTableColumns.containsAll(renderedTableColumns)
 		renderedTableColumns.containsAll(expectedTableColumns)
 
-        where:
-        maxProperties   |   expectedTableColumns
-        1               |   ['Salutation']
-        2               |   ['Salutation', 'Name']
-        3               |   ['Salutation', 'Name', 'Date Of Birth']
-        6               |   ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', 'Picture']
-        7               |   ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', 'Picture', 'Another Picture']
-        8               |   ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', 'Picture', 'Another Picture', 'Password']
-        -4              |   ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', 'Picture', 'Another Picture', 'Password']
-        -9              |   ['Salutation', 'Name', 'Date Of Birth']
-    }
+		where:
+		maxProperties | expectedTableColumns
+		1             | ['Salutation']
+		2             | ['Salutation', 'Name']
+		3             | ['Salutation', 'Name', 'Date Of Birth']
+		6             | ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', 'Picture']
+		7             | ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', 'Picture', 'Another Picture']
+		8             | ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', 'Picture', 'Another Picture', 'Password']
+		-4            | ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', 'Picture', 'Another Picture', 'Password']
+		-9            | ['Salutation', 'Name', 'Date Of Birth']
+	}
 
-    @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/231')
-    void "table tag renders all columns '<f:table collection=\"collection\" maxProperties=\"#maxProperties\"/>'"() {
-        when:
-        def table = XML.parse(applyTemplate('<f:table collection="collection" maxProperties="' + maxProperties + '"/>', [collection: personList]))
-        def renderedTableColumns = table.thead.tr.th.a.collect { it.text().trim() }
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/231')
+	void "table tag renders all columns '<f:table collection=\"collection\" maxProperties=\"#maxProperties\"/>'"() {
+		when:
+		def table = XML.parse(applyTemplate('<f:table collection="collection" maxProperties="' + maxProperties + '"/>', [collection: personList]))
+		def renderedTableColumns = table.thead.tr.th.a.collect { it.text().trim() }
 
 		then:
-        expectedTableColumns.containsAll(renderedTableColumns)
-        renderedTableColumns.containsAll(expectedTableColumns)
+		expectedTableColumns.containsAll(renderedTableColumns)
+		renderedTableColumns.containsAll(expectedTableColumns)
 
-        where:
-        maxProperties   |   expectedTableColumns
-        0               |   ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', 'Picture', 'Another Picture', 'Password', 'Biography', 'Minor', 'Gender', 'Emails']
-        1000            |   ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', 'Picture', 'Another Picture', 'Password', 'Biography', 'Minor', 'Gender', 'Emails']
-    }
+		where:
+		maxProperties | expectedTableColumns
+		0             | ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', 'Picture', 'Another Picture', 'Password', 'Biography', 'Minor', 'Gender', 'Emails']
+		1000          | ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', 'Picture', 'Another Picture', 'Password', 'Biography', 'Minor', 'Gender', 'Emails']
+	}
 
-    @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/231')
-    void "table tag renders all columns when no maxProperties attribute is set"() {
-        when:
-        def table = XML.parse(applyTemplate('<f:table collection="collection"/>', [collection: personList]))
-        def renderedTableColumns = table.thead.tr.th.a.collect { it.text().trim() }
-        def expectedTableColumns = ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', 'Picture', 'Another Picture']
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/231')
+	void "table tag renders all columns when no maxProperties attribute is set"() {
+		when:
+		def table = XML.parse(applyTemplate('<f:table collection="collection"/>', [collection: personList]))
+		def renderedTableColumns = table.thead.tr.th.a.collect { it.text().trim() }
+		def expectedTableColumns = ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', 'Picture', 'Another Picture']
 
-        then:
-        expectedTableColumns.containsAll(renderedTableColumns)
-        renderedTableColumns.containsAll(expectedTableColumns)
-    }
+		then:
+		expectedTableColumns.containsAll(renderedTableColumns)
+		renderedTableColumns.containsAll(expectedTableColumns)
+	}
 
-    @Issue('https://github.com/grails3-plugins/fields/issues/3')
-    void "table tag allows to specify the domain class"() {
-        given:
-        def mixedPersonList = [new Employee(name: "Homer Simpson", salary: 1)] + personList
+	@Issue('https://github.com/grails3-plugins/fields/issues/3')
+	void "table tag allows to specify the domain class"() {
+		given:
+		def mixedPersonList = [new Employee(name: "Homer Simpson", salary: 1)] + personList
 
-        when:
-        def output = applyTemplate('<f:table collection="collection" maxProperties="7" domainClass="grails.plugin.formfields.mock.Person"/>', [collection: mixedPersonList])
-        def table = XML.parse(output)
+		when:
+		def output = applyTemplate('<f:table collection="collection" maxProperties="7" domainClass="grails.plugin.formfields.mock.Person"/>', [collection: mixedPersonList])
+		def table = XML.parse(output)
 
-        then:
-        table.thead.tr.th.a.collect {it.text().trim()} == ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', "Picture", "Another Picture"]
-        table.tbody.tr.collect { it.td[1].text() } == ['Homer Simpson', 'Bart Simpson', 'Marge Simpson']
-    }
+		then:
+		table.thead.tr.th.a.collect { it.text().trim() } == ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', "Picture", "Another Picture"]
+		table.tbody.tr.collect { it.td[1].text() } == ['Homer Simpson', 'Bart Simpson', 'Marge Simpson']
+	}
 
-    @Issue('https://github.com/grails3-plugins/fields/issues/3')
-    void "table tag allows to specify the properties to be shown"() {
-        when:
-        def output = applyTemplate('<f:table collection="collection" properties="[\'gender\', \'name\']"/>', [collection: personList])
-        def table = XML.parse(output)
+	@Issue('https://github.com/grails3-plugins/fields/issues/3')
+	void "table tag allows to specify the properties to be shown"() {
+		when:
+		def output = applyTemplate('<f:table collection="collection" properties="[\'gender\', \'name\']"/>', [collection: personList])
+		def table = XML.parse(output)
 
-        then:
-        table.thead.tr.th.a.collect {it.text().trim()} == ['Gender', 'Name']
-        table.tbody.tr.collect { it.td[0].text() } == ['Male', 'Female']
-    }
+		then:
+		table.thead.tr.th.a.collect { it.text().trim() } == ['Gender', 'Name']
+		table.tbody.tr.collect { it.td[0].text() } == ['Male', 'Female']
+	}
 
-    @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/231')
-    void "table tag renders columns for properties until maxProperties is reached, ordered by the domain class constraints"() {
-        when:
-            def output = applyTemplate('<f:table collection="collection" maxProperties="5"/>', [collection: personList])
-            def table = new XmlSlurper().parseText(output)
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/231')
+	void "table tag renders columns for properties until maxProperties is reached, ordered by the domain class constraints"() {
+		when:
+		def output = applyTemplate('<f:table collection="collection" maxProperties="5"/>', [collection: personList])
+		def table = new XmlSlurper().parseText(output)
 
-        then:
-            table.thead.tr.th.a.collect {it.text().trim()} == ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer']
-            table.tbody.tr.collect { it.td[1].text() } == ['Bart Simpson', 'Marge Simpson']
-    }
+		then:
+		table.thead.tr.th.a.collect { it.text().trim() } == ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer']
+		table.tbody.tr.collect { it.td[1].text() } == ['Bart Simpson', 'Marge Simpson']
+	}
 
-    void "table tag allows to specify the order"() {
-        when:
-        def output = applyTemplate('<f:table collection="collection" order="name,gender"/>', [collection: personList])
-        def table = XML.parse(output)
+	void "table tag allows to specify the order"() {
+		when:
+		def output = applyTemplate('<f:table collection="collection" order="name,gender"/>', [collection: personList])
+		def table = XML.parse(output)
 
-        then:
-        table.thead.tr.th.a.collect {it.text().trim()} == ['Name', 'Gender']
-        table.tbody.tr.collect { it.td[0].text() } == ['Bart Simpson', 'Marge Simpson']
-        table.tbody.tr.collect { it.td[1].text() } == ['Male', 'Female']
-    }
+		then:
+		table.thead.tr.th.a.collect { it.text().trim() } == ['Name', 'Gender']
+		table.tbody.tr.collect { it.td[0].text() } == ['Bart Simpson', 'Marge Simpson']
+		table.tbody.tr.collect { it.td[1].text() } == ['Male', 'Female']
+	}
 
-    void "table tag allows to specify the except"() {
-        when:
-        def output = applyTemplate('<f:table collection="collection" except="salutation,grailsDeveloper,picture,anotherPicture,password"/>', [collection: personList])
-        def table = XML.parse(output)
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/257')
+	void "table tag allows to specify the except"() {
+		when:
+		def output = applyTemplate('<f:table collection="collection" except="${except}"/>', [collection: personList, except: except])
+		def table = XML.parse(output)
 
-        then:
-        table.thead.tr.th.a.collect {it.text().trim()}.sort() == ["Address", "Biography", "Date Of Birth", "Emails", "Gender", "Minor", "Name"]
-        table.tbody.tr.collect { it.td[0].text() } == ['Bart Simpson', 'Marge Simpson']
-    }
+		then:
+		table.thead.tr.th.a.collect { it.text().trim() }.sort() == ["Address", "Biography", "Date Of Birth", "Emails", "Gender", "Minor", "Name"]
+		table.tbody.tr.collect { it.td[0].text() } == ['Bart Simpson', 'Marge Simpson']
 
-    void "table tag displays embedded properties by default with toString"() {
-        when:
-        def output = applyTemplate('<f:table collection="collection" properties="[\'address\']"/>', [collection: personList])
-        def table = XML.parse(output)
+		where:
+		except                                                                                          | _
+		'id,salutation,grailsDeveloper,picture,anotherPicture,password,lastUpdated'                     | _
+		['id', 'salutation', 'grailsDeveloper', 'picture', 'anotherPicture', 'password', 'lastUpdated'] | _
+	}
 
-        then:
-        table.thead.tr.th.a.collect {it.text().trim()} == ['Address']
-        table.tbody.tr.collect { it.td[0].text() } == [address.toString()] * 2
-    }
+	void "table tag displays embedded properties by default with toString"() {
+		when:
+		def output = applyTemplate('<f:table collection="collection" properties="[\'address\']"/>', [collection: personList])
+		def table = XML.parse(output)
 
-    void "table tag uses custom display template when displayStyle is specified"() {
-        given:
-        views["/_fields/display/_custom.gsp"] = 'Custom: ${value}'
-        mockFormFieldsTemplateService.findTemplate(_, 'displayWidget-custom', _, null) >> [path: '/_fields/display/custom']
+		then:
+		table.thead.tr.th.a.collect { it.text().trim() } == ['Address']
+		table.tbody.tr.collect { it.td[0].text() } == [address.toString()] * 2
+	}
 
-        when:
+	void "table tag uses custom display template when displayStyle is specified"() {
+		given:
+		views["/_fields/display/_custom.gsp"] = 'Custom: ${value}'
+		mockFormFieldsTemplateService.findTemplate(_, 'displayWidget-custom', _, null) >> [path: '/_fields/display/custom']
 
-        def output = applyTemplate('<f:table collection="collection" properties="[\'address\']" displayStyle="custom"/>', [collection: personList])
-        def table = XML.parse(output)
+		when:
 
-        then:
-        table.thead.tr.th.a.collect {it.text().trim()} == ['Address']
-        table.tbody.tr.collect { it.td[0].text() } == ["Custom: $address"] * 2
-    }
+		def output = applyTemplate('<f:table collection="collection" properties="[\'address\']" displayStyle="custom"/>', [collection: personList])
+		def table = XML.parse(output)
 
-    void "table tag uses custom display template from theme when displayStyle and theme is specified"() {
-        given:
-        views["/_fields/_themes/test/display/_custom.gsp"] = 'Theme: ${value}'
-        mockFormFieldsTemplateService.findTemplate(_, 'displayWidget-custom', _, "test") >> [path: '/_fields/_themes/test/display/custom']
+		then:
+		table.thead.tr.th.a.collect { it.text().trim() } == ['Address']
+		table.tbody.tr.collect { it.td[0].text() } == ["Custom: $address"] * 2
+	}
 
-        when:
+	void "table tag uses custom display template from theme when displayStyle and theme is specified"() {
+		given:
+		views["/_fields/_themes/test/display/_custom.gsp"] = 'Theme: ${value}'
+		mockFormFieldsTemplateService.findTemplate(_, 'displayWidget-custom', _, "test") >> [path: '/_fields/_themes/test/display/custom']
 
-        def output = applyTemplate('<f:table collection="collection" properties="[\'address\']" displayStyle="custom" theme="test"/>', [collection: personList])
-        def table = XML.parse(output)
+		when:
 
-        then:
-        table.thead.tr.th.a.collect {it.text().trim()} == ['Address']
-        table.tbody.tr.collect { it.td[0].text() } == ["Theme: $address"] * 2
-    }
+		def output = applyTemplate('<f:table collection="collection" properties="[\'address\']" displayStyle="custom" theme="test"/>', [collection: personList])
+		def table = XML.parse(output)
 
-    void "table renders full embedded beans when displayStyle= 'default'"() {
-        when:
+		then:
+		table.thead.tr.th.a.collect { it.text().trim() } == ['Address']
+		table.tbody.tr.collect { it.td[0].text() } == ["Theme: $address"] * 2
+	}
 
-        def output = applyTemplate('<f:table collection="collection" properties="[\'address\']" displayStyle="default"/>', [collection: [bart]])
-        def table = XML.parse(output)
-        println output
+	void "table renders full embedded beans when displayStyle= 'default'"() {
+		when:
 
-        then:
-        table.thead.tr.th.a.collect {it.text().trim()} == ['Address']
-        table.tbody.tr.td.a.ol.li.collect { it.div.text() } == [address.city, address.country, address.street]
-    }
+		def output = applyTemplate('<f:table collection="collection" properties="[\'address\']" displayStyle="default"/>', [collection: [bart]])
+		def table = XML.parse(output)
+		println output
+
+		then:
+		table.thead.tr.th.a.collect { it.text().trim() } == ['Address']
+		table.tbody.tr.td.a.ol.li.collect { it.div.text() } == [address.city, address.country, address.street]
+	}
 
 }

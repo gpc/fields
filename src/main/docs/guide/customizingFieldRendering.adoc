@@ -1,3 +1,5 @@
+== Customizing Field Rendering
+
 The plugin resolves the GSP template used for each property according to conventions. You can override the rendering based
 on the class and property name or the property type. The `f:field` tag looks for a template called `_wrapper.gsp`, the `f:widget`
 tag looks for a template called `_widget.gsp`, the `f:display` tag looks for a template called `_displayWrapper.gsp`.
@@ -84,6 +86,7 @@ The template for a field is chosen by a convention using the names of the contro
 The variables referenced in these paths are:
 
 .Referenced Variables
+[cols="1,2"]
 |===
 |Name | Description
 
@@ -116,7 +119,7 @@ The variables referenced in these paths are:
 |===
 
 
-All class names are camel-cased simple forms. For example `java.lang.String` = `string`, `com.project.HomeAddress` = `homeAddress`.
+All class names are camel-cased simple forms. For example `java.lang.String` becomes `string`, and `com.project.HomeAddress` becomes `homeAddress`.
 
 Templates are resolved in this order so that you can override in the more specific circumstance and fall back to successively more general defaults. For example, you can define a field template for all `java.lang.String` properties but override a specific property of a particular class to use more specialized rendering.
 

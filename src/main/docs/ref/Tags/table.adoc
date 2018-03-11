@@ -1,10 +1,7 @@
 
-===== f:table
+==== f:table
 
-
-
-===== Description
-
+===== Purpose
 
 `<f:table/>` renders some or all properties of a collection of beans in a table using the _f:display_ widget for each property type. If there is no _\_display_ template in scope the tag will simply render the property values.
 
@@ -55,3 +52,7 @@ When *theme* is specified, the _\_display_ template will be searched first in *t
 |===
 
  Any additional attributes are passed to the rendered template.
+
+===== Modifying the `_table.gsp` template.
+
+To make you own version of a `f:table` template, the file should be located in `grails-app/views/templates/_fields/_table.gsp`. You can find a starting point for a new file link:https://github.com/grails-fields-plugin/grails-fields/blob/master/grails-app/views/templates/_fields/_table.gsp[on GitHub]

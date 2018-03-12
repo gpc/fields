@@ -2,6 +2,8 @@ package grails.plugin.formfields
 
 import grails.util.GrailsNameUtils
 import grails.validation.ConstrainedProperty
+import groovy.transform.Canonical
+import groovy.transform.CompileStatic
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
 import org.grails.scaffolding.model.property.Constrained
@@ -11,6 +13,8 @@ import static java.util.Collections.EMPTY_LIST
 import static org.apache.commons.lang.StringUtils.substringAfterLast
 import grails.core.*
 
+@CompileStatic
+@Canonical(includes = ['beanType', 'propertyName', 'propertyType'])
 class PropertyPathAccessor implements BeanPropertyAccessor {
 
 	final String pathFromRoot

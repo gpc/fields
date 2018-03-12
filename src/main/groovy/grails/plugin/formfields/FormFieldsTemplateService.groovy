@@ -16,10 +16,9 @@
 
 package grails.plugin.formfields
 
-import grails.util.GrailsNameUtils
 import grails.core.GrailsApplication
 import grails.plugins.GrailsPluginManager
-import grails.validation.ConstrainedProperty
+import grails.util.GrailsNameUtils
 import groovy.util.logging.Slf4j
 import org.grails.datastore.mapping.model.types.ManyToMany
 import org.grails.datastore.mapping.model.types.ManyToOne
@@ -32,7 +31,6 @@ import org.grails.web.util.GrailsApplicationAttributes
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.context.request.RequestAttributes
 import org.springframework.web.context.request.RequestContextHolder
-
 
 import static org.grails.io.support.GrailsResourceUtils.appendPiecesForUri
 
@@ -80,22 +78,22 @@ class FormFieldsTemplateService {
         return grailsApplication?.config?.getProperty("grails.plugin.fields.$templateProperty", templateProperty) ?: templateProperty
     }
 
-    @Lazy
-    private Closure findTemplateCached = shouldCache() ? findTemplateCacheable.memoize() : findTemplateCacheable
+	@Lazy
+	private Closure findTemplateCached = shouldCache() ? findTemplateCacheable.memoize() : findTemplateCacheable
 
-    private findTemplateCacheable = { BeanPropertyAccessor propertyAccessor, String controllerNamespace, String controllerName, String actionName, String templateName, String templatesFolder, String themeName ->
-        List<String> candidatePaths
-        if(themeName) {
-            //if theme is specified, first resolve all theme paths and then all the default paths
-            String themeFolder = THEMES_FOLDER + "/" + themeName
-            candidatePaths = candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, themeFolder)
-            candidatePaths = candidatePaths + candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, null)
-        } else {
-            candidatePaths = candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, null)
-        }
+    private findTemplateCacheable = {BeanPropertyAccessor propertyAccessor, String controllerNamespace, String controllerName, String actionName, String templateName, String templatesFolder, String themeName->
+		List<String> candidatePaths
+		if (themeName) {
+			//if theme is specified, first resolve all theme paths and then all the default paths
+			String themeFolder = THEMES_FOLDER + "/" + themeName
+			candidatePaths = candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, themeFolder)
+			candidatePaths = candidatePaths + candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, null)
+		} else {
+			candidatePaths = candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, null)
+		}
 
         candidatePaths.findResult {String path ->
-            FormFieldsTemplateService.log.debug "looking for template with path $path"
+            log.debug "looking for template with path $path"
             def source = groovyPageLocator.findTemplateByPath(path)
             if (source) {
                 Map template = [path: path]
@@ -103,7 +101,7 @@ class FormFieldsTemplateService {
                     source.URI.startsWith(it.pluginPath)
                 }
                 template.plugin = plugin?.name
-                FormFieldsTemplateService.log.info "found template $template.path ${plugin ? "in $template.plugin plugin" : ''}"
+                log.debug "found template $template.path ${plugin ? "in $template.plugin plugin" : ''}"
                 return template
             } else {
                 null

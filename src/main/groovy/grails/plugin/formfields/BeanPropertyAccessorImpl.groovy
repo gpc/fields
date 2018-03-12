@@ -34,9 +34,9 @@ import org.springframework.validation.FieldError
 
 import static grails.validation.ConstrainedProperty.BLANK_CONSTRAINT
 
-@Canonical(includes = 'beanType, propertyName, propertyType')
+@Canonical(includes = ['beanType', 'propertyName', 'propertyType'])
 class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
-	
+
 	Object rootBean
 	Class rootBeanType
 	GrailsDomainClass beanClass
@@ -81,7 +81,7 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
 	List<Class> getBeanSuperclasses() {
 		getSuperclassesAndInterfaces(beanType)
 	}
-	
+
 	List<Class> getPropertyTypeSuperclasses() {
 		getSuperclassesAndInterfaces(propertyType)
 	}

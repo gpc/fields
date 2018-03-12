@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>Grails Fields Plugin 2.2.5</title>
+    <title>Grails Fields Plugin 2.2.6</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -92,7 +92,7 @@ function addJsClass(el) {
 <div class="sect4">
 <h5 id="_description">Description</h5>
 <div class="paragraph">
-<p><em>f:table</em> renders some or all properties of a collection of beans in a table. If there is no <em>\_display</em> template in scope the tag will simply render the property values.</p>
+<p><code>&lt;f:table/&gt;</code> renders some or all properties of a collection of beans in a table using the <em>f:display</em> widget for each property type. If there is no <em>\_display</em> template in scope the tag will simply render the property values.</p>
 </div>
 </div>
 <div class="sect4">
@@ -101,11 +101,27 @@ function addJsClass(el) {
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">&lt;<span class="key">f</span>:table collection=<span class="string"><span class="delimiter">&quot;</span><span class="content">personList</span><span class="delimiter">&quot;</span></span>/&gt;
 
+&lt;<span class="key">f</span>:table collection=<span class="string"><span class="delimiter">&quot;</span><span class="content">personList</span><span class="delimiter">&quot;</span></span> properties=<span class="string"><span class="delimiter">&quot;</span><span class="content">firstName, lastName</span><span class="delimiter">&quot;</span></span>/&gt;
+
 &lt;<span class="key">f</span>:table collection=<span class="string"><span class="delimiter">&quot;</span><span class="content">personList</span><span class="delimiter">&quot;</span></span> properties=<span class="string"><span class="delimiter">&quot;</span><span class="content">['firstName', 'lastName']</span><span class="delimiter">&quot;</span></span>/&gt;
 
 &lt;<span class="key">f</span>:table collection=<span class="string"><span class="delimiter">&quot;</span><span class="content">catsAndDogsList</span><span class="delimiter">&quot;</span></span> domainClass=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.zoo.Animal</span><span class="delimiter">&quot;</span></span>/&gt;
 
-&lt;<span class="key">f</span>:table collection=<span class="string"><span class="delimiter">&quot;</span><span class="content">catsAndDogsList</span><span class="delimiter">&quot;</span></span> domainClass=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.zoo.Animal</span><span class="delimiter">&quot;</span></span> theme=<span class="string"><span class="delimiter">&quot;</span><span class="content">bs-horizontal</span><span class="delimiter">&quot;</span></span>/&gt;</code></pre>
+&lt;<span class="key">f</span>:table collection=<span class="string"><span class="delimiter">&quot;</span><span class="content">catsAndDogsList</span><span class="delimiter">&quot;</span></span> domainClass=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.zoo.Animal</span><span class="delimiter">&quot;</span></span> theme=<span class="string"><span class="delimiter">&quot;</span><span class="content">bs-horizontal</span><span class="delimiter">&quot;</span></span>/&gt;
+
+<span class="comment">// List first three properties in Person</span>
+&lt;<span class="key">f</span>:table collection=<span class="string"><span class="delimiter">&quot;</span><span class="content">personList</span><span class="delimiter">&quot;</span></span> maxProperties=<span class="string"><span class="delimiter">&quot;</span><span class="content">3</span><span class="delimiter">&quot;</span></span>/&gt;
+
+<span class="comment">// Include id, lastUpdated, dateCreated</span>
+&lt;<span class="key">f</span>:table collection=<span class="string"><span class="delimiter">&quot;</span><span class="content">personList</span><span class="delimiter">&quot;</span></span> except=<span class="string"><span class="delimiter">&quot;</span><span class="content">[]]</span><span class="delimiter">&quot;</span></span>/&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The template for <code>&lt;f:table/&gt;</code> should be in</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>grails-app/views/templates/_fields/_table.gsp</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -116,14 +132,16 @@ function addJsClass(el) {
 <h5 id="_attributes">Attributes</h5>
 <table class="tableblock frame-all grid-all spread">
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 22.2222%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 55.5556%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top"><strong>Name</strong></th>
 <th class="tableblock halign-left valign-top"><strong>Required?</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Default</strong></th>
 <th class="tableblock halign-left valign-top"><strong>Description</strong></th>
 </tr>
 </thead>
@@ -131,37 +149,50 @@ function addJsClass(el) {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>collection</strong></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The collection of beans to be displayed</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>domainClass</strong></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The FQN of the domain class of the elements in the collection. Defaults to the class of the first element in the collection.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Class</code> of first element in <code>collection</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The FQN of the domain class of the elements in the collection.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>properties</strong></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The list of properties to be shown (table columns). Defaults to the first 7 (or less) properties of the domain class ordered by the domain class' constraints.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">First 7 (or less)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Comma-separated <code>String</code> or <code>List</code> of properties to be shown (table columns).  Defaults to the first 7 (or less) properties of the domain class ordered by the domain class' <code>constraints</code>, unless <code>maxProperties</code> is set below</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>displayStyle</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Determines the display template used for the bean&#8217;s properties. Defaults to <em>table</em> meaning that <em>\_display-table</em> templates will be used when available.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>except</strong></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A comma-separated list of properties that should be skipped.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>['id', 'lastUpdated', 'dateCreated']</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A comma-separated <code>String</code> or <code>List</code> of properties that should be skipped. Use the empty list to include <code>id</code>, <code>lastUpdated</code> and <code>dateCreated</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>order</strong></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A comma-separated list of properties which represents the order in which the tag should display them.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Comma-separated <code>String</code> or <code>List</code> of properties which represents the order in which the tag should display them.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>theme</strong></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Theme to use if available.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>maxProperties</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of properties to display when rendering the table. If zero is specified all columns are shown, otherwise <code>properties[0..&lt;maxProperties]</code> are shown. <code>maxProperties</code> can be negative.</p></td>
 </tr>
 </tbody>
 </table>

@@ -95,7 +95,9 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
 		def table = XML.parse(output)
 
 		then:
-		table.thead.tr.th.a.collect { it.text().trim() } == ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', "Picture", "Another Picture"]
+		table.thead.tr.th.a.collect {
+			it.text().trim()
+		} == ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', "Picture", "Another Picture"]
 		table.tbody.tr.collect { it.td[1].text() } == ['Homer Simpson', 'Bart Simpson', 'Marge Simpson']
 	}
 
@@ -138,14 +140,30 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
 		def output = applyTemplate('<f:table collection="collection" except="${except}"/>', [collection: personList, except: except])
 		def table = XML.parse(output)
 
-		then:
-		table.thead.tr.th.a.collect { it.text().trim() }.sort() == ["Address", "Biography", "Date Of Birth", "Emails", "Gender", "Minor", "Name"]
-		table.tbody.tr.collect { it.td[0].text() } == ['Bart Simpson', 'Marge Simpson']
+		then: "The first 7 headers should be (limited by maxProperties not being set)"
+		table.thead.tr.th.a.collect { it.text().trim() } == ['Id', 'Name', 'Date Of Birth', 'Address', 'Biography', 'Emails', 'Gender']
 
 		where:
-		except                                                                                          | _
-		'id,salutation,grailsDeveloper,picture,anotherPicture,password,lastUpdated'                     | _
-		['id', 'salutation', 'grailsDeveloper', 'picture', 'anotherPicture', 'password', 'lastUpdated'] | _
+		except << [
+			'salutation,grailsDeveloper,picture,anotherPicture,password,lastUpdated',
+			['salutation', 'grailsDeveloper', 'picture', 'anotherPicture', 'password', 'lastUpdated']
+		]
+	}
+
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/257')
+	void "table tag allows to specify the except as empty will render id and lastUpdated"() {
+		when:
+		def output = applyTemplate('<f:table collection="collection" except="${except}" maxProperties="0"/>', [collection: personList, except: except])
+		def table = XML.parse(output)
+
+		then:
+		table.thead.tr.th.a.collect { it.text().trim() } == [
+			'Id', 'Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', 'Picture',
+			'Another Picture', 'Password', 'Biography', 'Emails', 'Gender', 'Last Updated', 'Minor'
+		]
+
+		where:
+		except << ['', [], null]
 	}
 
 	void "table tag displays embedded properties by default with toString"() {

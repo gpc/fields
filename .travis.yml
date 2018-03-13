@@ -6,6 +6,8 @@ cache:
   directories:
   - $HOME/.gradle
 script: ./travis-build.sh
+after_failure:
+  - ./travis/publish_reports.sh
 env:
   global:
   - GIT_NAME="Graeme Rocher"

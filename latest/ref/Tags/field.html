@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>Grails Fields Plugin 2.2.6</title>
+    <title>Grails Fields Plugin 2.2.7</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -48,16 +48,13 @@ function addJsClass(el) {
                         <div class="toc-item" style="margin-left:0"><a href="../../guide/embeddedProperties.html"><strong>4</strong><span>Embedded Properties</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../../guide/scaffolding.html"><strong>5</strong><span>Scaffolding</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/themes.html"><strong>5</strong><span>Themes</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../../guide/themes.html"><strong>6</strong><span>Themes</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/includingTemplatesInPlugins.html"><strong>6</strong><span>Including Templates in Plugins</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../../guide/includingTemplatesInPlugins.html"><strong>7</strong><span>Including Templates in Plugins</span></a>
-                        </div>
-                        
-                        <div class="toc-item" style="margin-left:0"><a href="../../guide/performance.html"><strong>8</strong><span>Performance</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/performance.html"><strong>7</strong><span>Performance</span></a>
                         </div>
                         
                     </div>
@@ -126,8 +123,12 @@ function addJsClass(el) {
 You can accomplish this using new attributes: <em>wrapper</em>, <em>widget</em> and <em>templates</em>. (See attributes section)</p>
 </div>
 <div class="paragraph">
-<p>Since version 2.1.4 you can specify the theme to be used.
-&lt;f:field bean="person" property="name" theme="bs-horizontal"/&gt;</p>
+<p>Since version 2.1.4 you can specify the theme to be used.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>&lt;f:field bean="person" property="name" theme="bs-horizontal"/&gt;</pre>
+</div>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -151,11 +152,11 @@ You can accomplish this using new attributes: <em>wrapper</em>, <em>widget</em> 
 <div class="sect4">
 <h5 id="_attributes">Attributes</h5>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 1. Attributes for f:field</caption>
+<caption class="title">Table 1. Attributes for <code>f:field</code></caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
 </colgroup>
 <thead>
 <tr>
@@ -166,62 +167,62 @@ You can accomplish this using new attributes: <em>wrapper</em>, <em>widget</em> 
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>bean</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">yes for <code>f:widget</code> if not inside <code>f:with</code>, optional for <code>f:field</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The bean whose property is being rendered. This can be the object itself or the name of a page-scope variable.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>property</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>property</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The path to the property. This can include any level of nesting and numeric or string indexes. For example <code>employees[0].address[home].street</code> is a valid path. If absent, all properties will be displayed.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>value</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>value</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the actual value of the property.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>default</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>default</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A default value for the property that will be used if the actual property value is <code>false</code>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>required</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>required</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the required status of the property. By default this is worked out based on the property&#8217;s constraints.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>invalid</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>invalid</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the validity of the property. By default this is worked out using the bean&#8217;s <em>errors</em> property for domain and command objects.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>label</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>label</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the field label passed to the template. This value may either be an i18n key or a literal string.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>prefix</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>prefix</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A string (including the trailing period) that should be appended before the input name such as <code>name="${prefix}propertyName"</code>.  The label is also modified.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>wrapper</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>wrapper</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Specifies the name of the folder inside <code>_fields</code> where the <code>_wrapper.gsp</code> template is located.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>widget</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>widget</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies the name of the folder inside <em>\_fields</em> where the <em>\_widget.gsp</em> template is located.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies the name of the folder inside <code>\_fields</code> where the <code>\_widget.gsp</code> template is located.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>templates</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>templates</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Specifies the name of the folder inside <code>_fields</code> where the <code>_wrapper.gsp</code> and <code>_widget.gsp</code> templates are located. It is a shorthand for specifying both (<code>wrapper</code> and <code>widget</code>).</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>theme</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>theme</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Theme to use if available.</p></td>
 </tr>
@@ -229,6 +230,29 @@ You can accomplish this using new attributes: <em>wrapper</em>, <em>widget</em> 
 </table>
 <div class="paragraph">
 <p>Any additional attributes are passed to the rendered template. Any additional attributes prefixed with <code>widget-</code> are instead passed to the widget template or rendered on the default input.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_example_of_overriding_a_code_wrapper_gsp_code">Example of overriding a <code>_wrapper.gsp</code></h5>
+<div class="paragraph">
+<p>If you want to override a <code>f:wrapper</code> to be used for all <strong>widgets</strong> then create a file  with content like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">grails-app/views/_fields/default/_wrapper.gsp</div>
+<div class="content">
+<pre>&lt;div class="form-group ${invalid ? 'has-error' : ''}"&gt;
+    &lt;label for="${property}"&gt;${label} ${required ? '*' : ''}&lt;/label&gt;
+
+    &lt;div&gt;
+        &lt;f:widget property="${property}"/&gt;
+        &lt;g:if test="${errors}"&gt;
+            &lt;g:each in="${errors}" var="error"&gt;
+                &lt;span class="help-block"&gt;&lt;g:message error="${error}"/&gt;&lt;/span&gt;
+            &lt;/g:each&gt;
+        &lt;/g:if&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</pre>
+</div>
 </div>
 </div>
 </div>

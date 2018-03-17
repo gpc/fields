@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>3 Customizing Field Rendering 2.2.6</title>
+    <title>3 Customizing Field Rendering 2.2.7</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -41,16 +41,13 @@ function addJsClass() {
                         <div class="toc-item" style="margin-left:0"><a href="../guide/embeddedProperties.html"><strong>4</strong><span>Embedded Properties</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/scaffolding.html"><strong>5</strong><span>Scaffolding</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/themes.html"><strong>5</strong><span>Themes</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/themes.html"><strong>6</strong><span>Themes</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/includingTemplatesInPlugins.html"><strong>6</strong><span>Including Templates in Plugins</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/includingTemplatesInPlugins.html"><strong>7</strong><span>Including Templates in Plugins</span></a>
-                        </div>
-                        
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/performance.html"><strong>8</strong><span>Performance</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/performance.html"><strong>7</strong><span>Performance</span></a>
                         </div>
                         
                     </div>
@@ -84,7 +81,7 @@ function addJsClass() {
                 <div class="project">
                     <h1>3 Customizing Field Rendering</h1>
 
-                    <p><strong>Version:</strong> 2.2.6</p>
+                    <p><strong>Version:</strong> 2.2.7</p>
                 </div>
 
                 
@@ -100,6 +97,9 @@ function addJsClass() {
 </div>
 
 
+<div class="sect1">
+<h2 id="_customizing_field_rendering">Customizing Field Rendering</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The plugin resolves the GSP template used for each property according to conventions. You can override the rendering based
 on the class and property name or the property type. The <code>f:field</code> tag looks for a template called <code>_wrapper.gsp</code>, the <code>f:widget</code>
@@ -288,8 +288,8 @@ to <code>grails-app/conf/application.yml</code> to change the default templates 
 <table class="tableblock frame-all grid-all spread">
 <caption class="title">Table 2. Referenced Variables</caption>
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
 </colgroup>
 <thead>
 <tr>
@@ -337,7 +337,7 @@ to <code>grails-app/conf/application.yml</code> to change the default templates 
 </tbody>
 </table>
 <div class="paragraph">
-<p>All class names are camel-cased simple forms. For example <code>java.lang.String</code> = <code>string</code>, <code>com.project.HomeAddress</code> = <code>homeAddress</code>.</p>
+<p>All class names are camel-cased simple forms. For example <code>java.lang.String</code> becomes <code>string</code>, and <code>com.project.HomeAddress</code> becomes <code>homeAddress</code>.</p>
 </div>
 <div class="paragraph">
 <p>Templates are resolved in this order so that you can override in the more specific circumstance and fall back to successively more general defaults. For example, you can define a field template for all <code>java.lang.String</code> properties but override a specific property of a particular class to use more specialized rendering.</p>
@@ -699,6 +699,8 @@ by convention.</p>
 
 <span class="comment">// renders _fields/time/_displayWrapper.gsp and _fields/time/_displayWidget.gsp:</span>
 &lt;<span class="key">f</span>:display property=<span class="string"><span class="delimiter">&quot;</span><span class="content">startDate</span><span class="delimiter">&quot;</span></span> templates=<span class="string"><span class="delimiter">&quot;</span><span class="content">time</span><span class="delimiter">&quot;</span></span>/&gt;</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>

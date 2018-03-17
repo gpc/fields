@@ -3,9 +3,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <title>Grails Fields Plugin</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
-    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
     <script src="../js/docs.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.13/clipboard.min.js"></script>
     <script type="text/javascript">
@@ -38,13 +38,11 @@
                         
                         <div class="toc-item" style="margin-left:0"><a href="#embeddedProperties"><strong>4</strong><span>Embedded Properties</span></a></div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="#scaffolding"><strong>5</strong><span>Scaffolding</span></a></div>
+                        <div class="toc-item" style="margin-left:0"><a href="#themes"><strong>5</strong><span>Themes</span></a></div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="#themes"><strong>6</strong><span>Themes</span></a></div>
+                        <div class="toc-item" style="margin-left:0"><a href="#includingTemplatesInPlugins"><strong>6</strong><span>Including Templates in Plugins</span></a></div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="#includingTemplatesInPlugins"><strong>7</strong><span>Including Templates in Plugins</span></a></div>
-                        
-                        <div class="toc-item" style="margin-left:0"><a href="#performance"><strong>8</strong><span>Performance</span></a></div>
+                        <div class="toc-item" style="margin-left:0"><a href="#performance"><strong>7</strong><span>Performance</span></a></div>
                         
                     </div>
                 </div>
@@ -67,30 +65,35 @@
                     <h1>Grails Fields Plugin</h1>
                     <p></p>
                     <p>Customizable form-field rendering based on overrideable GSP template</p>
-                    <p><strong>Version:</strong> 2.2.6</p>
+                    <p><strong>Version:</strong> 2.2.7</p>
 
                 </div>
                 
                 <div id="table-of-content">
                     <h2>Table of Contents</h2>
                     
-                    <div class="toc-item" style="margin-left:0px"><a href="#introduction"><strong>1</strong><span>Introduction</span></a></div>
+                    <div class="toc-item" style="margin-left:0px"><a href="#introduction"><strong>1</strong><span>Introduction</span></a>
+                    </div>
                     
-                    <div class="toc-item" style="margin-left:0px"><a href="#usage"><strong>2</strong><span>Usage</span></a></div>
+                    <div class="toc-item" style="margin-left:0px"><a href="#usage"><strong>2</strong><span>Usage</span></a>
+                    </div>
                     
-                    <div class="toc-item" style="margin-left:0px"><a href="#customizingFieldRendering"><strong>3</strong><span>Customizing Field Rendering</span></a></div>
+                    <div class="toc-item" style="margin-left:0px"><a href="#customizingFieldRendering"><strong>3</strong><span>Customizing Field Rendering</span></a>
+                    </div>
                     
-                    <div class="toc-item" style="margin-left:0px"><a href="#embeddedProperties"><strong>4</strong><span>Embedded Properties</span></a></div>
+                    <div class="toc-item" style="margin-left:0px"><a href="#embeddedProperties"><strong>4</strong><span>Embedded Properties</span></a>
+                    </div>
                     
-                    <div class="toc-item" style="margin-left:0px"><a href="#scaffolding"><strong>5</strong><span>Scaffolding</span></a></div>
+                    <div class="toc-item" style="margin-left:0px"><a href="#themes"><strong>5</strong><span>Themes</span></a>
+                    </div>
                     
-                    <div class="toc-item" style="margin-left:0px"><a href="#themes"><strong>6</strong><span>Themes</span></a></div>
+                    <div class="toc-item" style="margin-left:0px"><a href="#includingTemplatesInPlugins"><strong>6</strong><span>Including Templates in Plugins</span></a>
+                    </div>
                     
-                    <div class="toc-item" style="margin-left:0px"><a href="#includingTemplatesInPlugins"><strong>7</strong><span>Including Templates in Plugins</span></a></div>
+                    <div class="toc-item" style="margin-left:0px"><a href="#performance"><strong>7</strong><span>Performance</span></a>
+                    </div>
                     
-                    <div class="toc-item" style="margin-left:0px"><a href="#performance"><strong>8</strong><span>Performance</span></a></div>
-                    
-                    <div style="clear:both" ></div>
+                    <div style="clear:both"></div>
                 </div>
                 
                 
@@ -104,6 +107,9 @@
 </div>
 
 
+<div class="sect1">
+<h2 id="_introduction">Introduction</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The <em>Fields plugin</em> allows you to customize the rendering of input fields for properties of domain objects, command beans and POGOs based on their type, name, etc. The plugin aims to:</p>
 </div>
@@ -129,9 +135,24 @@
 </li>
 </ul>
 </div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="_changelog">Changelog</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_version_2_2_7">Version 2.2.7</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>BugFix: The fix for #257 did not work as described, but now it does.</p>
+</li>
+<li>
+<p>Improvement: Documentation has been improved with more examples for the various tags.</p>
+</li>
+</ul>
+</div>
+</div>
 <div class="sect2">
 <h3 id="_version_2_2_6">Version 2.2.6</h3>
 <div class="ulist">
@@ -419,11 +440,14 @@ Thanks to <a href="https://github.com/bluesliverx">Brian Saville</a> for contrib
 </div>
 
 
+<div class="sect1">
+<h2 id="_usage">Usage</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The plugin provides a set of tags you can use to render the fields in a form.</p>
 </div>
 <div class="paragraph">
-<p>In the simplest case you can use <em>f:all</em> to render a field for every property of a bean (the domain object or command the form will bind to):</p>
+<p>In the simplest case you can use <code>f:all</code> to render a field for every property of a bean (the domain object or command the form will bind to):</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -433,7 +457,7 @@ Thanks to <a href="https://github.com/bluesliverx">Brian Saville</a> for contrib
 </div>
 </div>
 <div class="paragraph">
-<p>To render individual fields you use the <em>f:field</em> tag:</p>
+<p>To render individual fields you use the <code>f:field</code> tag:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -445,7 +469,7 @@ Thanks to <a href="https://github.com/bluesliverx">Brian Saville</a> for contrib
 </div>
 </div>
 <div class="paragraph">
-<p>The <em>f:field</em> tag will automatically handle embedded domain properties recursively:</p>
+<p>The <code>f:field</code> tag will automatically handle embedded domain properties recursively:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -453,7 +477,7 @@ Thanks to <a href="https://github.com/bluesliverx">Brian Saville</a> for contrib
 </div>
 </div>
 <div class="paragraph">
-<p>If there is no bean object backing a form but you still want to render the surrounding field markup you can give <em>f:field</em> a body:</p>
+<p>If there is no bean object backing a form but you still want to render the surrounding field markup you can give <code>f:field</code> a body:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -463,7 +487,7 @@ Thanks to <a href="https://github.com/bluesliverx">Brian Saville</a> for contrib
 </div>
 </div>
 <div class="paragraph">
-<p>It should be an unusual case but to render just the widget without its surrounding container you can use the <em>f:widget</em> tag:</p>
+<p>It should be an unusual case but to render just the widget without its surrounding container you can use the <code>f:widget</code> tag:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -471,7 +495,7 @@ Thanks to <a href="https://github.com/bluesliverx">Brian Saville</a> for contrib
 </div>
 </div>
 <div class="paragraph">
-<p>To make it more convenient when rendering lots of properties of the same <em>bean</em> you can use the <em>f:with</em> tag to avoid having to specify <em>bean</em> on any tags nested inside:</p>
+<p>To make it more convenient when rendering lots of properties of the same <code>bean</code> you can use the <code>f:with</code> tag to avoid having to specify <code>bean</code> on any tags nested inside:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -485,7 +509,7 @@ Thanks to <a href="https://github.com/bluesliverx">Brian Saville</a> for contrib
 </div>
 </div>
 <div class="paragraph">
-<p>If you need to render a property for display purposes you can use <em>f:display</em>. It will internally use <em>g:fieldValue</em>, <em>g:formatBoolean</em> or <em>g:formatDate</em> to format the value.</p>
+<p>If you need to render a property for display purposes you can use <code>f:display</code>. It will internally use <code>g:fieldValue</code>, <code>g:formatBoolean</code> or <code>g:formatDate</code> to format the value.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -493,7 +517,7 @@ Thanks to <a href="https://github.com/bluesliverx">Brian Saville</a> for contrib
 </div>
 </div>
 <div class="paragraph">
-<p>If you need to render the value in a different way you can give <em>f:display</em> a body instead.</p>
+<p>If you need to render the value in a different way you can give <code>f:display</code> a body instead.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -503,7 +527,7 @@ Thanks to <a href="https://github.com/bluesliverx">Brian Saville</a> for contrib
 </div>
 </div>
 <div class="paragraph">
-<p>By default <em>f:display</em> simply renders the property value but if you supply a <em>\_display.gsp</em> template you can render the value in some structured markup, e.g. a table cell or list item. See the <a href="#customizingFieldRendering">Customizing Field Rendering</a> section for how to override templates. For example to render values in a definition list you could use a template like this:</p>
+<p>By default <code>f:display</code> simply renders the property value but if you supply a <code>\_display.gsp</code> template you can render the value in some structured markup, e.g. a table cell or list item. See the <a href="#customizingFieldRendering">Customizing Field Rendering</a> section for how to override templates. For example to render values in a definition list you could use a template like this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -514,7 +538,7 @@ Thanks to <a href="https://github.com/bluesliverx">Brian Saville</a> for contrib
 <div class="sect2">
 <h3 id="_extra_attributes_since_version_2_1_4">Extra attributes (Since version 2.1.4)</h3>
 <div class="paragraph">
-<p>You can pass any number of extra attributes to the <em>f:with</em> and <em>f:all</em> tags that will be propagated to the inner fields and displays.
+<p>You can pass any number of extra attributes to the <code>f:with</code> and <code>f:all</code> tags that will be propagated to the inner fields and displays.
 See their individual tags sections for more information.</p>
 </div>
 </div>
@@ -525,11 +549,23 @@ See their individual tags sections for more information.</p>
 <div class="sect2">
 <h3 id="_templates">Templates</h3>
 <div class="paragraph">
-<p>The names of the templates were changed for more adequate ones:
-* _field to _wrapper
-* _input to _widget
-* _display to _displayWrapper
-* _displayWidget was added</p>
+<p>The names of the templates were changed for more adequate ones:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>_field</code> to <code>_wrapper</code></p>
+</li>
+<li>
+<p><code>_input</code> to <code>_widget</code></p>
+</li>
+<li>
+<p><code>_display</code> to <code>_displayWrapper</code></p>
+</li>
+<li>
+<p><code>_displayWidget</code> was added</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>To use the old names (for backwards compatibility), configure the following in <code>Config.groovy</code></p>
@@ -569,10 +605,10 @@ grails.plugin.fields.widget = <span class="string"><span class="delimiter">&quot
 <div class="ulist">
 <ul>
 <li>
-<p>The <em>input</em> tag was deprecated because the name was confusing. Use the new <em>widget</em> tag instead.</p>
+<p>The <code>f:input</code> tag was deprecated because the name was confusing. Use the new <code>f:widget</code> tag instead.</p>
 </li>
 <li>
-<p>The <em>displayWidget</em> tag was added. It outputs the widget for display purposes, without the wrapper (similar to the <em>widget</em> tag).</p>
+<p>The <code>f:displayWidget</code> tag was added. It outputs the widget for display purposes, without the wrapper (similar to the <code>widget</code> tag).</p>
 </li>
 </ul>
 </div>
@@ -590,6 +626,8 @@ without localizing the numbers, configure the following in <code>Config.groovy</
 </div>
 </div>
 </div>
+</div>
+</div>
 
 <a name="3. Customizing Field Rendering"><!-- Legacy link --></a>
 <h1 id="customizingFieldRendering">3 Customizing Field Rendering</h1>
@@ -601,6 +639,9 @@ without localizing the numbers, configure the following in <code>Config.groovy</
 </div>
 
 
+<div class="sect1">
+<h2 id="_customizing_field_rendering">Customizing Field Rendering</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The plugin resolves the GSP template used for each property according to conventions. You can override the rendering based
 on the class and property name or the property type. The <code>f:field</code> tag looks for a template called <code>_wrapper.gsp</code>, the <code>f:widget</code>
@@ -789,8 +830,8 @@ to <code>grails-app/conf/application.yml</code> to change the default templates 
 <table class="tableblock frame-all grid-all spread">
 <caption class="title">Table 2. Referenced Variables</caption>
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
 </colgroup>
 <thead>
 <tr>
@@ -838,7 +879,7 @@ to <code>grails-app/conf/application.yml</code> to change the default templates 
 </tbody>
 </table>
 <div class="paragraph">
-<p>All class names are camel-cased simple forms. For example <code>java.lang.String</code> = <code>string</code>, <code>com.project.HomeAddress</code> = <code>homeAddress</code>.</p>
+<p>All class names are camel-cased simple forms. For example <code>java.lang.String</code> becomes <code>string</code>, and <code>com.project.HomeAddress</code> becomes <code>homeAddress</code>.</p>
 </div>
 <div class="paragraph">
 <p>Templates are resolved in this order so that you can override in the more specific circumstance and fall back to successively more general defaults. For example, you can define a field template for all <code>java.lang.String</code> properties but override a specific property of a particular class to use more specialized rendering.</p>
@@ -1203,6 +1244,8 @@ by convention.</p>
 </div>
 </div>
 </div>
+</div>
+</div>
 
 <a name="4. Embedded Properties"><!-- Legacy link --></a>
 <h1 id="embeddedProperties">4 Embedded Properties</h1>
@@ -1214,6 +1257,9 @@ by convention.</p>
 </div>
 
 
+<div class="sect1">
+<h2 id="_embedded_properties">Embedded Properties</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Embedded properties are handled in a special way by the <code>f:field</code> and <code>f:all</code> tags. If the <code>property</code> attribute you pass to <code>f:field</code> is an embedded property then the tag recursively renders each individual property of the embedded class with a surrounding <code>fieldset</code>. For example if you have a <code>Person</code> class with a <code>name</code> property and an <code>Address</code> embedded class with <code>street</code>, <code>city</code> and <code>country</code> properties <code>&lt;f:field bean="person" property="address"&gt;</code> will effectively do this:</p>
 </div>
@@ -1233,40 +1279,11 @@ by convention.</p>
 <div class="paragraph">
 <p>When you use the <code>f:all</code> tag it will automatically handle embedded properties in this way.</p>
 </div>
-
-<a name="5. Scaffolding"><!-- Legacy link --></a>
-<h1 id="scaffolding">5 Scaffolding</h1>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/grails-fields-plugin/grails-fields/edit/master/src/main/docs/guide/scaffolding.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
+</div>
 </div>
 
 
-<div class="paragraph">
-<p>Scaffolding templates based on the <em>Fields</em> plugin are quite powerful as they will pick up field and input rendering templates from your application and any plugins that provide them. This means that the useful life of scaffolding templates should be much longer as you do not need to replace the entire <em>create.gsp</em> and/or <em>edit.gsp</em> template just because you want to do something different with a certain property of one particular class.</p>
-</div>
-<div class="paragraph">
-<p>The plugin makes the <em>renderEditor.template</em> file used by standard Grails scaffolding redundant. This template was very limited because it could not be extended by plugins or applications (only replaced) and was unable to support embedded properties of domain classes.</p>
-</div>
-<div class="paragraph">
-<p>The <em>Fields</em> plugin includes scaffolding templates you can use in your application by running:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">grails install-form-fields-templates</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This will overwrite any <em>create.gsp</em> and <em>edit.gsp</em> files you have in <code>src/templates/scaffolding</code>.</p>
-</div>
-<div class="paragraph">
-<p>Alternatively, it&#8217;s very easy to modify your existing scaffolding templates to use the <em>f:all</em> tag or multiple <em>f:field</em> tags.</p>
-</div>
-
-
-<h1 id="themes">6 Themes</h1>
+<h1 id="themes">5 Themes</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/grails-fields-plugin/grails-fields/edit/master/src/main/docs/guide/themes.adoc"'>
@@ -1275,6 +1292,9 @@ by convention.</p>
 </div>
 
 
+<div class="sect1">
+<h2 id="_themes">Themes</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Since version 2.1.4 It is possible to create themes to provide set of templates for different css frameworks or form layouts.
 For example, a bootstrap-fields plugin can provide different themes (eg bs-horizontal, bs-vertical) to support horizontal and vertical form layouts. And another plugin can provide theme for purecss framework.</p>
@@ -1285,9 +1305,11 @@ For example, a bootstrap-fields plugin can provide different themes (eg bs-horiz
 <div class="paragraph">
 <p>All of the field tags supports theme attribute which accepts the name of the theme. When a theme name is specified, widget, wrapper, and display templates will be searched in theme directory first as described in <a href="#customizingFieldRendering">Customizing Field Rendering</a>.</p>
 </div>
+</div>
+</div>
 
-<a name="6. Including Templates in Plugins"><!-- Legacy link --></a>
-<h1 id="includingTemplatesInPlugins">7 Including Templates in Plugins</h1>
+<a name="5. Including Templates in Plugins"><!-- Legacy link --></a>
+<h1 id="includingTemplatesInPlugins">6 Including Templates in Plugins</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/grails-fields-plugin/grails-fields/edit/master/src/main/docs/guide/includingTemplatesInPlugins.adoc"'>
@@ -1296,6 +1318,9 @@ For example, a bootstrap-fields plugin can provide different themes (eg bs-horiz
 </div>
 
 
+<div class="sect1">
+<h2 id="_including_templates_in_plugins">Including Templates in Plugins</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Plugins can include field and/or input level templates to support special UI rendering or non-standard property types. Just include the templates in the plugin&#8217;s <code>grails-app/views</code> directory as described in the <a href="#customizingFieldRendering">Customizing Field Rendering</a> section.</p>
 </div>
@@ -1311,9 +1336,11 @@ If you supply templates in a plugin you should consider declaring a <code>&lt;%@
 </tr>
 </table>
 </div>
+</div>
+</div>
 
 
-<h1 id="performance">8 Performance</h1>
+<h1 id="performance">7 Performance</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/grails-fields-plugin/grails-fields/edit/master/src/main/docs/guide/performance.adoc"'>
@@ -1331,55 +1358,81 @@ If you supply templates in a plugin you should consider declaring a <code>&lt;%@
 <div class="paragraph">
 <p>Due to the flexibility needed during template development, this feature can be disabled so it would be possible to recognize newly added field templates without restarting the application. As a result, with bigger webpages, containing a lot of fields, rendering may be fairly slow in development (depending on the number of fields on the page).</p>
 </div>
+<div class="sect1">
+<h2 id="_performance">Performance</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>For template development, the following configuration attribute should be placed in the development environment section of your application&#8217;s Config.groovy:</p>
 </div>
 <div class="listingblock">
+<div class="title">application.groovy</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">grails.plugin.fields.disableLookupCache = <span class="predefined-constant">true</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
+<p>or</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yml"><span class="key">environments</span>:
+    <span class="key">development</span>:
+        <span class="key">grails</span>:
+            <span class="key">plugin</span>:
+                <span class="key">fields</span>:
+                    <span class="key">disableLookupCache</span>: <span class="string"><span class="content">true</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
 <p>After the template development has finished, it is recommended to re-enable the template lookup cache in order to have a performant page rendering even during development.</p>
+</div>
+</div>
 </div>
 
             </div>
         </td>
         <td id="col2">
             <div class="local clearfix">
-                <div class="local-title">
-                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
-                </div>
                 <div class="menu">
                     
-                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Tags</h1><div class="menu-sub">
-                        
-                        
-                        <div class="menu-item"><a href="../ref/Tags/all.html">all</a>
+                    <div class="menu-block"><h1 class="menu-title">Tags</h1>
+                        <div class="menu-sub" style="display: block">
+                            
+                            
+                            <div class="menu-item"><a
+                                    href="../ref/Tags/all.html">all</a>
+                            </div>
+                            
+                            <div class="menu-item"><a
+                                    href="../ref/Tags/display.html">display</a>
+                            </div>
+                            
+                            <div class="menu-item"><a
+                                    href="../ref/Tags/displayWidget.html">displayWidget</a>
+                            </div>
+                            
+                            <div class="menu-item"><a
+                                    href="../ref/Tags/field.html">field</a>
+                            </div>
+                            
+                            <div class="menu-item"><a
+                                    href="../ref/Tags/input.html">input</a>
+                            </div>
+                            
+                            <div class="menu-item"><a
+                                    href="../ref/Tags/table.html">table</a>
+                            </div>
+                            
+                            <div class="menu-item"><a
+                                    href="../ref/Tags/widget.html">widget</a>
+                            </div>
+                            
+                            <div class="menu-item"><a
+                                    href="../ref/Tags/with.html">with</a>
+                            </div>
+                            
                         </div>
-                        
-                        <div class="menu-item"><a href="../ref/Tags/display.html">display</a>
-                        </div>
-                        
-                        <div class="menu-item"><a href="../ref/Tags/displayWidget.html">displayWidget</a>
-                        </div>
-                        
-                        <div class="menu-item"><a href="../ref/Tags/field.html">field</a>
-                        </div>
-                        
-                        <div class="menu-item"><a href="../ref/Tags/input.html">input</a>
-                        </div>
-                        
-                        <div class="menu-item"><a href="../ref/Tags/table.html">table</a>
-                        </div>
-                        
-                        <div class="menu-item"><a href="../ref/Tags/widget.html">widget</a>
-                        </div>
-                        
-                        <div class="menu-item"><a href="../ref/Tags/with.html">with</a>
-                        </div>
-                        
-                    </div>
                     </div>
                     
                 </div>

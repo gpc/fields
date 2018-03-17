@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>Grails Fields Plugin 2.2.7.BUILD-SNAPSHOT</title>
+    <title>Grails Fields Plugin 2.2.8.BUILD-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -48,16 +48,13 @@ function addJsClass(el) {
                         <div class="toc-item" style="margin-left:0"><a href="../../guide/embeddedProperties.html"><strong>4</strong><span>Embedded Properties</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../../guide/scaffolding.html"><strong>5</strong><span>Scaffolding</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/themes.html"><strong>5</strong><span>Themes</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../../guide/themes.html"><strong>6</strong><span>Themes</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/includingTemplatesInPlugins.html"><strong>6</strong><span>Including Templates in Plugins</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../../guide/includingTemplatesInPlugins.html"><strong>7</strong><span>Including Templates in Plugins</span></a>
-                        </div>
-                        
-                        <div class="toc-item" style="margin-left:0"><a href="../../guide/performance.html"><strong>8</strong><span>Performance</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../../guide/performance.html"><strong>7</strong><span>Performance</span></a>
                         </div>
                         
                     </div>
@@ -85,12 +82,10 @@ function addJsClass(el) {
                 </div>
                 
 
-                <div class="sect4">
-<h5 id="_f_table">f:table</h5>
-
-</div>
+                <div class="sect3">
+<h4 id="_f_table">f:table</h4>
 <div class="sect4">
-<h5 id="_description">Description</h5>
+<h5 id="_purpose">Purpose</h5>
 <div class="paragraph">
 <p><code>&lt;f:table/&gt;</code> renders some or all properties of a collection of beans in a table using the <em>f:display</em> widget for each property type. If there is no <em>\_display</em> template in scope the tag will simply render the property values.</p>
 </div>
@@ -199,6 +194,13 @@ function addJsClass(el) {
 <div class="literalblock">
 <div class="content">
 <pre>Any additional attributes are passed to the rendered template.</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_modifying_the_code_table_gsp_code_template">Modifying the <code>_table.gsp</code> template.</h5>
+<div class="paragraph">
+<p>To make you own version of a <code>f:table</code> template, the file should be located in <code>grails-app/views/templates/_fields/_table.gsp</code>. You can find a starting point for a new file <a href="https://github.com/grails-fields-plugin/grails-fields/blob/master/grails-app/views/templates/_fields/_table.gsp">on GitHub</a></p>
 </div>
 </div>
 </div>

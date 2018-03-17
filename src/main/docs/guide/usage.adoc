@@ -1,6 +1,8 @@
+== Usage
+
 The plugin provides a set of tags you can use to render the fields in a form.
 
-In the simplest case you can use _f:all_ to render a field for every property of a bean (the domain object or command the form will bind to):
+In the simplest case you can use `f:all` to render a field for every property of a bean (the domain object or command the form will bind to):
 
 [source,groovy]
 ----
@@ -9,7 +11,7 @@ In the simplest case you can use _f:all_ to render a field for every property of
 </g:form>
 ----
 
-To render individual fields you use the _f:field_ tag:
+To render individual fields you use the `f:field` tag:
 
 [source,groovy]
 ----
@@ -20,14 +22,14 @@ To render individual fields you use the _f:field_ tag:
 </g:form>
 ----
 
-The _f:field_ tag will automatically handle embedded domain properties recursively:
+The `f:field` tag will automatically handle embedded domain properties recursively:
 
 [source,groovy]
 ----
 <f:field bean="person" property="address"/>
 ----
 
-If there is no bean object backing a form but you still want to render the surrounding field markup you can give _f:field_ a body:
+If there is no bean object backing a form but you still want to render the surrounding field markup you can give `f:field` a body:
 
 [source,groovy]
 ----
@@ -36,14 +38,14 @@ If there is no bean object backing a form but you still want to render the surro
 </f:field>
 ----
 
-It should be an unusual case but to render just the widget without its surrounding container you can use the _f:widget_ tag:
+It should be an unusual case but to render just the widget without its surrounding container you can use the `f:widget` tag:
 
 [source,groovy]
 ----
 <f:widget bean="person" property="name"/>
 ----
 
-To make it more convenient when rendering lots of properties of the same _bean_ you can use the _f:with_ tag to avoid having to specify _bean_ on any tags nested inside:
+To make it more convenient when rendering lots of properties of the same `bean` you can use the `f:with` tag to avoid having to specify `bean` on any tags nested inside:
 
 [source,groovy]
 ----
@@ -56,14 +58,14 @@ To make it more convenient when rendering lots of properties of the same _bean_ 
 </g:form>
 ----
 
-If you need to render a property for display purposes you can use _f:display_. It will internally use _g:fieldValue_, _g:formatBoolean_ or _g:formatDate_ to format the value.
+If you need to render a property for display purposes you can use `f:display`. It will internally use `g:fieldValue`, `g:formatBoolean` or `g:formatDate` to format the value.
 
 [source,groovy]
 ----
 <f:display bean="person" property="name"/>
 ----
 
-If you need to render the value in a different way you can give _f:display_ a body instead.
+If you need to render the value in a different way you can give `f:display` a body instead.
 
 [source,groovy]
 ----
@@ -72,7 +74,7 @@ If you need to render the value in a different way you can give _f:display_ a bo
 </f:display>
 ----
 
-By default _f:display_ simply renders the property value but if you supply a _\_display.gsp_ template you can render the value in some structured markup, e.g. a table cell or list item. See the <<customizingFieldRendering,Customizing Field Rendering>> section for how to override templates. For example to render values in a definition list you could use a template like this:
+By default `f:display` simply renders the property value but if you supply a `\_display.gsp` template you can render the value in some structured markup, e.g. a table cell or list item. See the <<customizingFieldRendering,Customizing Field Rendering>> section for how to override templates. For example to render values in a definition list you could use a template like this:
 
 [source,groovy]
 ----
@@ -84,7 +86,7 @@ By default _f:display_ simply renders the property value but if you supply a _\_
 === Extra attributes (Since version 2.1.4)
 
 
-You can pass any number of extra attributes to the _f:with_ and _f:all_ tags that will be propagated to the inner fields and displays.
+You can pass any number of extra attributes to the `f:with` and `f:all` tags that will be propagated to the inner fields and displays.
 See their individual tags sections for more information.
 
 
@@ -95,10 +97,11 @@ See their individual tags sections for more information.
 === Templates
 
 The names of the templates were changed for more adequate ones:
-* _field to _wrapper
-* _input to _widget
-* _display to _displayWrapper
-* _displayWidget was added
+
+* `_field` to `_wrapper`
+* `_input` to `_widget`
+* `_display` to `_displayWrapper`
+* `_displayWidget` was added
 
 To use the old names (for backwards compatibility), configure the following in `Config.groovy`
 
@@ -129,8 +132,8 @@ grails.plugin.fields.widgetPrefix = "input-"
 
 === Changes in tags
 
-* The _input_ tag was deprecated because the name was confusing. Use the new _widget_ tag instead.
-* The _displayWidget_ tag was added. It outputs the widget for display purposes, without the wrapper (similar to the _widget_ tag).
+* The `f:input` tag was deprecated because the name was confusing. Use the new `f:widget` tag instead.
+* The `f:displayWidget` tag was added. It outputs the widget for display purposes, without the wrapper (similar to the `widget` tag).
 
 
 === Localized numbers

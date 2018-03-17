@@ -3,9 +3,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <title>${title.encodeAsHtml()}</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" href="${resourcesPath}/css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
-    <link rel="stylesheet" href="${resourcesPath}/css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="${resourcesPath}/css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="${resourcesPath}/css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
     <script src="${resourcesPath}/js/docs.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.13/clipboard.min.js"></script>
     <script type="text/javascript">
@@ -35,12 +35,14 @@
                         toc.children.eachWithIndex { ch, i ->
                         if (single) {
                         %>
-                        <div class="toc-item" style="margin-left:0"><a href="#${ ch.name.encodeAsUrlFragment().encodeAsHtml() }"><strong>${i + 1}</strong><span>${ch.title?.encodeAsHtml()}</span></a></div>
+                        <div class="toc-item" style="margin-left:0"><a href="#${ ch.name.encodeAsUrlFragment().encodeAsHtml() }"><strong>${i +
+                            1}</strong><span>${ch.title?.encodeAsHtml()}</span></a></div>
                         <%
                         }
                         else {
                         %>
-                        <div class="toc-item" style="margin-left:0"><a href="${path}/guide/${ch.name.encodeAsUrlPath().encodeAsHtml()}.html"><strong>${i + 1}</strong><span>${ch.title?.encodeAsHtml()}</span></a></div>
+                        <div class="toc-item" style="margin-left:0"><a href="${path}/guide/${ch.name.encodeAsUrlPath().encodeAsHtml()}.html"><strong>${i
+                            + 1}</strong><span>${ch.title?.encodeAsHtml()}</span></a></div>
                         <%
                         }
                         }
@@ -76,12 +78,15 @@
                     sectionWriter = { lvl, section, topSection, prefix ->
                     if (single) {
                     %>
-                    <div class="toc-item" style="margin-left:${lvl * 10}px"><a href="#${ section.name.encodeAsUrlFragment().encodeAsHtml() }"><strong>$prefix</strong><span>${section.title?.encodeAsHtml()}</span></a></div>
+                    <div class="toc-item" style="margin-left:${lvl * 10}px"><a href="#${ section.name.encodeAsUrlFragment().encodeAsHtml() }"><strong>$prefix</strong><span>${section.title?.encodeAsHtml()}</span></a>
+                    </div>
                     <%
                     }
                     else {
                     %>
-                    <div class="toc-item" style="margin-left:${lvl * 10}px"><a href="${path}/guide/${topSection.name.encodeAsUrlPath().encodeAsHtml()}.html${ lvl == 0 ? '' : '#' + section.name.encodeAsUrlFragment().encodeAsHtml() }"><strong>$prefix</strong><span>${section.title?.encodeAsHtml()}</span></a></div>
+                    <div class="toc-item" style="margin-left:${lvl * 10}px"><a
+                            href="${path}/guide/${topSection.name.encodeAsUrlPath().encodeAsHtml()}.html${ lvl == 0 ? '' : '#' + section.name.encodeAsUrlFragment().encodeAsHtml() }"><strong>$prefix</strong><span>${section.title?.encodeAsHtml()}</span></a>
+                    </div>
                     <%
                     }
 
@@ -95,7 +100,7 @@
                     sectionWriter.call(0, topSection, topSection, i + 1)
                     }
                     %>
-                    <div style="clear:both" ></div>
+                    <div style="clear:both"></div>
                 </div>
                 <% } %>
                 ${content}
@@ -103,20 +108,19 @@
         </td>
         <td id="col2">
             <div class="local clearfix">
-                <div class="local-title">
-                    <a href="${path}/guide/index.html" target="mainFrame">Quick Reference</a>
-                </div>
                 <div class="menu">
                     <% for (cat in refMenu) { %>
-                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">${cat.name.encodeAsHtml()}</h1><div class="menu-sub">
-                        <% if (cat.usage.exists()) { %>
-                        <div class="menu-item"><a href="${path}/ref/${cat.name.encodeAsUrlPath().encodeAsHtml()}/Usage.html">Usage</a></div>
-                        <% } %>
-                        <% for (txt in cat.sections) { %>
-                        <div class="menu-item"><a href="${path}/ref/${cat.name.encodeAsUrlPath().encodeAsHtml()}/${txt.name[0..-6].encodeAsUrlPath().encodeAsHtml()}.html">${txt.name[0..-6].encodeAsHtml()}</a>
+                    <div class="menu-block"><h1 class="menu-title">${cat.name.encodeAsHtml()}</h1>
+                        <div class="menu-sub" style="display: block">
+                            <% if (cat.usage.exists()) { %>
+                            <div class="menu-item"><a href="${path}/ref/${cat.name.encodeAsUrlPath().encodeAsHtml()}/Usage.html">Usage</a></div>
+                            <% } %>
+                            <% for (txt in cat.sections) { %>
+                            <div class="menu-item"><a
+                                    href="${path}/ref/${cat.name.encodeAsUrlPath().encodeAsHtml()}/${txt.name[0..-6].encodeAsUrlPath().encodeAsHtml()}.html">${txt.name[0..-6].encodeAsHtml()}</a>
+                            </div>
+                            <% } %>
                         </div>
-                        <% } %>
-                    </div>
                     </div>
                     <% } %>
                 </div>

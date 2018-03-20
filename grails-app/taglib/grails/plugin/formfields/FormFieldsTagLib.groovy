@@ -31,9 +31,10 @@ import org.grails.datastore.mapping.model.types.ManyToMany
 import org.grails.datastore.mapping.model.types.ManyToOne
 import org.grails.datastore.mapping.model.types.OneToMany
 import org.grails.datastore.mapping.model.types.OneToOne
+import org.grails.datastore.mapping.model.config.GormProperties
+import org.grails.datastore.mapping.reflect.ClassPropertyFetcher
 import org.grails.gsp.GroovyPage
 import org.grails.scaffolding.model.DomainModelService
-import org.grails.scaffolding.model.DomainModelServiceImpl
 import org.grails.scaffolding.model.property.Constrained
 import org.grails.scaffolding.model.property.DomainPropertyFactory
 import org.grails.web.servlet.mvc.GrailsWebRequest
@@ -233,8 +234,14 @@ class FormFieldsTagLib {
 			def properties
 
 			if (attrs.containsKey('properties')) {
+				List transients = getTransients(domainClass)
+
 				properties = attrs.remove('properties').collect { String propertyName ->
-					fieldsDomainPropertyFactory.build(domainClass.getPropertyByName(propertyName))
+					if (transients.contains(propertyName)) {
+						new TransientDomainProperty(domainClass, propertyName)
+					} else {
+						fieldsDomainPropertyFactory.build(domainClass.getPropertyByName(propertyName))
+					}
 				}
 			} else {
 				properties = resolvePersistentProperties(domainClass, attrs, true)
@@ -858,5 +865,18 @@ class FormFieldsTagLib {
 
 	private boolean isEditable(Constrained constraints) {
 		!constraints || constraints.editable
+    }
+
+	private List getTransients(PersistentEntity entity) {
+		ClassPropertyFetcher cpf = ClassPropertyFetcher.forClass(entity.javaClass)
+		List<Collection> colls = cpf.getStaticPropertyValuesFromInheritanceHierarchy(GormProperties.TRANSIENT, Collection)
+		if (colls == null) {
+			return Collections.emptyList()
+		}
+		List values = new ArrayList()
+		for (Collection coll : colls) {
+			values.addAll(coll)
+		}
+		return values
 	}
 }

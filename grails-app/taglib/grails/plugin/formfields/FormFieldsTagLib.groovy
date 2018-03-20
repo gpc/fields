@@ -33,6 +33,7 @@ import org.grails.datastore.mapping.model.types.OneToMany
 import org.grails.datastore.mapping.model.types.OneToOne
 import org.grails.datastore.mapping.model.config.GormProperties
 import org.grails.datastore.mapping.reflect.ClassPropertyFetcher
+import org.grails.datastore.mapping.reflect.ReflectionUtils
 import org.grails.gsp.GroovyPage
 import org.grails.scaffolding.model.DomainModelService
 import org.grails.scaffolding.model.property.Constrained
@@ -42,6 +43,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.servlet.LocaleResolver
 
 import javax.servlet.http.HttpServletRequest
+import java.lang.reflect.Field
+import java.lang.reflect.Modifier
 import java.sql.Blob
 import java.text.NumberFormat
 
@@ -234,13 +237,30 @@ class FormFieldsTagLib {
 			def properties
 
 			if (attrs.containsKey('properties')) {
-				List transients = getTransients(domainClass)
+				ClassPropertyFetcher cpf = ClassPropertyFetcher.forClass(domainClass.javaClass)
+
+				List transients = getTransients(cpf)
 
 				properties = attrs.remove('properties').collect { String propertyName ->
-					if (transients.contains(propertyName)) {
-						new TransientDomainProperty(domainClass, propertyName)
+					PersistentProperty persistentProperty = domainClass.getPropertyByName(propertyName)
+
+					if (persistentProperty) {
+						fieldsDomainPropertyFactory.build(persistentProperty)
 					} else {
-						fieldsDomainPropertyFactory.build(domainClass.getPropertyByName(propertyName))
+						boolean transientProp = false
+						if (transients.contains(propertyName)) {
+							transientProp = true
+						} else {
+							Field field = cpf.getDeclaredField(propertyName)
+							if (field && Modifier.isTransient(field.getModifiers())) {
+								transientProp = true
+							}
+						}
+						if (transientProp) {
+							new TransientDomainProperty(domainClass, propertyName)
+						} else {
+							throw new IllegalArgumentException("The property \"$propertyName\", provided to f:table could not be found on ${domainClass.javaClass.name}")
+						}
 					}
 				}
 			} else {
@@ -867,8 +887,8 @@ class FormFieldsTagLib {
 		!constraints || constraints.editable
     }
 
-	private List getTransients(PersistentEntity entity) {
-		ClassPropertyFetcher cpf = ClassPropertyFetcher.forClass(entity.javaClass)
+	private List getTransients(ClassPropertyFetcher cpf) {
+		cpf.getDeclaredField()
 		List<Collection> colls = cpf.getStaticPropertyValuesFromInheritanceHierarchy(GormProperties.TRANSIENT, Collection)
 		if (colls == null) {
 			return Collections.emptyList()

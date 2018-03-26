@@ -202,6 +202,102 @@ function addJsClass(el) {
 <div class="paragraph">
 <p>To make you own version of a <code>f:table</code> template, the file should be located in <code>grails-app/views/templates/_fields/_table.gsp</code>. You can find a starting point for a new file <a href="https://github.com/grails-fields-plugin/grails-fields/blob/master/grails-app/views/templates/_fields/_table.gsp">on GitHub</a></p>
 </div>
+<div class="sect5">
+<h6 id="_model_in_the_template">Model in the template</h6>
+<div class="paragraph">
+<p>The following model is passed to the  <code>_table.gsp</code> template:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">domainClass</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type of the persistent instance. Either type of the first row in the collection or the <code>domainClass</code> passed as argument to <code>f:table</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">columnProperties</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Contains a list of <code>Map</code> describing each table column. See table below for the map content</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">domainProperties</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deprecated: see <code>columnProperties</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">collection</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rows with data</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">displayStyle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The attribute <code>displayStyle</code> passed to the model unmodified</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">theme</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The attribute <code>theme</code> passed to the model unmodified</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The column model:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Empty instance of a <code>domainClass</code> bean</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>property</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The property name</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deprecated, see <code>property</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The property type</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>defaultLabel</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Translated label (deprecated)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>label</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Translated label</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>constraints</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If the property has constraints</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>required</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Is the property required</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>(This is a simplified version of a <code>wrapper</code> model)</p>
+</div>
+</div>
 </div>
 </div>
             </div>

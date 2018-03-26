@@ -167,6 +167,35 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
 		except << ['', [], null]
 	}
 
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/264')
+	void "table tag renders transient columns set by '<f:table collection=\"collection\" properties=\"['transient']\"/>'"() {
+		given:
+		List expectedTableColumns = ['Name', 'Transient Text']
+
+		when:
+		def table = XML.parse(applyTemplate('<f:table collection="collection" properties="${properties}"/>', [collection: personList, properties: ['name', 'transientText']]))
+		def renderedTableColumns = table.thead.tr.th.a.collect { it.text().trim() }
+
+		then:
+		expectedTableColumns.containsAll(renderedTableColumns)
+		renderedTableColumns.containsAll(expectedTableColumns)
+	}
+
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/269')
+	void "table tag renders reference columns set by '<f:table collection=\"collection\" properties=\"['transient']\"/>'"() {
+		given:
+		List expectedTableColumns = ['Name', 'Street']
+
+		when:
+		def table = XML.parse(applyTemplate('<f:table collection="collection" properties="${properties}"/>', [collection: personList, properties: ['name', 'address.street']]))
+		def renderedTableColumns = table.thead.tr.th.a.collect { it.text().trim() }
+
+		then:
+		expectedTableColumns.containsAll(renderedTableColumns)
+		renderedTableColumns.containsAll(expectedTableColumns)
+	}
+
+
 	void "table tag displays embedded properties by default with toString"() {
 		when:
 		def output = applyTemplate('<f:table collection="collection" properties="[\'address\']"/>', [collection: personList])

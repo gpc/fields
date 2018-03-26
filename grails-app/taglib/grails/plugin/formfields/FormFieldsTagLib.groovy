@@ -24,16 +24,9 @@ import org.grails.buffer.FastStringWriter
 import org.grails.datastore.mapping.model.MappingContext
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
-import org.grails.datastore.mapping.model.types.Association
-import org.grails.datastore.mapping.model.types.Basic
-import org.grails.datastore.mapping.model.types.Embedded
-import org.grails.datastore.mapping.model.types.ManyToMany
-import org.grails.datastore.mapping.model.types.ManyToOne
-import org.grails.datastore.mapping.model.types.OneToMany
-import org.grails.datastore.mapping.model.types.OneToOne
+import org.grails.datastore.mapping.model.types.*
 import org.grails.gsp.GroovyPage
 import org.grails.scaffolding.model.DomainModelService
-import org.grails.scaffolding.model.DomainModelServiceImpl
 import org.grails.scaffolding.model.property.Constrained
 import org.grails.scaffolding.model.property.DomainPropertyFactory
 import org.grails.web.servlet.mvc.GrailsWebRequest
@@ -58,6 +51,7 @@ class FormFieldsTagLib {
 	private static final String TEMPLATES_ATTR = "templates"
 	private static final String PROPERTY_ATTR = "property"
 	private static final String BEAN_ATTR = "bean"
+	public static final String DISPLAY_STYLE = 'displayStyle'
 
 	@Value('${grails.plugin.fields.localizeNumbers:true}')
 	Boolean localizeNumbers
@@ -213,7 +207,7 @@ class FormFieldsTagLib {
 	 * @attr collection REQUIRED The collection of beans to render
 	 * @attr domainClass The FQN of the domain class of the elements in the collection.
 	 * Defaults to the class of the first element in the collection.
-	 * @attr properties The list of properties to be shown (table columns).
+	 * @attr properties OPTIONAL The list of properties to be shown (table columns).
 	 * @attr maxProperties OPTIONAL The number of properties displayed when no explicit properties are given, defaults to 7.
 	 * @attr displayStyle OPTIONAL Determines the display template used for the bean's properties.
 	 * Defaults to 'table', meaning that 'display-table' templates will be used when available.
@@ -229,28 +223,28 @@ class FormFieldsTagLib {
 		} else {
 			domainClass = (collection instanceof Collection) && collection ? resolveDomainClass(collection.iterator().next()) : null
 		}
-		if (domainClass) {
-			def properties
 
-			if (attrs.containsKey('properties')) {
-				properties = attrs.remove('properties').collect { String propertyName ->
-					fieldsDomainPropertyFactory.build(domainClass.getPropertyByName(propertyName))
-				}
-			} else {
-				properties = resolvePersistentProperties(domainClass, attrs, true)
-				int maxProperties = attrs.containsKey('maxProperties') ? attrs.remove('maxProperties').toInteger() : 7
-				if (maxProperties && properties.size() > maxProperties) {
-					properties = properties[0..<maxProperties]
-				}
+		if (domainClass) {
+			List<BeanPropertyAccessor> properties = resolveProperties(domainClass, attrs)
+
+			List<Map> columnProperties = properties.collect { propertyAccessor ->
+				buildColumnModel(propertyAccessor, attrs)
 			}
 
-			String displayStyle = attrs.remove('displayStyle')
+			String displayStyle = attrs.remove(DISPLAY_STYLE)
 			String theme = attrs.remove(THEME_ATTR)
 
-			out << render(template: "/templates/_fields/table",
-				model: [domainClass: domainClass, domainProperties: properties, collection: collection, displayStyle: displayStyle, theme: theme])
+			out << render(
+				template: "/templates/_fields/table",
+				model: [domainClass: domainClass,
+						domainProperties: columnProperties,
+						columnProperties: columnProperties,
+						collection: collection,
+						displayStyle: displayStyle,
+						theme: theme])
 		}
 	}
+
 	/**
 	 * @deprecated since version 1.5 - Use widget instead
 	 * @attr bean Name of the source bean in the GSP model.
@@ -399,6 +393,47 @@ class FormFieldsTagLib {
 		beanPropertyAccessorFactory.accessorFor(bean, propertyPath)
 	}
 
+	private List<BeanPropertyAccessor> resolveProperties(PersistentEntity domainClass, Map attrs) {
+		// Starting point for the bean property resolver
+		def bean = domainClass.javaClass.newInstance()
+
+		List<BeanPropertyAccessor> propertyAccessorList = resolvePropertyNames(domainClass, attrs).collect { String propertyPath ->
+			beanPropertyAccessorFactory.accessorFor(bean, propertyPath)
+		}
+
+		return propertyAccessorList
+
+	}
+
+	private List<String> resolvePropertyNames(PersistentEntity domainClass, Map attrs) {
+		if (attrs.containsKey('properties')) {
+			return getList(attrs.remove('properties'))
+		} else {
+
+			List<String> properties = resolvePersistentProperties(domainClass, attrs, true)*.name
+			int maxProperties = attrs.containsKey('maxProperties') ? attrs.remove('maxProperties').toInteger() : 7
+			if (maxProperties && properties.size() > maxProperties) {
+				properties = properties[0..<maxProperties]
+			}
+			return properties
+		}
+	}
+
+	private Map buildColumnModel(BeanPropertyAccessor propertyAccessor, Map attrs) {
+		def labelText = resolveLabelText(propertyAccessor, attrs)
+		return [
+			bean              : propertyAccessor.rootBean,
+			name              : propertyAccessor.pathFromRoot, // To please legacy _table.gsp
+			property          : propertyAccessor.pathFromRoot,
+			type              : propertyAccessor.propertyType,
+			defaultLabel      : labelText, // To please legacy _table.gsp
+			label             : labelText,
+			constraints       : propertyAccessor.constraints,
+			required          : propertyAccessor.required,
+		]
+	}
+
+
 	private Map buildModel(BeanPropertyAccessor propertyAccessor, Map attrs) {
 		def value = attrs.containsKey('value') ? attrs.remove('value') : propertyAccessor.value
 		def valueDefault = attrs.remove('default')
@@ -507,11 +542,11 @@ class FormFieldsTagLib {
 	}
 
 	private static List<String> getList(def except, List<String> defaultList = []) {
-		if(!except) {
+		if (!except) {
 			return defaultList
-		} else if(except instanceof String) {
+		} else if (except instanceof String) {
 			except?.tokenize(',')*.trim()
-		} else if(except instanceof Collection) {
+		} else if (except instanceof Collection) {
 			return except as List<String>
 		} else {
 			throw new IllegalArgumentException("Must either be null, comma separated string or java.util.Collection")
@@ -858,5 +893,6 @@ class FormFieldsTagLib {
 
 	private boolean isEditable(Constrained constraints) {
 		!constraints || constraints.editable
-	}
+    }
+
 }

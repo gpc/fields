@@ -56,3 +56,42 @@ When *theme* is specified, the _\_display_ template will be searched first in *t
 ===== Modifying the `_table.gsp` template.
 
 To make you own version of a `f:table` template, the file should be located in `grails-app/views/templates/_fields/_table.gsp`. You can find a starting point for a new file link:https://github.com/grails-fields-plugin/grails-fields/blob/master/grails-app/views/templates/_fields/_table.gsp[on GitHub]
+
+====== Model in the template
+
+The following model is passed to the  `_table.gsp` template:
+[options="header",cols="1,5"]
+|===
+|Name | Content
+|domainClass
+|The type of the persistent instance. Either type of the first row in the collection or the `domainClass` passed as argument to `f:table`
+
+|columnProperties
+|Contains a list of `Map` describing each table column. See table below for the map content
+
+|domainProperties
+|deprecated: see `columnProperties`
+
+|collection |Rows with data
+
+|displayStyle| The attribute `displayStyle` passed to the model unmodified
+
+|theme| The attribute `theme` passed to the model unmodified
+|===
+
+The column model:
+
+[options="header",cols="1,3"]
+|===
+|Name            | Content
+|`bean`          | Empty instance of a `domainClass` bean
+|`property`      | The property name
+|`name`          | Deprecated, see `property`
+|`type`          | The property type
+|`defaultLabel`  | Translated label (deprecated)
+|`label`         | Translated label
+|`constraints`   | If the property has constraints
+|`required`      | Is the property required
+|===
+
+(This is a simplified version of a `wrapper` model)

@@ -70,4 +70,9 @@ class DisplayWidgetSpec extends AbstractFormFieldsTagLibSpec {
 		applyTemplate('<f:displayWidget bean="personInstance" property="name" theme="test"/>', [personInstance: personInstance]) == 'theme displayWidget'
 	}
 
+	void 'f:displayWidget escapes values to avoid XSS atacks'() {
+		expect:
+		applyTemplate('<f:displayWidget bean="productInstance" property="name"/>', [productInstance: productInstance]) == "&lt;script&gt;alert(&#39;XSS&#39;);&lt;/script&gt;"
+	}
+
 }

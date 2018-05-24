@@ -353,5 +353,18 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
         applyTemplate('<f:display bean="personInstance" property="name" widget="widget"/>', [personInstance: personInstance]) == '<dt>Name</dt><dd>nospmiS traB</dd>'
     }
 
+    void 'f:display escapes one property to avoid XSS atacks'() {
+        expect:
+        applyTemplate('<f:display bean="productInstance" property="name"/>', [productInstance: productInstance]) == "&lt;script&gt;alert(&#39;XSS&#39;);&lt;/script&gt;"
+    }
+
+    void 'f:display escapes values when rendering all properties to avoid XSS atacks'() {
+        when:
+        def result = applyTemplate('<f:display bean="productInstance" />', [productInstance: productInstance])
+
+        then:
+        result.contains('&lt;script&gt;alert(&#39;XSS&#39;);&lt;/script&gt;')
+        !result.contains("<script>alert('XSS');</script>")
+    }
 
 }

@@ -25,6 +25,7 @@ import org.grails.datastore.mapping.model.MappingContext
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
 import org.grails.datastore.mapping.model.types.*
+import org.grails.encoder.CodecLookup
 import org.grails.gsp.GroovyPage
 import org.grails.scaffolding.model.DomainModelService
 import org.grails.scaffolding.model.property.Constrained
@@ -62,6 +63,7 @@ class FormFieldsTagLib {
 	MappingContext grailsDomainClassMappingContext
 	DomainModelService domainModelService
 	LocaleResolver localeResolver
+	CodecLookup codecLookup
 
 	static defaultEncodeAs = [taglib: 'raw']
 
@@ -296,7 +298,7 @@ class FormFieldsTagLib {
 		String theme = attrs.remove(THEME_ATTR)
 
 		BeanPropertyAccessor propertyAccessor = resolveProperty(bean, property)
-		Map model = buildModel(propertyAccessor, attrs)
+		Map model = buildModel(propertyAccessor, attrs, 'HTML')
 
 		out << renderDisplayWidget(propertyAccessor, model, attrs, widgetFolder, theme)
 	}
@@ -323,7 +325,7 @@ class FormFieldsTagLib {
 				List properties = resolvePersistentProperties(domainClass, attrs)
 				out << render(template: "/templates/_fields/list", model: [domainClass: domainClass, domainProperties: properties]) { prop ->
 					BeanPropertyAccessor propertyAccessor = resolveProperty(bean, prop.name)
-					Map model = buildModel(propertyAccessor, attrs)
+					Map model = buildModel(propertyAccessor, attrs, 'HTML')
 					out << raw(renderDisplayWidget(propertyAccessor, model, attrs, templatesFolder, theme))
 				}
 			}
@@ -332,7 +334,7 @@ class FormFieldsTagLib {
 			String widgetFolder = attrs.remove(WIDGET_ATTR)
 
 			BeanPropertyAccessor propertyAccessor = resolveProperty(bean, property)
-			Map model = buildModel(propertyAccessor, attrs)
+			Map model = buildModel(propertyAccessor, attrs, 'HTML')
 
 			Map wrapperAttrs = [:]
 			Map widgetAttrs = [:]
@@ -434,9 +436,13 @@ class FormFieldsTagLib {
 	}
 
 
-	private Map buildModel(BeanPropertyAccessor propertyAccessor, Map attrs) {
+	private Map buildModel(BeanPropertyAccessor propertyAccessor, Map attrs, String encoding = null) {
 		def value = attrs.containsKey('value') ? attrs.remove('value') : propertyAccessor.value
 		def valueDefault = attrs.remove('default')
+		if (value instanceof String && encoding) {
+			value = codecLookup.lookupEncoder(encoding).encode(value)
+		}
+
 		[
 			bean              : propertyAccessor.rootBean,
 			property          : propertyAccessor.pathFromRoot,

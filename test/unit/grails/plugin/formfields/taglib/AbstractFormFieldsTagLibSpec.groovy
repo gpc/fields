@@ -16,7 +16,7 @@ abstract class AbstractFormFieldsTagLibSpec extends Specification {
 		personInstance = new Person(name: "Bart Simpson", password: "bartman", gender: Gender.Male, dateOfBirth: new Date(87, 3, 19), minor: true)
 		personInstance.address = new Address(street: "94 Evergreen Terrace", city: "Springfield", country: "USA")
 
-        productInstance = new Product(netPrice: 12.33)
+        productInstance = new Product(netPrice: 12.33, name: "<script>alert('XSS');</script>")
 	}
 
 	def cleanup() {

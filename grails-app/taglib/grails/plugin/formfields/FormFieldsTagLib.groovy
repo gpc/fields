@@ -22,6 +22,7 @@ import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
+import org.codehaus.groovy.grails.support.encoding.CodecLookup
 import org.codehaus.groovy.grails.web.pages.FastStringWriter
 import org.codehaus.groovy.grails.web.pages.GroovyPage
 
@@ -37,6 +38,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 	FormFieldsTemplateService formFieldsTemplateService
 	GrailsApplication grailsApplication
 	BeanPropertyAccessorFactory beanPropertyAccessorFactory
+	CodecLookup codecLookup
 
 	static defaultEncodeAs = [taglib:'raw']
 
@@ -245,7 +247,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
         def widgetFolder = attrs.remove('widget')
 
 		def propertyAccessor = resolveProperty(bean, property)
-		def model = buildModel(propertyAccessor, attrs)
+		def model = buildModel(propertyAccessor, attrs, 'HTML')
 
 		out << renderDisplayWidget(propertyAccessor, model, attrs, widgetFolder)
 	}
@@ -268,7 +270,7 @@ class FormFieldsTagLib implements GrailsApplicationAware {
         def widgetFolder = attrs.remove('widget')
 
 		def propertyAccessor = resolveProperty(bean, property)
-		def model = buildModel(propertyAccessor, attrs)
+		def model = buildModel(propertyAccessor, attrs, 'HTML')
 
 		def wrapperAttrs = [:]
 		def widgetAttrs = [:]
@@ -320,9 +322,12 @@ class FormFieldsTagLib implements GrailsApplicationAware {
 		beanPropertyAccessorFactory.accessorFor(bean, propertyPath)
 	}
 
-	private Map buildModel(BeanPropertyAccessor propertyAccessor, Map attrs) {
+	private Map buildModel(BeanPropertyAccessor propertyAccessor, Map attrs, String encoding = null) {
 		def value = attrs.containsKey('value') ? attrs.remove('value') : propertyAccessor.value
 		def valueDefault = attrs.remove('default')
+		if (value instanceof String && encoding) {
+			value = codecLookup.lookupEncoder(encoding).encode(value)
+		}
 		[
 			bean: propertyAccessor.rootBean,
 			property: propertyAccessor.pathFromRoot,

@@ -23,6 +23,7 @@ Since then you can specify the folders where the templates are located. You can 
 
 <f:display bean="person" property="name"/>
 
+// renders widget and wrapper from subdirectory of _fields/_themes/purecss if defined
 <f:display bean="person" property="name" theme="purecss"/>
 
 // renders _fields/bootstrap3/_displayWrapper.gsp:
@@ -80,8 +81,20 @@ Since then you can specify the folders where the templates are located. You can 
 |A comma-separated list of properties which represents the order in which the tag should display them.
 
 |*theme*
-|String
-|Theme to use if available.
+| No
+| Theme to use if available. The theme can define a new directory structure in /_fields/_themes/<themename> which will take priority over templates, wrapper and widget if they are specified, as it is injecting the search path first in the list.
+
+|*templates*
+| No
+| Specify the folder inside _fields where to look up for the wrapper and widget template.
+
+|*widget*
+| No
+| Specify the folder inside _fields where to look up for the widget template.
+
+|*wrapper*
+| No
+| Specify the folder inside _fields where to look up for the wrapper template.
 
 |===
 

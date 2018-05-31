@@ -178,6 +178,22 @@ And override the template _f:display_ uses with any of these:
 During template development it is usually recommended to disable template caching in order to allow the plugin to recognize new/renamed/moved templates without restarting the application. See the "Performance" section of the guide for the exact settings.
 
 
+=== See Template Seach Path
+
+The plugin logs which locations it is checking for templates as debug log. You can enable this by defining a logger in logback.groovy
+
+ logger('grails.plugin.formfields.FormFieldsTemplateService', DEBUG,['STDOUT'])
+
+The can disable the caching in application.yml using:
+
+----
+grails:
+    plugin:
+        fields:
+            disableLookupCache: true
+----
+
+
 === Default Behaviour - Using Grails Widget Tags
 
 

@@ -216,6 +216,7 @@ class FormFieldsTagLib {
 	 * @attr order A comma-separated list of properties to include in provided order
 	 * @attr except A comma-separated list of properties to exclude
 	 * @attr theme Theme name
+	 * @attr template OPTIONAL The template used when rendering the collection
 	 */
 	def table = { attrs, body ->
 		def collection = resolveBean(attrs.remove('collection'))
@@ -235,9 +236,10 @@ class FormFieldsTagLib {
 
 			String displayStyle = attrs.remove(DISPLAY_STYLE)
 			String theme = attrs.remove(THEME_ATTR)
+			String template = attrs.remove('template') ?: 'table'
 
 			out << render(
-				template: "/templates/_fields/table",
+				template: "/templates/_fields/$template",
 				model: [domainClass: domainClass,
 						domainProperties: columnProperties,
 						columnProperties: columnProperties,

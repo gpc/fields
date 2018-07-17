@@ -9,6 +9,7 @@ import grails.plugin.formfields.mock.Person
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
 import spock.lang.Issue
+import spock.lang.Shared
 import spock.lang.Unroll
 
 import static grails.plugin.formfields.mock.Gender.Female
@@ -22,18 +23,26 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
 	def bart = new Person(name: "Bart Simpson", gender: Male, address: address)
 	def marge = new Person(name: "Marge Simpson", gender: Female, address: address)
 	def personList = [bart, marge]
+    @Shared def alternativeTable
 
 	def mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
 
 	def setupSpec() {
 		configurePropertyAccessorSpringBean()
-	}
+
+        //Alternative table template
+        alternativeTable = new File('grails-app/views/templates/_fields/_alternativeTable.gsp') << '<table><h1>Alternative Table Template</h1></table>'
+    }
 
 	def setup() {
 		def taglib = applicationContext.getBean(FormFieldsTagLib)
 		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
 		mockEmbeddedSitemeshLayout(taglib)
 	}
+
+    def cleanupSpec() {
+        alternativeTable.delete()
+    }
 
 	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/231')
 	void "table tag renders columns set by '<f:table collection=\"collection\" maxProperties=\"#maxProperties\"/>'"() {
@@ -248,4 +257,24 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
 		table.tbody.tr.td.a.ol.li.collect { it.div.text() } == [address.city, address.country, address.street]
 	}
 
+	void "table renders different template when template is set"() {
+
+		when:
+		def output = applyTemplate('<f:table collection="collection" template="alternativeTable"/>', [collection: personList])
+		def table = XML.parse(output)
+
+        then:
+        table.h1 == 'Alternative Table Template'
+	}
+
+    void "table will render the default template if parameter is empty"() {
+
+        when:
+		def columns = ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer', 'Picture', 'Another Picture']
+        def output = applyTemplate('<f:table collection="collection" template=""/>', [collection: personList])
+        def table = XML.parse(output)
+
+		then:
+		table.thead.tr.th.collect { it.text().trim() } == columns
+    }
 }

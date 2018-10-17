@@ -240,7 +240,7 @@ class FormFieldsTagLib {
 
 			out << render(
 				template: "/templates/_fields/$template",
-				model: [domainClass: domainClass,
+				model: attrs + [domainClass: domainClass,
 						domainProperties: columnProperties,
 						columnProperties: columnProperties,
 						collection: collection,

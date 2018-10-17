@@ -277,4 +277,13 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
 		then:
 		table.thead.tr.th.collect { it.text().trim() } == columns
     }
+
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/286')
+	void "table should pass extra properties to template"() {
+		given:
+		views["/templates/_fields/_table.gsp"] = '<table>${foo}</table>'
+
+		expect:
+		applyTemplate('<f:table collection="personList" foo="bar"/>', [personList: personList]) == '<table>bar</table>'
+	}
 }

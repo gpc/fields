@@ -1,6 +1,5 @@
 package org.grails.scaffolding.model.property
 
-import grails.core.GrailsDomainClass
 import grails.gorm.validation.PersistentEntityValidator
 import grails.util.GrailsNameUtils
 import groovy.transform.CompileStatic
@@ -9,10 +8,8 @@ import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
 import org.grails.datastore.mapping.model.types.Association
 import org.grails.datastore.mapping.model.types.Basic
-import org.grails.validation.GrailsDomainClassValidator
 import org.springframework.validation.Validator
-
-import static grails.validation.ConstrainedProperty.BLANK_CONSTRAINT
+import static grails.gorm.validation.ConstrainedProperty.BLANK_CONSTRAINT
 
 /**
  * @see {@link DomainProperty}
@@ -34,13 +31,8 @@ class DomainPropertyImpl implements DomainProperty {
         this.persistentProperty = persistentProperty
         this.domainClass = persistentProperty.owner
         Validator validator = mappingContext.getEntityValidator(domainClass)
-        if (validator instanceof GrailsDomainClassValidator) {
-            GrailsDomainClass grailsDomainClass = ((GrailsDomainClassValidator)validator).domainClass
-            if (grailsDomainClass) {
-                this.constrained = new Constrained(null, (grails.validation.Constrained)grailsDomainClass.constrainedProperties.get(name))
-            }
-        } else if (validator instanceof PersistentEntityValidator) {
-            this.constrained = new Constrained(((PersistentEntityValidator)validator).constrainedProperties.get(name), null)
+        if (validator instanceof PersistentEntityValidator) {
+            this.constrained = new Constrained(((PersistentEntityValidator)validator).constrainedProperties.get(name))
         }
         if (this.constrained?.isNull()) {
             this.constrained = null

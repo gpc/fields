@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/grails-fields-plugin/grails-fields.svg?branch=master)](https://travis-ci.org/grails-fields-plugin/grails-fields)
+[![Build Status](https://travis-ci.org/grails-fields-plugin/grails-fields.svg?branch=master)](https://travis-ci.org/grails-fields-plugin/grails-fields) [![Join the chat at https://gitter.im/grails-fields-plugin/grails-fields](https://badges.gitter.im/grails-fields-plugin/grails-fields.svg)](https://gitter.im/grails-fields-plugin/grails-fields?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Note: `master` branch is now Grails 3.x. Grails 2.x has its own branch `grails2.x`
 

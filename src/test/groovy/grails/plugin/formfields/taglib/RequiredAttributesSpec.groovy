@@ -2,28 +2,24 @@ package grails.plugin.formfields.taglib
 
 import grails.plugin.formfields.mock.Person
 import grails.plugin.formfields.*
-import grails.test.mixin.*
+import grails.testing.web.taglib.TagLibUnitTest
 import org.grails.taglib.GrailsTagException
 
-@TestFor(FormFieldsTagLib)
-@Mock(Person)
-class RequiredAttributesSpec extends AbstractFormFieldsTagLibSpec {
+class RequiredAttributesSpec extends AbstractFormFieldsTagLibSpec implements TagLibUnitTest<FormFieldsTagLib> {
 
 	def mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
 
 	def setupSpec() {
-		configurePropertyAccessorSpringBean()
+		mockDomain(Person)
 	}
 
 	def setup() {
-		def taglib = applicationContext.getBean(FormFieldsTagLib)
-
 		mockFormFieldsTemplateService.findTemplate(_, 'wrapper', null, null) >> [path: '/_fields/default/wrapper']
         mockFormFieldsTemplateService.getTemplateFor('wrapper') >> "wrapper"
         mockFormFieldsTemplateService.getTemplateFor('widget') >> "widget"
         mockFormFieldsTemplateService.getTemplateFor('displayWrapper') >> "displayWrapper"
         mockFormFieldsTemplateService.getTemplateFor('displayWidget') >> "displayWidget"
-		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
+		tagLib.formFieldsTemplateService = mockFormFieldsTemplateService
 	}
 
 	void 'f:input requires a bean attribute'() {

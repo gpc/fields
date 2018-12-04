@@ -1,28 +1,23 @@
 package grails.plugin.formfields
 
-import grails.core.support.proxy.DefaultProxyHandler
 import grails.plugin.formfields.mock.Person
-import grails.test.mixin.TestMixin
-import grails.test.mixin.support.GrailsUnitTestMixin
-import org.grails.validation.DefaultConstraintEvaluator
 import org.grails.web.gsp.io.GrailsConventionGroovyPageLocator
 import org.grails.gsp.io.GroovyPageResourceScriptSource
 import org.springframework.core.io.ByteArrayResource
 import spock.lang.*
 
 @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/5')
-@TestMixin(GrailsUnitTestMixin)
 @Stepwise
-class TemplateLookupCachingSpec extends Specification implements BuildsAccessorFactory {
+class TemplateLookupCachingSpec extends BuildsAccessorFactory {
 
 	@Shared def service = new FormFieldsTemplateService()
 	def mockGroovyPageLocator = Mock(GrailsConventionGroovyPageLocator)
 	@Shared def beanPropertyAccessorFactory
 	def person = new Person(name: 'Bart Simpson', password: 'eatmyshorts')
 
-	def setupSpec() {
+	void setupSpec() {
 		service.pluginManager = applicationContext.pluginManager
-		beanPropertyAccessorFactory = buildFactory(grailsApplication)
+		beanPropertyAccessorFactory = getFactory()
 	}
 
 	def setup() {

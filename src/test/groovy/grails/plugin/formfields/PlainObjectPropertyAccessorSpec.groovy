@@ -1,20 +1,11 @@
 package grails.plugin.formfields
 
-import grails.core.support.proxy.DefaultProxyHandler
-import grails.test.mixin.support.GrailsUnitTestMixin
-import org.grails.validation.DefaultConstraintEvaluator
-import spock.lang.Specification
 import grails.plugin.formfields.mock.*
-import grails.test.mixin.*
 
-@TestMixin(GrailsUnitTestMixin)
-@Mock(Person)
-class PlainObjectPropertyAccessorSpec extends Specification implements BuildsAccessorFactory {
+class PlainObjectPropertyAccessorSpec extends BuildsAccessorFactory {
 
-	BeanPropertyAccessorFactory factory
-
-	void setup() {
-		factory = buildFactory(grailsApplication)
+	void setupSpec() {
+		mockDomain(Person)
 	}
 
 	void 'resolves a basic property'() {
@@ -35,7 +26,6 @@ class PlainObjectPropertyAccessorSpec extends Specification implements BuildsAcc
 		propertyAccessor.errors == []
 		!propertyAccessor.invalid
 		propertyAccessor.required
-		!propertyAccessor.persistentProperty
 		propertyAccessor.constraints.blank
 		!propertyAccessor.constraints.nullable
 	}

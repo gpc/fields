@@ -1,25 +1,22 @@
 package grails.plugin.formfields
 
-import grails.test.mixin.web.ControllerUnitTestMixin
 import org.springframework.beans.NotReadablePropertyException
 import grails.plugin.formfields.mock.*
-import grails.test.mixin.*
 import spock.lang.*
 
-@TestMixin(ControllerUnitTestMixin)
-@Mock([Person, Author, Book, Employee])
 @Unroll
-class DomainClassPropertyAccessorSpec extends Specification implements BuildsAccessorFactory {
+class DomainClassPropertyAccessorSpec extends BuildsAccessorFactory {
 
-	BeanPropertyAccessorFactory factory
 	@Shared Address address
 	@Shared Person person
 	@Shared Employee employee
 	@Shared Author author
 
-	void setup() {
-		factory = buildFactory(grailsApplication)
+	void setupSpec() {
+		mockDomains(Person, Author, Book, Employee)
+	}
 
+	void setup() {
 		address = new Address(street: "94 Evergreen Terrace", city: "Springfield", country: "USA")
 		person = new Person(name: "Bart Simpson", password: "bartman", gender: Gender.Male, dateOfBirth: new Date(87, 3, 19), address: address)
 		person.emails = [home: "bart@thesimpsons.net", school: "bart.simpson@springfieldelementary.edu"]

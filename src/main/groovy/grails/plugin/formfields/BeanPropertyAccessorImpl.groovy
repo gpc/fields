@@ -17,6 +17,7 @@
 package grails.plugin.formfields
 
 import grails.gorm.Entity
+import grails.gorm.validation.ConstrainedProperty
 import grails.util.GrailsNameUtils
 import grails.web.databinding.WebDataBinding
 import groovy.transform.Canonical
@@ -24,7 +25,6 @@ import groovy.transform.CompileStatic
 import org.apache.commons.lang.ClassUtils
 import grails.core.*
 import grails.plugins.VersionComparator
-import grails.validation.ConstrainedProperty
 import org.grails.datastore.gorm.GormEntity
 import org.grails.datastore.mapping.dirty.checking.DirtyCheckable
 import org.grails.datastore.mapping.model.PersistentEntity
@@ -32,7 +32,6 @@ import org.grails.datastore.mapping.model.PersistentProperty
 import org.grails.scaffolding.model.property.Constrained
 import org.springframework.validation.FieldError
 
-import static grails.validation.ConstrainedProperty.BLANK_CONSTRAINT
 
 @Canonical(includes = ['beanType', 'propertyName', 'propertyType'])
 class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
@@ -44,7 +43,6 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
 	String pathFromRoot
 	String propertyName
 	Class propertyType
-	GrailsDomainClassProperty persistentProperty
 	Constrained constraints
 	Object value
 	PersistentProperty domainProperty
@@ -112,7 +110,7 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
 		} else if (propertyType == String) {
             // if the property prohibits nulls and blanks are converted to nulls, then blanks will be prohibited even if a blank
             // constraint does not exist
-            boolean hasBlankConstraint = constraints?.hasAppliedConstraint(BLANK_CONSTRAINT)
+            boolean hasBlankConstraint = constraints?.hasAppliedConstraint(ConstrainedProperty.BLANK_CONSTRAINT)
             boolean blanksImplicityProhibited = !hasBlankConstraint && !constraints?.nullable && convertBlanksToNull
 			!constraints?.nullable && (!constraints?.blank || blanksImplicityProhibited)
 		} else {

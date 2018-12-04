@@ -1,12 +1,11 @@
 package grails.plugin.formfields
 
-import grails.test.mixin.TestFor
+import grails.testing.web.taglib.TagLibUnitTest
 import jodd.lagarto.dom.jerry.Jerry
 import spock.lang.Specification
 import static jodd.lagarto.dom.jerry.Jerry.jerry
 
-@TestFor(FormFieldsTagLib)
-class DefaultFieldTemplateSpec extends Specification {
+class DefaultFieldTemplateSpec extends Specification implements TagLibUnitTest<FormFieldsTagLib> {
 	
 	Map model = [:]
 

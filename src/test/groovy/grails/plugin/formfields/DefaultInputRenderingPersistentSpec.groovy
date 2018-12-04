@@ -1,31 +1,29 @@
 package grails.plugin.formfields
 
+import grails.gorm.validation.DefaultConstrainedProperty
 import grails.plugin.formfields.mock.Employee
+import grails.plugin.formfields.mock.Gender
 import grails.plugin.formfields.mock.Person
-import grails.test.mixin.Mock
-import grails.test.mixin.TestFor
+import grails.plugin.formfields.taglib.AbstractFormFieldsTagLibSpec
+import grails.testing.web.taglib.TagLibUnitTest
 import grails.util.Environment
-import grails.validation.ConstrainedProperty
+import org.grails.datastore.gorm.validation.constraints.ScaleConstraint
+import org.grails.datastore.gorm.validation.constraints.registry.DefaultConstraintRegistry
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.types.Basic
 import org.grails.datastore.mapping.model.types.ManyToMany
 import org.grails.datastore.mapping.model.types.ManyToOne
 import org.grails.datastore.mapping.model.types.OneToMany
 import org.grails.datastore.mapping.model.types.OneToOne
-import org.grails.plugins.web.DefaultGrailsTagDateHelper
 import org.grails.scaffolding.model.property.Constrained
-import org.grails.validation.ScaleConstraint
 import spock.lang.Issue
 import spock.lang.Shared
-import spock.lang.Specification
 import spock.lang.Unroll
 
 import java.sql.Blob
 
-@TestFor(FormFieldsTagLib)
-@Mock(Person)
 @Unroll
-class DefaultInputRenderingPersistentSpec extends Specification implements BuildsAccessorFactory {
+class DefaultInputRenderingPersistentSpec extends AbstractFormFieldsTagLibSpec implements TagLibUnitTest<FormFieldsTagLib> {
 
 	@Shared def personDomainClass = Mock(PersistentEntity) {
 		getJavaClass() >> Person
@@ -45,38 +43,38 @@ class DefaultInputRenderingPersistentSpec extends Specification implements Build
 		getAssociatedEntity() >> personDomainClass
 	}
 	@Shared List<Person> people
+	@Shared
 	def factory
+	@Shared
+	def constraintRegistry
 
-
-	void setupSpec() {
+	def setupSpec() {
 		people = ["Bart Simpson", "Homer Simpson", "Monty Burns"].collect {
-			new Person(name: it)
+			new Person(name: it, gender: Gender.Male, password: "password")
 		}
-		defineBeans {
-			grailsTagDateHelper(DefaultGrailsTagDateHelper)
-		}
+		mockDomain(Person)
+		factory = applicationContext.getBean(BeanPropertyAccessorFactory)
+		constraintRegistry = applicationContext.getBean(DefaultConstraintRegistry)
 	}
-	
-	void setup() {
-		factory = buildFactory(grailsApplication)
 
-		people*.save(validate: false)
+	def setup() {
+		people*.save(flush: true)
 	}
 
 	Constrained buildConstraints(Map map, Class propertyType = String, Class owner = Object) {
-		def cp = new ConstrainedProperty(owner, "prop", propertyType)
+		def cp = new DefaultConstrainedProperty(owner, "prop", propertyType, constraintRegistry)
 		map.entrySet().each { Map.Entry entry ->
 			if (entry.key == 'scale') {
 				if (!cp.hasAppliedConstraint('scale')) {
 					cp.applyConstraint('scale', entry.value)
 				} else {
-					((ScaleConstraint) cp.getAppliedConstraint('scale')).setParameter(entry.value)
+					((ScaleConstraint) cp.getAppliedConstraint('scale')).scale = entry.value
 				}
 			} else {
 				cp."${entry.key}" = entry.value
 			}
 		}
-		new Constrained(null, cp)
+		new Constrained(cp)
 	}
 
     private List<Person> getSimpsons() { people.findAll { it.name.contains("Simpson")} }
@@ -146,9 +144,9 @@ class DefaultInputRenderingPersistentSpec extends Specification implements Build
 	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/60')
 	void "input for a property with a password constraint does not include the value"() {
 		given:
-		def cp = new ConstrainedProperty(Object, "prop", String)
+		def cp = new DefaultConstrainedProperty(Object, "prop", String, constraintRegistry)
 		cp.password = true
-		def c = new Constrained(null, cp)
+		def c = new Constrained(cp)
 		def model = [type: String, property: "prop", constraints: c, persistentProperty: basicProperty, value: 'correct horse battery staple']
 
 		expect:

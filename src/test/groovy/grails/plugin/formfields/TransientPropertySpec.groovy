@@ -1,29 +1,24 @@
 package grails.plugin.formfields
 
-import grails.plugin.formfields.mock.Product
 import grails.plugin.formfields.taglib.AbstractFormFieldsTagLibSpec
+import grails.testing.web.taglib.TagLibUnitTest
 import spock.lang.Issue
-import grails.test.mixin.*
 import grails.plugin.formfields.mock.User
 
 @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/87')
-@TestFor(FormFieldsTagLib)
-@Mock(User)
-class TransientPropertySpec extends AbstractFormFieldsTagLibSpec {
+class TransientPropertySpec extends AbstractFormFieldsTagLibSpec implements TagLibUnitTest<FormFieldsTagLib> {
 
     FormFieldsTemplateService mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
     User userInstance
 
     def setupSpec() {
-        configurePropertyAccessorSpringBean()
+        mockDomain(User)
     }
 
     def setup() {
-        def taglib = applicationContext.getBean(FormFieldsTagLib)
-
         mockFormFieldsTemplateService.findTemplate(_, 'wrapper', null, null) >> [path: '/_fields/default/wrapper']
         mockFormFieldsTemplateService.getTemplateFor('wrapper') >> "wrapper"
-        taglib.formFieldsTemplateService = mockFormFieldsTemplateService
+        tagLib.formFieldsTemplateService = mockFormFieldsTemplateService
 
         userInstance = new User(email: 'rob@freeside.co', password: 'yuonocanhaz', confirmPassword: 'yuonocanhaz').save(failOnError: true)
     }

@@ -1,7 +1,6 @@
 package grails.plugin.formfields
 
 import grails.core.GrailsDomainClass
-import grails.core.GrailsDomainClassProperty
 import grails.gorm.Entity
 import grails.util.GrailsNameUtils
 import grails.validation.Validateable
@@ -27,7 +26,9 @@ class DelegatingBeanPropertyAccessorImpl implements BeanPropertyAccessor {
 	private Object rootBean
 	private Object value
 	private String pathFromRoot
-	private Class propertyType
+	final Class beanType
+	final String propertyName
+	final Class propertyType
 
 	DelegatingBeanPropertyAccessorImpl(Object rootBean, Object value, Class propertyType, String pathFromRoot, DomainProperty domainProperty) {
 		this.rootBean = rootBean
@@ -35,6 +36,8 @@ class DelegatingBeanPropertyAccessorImpl implements BeanPropertyAccessor {
 		this.pathFromRoot = pathFromRoot
 		this.domainProperty = domainProperty
 		this.propertyType = propertyType
+		this.propertyName = domainProperty.name
+		this.beanType = domainProperty.beanType
 	}
 
 	@Override
@@ -50,16 +53,6 @@ class DelegatingBeanPropertyAccessorImpl implements BeanPropertyAccessor {
 	@Override
 	String getPathFromRoot() {
 		pathFromRoot
-	}
-
-	@Override
-	String getPropertyName() {
-		domainProperty.name
-	}
-
-	@Override
-	Class getBeanType() {
-		domainProperty.beanType
 	}
 
 	@Override
@@ -79,11 +72,6 @@ class DelegatingBeanPropertyAccessorImpl implements BeanPropertyAccessor {
 	}
 
 	@Override
-	Class getPropertyType() {
-		propertyType
-	}
-
-	@Override
 	List<Class> getPropertyTypeSuperclasses() {
 		getSuperclassesAndInterfaces(propertyType)
 	}
@@ -91,12 +79,6 @@ class DelegatingBeanPropertyAccessorImpl implements BeanPropertyAccessor {
 	@Override
 	Object getValue() {
 		value
-	}
-
-	@Override
-	@Deprecated
-	GrailsDomainClassProperty getPersistentProperty() {
-		throw new UnsupportedOperationException()
 	}
 
 	@Override

@@ -2,20 +2,18 @@ package grails.plugin.formfields.taglib
 
 import grails.core.support.proxy.DefaultProxyHandler
 import grails.plugin.formfields.BeanPropertyAccessorFactory
-import grails.plugin.formfields.MappingContextBuilder
-import grails.plugin.formfields.MappingContextBuilderFactoryBean
+import grails.testing.gorm.DataTest
+import grails.testing.web.GrailsWebUnitTest
 import org.grails.datastore.mapping.model.MappingContext
-import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.plugins.web.DefaultGrailsTagDateHelper
 import org.grails.scaffolding.model.DomainModelServiceImpl
 import org.grails.scaffolding.model.property.DomainPropertyFactory
 import org.grails.scaffolding.model.property.DomainPropertyFactoryImpl
-import org.grails.validation.DefaultConstraintEvaluator
-import org.grails.validation.GrailsDomainClassValidator
+import org.grails.spring.beans.factory.InstanceFactoryBean
 import spock.lang.Specification
 import grails.plugin.formfields.mock.*
 
-abstract class AbstractFormFieldsTagLibSpec extends Specification {
+abstract class AbstractFormFieldsTagLibSpec extends Specification implements GrailsWebUnitTest, DataTest {
 
 	Person personInstance
     Product productInstance
@@ -34,23 +32,22 @@ abstract class AbstractFormFieldsTagLibSpec extends Specification {
 
 		messageSource.@messages.clear() // bit of a hack but messages don't get torn down otherwise
 	}
-	
-	protected void configurePropertyAccessorSpringBean() {
-		defineBeans {
+
+	void setupSpec() {
+		defineBeans { ->
 			grailsTagDateHelper(DefaultGrailsTagDateHelper)
-			constraintsEvaluator(DefaultConstraintEvaluator)
-			fieldsDomainPropertyFactory(DomainPropertyFactoryImpl)
+			//constraintsEvaluator(DefaultConstraintEvaluator)
+			def dpf = new DomainPropertyFactoryImpl(grailsDomainClassMappingContext: applicationContext.getBean("grailsDomainClassMappingContext", MappingContext), trimStrings: true, convertEmptyStringsToNull: true)
+			fieldsDomainPropertyFactory(InstanceFactoryBean, dpf, DomainPropertyFactory)
+
 			domainModelService(DomainModelServiceImpl) {
-				domainPropertyFactory: ref(fieldsDomainPropertyFactory)
+				domainPropertyFactory = ref('fieldsDomainPropertyFactory')
 			}
 			beanPropertyAccessorFactory(BeanPropertyAccessorFactory) {
-				constraintsEvaluator = ref('constraintsEvaluator')
+				constraintsEvaluator = ref('org.grails.beans.ConstraintsEvaluator')
 				proxyHandler = new DefaultProxyHandler()
 				grailsDomainClassMappingContext = ref("grailsDomainClassMappingContext")
-				fieldsDomainPropertyFactory = ref("fieldsDomainPropertyFactory")
-			}
-			grailsDomainClassMappingContext(MappingContextBuilderFactoryBean) {
-				domains = [Person, Product, Author, Book] as Class[]
+				fieldsDomainPropertyFactory = ref('fieldsDomainPropertyFactory')
 			}
 		}
 	}

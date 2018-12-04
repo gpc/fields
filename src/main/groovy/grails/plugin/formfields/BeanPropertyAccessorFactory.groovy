@@ -16,12 +16,13 @@
 
 package grails.plugin.formfields
 
+import grails.gorm.validation.DefaultConstrainedProperty
 import groovy.transform.PackageScope
 import grails.core.*
 import grails.core.support.GrailsApplicationAware
 import grails.core.support.proxy.ProxyHandler
-import grails.validation.ConstrainedProperty
-import grails.validation.ConstraintsEvaluator
+import org.grails.datastore.gorm.validation.constraints.eval.ConstraintsEvaluator
+import org.grails.datastore.gorm.validation.constraints.registry.DefaultConstraintRegistry
 import org.grails.datastore.mapping.model.MappingContext
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
@@ -33,6 +34,7 @@ import org.grails.scaffolding.model.property.DomainPropertyFactory
 import org.springframework.beans.BeanWrapper
 import org.springframework.beans.BeanWrapperImpl
 import org.springframework.beans.PropertyAccessorFactory
+import org.springframework.context.support.StaticMessageSource
 
 import java.lang.reflect.ParameterizedType
 import java.util.regex.Pattern
@@ -98,7 +100,7 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 				params.beanType = beanWrapper.wrappedClass
 				params.propertyType = propertyType
 				params.propertyName = nameWithoutIndex
-				params.persistentProperty = null
+				params.domainProperty = null
 				params.constraints = resolveConstraints(beanWrapper, params.propertyName)
 				null
 			}
@@ -108,17 +110,17 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 	}
 
 	private Constrained resolveConstraints(BeanWrapper beanWrapper, String propertyName) {
-		grails.validation.Constrained constraint = constraintsEvaluator.evaluate(beanWrapper.wrappedClass)[propertyName]
+		grails.gorm.validation.Constrained constraint = constraintsEvaluator.evaluate(beanWrapper.wrappedClass)[propertyName]
 		if (!constraint) {
 			constraint = createDefaultConstraint(beanWrapper, propertyName)
 		}
-		new Constrained(null, constraint)
+		new Constrained(constraint)
 	}
 
-    private grails.validation.Constrained createDefaultConstraint(BeanWrapper beanWrapper, String propertyName) {
-        def defaultConstraint = new ConstrainedProperty(beanWrapper.wrappedClass, propertyName, beanWrapper.getPropertyType(propertyName))
+    private grails.gorm.validation.Constrained createDefaultConstraint(BeanWrapper beanWrapper, String propertyName) {
+        def defaultConstraint = new DefaultConstrainedProperty(beanWrapper.wrappedClass, propertyName, beanWrapper.getPropertyType(propertyName), new DefaultConstraintRegistry(new StaticMessageSource()))
         defaultConstraint.nullable = true
-		(grails.validation.Constrained)defaultConstraint
+		defaultConstraint
     }
 
     private Class resolvePropertyType(BeanWrapper beanWrapper, PersistentEntity beanClass, String propertyName) {

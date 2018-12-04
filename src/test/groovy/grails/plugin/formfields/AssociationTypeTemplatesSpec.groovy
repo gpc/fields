@@ -1,22 +1,19 @@
 package grails.plugin.formfields
 
-import grails.test.mixin.web.GroovyPageUnitTestMixin
 import grails.plugin.formfields.mock.*
-import grails.test.mixin.*
+import grails.testing.services.ServiceUnitTest
 import spock.lang.*
 
 @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/39')
-@TestMixin(GroovyPageUnitTestMixin)
-@TestFor(FormFieldsTemplateService)
-@Mock([Book, Author])
-class AssociationTypeTemplatesSpec extends Specification implements BuildsAccessorFactory {
+class AssociationTypeTemplatesSpec extends BuildsAccessorFactory implements ServiceUnitTest<FormFieldsTemplateService> {
 
-	def factory
 	Author authorInstance
 
-	void setup() {
-		factory = buildFactory(grailsApplication)
+	void setupSpec() {
+		mockDomains(Book, Author)
+	}
 
+	void setup() {
 		authorInstance = new Author(name: 'William Gibson')
 		authorInstance.addToBooks new Book(title: 'Pattern Recognition')
 		authorInstance.addToBooks new Book(title: 'Spook Country')

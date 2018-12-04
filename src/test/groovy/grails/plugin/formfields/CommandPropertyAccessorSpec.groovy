@@ -1,27 +1,18 @@
 package grails.plugin.formfields
 
-import grails.core.support.proxy.DefaultProxyHandler
-import grails.test.mixin.web.ControllerUnitTestMixin
 import grails.plugin.formfields.mock.*
-import grails.test.mixin.*
-import org.grails.scaffolding.model.property.DomainPropertyFactoryImpl
-import org.grails.validation.DefaultConstraintEvaluator
 import spock.lang.*
 
-@TestMixin(ControllerUnitTestMixin)
-@Mock(Person)
 @Unroll
-class CommandPropertyAccessorSpec extends Specification implements BuildsAccessorFactory {
+class CommandPropertyAccessorSpec extends BuildsAccessorFactory {
 
-	BeanPropertyAccessorFactory factory
-
-	void setup() {
-		factory = buildFactory(grailsApplication)
+	void setupSpec() {
+		mockDomain(Person)
 	}
 
 	void 'resolves a basic property'() {
 		given:
-		TestCommand command = mockCommandObject(TestCommand)
+		TestCommand command = new TestCommand()
 		command.password = 'correct horse battery staple'
 
 		and:
@@ -42,7 +33,7 @@ class CommandPropertyAccessorSpec extends Specification implements BuildsAccesso
 
 	void 'property of #type.simpleName is nullable'() {
 		given:
-		def command = mockCommandObject(type)
+		def command = type.newInstance()
 
 		and:
 		def propertyAccessor = factory.accessorFor(command, 'stringProperty')
@@ -58,7 +49,7 @@ class CommandPropertyAccessorSpec extends Specification implements BuildsAccesso
 
 	void 'resolves a basic property even when its value is null'() {
 		given:
-		TestCommand command = mockCommandObject(TestCommand)
+		TestCommand command = new TestCommand()
 
 		and:
 		def propertyAccessor = factory.accessorFor(command, 'password')
@@ -76,7 +67,7 @@ class CommandPropertyAccessorSpec extends Specification implements BuildsAccesso
 
 	void 'resolves a simple indexed property'() {
 		given:
-		TestCommand command = mockCommandObject(TestCommand)
+		TestCommand command = new TestCommand()
 		command.listOfStrings = ['correct', 'horse', 'battery', 'staple']
 
 		and:
@@ -93,7 +84,7 @@ class CommandPropertyAccessorSpec extends Specification implements BuildsAccesso
 
 	void 'resolves a simple indexed property when the value at that index is null'() {
 		given:
-		TestCommand command = mockCommandObject(TestCommand)
+		TestCommand command = new TestCommand()
 		command.listOfStrings = ['correct', null, 'battery', 'staple']
 
 		and:
@@ -108,7 +99,7 @@ class CommandPropertyAccessorSpec extends Specification implements BuildsAccesso
 
 	void 'resolves an untyped simple indexed property when the value at that index is null'() {
 		given:
-		TestCommand command = mockCommandObject(TestCommand)
+		TestCommand command = new TestCommand()
 		command.untypedList = ['correct', null, 'battery', 'staple']
 
 		and:
@@ -123,7 +114,7 @@ class CommandPropertyAccessorSpec extends Specification implements BuildsAccesso
 
 	void 'resolves a simple mapped property'() {
 		given:
-		TestCommand command = mockCommandObject(TestCommand)
+		TestCommand command = new TestCommand()
 		def today = new Date()
 		command.mapOfDates = [yesterday: today - 1, today: today, tomorrow: today + 1]
 
@@ -141,7 +132,7 @@ class CommandPropertyAccessorSpec extends Specification implements BuildsAccesso
 
 	void 'resolves a simple mapped property when the value at that index is null'() {
 		given:
-		TestCommand command = mockCommandObject(TestCommand)
+		TestCommand command = new TestCommand()
 		def today = new Date()
 		command.mapOfDates = [yesterday: today - 1, today: null, tomorrow: today + 1]
 
@@ -157,7 +148,7 @@ class CommandPropertyAccessorSpec extends Specification implements BuildsAccesso
 
 	void 'resolves an untyped simple mapped property when the value at that index is null'() {
 		given:
-		TestCommand command = mockCommandObject(TestCommand)
+		TestCommand command = new TestCommand()
 		def today = new Date()
 		command.untypedMap = [yesterday: today - 1, today: null, tomorrow: today + 1]
 
@@ -173,7 +164,7 @@ class CommandPropertyAccessorSpec extends Specification implements BuildsAccesso
 
 	void 'resolves an enum property'() {
 		given:
-		TestCommand command = mockCommandObject(TestCommand)
+		TestCommand command = new TestCommand()
 		command.gender = Gender.Male
 
 		and:
@@ -188,7 +179,7 @@ class CommandPropertyAccessorSpec extends Specification implements BuildsAccesso
 
 	void 'resolves a nested property'() {
 		given:
-		TestCommand command = mockCommandObject(TestCommand)
+		TestCommand command = new TestCommand()
 		command.person = new Person(name: 'Bart Simpson')
 
 		and:
@@ -205,7 +196,7 @@ class CommandPropertyAccessorSpec extends Specification implements BuildsAccesso
 
 	void 'resolves a nested property even when the intervening object is null'() {
 		given:
-		TestCommand command = mockCommandObject(TestCommand)
+		TestCommand command = new TestCommand()
 
 		and:
 		def propertyAccessor = factory.accessorFor(command, 'person.name')
@@ -222,7 +213,7 @@ class CommandPropertyAccessorSpec extends Specification implements BuildsAccesso
 	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/37')
 	void "resolves constraints of the '#property' property even when the intervening object is null"() {
 		given:
-		TestCommand command = mockCommandObject(TestCommand)
+		TestCommand command = new TestCommand()
 
 		and:
 		def propertyAccessor = factory.accessorFor(command, property)
@@ -241,7 +232,7 @@ class CommandPropertyAccessorSpec extends Specification implements BuildsAccesso
 
 	void 'if a nested property is a domain class then it is handled as one'() {
 		given:
-		TestCommand command = mockCommandObject(TestCommand)
+		TestCommand command = new TestCommand()
 		command.person = new Person(name: 'Bart Simpson')
 
 		and:
@@ -254,7 +245,7 @@ class CommandPropertyAccessorSpec extends Specification implements BuildsAccesso
 
 	void 'constraints are defaulted for classes that have no constraints property'() {
 		given:
-		UnconstrainedCommand command = mockCommandObject(UnconstrainedCommand)
+		UnconstrainedCommand command = new UnconstrainedCommand()
 
 		and:
 		def propertyAccessor = factory.accessorFor(command, 'stringProperty')

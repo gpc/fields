@@ -2,24 +2,19 @@ package grails.plugin.formfields
 
 import grails.plugin.formfields.mock.Person
 import grails.plugin.formfields.taglib.AbstractFormFieldsTagLibSpec
-import grails.test.mixin.Mock
-import grails.test.mixin.TestFor
+import grails.testing.web.taglib.TagLibUnitTest
 
-@TestFor(FormFieldsTagLib)
-@Mock(Person)
-class DisplayWidgetSpec extends AbstractFormFieldsTagLibSpec {
+class DisplayWidgetSpec extends AbstractFormFieldsTagLibSpec implements TagLibUnitTest<FormFieldsTagLib> {
 
 	def mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
 
 	def setupSpec() {
-		configurePropertyAccessorSpringBean()
+		mockDomain(Person)
 	}
 
 	def setup() {
-		def taglib = applicationContext.getBean(FormFieldsTagLib)
-
         mockFormFieldsTemplateService.getTemplateFor('displayWidget') >> "displayWidget"
-		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
+		tagLib.formFieldsTemplateService = mockFormFieldsTemplateService
 	}
 
 	void 'f:displayWidget without template and a date value renders the formatted date'() {

@@ -5,30 +5,26 @@ import grails.plugin.formfields.FormFieldsTemplateService
 import grails.plugin.formfields.mock.Author
 import grails.plugin.formfields.mock.Book
 import grails.plugin.formfields.mock.Person
-import grails.test.mixin.Mock
-import grails.test.mixin.TestFor
+import grails.plugin.formfields.mock.Product
+import grails.testing.web.taglib.TagLibUnitTest
 import spock.lang.Issue
 
 @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/45')
-@TestFor(FormFieldsTagLib)
-@Mock([Person, Author, Book])
-class DisplayTagSpec extends AbstractFormFieldsTagLibSpec {
+class DisplayTagSpec extends AbstractFormFieldsTagLibSpec implements TagLibUnitTest<FormFieldsTagLib> {
 
 	FormFieldsTemplateService mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
 
 	def setupSpec() {
-		configurePropertyAccessorSpringBean()
+		mockDomains(Person, Author, Book, Product)
 	}
 
 	def setup() {
-		FormFieldsTagLib taglib = applicationContext.getBean(FormFieldsTagLib)
-
         mockFormFieldsTemplateService.getTemplateFor('wrapper') >> "wrapper"
         mockFormFieldsTemplateService.getTemplateFor('widget') >> "widget"
         mockFormFieldsTemplateService.getTemplateFor('displayWrapper') >> "displayWrapper"
         mockFormFieldsTemplateService.getTemplateFor('displayWidget') >> "displayWidget"
 
-		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
+		tagLib.formFieldsTemplateService = mockFormFieldsTemplateService
 	}
 
 	void 'renders all properties as list'() {

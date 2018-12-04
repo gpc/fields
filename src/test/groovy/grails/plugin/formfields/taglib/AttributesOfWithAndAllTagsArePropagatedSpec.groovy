@@ -3,27 +3,23 @@ package grails.plugin.formfields.taglib
 import grails.plugin.formfields.FormFieldsTagLib
 import grails.plugin.formfields.FormFieldsTemplateService
 import grails.plugin.formfields.mock.Product
-import grails.test.mixin.Mock
-import grails.test.mixin.TestFor
+import grails.testing.web.taglib.TagLibUnitTest
 import spock.lang.Ignore
 import spock.lang.Issue
 import spock.lang.Unroll
 
-@TestFor(FormFieldsTagLib)
-@Mock([Product])
+
 @Unroll
 @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/210')
-class AttributesOfWithAndAllTagsArePropagatedSpec extends AbstractFormFieldsTagLibSpec {
+class AttributesOfWithAndAllTagsArePropagatedSpec extends AbstractFormFieldsTagLibSpec  implements TagLibUnitTest<FormFieldsTagLib> {
 
 	FormFieldsTemplateService mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
 
 	def setupSpec() {
-		configurePropertyAccessorSpringBean()
+		mockDomain(Product)
 	}
 
 	def setup() {
-		FormFieldsTagLib taglib = applicationContext.getBean(FormFieldsTagLib)
-
 		mockFormFieldsTemplateService.getWidgetPrefix() >> "widget-"
 		mockFormFieldsTemplateService.getTemplateFor("wrapper") >> 'wrapper'
 		mockFormFieldsTemplateService.getTemplateFor("displayWrapper") >> 'displayWrapper'
@@ -36,9 +32,9 @@ class AttributesOfWithAndAllTagsArePropagatedSpec extends AbstractFormFieldsTagL
 		mockFormFieldsTemplateService.findTemplate(_, 'widget', null, null) >> [path: '/_fields/default/widget']
 		mockFormFieldsTemplateService.findTemplate(_, 'displayWidget', null, null) >> [path: '/_fields/default/displayWidget']
 
-		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
+		tagLib.formFieldsTemplateService = mockFormFieldsTemplateService
 
-		mockEmbeddedSitemeshLayout(taglib)
+		mockEmbeddedSitemeshLayout(tagLib)
 
 		views["/_fields/default/_wrapper.gsp"] = '<wrapper attr="${attribute}">${widget}</wrapper>'
 		views["/_fields/default/_displayWrapper.gsp"] = '<displayWrapper attr="${attribute}">${widget}</displayWrapper>'

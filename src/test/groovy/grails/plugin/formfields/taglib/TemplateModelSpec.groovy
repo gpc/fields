@@ -2,30 +2,25 @@ package grails.plugin.formfields.taglib
 
 import grails.plugin.formfields.*
 import grails.plugin.formfields.mock.*
-import grails.test.mixin.*
-import org.grails.plugins.web.DefaultGrailsTagDateHelper
+import grails.testing.web.taglib.TagLibUnitTest
 import spock.lang.*
 
-@TestFor(FormFieldsTagLib)
-@Mock([Person, Employee])
 @Unroll
-class TemplateModelSpec extends AbstractFormFieldsTagLibSpec {
+class TemplateModelSpec extends AbstractFormFieldsTagLibSpec implements TagLibUnitTest<FormFieldsTagLib> {
 
 	def mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
 
 	def setupSpec() {
-		configurePropertyAccessorSpringBean()
+		mockDomains(Person, Employee)
 	}
 
 	def setup() {
-		def taglib = applicationContext.getBean(FormFieldsTagLib)
-
 		mockFormFieldsTemplateService.findTemplate(_, 'wrapper', null, null) >> [path: '/_fields/default/wrapper']
         mockFormFieldsTemplateService.getTemplateFor('wrapper') >> "wrapper"
         mockFormFieldsTemplateService.getTemplateFor('widget') >> "widget"
         mockFormFieldsTemplateService.getTemplateFor('displayWrapper') >> "displayWrapper"
         mockFormFieldsTemplateService.getTemplateFor('displayWidget') >> "displayWidget"
-		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
+		tagLib.formFieldsTemplateService = mockFormFieldsTemplateService
 	}
 
 	void "bean and property attributes are passed to template"() {

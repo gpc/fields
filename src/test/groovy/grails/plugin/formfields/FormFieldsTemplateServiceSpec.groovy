@@ -1,24 +1,16 @@
 package grails.plugin.formfields
 
-import grails.core.support.proxy.DefaultProxyHandler
-import grails.test.mixin.web.GroovyPageUnitTestMixin
 import grails.plugin.formfields.mock.*
-import grails.test.mixin.*
-import org.grails.validation.DefaultConstraintEvaluator
+import grails.testing.services.ServiceUnitTest
 import org.grails.web.servlet.mvc.GrailsWebRequest
 import spock.lang.*
 
-@TestMixin(GroovyPageUnitTestMixin)
-@TestFor(FormFieldsTemplateService)
-class FormFieldsTemplateServiceSpec extends Specification implements BuildsAccessorFactory {
+class FormFieldsTemplateServiceSpec extends BuildsAccessorFactory implements ServiceUnitTest<FormFieldsTemplateService> {
 
 	Person personInstance
 	Employee employeeInstance
-	def factory
-	
-	void setup() {
-		factory = buildFactory(grailsApplication)
 
+	void setup() {
 		webRequest.controllerName = 'foo'
 		webRequest.actionName = 'bar'
 

@@ -6,8 +6,7 @@ import grails.plugin.formfields.FormFieldsTemplateService
 import grails.plugin.formfields.mock.Address
 import grails.plugin.formfields.mock.Employee
 import grails.plugin.formfields.mock.Person
-import grails.test.mixin.Mock
-import grails.test.mixin.TestFor
+import grails.testing.web.taglib.TagLibUnitTest
 import spock.lang.Issue
 import spock.lang.Shared
 import spock.lang.Unroll
@@ -15,10 +14,9 @@ import spock.lang.Unroll
 import static grails.plugin.formfields.mock.Gender.Female
 import static grails.plugin.formfields.mock.Gender.Male
 
-@TestFor(FormFieldsTagLib)
-@Mock(Person)
 @Unroll
-class TableSpec extends AbstractFormFieldsTagLibSpec {
+class TableSpec extends AbstractFormFieldsTagLibSpec implements TagLibUnitTest<FormFieldsTagLib> {
+
 	def address = new Address(street: '742 Evergreen Terrace', city: 'Springfield', country: 'USA')
 	def bart = new Person(name: "Bart Simpson", gender: Male, address: address)
 	def marge = new Person(name: "Marge Simpson", gender: Female, address: address)
@@ -28,16 +26,15 @@ class TableSpec extends AbstractFormFieldsTagLibSpec {
 	def mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
 
 	def setupSpec() {
-		configurePropertyAccessorSpringBean()
+		mockDomain(Person)
 
         //Alternative table template
         alternativeTable = new File('grails-app/views/templates/_fields/_alternativeTable.gsp') << '<table><h1>Alternative Table Template</h1></table>'
     }
 
 	def setup() {
-		def taglib = applicationContext.getBean(FormFieldsTagLib)
-		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
-		mockEmbeddedSitemeshLayout(taglib)
+		tagLib.formFieldsTemplateService = mockFormFieldsTemplateService
+		mockEmbeddedSitemeshLayout(tagLib)
 	}
 
     def cleanupSpec() {

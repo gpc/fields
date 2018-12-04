@@ -16,7 +16,6 @@
 
 package grails.plugin.formfields
 
-import grails.core.GrailsDomainClassProperty
 import groovy.transform.CompileStatic
 import groovy.xml.MarkupBuilder
 import org.apache.commons.lang.StringUtils
@@ -626,14 +625,7 @@ class FormFieldsTagLib {
 		boolean manyToMany = false
 		boolean oneToMany = false
 		if (model.containsKey('persistentProperty')) {
-			if (model.persistentProperty instanceof GrailsDomainClassProperty) {
-				log.warn("Rendering an input with a GrailsDomainClassProperty is deprecated. Use a PersistentProperty instead.")
-				GrailsDomainClassProperty gdcp = (GrailsDomainClassProperty) model.persistentProperty
-				oneToOne = gdcp.oneToOne
-				manyToOne = gdcp.manyToOne
-				manyToMany = gdcp.manyToMany
-				oneToMany = gdcp.oneToMany
-			} else if (model.persistentProperty instanceof PersistentProperty) {
+			if (model.persistentProperty instanceof PersistentProperty) {
 				PersistentProperty prop = (PersistentProperty) model.persistentProperty
 				oneToOne = prop instanceof OneToOne
 				manyToOne = prop instanceof ManyToOne
@@ -782,11 +774,7 @@ class FormFieldsTagLib {
 		def persistentProperty = model.persistentProperty
 		Class referencedPropertyType
 		boolean manyToMany = false
-		if (persistentProperty instanceof GrailsDomainClassProperty) {
-			GrailsDomainClassProperty gdcp = ((GrailsDomainClassProperty) persistentProperty)
-			referencedPropertyType = gdcp.referencedPropertyType
-			manyToMany = gdcp.manyToMany
-		} else if (persistentProperty instanceof Association) {
+		if (persistentProperty instanceof Association) {
 			Association prop = ((Association) persistentProperty)
 			PersistentEntity entity = prop.getAssociatedEntity()
 			if (entity != null) {
@@ -816,11 +804,7 @@ class FormFieldsTagLib {
 		def persistentProperty = model.persistentProperty
 		def controllerName
 		def shortName
-		if (persistentProperty instanceof GrailsDomainClassProperty) {
-			GrailsDomainClassProperty gdcp = ((GrailsDomainClassProperty) persistentProperty)
-			controllerName = gdcp.referencedDomainClass.propertyName
-			shortName = gdcp.referencedDomainClass.shortName
-		} else if (persistentProperty instanceof Association) {
+		if (persistentProperty instanceof Association) {
 			Association prop = ((Association) persistentProperty)
 			controllerName = prop.associatedEntity.decapitalizedName
 			shortName = prop.associatedEntity.javaClass.simpleName

@@ -1,69 +1,92 @@
 package grails.plugin.formfields
 
-import grails.core.GrailsDomainClass
-import grails.core.GrailsDomainClassProperty
+import grails.gorm.validation.DefaultConstrainedProperty
 import grails.plugin.formfields.mock.Employee
+import grails.plugin.formfields.mock.Gender
 import grails.plugin.formfields.mock.Person
-import grails.test.mixin.Mock
-import grails.test.mixin.TestFor
+import grails.plugin.formfields.taglib.AbstractFormFieldsTagLibSpec
+import grails.testing.web.taglib.TagLibUnitTest
 import grails.util.Environment
-import grails.validation.ConstrainedProperty
-import org.grails.core.DefaultGrailsDomainClass
+import org.grails.datastore.gorm.validation.constraints.ScaleConstraint
+import org.grails.datastore.gorm.validation.constraints.registry.DefaultConstraintRegistry
 import org.grails.datastore.mapping.model.PersistentEntity
-import org.grails.plugins.web.DefaultGrailsTagDateHelper
+import org.grails.datastore.mapping.model.types.Association
+import org.grails.datastore.mapping.model.types.ManyToMany
+import org.grails.datastore.mapping.model.types.ManyToOne
+import org.grails.datastore.mapping.model.types.OneToMany
+import org.grails.datastore.mapping.model.types.OneToOne
 import org.grails.scaffolding.model.property.Constrained
-import org.grails.validation.ScaleConstraint
 import spock.lang.Issue
 import spock.lang.Shared
-import spock.lang.Specification
 import spock.lang.Unroll
 
 import java.sql.Blob
 
-@TestFor(FormFieldsTagLib)
-@Mock(Person)
 @Unroll
-class DefaultInputRenderingSpec extends Specification implements BuildsAccessorFactory {
+class DefaultInputRenderingSpec extends AbstractFormFieldsTagLibSpec  implements TagLibUnitTest<FormFieldsTagLib> {
 
-	@Shared def personDomainClass = new DefaultGrailsDomainClass(Person)
-	@Shared def basicProperty = new MockPersistentProperty()
-	@Shared def oneToOneProperty = new MockPersistentProperty(oneToOne: true, referencedPropertyType: Person, referencedDomainClass: personDomainClass)
-	@Shared def manyToOneProperty = new MockPersistentProperty(manyToOne: true, referencedPropertyType: Person, referencedDomainClass: personDomainClass)
-	@Shared def manyToManyProperty = new MockPersistentProperty(manyToMany: true, referencedPropertyType: Person, referencedDomainClass: personDomainClass)
-	@Shared def oneToManyProperty = new MockPersistentProperty(oneToMany: true, referencedPropertyType: Person, referencedDomainClass: personDomainClass)
+	@Shared def basicProperty = Mock(Association)
+	@Shared def oneToOneProperty
+	@Shared def manyToOneProperty
+	@Shared def manyToManyProperty
+	@Shared def oneToManyProperty
 	@Shared List<Person> people
+	@Shared
 	def factory
+	@Shared
+	def constraintRegistry
 
-
-	void setupSpec() {
+	def setupSpec() {
 		people = ["Bart Simpson", "Homer Simpson", "Monty Burns"].collect {
-			new Person(name: it)
+			new Person(name: it, gender: Gender.Male, password: "password")
 		}
-		defineBeans {
-			grailsTagDateHelper(DefaultGrailsTagDateHelper)
+		mockDomain(Person)
+		oneToOneProperty = Mock(OneToOne) {
+			getName() >> "books"
+			getType() >> Person
+			//getOwner() >> Person.gormPersistentEntity
+			getAssociatedEntity() >> Person.gormPersistentEntity
 		}
+		manyToOneProperty = Mock(ManyToOne) {
+			getName() >> "book"
+			getType() >> Person
+			//getOwner() >> Person.gormPersistentEntity
+			getAssociatedEntity() >> Person.gormPersistentEntity
+		}
+		manyToManyProperty = Mock(ManyToMany) {
+			getName() >> "books"
+			getType() >> Person
+			//getOwner() >> Person.gormPersistentEntity
+			getAssociatedEntity() >> Person.gormPersistentEntity
+		}
+		oneToManyProperty = Mock(OneToMany) {
+			getName() >> "books"
+			getType() >> Person
+			//getOwner() >> Person.gormPersistentEntity
+			getAssociatedEntity() >> Person.gormPersistentEntity
+		}
+		factory = applicationContext.getBean(BeanPropertyAccessorFactory)
+		constraintRegistry = applicationContext.getBean(DefaultConstraintRegistry)
 	}
-	
-	void setup() {
-		factory = buildFactory(grailsApplication)
 
-		people*.save(validate: false)
+	def setup() {
+		people*.save(flush: true)
 	}
 
 	Constrained buildConstraints(Map map, Class propertyType = String, Class owner = Object) {
-		def cp = new ConstrainedProperty(owner, "prop", propertyType)
+		def cp = new DefaultConstrainedProperty(owner, "prop", propertyType, constraintRegistry)
 		map.entrySet().each { Map.Entry entry ->
 			if (entry.key == 'scale') {
 				if (!cp.hasAppliedConstraint('scale')) {
 					cp.applyConstraint('scale', entry.value)
 				} else {
-					((ScaleConstraint) cp.getAppliedConstraint('scale')).setParameter(entry.value)
+					((ScaleConstraint) cp.getAppliedConstraint('scale')).scale = entry.value
 				}
 			} else {
 				cp."${entry.key}" = entry.value
 			}
 		}
-		new Constrained(null, cp)
+		new Constrained(cp)
 	}
 
     private List<Person> getSimpsons() { people.findAll { it.name.contains("Simpson")} }
@@ -156,9 +179,9 @@ class DefaultInputRenderingSpec extends Specification implements BuildsAccessorF
 	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/60')
 	void "input for a property with a password constraint does not include the value"() {
 		given:
-		def cp = new ConstrainedProperty(Object, "prop", String)
+		def cp = new DefaultConstrainedProperty(Object, "prop", String, constraintRegistry)
 		cp.password = true
-		def c = new Constrained(null, cp)
+		def c = new Constrained(cp)
 		def model = [type: String, property: "prop", constraints: c, persistentProperty: basicProperty, value: 'correct horse battery staple']
 
 		expect:
@@ -447,7 +470,7 @@ class DefaultInputRenderingSpec extends Specification implements BuildsAccessorF
 		Set    | manyToManyProperty | "many-to-many"
 	}
 
-	def "input for a #description property doesn't have `.id` at the end of the name"() {
+	def "input for a #description property doesnt have .id at the end of the name"() {
 		given:
 		def model = [type: type, property: "prop", constraints: null, persistentProperty: persistentProperty]
 
@@ -646,41 +669,6 @@ class DefaultInputRenderingSpec extends Specification implements BuildsAccessorF
 
 }
 
-class MockPersistentProperty implements GrailsDomainClassProperty {
-	boolean association
-	boolean basicCollectionType
-	boolean bidirectional
-	boolean circular
-	GrailsDomainClass component
-	boolean derived
-	GrailsDomainClass domainClass
-	boolean embedded
-	int fetchMode
-	String fieldName
-	boolean hasOne
-	boolean identity
-	boolean inherited
-	boolean manyToMany
-	boolean manyToOne
-	String name
-	boolean oneToMany
-	boolean oneToOne
-	boolean optional
-	GrailsDomainClassProperty otherSide
-	boolean owningSide
-	String naturalName
-	boolean persistent
-	GrailsDomainClass referencedDomainClass
-	String referencedPropertyName
-	Class referencedPropertyType
-	Class type
-	String typePropertyName
-	boolean isEnum
-	boolean explicitSaveUpdateCascade
-
-	boolean isEnum() { isEnum }
-}
-
 enum EnumWithToString {
 	FIRST("first"),
 	SECOND("second"),
@@ -699,4 +687,8 @@ enum EnumWithToString {
 
 class DebugConstraint {
 	Integer prop
+}
+
+class Thing {
+
 }

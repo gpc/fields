@@ -1,22 +1,31 @@
 package grails.plugin.formfields
 
-import grails.core.GrailsApplication
 import grails.core.support.proxy.DefaultProxyHandler
+import grails.testing.gorm.DataTest
+import grails.testing.web.GrailsWebUnitTest
+import org.grails.datastore.mapping.model.MappingContext
 import org.grails.scaffolding.model.property.DomainPropertyFactoryImpl
-import org.grails.validation.DefaultConstraintEvaluator
+import spock.lang.Specification
 
 /**
  * Created by jameskleeh on 5/3/17.
  */
-trait BuildsAccessorFactory {
+abstract class BuildsAccessorFactory extends Specification implements GrailsWebUnitTest, DataTest {
 
-    BeanPropertyAccessorFactory buildFactory(GrailsApplication grailsApplication) {
-        BeanPropertyAccessorFactory factory = new BeanPropertyAccessorFactory()
-        factory.grailsApplication = grailsApplication
-        factory.constraintsEvaluator = new DefaultConstraintEvaluator()
-        factory.proxyHandler = new DefaultProxyHandler()
-        factory.grailsDomainClassMappingContext = new MappingContextBuilder(grailsApplication).build()
-        factory.fieldsDomainPropertyFactory = new DomainPropertyFactoryImpl(grailsDomainClassMappingContext: factory.grailsDomainClassMappingContext, trimStrings: true, convertEmptyStringsToNull: true)
-        factory
+    void setupSpec() {
+        defineBeans { ->
+            def dpf = new DomainPropertyFactoryImpl(grailsDomainClassMappingContext: applicationContext.getBean("grailsDomainClassMappingContext", MappingContext), trimStrings: true, convertEmptyStringsToNull: true)
+
+            beanPropertyAccessorFactory(BeanPropertyAccessorFactory) {
+                constraintsEvaluator = ref('org.grails.beans.ConstraintsEvaluator')
+                proxyHandler = new DefaultProxyHandler()
+                grailsDomainClassMappingContext = ref("grailsDomainClassMappingContext")
+                fieldsDomainPropertyFactory = dpf
+            }
+        }
+    }
+
+    BeanPropertyAccessorFactory getFactory() {
+        applicationContext.getBean(BeanPropertyAccessorFactory)
     }
 }

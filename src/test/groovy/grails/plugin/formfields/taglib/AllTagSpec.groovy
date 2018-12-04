@@ -1,32 +1,27 @@
 package grails.plugin.formfields.taglib
 
-import grails.plugin.formfields.mock.Address
 import grails.plugin.formfields.mock.Person
 import grails.plugin.formfields.*
-import grails.test.mixin.*
+import grails.testing.web.taglib.TagLibUnitTest
 import org.grails.taglib.GrailsTagException
 import spock.lang.*
 
-@TestFor(FormFieldsTagLib)
-@Mock(Person)
 @Unroll
-class AllTagSpec extends AbstractFormFieldsTagLibSpec {
+class AllTagSpec extends AbstractFormFieldsTagLibSpec implements TagLibUnitTest<FormFieldsTagLib> {
 
     FormFieldsTemplateService mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
 
     def setupSpec() {
-        configurePropertyAccessorSpringBean()
+        mockDomain(Person)
     }
 
     def setup() {
-        def taglib = applicationContext.getBean(FormFieldsTagLib)
-
         mockFormFieldsTemplateService.getTemplateFor(_) >> { args -> args[0]}
         mockFormFieldsTemplateService.findTemplate(_, 'widget', _, null) >> [path: '/_fields/default/field']
         mockFormFieldsTemplateService.findTemplate(_, 'wrapper', _, null) >> [path: '/_fields/default/wrapper']
-        taglib.formFieldsTemplateService = mockFormFieldsTemplateService
+        tagLib.formFieldsTemplateService = mockFormFieldsTemplateService
 
-        mockEmbeddedSitemeshLayout(taglib)
+        mockEmbeddedSitemeshLayout(tagLib)
     }
 
     void "all tag renders fields for all properties"() {

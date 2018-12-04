@@ -83,13 +83,6 @@ interface BeanPropertyAccessor {
 
 	/**
 	 * @return the GORM persistent property descriptor for the property at the end of the path, e.g. for `address.home.street` then the descriptor of `street` is returned. This will be null for non-domain properties.
-	 * @deprecated use {@link #getDomainProperty}
-	 */
-	@Deprecated
-	GrailsDomainClassProperty getPersistentProperty()
-
-	/**
-	 * @return the GORM persistent property descriptor for the property at the end of the path, e.g. for `address.home.street` then the descriptor of `street` is returned. This will be null for non-domain properties.
 	 */
 	PersistentProperty getDomainProperty()
 

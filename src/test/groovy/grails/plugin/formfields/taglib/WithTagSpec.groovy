@@ -1,33 +1,29 @@
 package grails.plugin.formfields.taglib
 
 import grails.plugin.formfields.mock.Person
+import grails.testing.web.taglib.TagLibUnitTest
 import spock.lang.Issue
 import grails.plugin.formfields.*
-import grails.test.mixin.*
 
 @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/13')
-@TestFor(FormFieldsTagLib)
-@Mock(Person)
-class WithTagSpec extends AbstractFormFieldsTagLibSpec {
+class WithTagSpec extends AbstractFormFieldsTagLibSpec implements TagLibUnitTest<FormFieldsTagLib> {
 
 	def mockFormFieldsTemplateService = Mock(FormFieldsTemplateService)
 
 	def setupSpec() {
-		configurePropertyAccessorSpringBean()
+		mockDomain(Person)
 	}
 
 	def setup() {
-		def taglib = applicationContext.getBean(FormFieldsTagLib)
-
 		mockFormFieldsTemplateService.findTemplate(_, 'wrapper', null, null) >> [path: '/_fields/default/wrapper']
         mockFormFieldsTemplateService.getTemplateFor('wrapper') >> "wrapper"
         mockFormFieldsTemplateService.getTemplateFor('widget') >> "widget"
         mockFormFieldsTemplateService.getTemplateFor('displayWrapper') >> "displayWrapper"
         mockFormFieldsTemplateService.getTemplateFor('displayWidget') >> "displayWidget"
         mockFormFieldsTemplateService.getWidgetPrefix() >> 'input-'
-		taglib.formFieldsTemplateService = mockFormFieldsTemplateService
+		tagLib.formFieldsTemplateService = mockFormFieldsTemplateService
 
-        mockEmbeddedSitemeshLayout taglib
+        mockEmbeddedSitemeshLayout tagLib
     }
 
 	void 'bean attribute does not have to be specified if it is in scope from f:with'() {

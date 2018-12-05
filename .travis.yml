@@ -4,21 +4,21 @@ jdk:
 - openjdk8
 cache:
   directories:
-  - $HOME/.gradle
-script: ./travis-build.sh
+  - "$HOME/.gradle"
+script: "./travis-build.sh"
 after_failure:
-  - ./travis/publish_reports.sh
+- "./travis/publish_reports.sh"
 env:
   global:
   - GIT_NAME="Graeme Rocher"
   - GIT_EMAIL="graeme.rocher@gmail.com"
-  - secure: xvzhl25MxMLLYqDB2YFoODFX/JjltYU3Zdnh8R6YD/Cy1djH+2st0PMs8ERFx+nUQ4RLrtq+r2X2QMMe0bGKPisqz+YwE/TnF4TIm2lbp/k3dfQiNa3HF20m3aQplell3yQhC6wD3hBO53KeGdtZ5Ah2S6oSiM8PRiGcay0UZy0=
-  - secure: LEj4RcGVf31S0E45a1SIJJ+nEj05UTVahua0+PCrFyJs4TQAEVIRuclf4HPSJfs9v/xyezEKLPIJadfzSXAMoMY1tEjn5kAeutSESBQSmEy5JEs8cU1Y5Us0EaGdDsfKW3dRnWjBjPzZQAqTCWfX6BCENgU1A/g2N18eUStEk98=
-  - secure: U5iBmiD6kBBbYfvInjA7cAmHvLJ8cjAn70lxiihf7abLp8hZ7K1VRRBBc/U96EtTYZP18rKkBZTW0wj9pv2ACEfd3vmZ0hpcq/zAb0Q3ylzXTUbz8NFfpc6/o8vePqFbRjxknRZ47Q7nxlHtHmVxYQcnWhHvfMTS1chO4iGgcoE=
-  - secure: d7XgPjAzYR2mBfWMWdh4vWPe+6AhdQ4BLiDK1sAJToEZZF1mpc1eGw+QIxYLwq1S5FNMyAlxqndmB8IxvjO422KKar1sIa6LPbVHVdh2srFFEutLcD+i5B0MDL9luO17T0sXMleB+60JWJg2UscqUfeuvgPCJh+wjiCb9704/Vg=
   - secure: yjrvYcL2KStheccxqoc5qfL2lIplkzGmja7oc5ZyCELelYH6TxP2iCDSE2UvICymlrByAHk5rcoEqhH9vjkRYOQfgXWahT18RkppjFsgc3F0lD1ulhPhunYDaCi0xyyPMddVy8Y9wWbkAyl6MREGKVtKFpkFpJqM0uY+ieUuU1c=
   - secure: g03YHB4AwAMBuTz3L0LCh3pf51Wnnm/noL26ZmHaSvuDbGcZakwIfgclo/7cs16obQXZkbFyj9PqCSeXSHttLBca0cRW+1MU8qTIRhz7zHOzoOEFyxjNRW2Oi9zqpYULFoKNNY95c0JosPnRLdcRbVwmKm6XtqNc6zCGMJ+x79A=
-  - secure: Neyw5jWIvdGJunXCszm4hR3IEdHBZoDShDBai8NDjz9ikw9ud54qDa0N+QtUfVDh5IA6r2emH0YhqgsaxInXudEcdByJu21pGAJlhn5GW+AGWIP3a5vtlpD2vAsgWNCuV6MkYheeSN0NgPzNtb8BVqLVWSp1cfPmTuyk234ko8s=
+  - secure: qwQDbAsXS01PdjtxFOyAn0y7epwLiowLKAvoyoU1Yutl/7zPZJxtqOVpEVjBc2qVCMKXBTR60tPtqH+mGjamB5GE5T4OYfxiPnpmXagp7eWCF/1swYrUKEUFDolEIM6aU6l6pui3wvmheHB0Mnk2i4DF0dNbWHps+NwhYgHXAfg=
+  - secure: Fk7KukPKRQu9WI0NSvczhLAbgvabCI8d+cV8jbKhahScQMhSObTaxqk/Tb1JaI1vRQ3IHksGbsIGOMx2jK5hntpjF8MCY1e8Y4rVkPNWxDqbtKvzCbWKNOhR5lfalCjn5Plx/qdh0TbNbiYswY/idmAVkVOfP7Wy2CKoadsP9HE=
+  - secure: DsItL1MTuV9GLC2JKblnFqTvj8swuM4C96sPHRjrz0OArs6QZ3oyuaYdWFQIQdgeaO08gvoyjjP5TrT5UWEO8j6ElAbQMoYISffcqSzmzo82rBQTrjNjWHQ98BOcM8ge1A8lInHEuOBnQVxpk4KB2SOPD2QJeUd1MC9qXZpWQig=
+  - secure: 3dy+H77W9DUZnie/8VkkknD3v93+r5HWR6qxKim4C81EOk/FPFp64ejc9TIjoIs+24SKCfSCDRe3O9EqyJRH6UGFPFBsap59CTQALppM7nI9ws0JzW/JmLIuqRhT+INgoVnD3ZWZ9onHFgwHZEWmhcRYY/iMybKrxXgI0rFXy18=
+  - secure: l7P4ZS1P2zl6fh1jQjOv28xl6uJUwxbcH7gorNly8kF5f14ebqH93uiGNctDHGHJ2a73iy632h8MG7btTdmP/s0t+Oz6ZZFyEUh4q6DVzOuOzJ6HEGn0u/uHdfgHACETwKqt8sQwmmYv4CV/EG9zgF8eIZGJMwrSCqtdHJTR5tI=
 deploy:
   provider: releases
   api_key:

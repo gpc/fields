@@ -13,7 +13,7 @@ if [ $EXIT_STATUS -ne 0 ]; then
 fi
 
 echo "Assemble for branch $TRAVIS_BRANCH JDK: $TRAVIS_JDK_VERSION"
-./gradle --stop
+./gradlew --stop
 
 ./gradlew assemble --no-daemon || EXIT_STATUS=$?
 

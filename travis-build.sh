@@ -14,7 +14,7 @@ fi
 
 echo "Assemble for branch $TRAVIS_BRANCH JDK: $TRAVIS_JDK_VERSION"
 
-./gradlew assemble --no-daemon || EXIT_STATUS=$?
+./gradlew assemble -x compileWebappGroovyPages --no-daemon || EXIT_STATUS=$?
 
 if [ $EXIT_STATUS -ne 0 ]; then
   exit $EXIT_STATUS

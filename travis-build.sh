@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
-rm -rf *.zip
 chmod +x ./travis/*.sh
 
 ./gradlew clean test assemble

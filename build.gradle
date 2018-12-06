@@ -51,8 +51,8 @@ dependencies {
 
 	testCompile 'javassist:javassist:3.12.0.GA'
 	testCompile 'cglib:cglib-nodep:3.2.9'
-	testCompile('org.jodd:jodd-wot:3.3.4') {
 	testCompile "org.codehaus.groovy:groovy-dateutil:$groovyVersion"
+	testCompile("org.jodd:jodd-wot:$joddWotVersion") {
 		exclude module: 'slf4j-api'
 		exclude module: 'asm'
 	}

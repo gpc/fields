@@ -2,7 +2,7 @@
 set -e
 chmod +x ./travis/*.sh
 
-./gradlew test assemble
+./gradlew test assemble --no-daemon
 
 filename=$(find build/libs -name "*.jar" | head -1)
 filename=$(basename "$filename")
@@ -14,9 +14,9 @@ if [[ -n $TRAVIS_TAG ]] || [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST
   echo "Publishing archives"
 
   if [[ -n $TRAVIS_TAG ]]; then
-      ./gradlew bintrayUpload || EXIT_STATUS=$?
+      ./gradlew bintrayUpload --no-daemon  || EXIT_STATUS=$?
   else
-      ./gradlew publish || EXIT_STATUS=$?
+      ./gradlew publish --no-daemon || EXIT_STATUS=$?
   fi
 
   ./gradlew docs || EXIT_STATUS=$?

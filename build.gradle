@@ -33,25 +33,23 @@ repositories {
 }
 
 dependencies {
-	provided 'org.springframework.boot:spring-boot-starter-logging'
-	provided "org.springframework.boot:spring-boot-starter-actuator"
-	provided "org.springframework.boot:spring-boot-autoconfigure"
-	provided "org.springframework.boot:spring-boot-starter-tomcat"
-
-	provided "org.grails:grails-web-boot"
-	provided "org.grails:grails-dependencies"
-	provided 'javax.servlet:javax.servlet-api:3.1.0'
-
+	compile "org.springframework.boot:spring-boot-starter-logging"
+	compile "org.springframework.boot:spring-boot-autoconfigure"
+	compile "org.grails:grails-core"
+	compile "org.springframework.boot:spring-boot-starter-actuator"
+	compile "org.springframework.boot:spring-boot-starter-tomcat"
+	compile "org.grails:grails-web-boot"
+	compile "org.grails:grails-logging"
+	compile "org.grails:grails-plugin-databinding"
 	compile "org.grails:scaffolding-core:$scaffoldingVersion"
 
-	//testCompile "org.grails:grails-plugin-testing"
-
-	testCompile "org.grails:grails-web-testing-support:2.0.0.BUILD-SNAPSHOT"
-	testCompile "org.grails:grails-gorm-testing-support:2.0.0.BUILD-SNAPSHOT"
-
+	compile "org.grails.plugins:gsp"
 	console "org.grails:grails-console"
+	profile "org.grails.profiles:web-plugin"
+	provided "org.grails:grails-plugin-domain-class"
+	testCompile "org.grails:grails-gorm-testing-support"
+	testCompile "org.grails:grails-web-testing-support"
 
-	testCompile 'javassist:javassist:3.12.0.GA'
 	testCompile "org.codehaus.groovy:groovy-dateutil:$groovyVersion"
 	testCompile "cglib:cglib-nodep:$cglibNodepVersion"
 	testCompile("org.jodd:jodd-wot:$joddWotVersion") {

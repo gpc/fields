@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">2.252s</div>
+<div class="counter">3.256s</div>
 <p>duration</p>
 </div>
 </td>
@@ -79,57 +79,57 @@
 </thead>
 <tr>
 <td class="success">all tag renders fields for all properties</td>
-<td class="success">0.230s</td>
+<td class="success">0.323s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">all tag respects the order attribute</td>
-<td class="success">0.251s</td>
+<td class="success">0.294s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">all tag skips displayFalseProperty property and includes address.street property</td>
-<td class="success">0.199s</td>
+<td class="success">0.309s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">all tag skips excludedProperty property and includes dateOfBirth property</td>
-<td class="success">0.204s</td>
+<td class="success">0.303s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">all tag skips id property and includes salutation property</td>
-<td class="success">0.205s</td>
+<td class="success">0.304s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">all tag skips lastUpdated property and includes gender property</td>
-<td class="success">0.193s</td>
+<td class="success">0.303s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">all tag skips onLoad property and includes password property</td>
-<td class="success">0.200s</td>
+<td class="success">0.267s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">all tag skips properties listed with the except attribute</td>
-<td class="success">0.210s</td>
+<td class="success">0.444s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">all tag skips version property and includes name property</td>
-<td class="success">0.278s</td>
+<td class="success">0.305s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">f:all tag supports theme</td>
-<td class="success">0.211s</td>
+<td class="success">0.306s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">order attribute and except attribute are mutually exclusive</td>
-<td class="success">0.071s</td>
+<td class="success">0.098s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -137,570 +137,570 @@
 <div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>09:28:21.412 [Test worker] DEBUG org.springframework.web.context.support.StandardServletEnvironment - Activating profiles []
-09:28:21.413 [Test worker] DEBUG org.springframework.web.context.support.GenericWebApplicationContext - Refreshing org.springframework.web.context.support.GenericWebApplicationContext@588b3de8
-09:28:21.414 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
-09:28:21.414 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsApplicationPostProcessor'
-09:28:21.415 [Test worker] DEBUG org.grails.plugins.CorePluginFinder - Attempting to load [16] core plugins
-09:28:21.429 [Test worker] DEBUG org.grails.plugins.DefaultGrailsPlugin - Configuring plugin [i18n:4.0.0.BUILD-SNAPSHOT] to watch resources with pattern: file:./grails-app/i18n/**/*.properties
-09:28:21.432 [Test worker] DEBUG org.grails.plugins.DefaultGrailsPlugin - Configuring plugin [codecs:4.0.0.BUILD-SNAPSHOT] to watch resources with pattern: file:./grails-app/utils/**/*Codec.groovy
-09:28:21.435 [Test worker] DEBUG org.grails.plugins.DefaultGrailsPlugin - Configuring plugin [interceptors:4.0.0.BUILD-SNAPSHOT] to watch resources with pattern: file:./grails-app/controllers/**/*Interceptor.groovy
-09:28:21.438 [Test worker] INFO grails.plugins.DefaultGrailsPluginManager - Attempting to load [0] user defined plugins
-09:28:21.438 [Test worker] INFO grails.plugins.DefaultGrailsPluginManager - Grails plug-in [core] with version [4.0.0.BUILD-SNAPSHOT] loaded successfully
-09:28:21.438 [Test worker] INFO grails.plugins.DefaultGrailsPluginManager - Grails plug-in [eventBus] with version [3.3.2] loaded successfully
-09:28:21.440 [Test worker] DEBUG grails.core.DefaultGrailsApplication - loaded classes: [[]]
-09:28:21.442 [Test worker] DEBUG grails.core.DefaultGrailsApplication - Going to inspect artefact classes.
-09:28:21.442 [Test worker] DEBUG org.springframework.web.context.support.StandardServletEnvironment - Activating profile 'web'
-09:28:21.446 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultGrailsIntegerConverter]
-09:28:21.446 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultGrailslongConverter]
-09:28:21.446 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultGrailsLongConverter]
-09:28:21.446 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [halJsonDataBindingSourceCreator]
-09:28:21.446 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultDateConverter]
-09:28:21.446 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [dataBindingSourceRegistry]
-09:28:21.446 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultGrailsShortConverter]
-09:28:21.446 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [halXmlDataBindingSourceCreator]
-09:28:21.446 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultGrailsDoubleConverter]
-09:28:21.446 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsWebDataBinder]
-09:28:21.446 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [timeZoneConverter]
-09:28:21.446 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultGrailsBigDecimalConverter]
-09:28:21.446 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultGrailsshortConverter]
-09:28:21.446 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultGrailsFloatConverter]
-09:28:21.446 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultGrailsdoubleConverter]
-09:28:21.446 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultCurrencyConverter]
-09:28:21.446 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [xmlDataBindingSourceCreator]
-09:28:21.446 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultGrailsintConverter]
-09:28:21.446 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultGrailsfloatConverter]
-09:28:21.446 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [jsonApiDataBindingSourceCreator]
-09:28:21.446 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultGrailsBigIntegerConverter]
-09:28:21.446 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [jsonDataBindingSourceCreator]
-09:28:21.450 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Overriding bean definition for bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor' with a different definition: replacing [Root bean: class [org.springframework.context.annotation.ConfigurationClassPostProcessor]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null] with [Root bean: class [org.springframework.context.annotation.ConfigurationClassPostProcessor]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null]
-09:28:21.450 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Overriding bean definition for bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor' with a different definition: replacing [Root bean: class [org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null] with [Root bean: class [org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null]
-09:28:21.450 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Overriding bean definition for bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor' with a different definition: replacing [Root bean: class [org.springframework.context.annotation.CommonAnnotationBeanPostProcessor]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null] with [Root bean: class [org.springframework.context.annotation.CommonAnnotationBeanPostProcessor]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null]
-09:28:21.450 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Overriding bean definition for bean 'org.springframework.context.event.internalEventListenerProcessor' with a different definition: replacing [Root bean: class [org.springframework.context.event.EventListenerMethodProcessor]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null] with [Root bean: class [org.springframework.context.event.EventListenerMethodProcessor]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null]
-09:28:21.450 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Overriding bean definition for bean 'org.springframework.context.event.internalEventListenerFactory' with a different definition: replacing [Root bean: class [org.springframework.context.event.DefaultEventListenerFactory]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null] with [Root bean: class [org.springframework.context.event.DefaultEventListenerFactory]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null]
-09:28:21.451 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [proxyHandler]
-09:28:21.451 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [mapBasedSmartPropertyOverrideConfigurer]
-09:28:21.451 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [messageSource]
-09:28:21.451 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [conversionService]
-09:28:21.451 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsPlaceholderConfigurer]
-09:28:21.451 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [transactionManagerAwarePostProcessor]
-09:28:21.451 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [propertySourcesPlaceholderConfigurer]
-09:28:21.451 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [classLoader]
-09:28:21.451 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsConfigProperties]
-09:28:21.451 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsResourceLocator]
-09:28:21.451 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsBeanOverrideConfigurer]
-09:28:21.451 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [customEditors]
-09:28:21.451 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsApplicationAwarePostProcessor]
-09:28:21.451 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [proxyHandler]
-09:28:21.451 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [abstractGrailsResourceLocator]
-09:28:21.451 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [eventBus]
-09:28:21.451 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [pluginManagerPostProcessor]
-09:28:21.451 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsConfigurationClassPostProcessor]
-09:28:21.451 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [gormDispatchEventRegistrar]
-09:28:21.451 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsEventBus]
-09:28:21.451 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [org.springframework.aop.config.internalAutoProxyCreator]
-09:28:21.451 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsConfigurationClassPostProcessor'
-09:28:21.452 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsPlaceholderConfigurer'
-09:28:21.453 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'propertySourcesPlaceholderConfigurer'
-09:28:21.454 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'customEditors'
-09:28:21.454 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.context.event.internalEventListenerProcessor'
-09:28:21.454 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.boot.context.properties.ConfigurationBeanFactoryMetadata'
-09:28:21.454 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'mapBasedSmartPropertyOverrideConfigurer'
-09:28:21.454 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsBeanOverrideConfigurer'
-09:28:21.454 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.context.event.internalEventListenerFactory'
-09:28:21.454 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor'
-09:28:21.455 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor'
-09:28:21.455 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor'
-09:28:21.455 [Test worker] WARN org.springframework.boot.context.properties.PropertySourcesDeducer - Multiple PropertySourcesPlaceholderConfigurer beans registered [grailsPlaceholderConfigurer, propertySourcesPlaceholderConfigurer], falling back to Environment
-09:28:21.456 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'transactionManagerAwarePostProcessor'
-09:28:21.456 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.aop.config.internalAutoProxyCreator'
-09:28:21.456 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsApplicationAwarePostProcessor'
-09:28:21.457 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'pluginManagerPostProcessor'
-09:28:21.457 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'messageSource'
-09:28:21.457 [Test worker] DEBUG org.springframework.ui.context.support.UiApplicationContextUtils - Unable to locate ThemeSource with name 'themeSource': using default [org.springframework.ui.context.support.ResourceBundleThemeSource@3d35713e]
-09:28:21.458 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'conversionService'
-09:28:21.458 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
-09:28:21.458 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultGrailsIntegerConverter'
-09:28:21.459 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'classLoader'
-09:28:21.459 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsEventBus'
-09:28:21.460 [Test worker] WARN grails.events.bus.EventBusBuilder - No event bus implementations found on classpath, using synchronous implementation.
-09:28:21.461 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultGrailslongConverter'
-09:28:21.461 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultGrailsLongConverter'
-09:28:21.461 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'halJsonDataBindingSourceCreator'
-09:28:21.461 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultDateConverter'
-09:28:21.462 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'dataBindingSourceRegistry'
-09:28:21.467 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'halXmlDataBindingSourceCreator'
-09:28:21.467 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'xmlDataBindingSourceCreator'
-09:28:21.468 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'jsonApiDataBindingSourceCreator'
-09:28:21.468 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'jsonDataBindingSourceCreator'
-09:28:21.470 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultGrailsShortConverter'
-09:28:21.471 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultGrailsDoubleConverter'
-09:28:21.471 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsWebDataBinder'
-09:28:21.477 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'timeZoneConverter'
-09:28:21.478 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultGrailsBigDecimalConverter'
-09:28:21.478 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultGrailsshortConverter'
-09:28:21.479 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultGrailsFloatConverter'
-09:28:21.479 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultGrailsdoubleConverter'
-09:28:21.480 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultCurrencyConverter'
-09:28:21.480 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultGrailsintConverter'
-09:28:21.480 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultGrailsfloatConverter'
-09:28:21.481 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultGrailsBigIntegerConverter'
-09:28:21.483 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'proxyHandler'
-09:28:21.483 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsConfigProperties'
-09:28:21.486 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsResourceLocator'
-09:28:21.486 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'eventBus'
-09:28:21.487 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'gormDispatchEventRegistrar'
-09:28:21.495 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [mimeTypes]
-09:28:21.495 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsMimeUtility]
-09:28:21.495 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [mimeTypeResolver]
-09:28:21.495 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'mimeTypes'
-09:28:21.496 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsMimeUtility'
-09:28:21.497 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'mimeTypeResolver'
-09:28:21.498 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [xmlErrorsMarshaller]
-09:28:21.498 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [errorsXmlMarshallerRegisterer]
-09:28:21.498 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [jsonErrorsMarshaller]
-09:28:21.498 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [errorsJsonMarshallerRegisterer]
-09:28:21.498 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [convertersConfigurationInitializer]
-09:28:21.498 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'xmlErrorsMarshaller'
-09:28:21.498 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'errorsXmlMarshallerRegisterer'
-09:28:21.499 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'jsonErrorsMarshaller'
-09:28:21.499 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'errorsJsonMarshallerRegisterer'
-09:28:21.499 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'convertersConfigurationInitializer'
-09:28:21.499 [Test worker] DEBUG org.grails.web.converters.configuration.ConvertersConfigurationInitializer - Initializing Converters Default Configurations...
-09:28:21.499 [Test worker] DEBUG org.grails.web.converters.configuration.ConvertersConfigurationInitializer - Initializing default JSON Converters Configuration...
-09:28:21.499 [Test worker] DEBUG org.grails.web.converters.configuration.ConvertersConfigurationInitializer - Using default JSON Date Marshaller
-09:28:21.500 [Test worker] DEBUG org.grails.web.converters.configuration.ConvertersConfigurationInitializer - Initializing default XML Converters Configuration...
-09:28:21.501 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [groovyPageUnitTestResourceLoader]
-09:28:21.501 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [filteringCodecsByContentTypeSettings]
-09:28:21.501 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [jspViewResolver]
-09:28:21.501 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [compositeViewResolver]
-09:28:21.501 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsUrlMappingsHolder]
-09:28:21.501 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsLinkGenerator]
-09:28:21.501 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [gspTagLibraryLookup]
-09:28:21.501 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [groovyPagesTemplateEngine]
-09:28:21.501 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [multipartResolver]
-09:28:21.502 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [rendererRegistry]
-09:28:21.502 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [localeResolver]
-09:28:21.502 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [groovyPagesTemplateRenderer]
-09:28:21.502 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsUrlConverter]
-09:28:21.502 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [jspTagLibraryResolver]
-09:28:21.502 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [groovyPageLocator]
-09:28:21.502 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'groovyPageUnitTestResourceLoader'
-09:28:21.502 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'filteringCodecsByContentTypeSettings'
-09:28:21.503 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'jspViewResolver'
-09:28:21.504 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'groovyPagesTemplateEngine'
-09:28:21.504 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'gspTagLibraryLookup'
-09:28:21.506 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'jspTagLibraryResolver'
-09:28:21.507 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'groovyPageLocator'
-09:28:21.508 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'compositeViewResolver'
-09:28:21.509 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsUrlMappingsHolder'
-09:28:21.511 [Test worker] DEBUG org.grails.web.mapping.RegexUrlMapping - Mapping [/] has a higher precedence than [/(*)/(*)?/(*)?] because it is the root
-09:28:21.511 [Test worker] DEBUG org.grails.web.mapping.DefaultUrlMappingsHolder - Reverse mapping: [DefaultUrlMappingsHolder.UrlMappingKey@31960994 controller = [null], action = [null], namespace = [null], plugin = [null], httpMethod = '*', params = set[[empty]]] -&gt; org.grails.web.mapping.ResponseCodeUrlMapping@42214aab
-09:28:21.511 [Test worker] DEBUG org.grails.web.mapping.DefaultUrlMappingsHolder - Reverse mapping: [DefaultUrlMappingsHolder.UrlMappingKey@60869cb6 controller = [null], action = [null], namespace = [null], plugin = [null], httpMethod = '*', params = set[[empty]]] -&gt; /
-09:28:21.514 [Test worker] DEBUG org.grails.web.mapping.DefaultUrlMappingsHolder - Reverse mapping: [DefaultUrlMappingsHolder.UrlMappingKey@760d091c controller = [null], action = [null], namespace = [null], plugin = [null], httpMethod = '*', params = set['controller']] -&gt; /(*)/(*)?/(*)?
-09:28:21.514 [Test worker] DEBUG org.grails.web.mapping.DefaultUrlMappingsHolder - Reverse mapping: [DefaultUrlMappingsHolder.UrlMappingKey@775664e0 controller = [null], action = [null], namespace = [null], plugin = [null], httpMethod = '*', params = set['controller', 'action']] -&gt; /(*)/(*)?/(*)?
-09:28:21.514 [Test worker] DEBUG org.grails.web.mapping.DefaultUrlMappingsHolder - Reverse mapping: [DefaultUrlMappingsHolder.UrlMappingKey@3fea0cb3 controller = [null], action = [null], namespace = [null], plugin = [null], httpMethod = '*', params = set['controller', 'action', 'id']] -&gt; /(*)/(*)?/(*)?
-09:28:21.514 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsUrlConverter'
-09:28:21.515 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsLinkGenerator'
-09:28:21.517 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'multipartResolver'
-09:28:21.517 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'rendererRegistry'
-09:28:21.518 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'localeResolver'
-09:28:21.519 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [codecLookup]
-09:28:21.519 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'codecLookup'
-09:28:21.528 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [org.grails.beans.ConstraintsEvaluator]
-09:28:21.528 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [constraintRegistry]
-09:28:21.528 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsDomainClassMappingContext]
-09:28:21.528 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsDatastore]
-09:28:21.528 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [transactionManager]
-09:28:21.528 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.grails.beans.ConstraintsEvaluator'
-09:28:21.528 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'constraintRegistry'
-09:28:21.530 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsDomainClassMappingContext'
-09:28:21.530 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsDatastore'
-09:28:21.535 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'transactionManager'
-09:28:21.537 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsTagDateHelper]
-09:28:21.537 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [fieldsDomainPropertyFactory]
-09:28:21.537 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [domainModelService]
-09:28:21.537 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [beanPropertyAccessorFactory]
-09:28:21.537 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsTagDateHelper'
-09:28:21.537 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'fieldsDomainPropertyFactory'
-09:28:21.538 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'domainModelService'
-09:28:21.539 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'beanPropertyAccessorFactory'
-09:28:21.545 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.mock.PersonValidator]
-09:28:21.545 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.mock.Person]
-09:28:21.545 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.mock.PersonValidator'
-09:28:21.553 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
-09:28:21.553 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
-09:28:21.558 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
-09:28:21.559 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
-09:28:21.568 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [test_1544088501568] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:21.569 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:21.569 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:21.569 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:21.569 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:21.569 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:21.621 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@52aead8e]
-09:28:21.621 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:21.624 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.grails.plugins.web.taglib.ValidationTagLib'
-09:28:21.630 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.grails.plugins.web.taglib.RenderTagLib'
-09:28:21.631 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'groovyPagesTemplateRenderer'
-09:28:21.633 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_field.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:21.633 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:21.633 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:21.633 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:21.633 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
-09:28:21.633 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:21.633 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:21.692 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@49a77529]
-09:28:21.692 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:21.692 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@67a941c7]
-09:28:21.692 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:21.693 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_wrapper.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:21.693 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:21.693 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:21.693 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:21.693 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
-09:28:21.693 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:21.693 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:21.750 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@32857e49]
-09:28:21.750 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:21.750 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@11181a6a]
-09:28:21.750 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:21.777 [Test worker] WARN org.grails.datastore.mapping.core.DatastoreUtils - Cannot unbind session, there's no SessionHolder registered
-09:28:21.782 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
-09:28:21.782 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
-09:28:21.789 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
-09:28:21.789 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
-09:28:21.797 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [test_1544088501797] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:21.797 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:21.797 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:21.797 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:21.797 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:21.797 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:21.850 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@76109b47]
-09:28:21.850 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:21.853 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_field.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:21.853 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:21.853 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:21.853 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:21.853 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
-09:28:21.853 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:21.854 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:21.909 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@695c491a]
-09:28:21.909 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:21.909 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@2d4744e4]
-09:28:21.909 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:21.911 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_wrapper.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:21.911 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:21.911 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:21.911 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:21.911 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
-09:28:21.911 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:21.911 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:21.966 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@507570e]
-09:28:21.966 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:21.966 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@4eee88d9]
-09:28:21.966 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:21.984 [Test worker] WARN org.grails.datastore.mapping.core.DatastoreUtils - Cannot unbind session, there's no SessionHolder registered
-09:28:21.987 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
-09:28:21.987 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
-09:28:21.991 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
-09:28:21.992 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
-09:28:21.996 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [test_1544088501996] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:21.997 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:21.997 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:21.997 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:21.997 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:21.997 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:22.049 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@540496fb]
-09:28:22.049 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:22.052 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_field.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:22.052 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.052 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.052 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.053 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
-09:28:22.053 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.053 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:22.187 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@7c5f1c1d]
-09:28:22.187 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:22.187 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@50d82d94]
-09:28:22.187 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:22.188 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_wrapper.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:22.189 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.189 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.189 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.189 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
-09:28:22.189 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.189 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:22.243 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@2af91932]
-09:28:22.243 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:22.243 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@1fb7e7be]
-09:28:22.243 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:22.262 [Test worker] WARN org.grails.datastore.mapping.core.DatastoreUtils - Cannot unbind session, there's no SessionHolder registered
-09:28:22.265 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
-09:28:22.266 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
-09:28:22.269 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
-09:28:22.270 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
-09:28:22.275 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [test_1544088502275] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:22.275 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.275 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.275 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.275 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.275 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:22.328 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@3bb97311]
-09:28:22.328 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:22.331 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_field.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:22.331 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.331 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.332 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.332 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
-09:28:22.332 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.332 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:22.389 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@34118abc]
-09:28:22.389 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:22.389 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@23872402]
-09:28:22.389 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:22.390 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_wrapper.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:22.390 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.390 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.390 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.390 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
-09:28:22.390 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.391 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:22.445 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@60d7cfd1]
-09:28:22.445 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:22.445 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@3d39b662]
-09:28:22.445 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:22.461 [Test worker] WARN org.grails.datastore.mapping.core.DatastoreUtils - Cannot unbind session, there's no SessionHolder registered
-09:28:22.464 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
-09:28:22.465 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
-09:28:22.468 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
-09:28:22.468 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
-09:28:22.473 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [test_1544088502473] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:22.473 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.473 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.473 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.473 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.473 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:22.525 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@4e21438b]
-09:28:22.525 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:22.528 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_field.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:22.528 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.528 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.528 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.529 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
-09:28:22.529 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.529 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:22.583 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@73b067ce]
-09:28:22.583 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:22.583 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@44b0a87]
-09:28:22.583 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:22.584 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_wrapper.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:22.584 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.584 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.584 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.584 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
-09:28:22.584 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.584 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:22.638 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@661d54ff]
-09:28:22.638 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:22.638 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@3ec37aa]
-09:28:22.638 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:22.655 [Test worker] WARN org.grails.datastore.mapping.core.DatastoreUtils - Cannot unbind session, there's no SessionHolder registered
-09:28:22.659 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
-09:28:22.659 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
-09:28:22.663 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
-09:28:22.663 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
-09:28:22.668 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [test_1544088502668] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:22.668 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.668 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.668 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.668 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.668 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:22.723 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@1191464c]
-09:28:22.723 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:22.726 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_field.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:22.726 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.726 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.726 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.726 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
-09:28:22.726 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.726 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:22.783 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@590a3109]
-09:28:22.783 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:22.783 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@396edacf]
-09:28:22.783 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:22.785 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_wrapper.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:22.785 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.785 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.785 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.785 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
-09:28:22.785 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.785 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:22.841 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@3979eb93]
-09:28:22.841 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:22.841 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@5642e6c5]
-09:28:22.841 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:22.860 [Test worker] WARN org.grails.datastore.mapping.core.DatastoreUtils - Cannot unbind session, there's no SessionHolder registered
-09:28:22.863 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
-09:28:22.863 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
-09:28:22.867 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
-09:28:22.867 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
-09:28:22.871 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [test_1544088502871] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:22.872 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.872 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.872 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.872 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.872 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:22.924 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@3579d68c]
-09:28:22.924 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:22.927 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_field.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:22.927 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.927 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.927 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.927 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
-09:28:22.927 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.927 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:22.982 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@53f3a1b9]
-09:28:22.982 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:22.982 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@7bca6227]
-09:28:22.982 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:22.984 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_wrapper.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:22.984 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.984 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:22.984 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.984 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
-09:28:22.984 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:22.984 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:23.039 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@b7a17cd]
-09:28:23.039 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:23.039 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@1ee8e579]
-09:28:23.039 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:23.059 [Test worker] WARN org.grails.datastore.mapping.core.DatastoreUtils - Cannot unbind session, there's no SessionHolder registered
-09:28:23.062 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
-09:28:23.062 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
-09:28:23.066 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
-09:28:23.066 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
-09:28:23.071 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [test_1544088503071] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:23.071 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:23.072 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:23.072 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:23.072 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:23.072 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:23.125 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@35cb10a0]
-09:28:23.125 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:23.129 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_field.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:23.129 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:23.129 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:23.129 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:23.129 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
-09:28:23.129 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:23.129 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:23.186 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@59504dcd]
-09:28:23.186 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:23.186 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@40834156]
-09:28:23.186 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:23.188 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_wrapper.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:23.188 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:23.188 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:23.188 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:23.188 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
-09:28:23.188 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:23.188 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:23.245 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@5d364954]
-09:28:23.245 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:23.245 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@677c2949]
-09:28:23.245 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:23.269 [Test worker] WARN org.grails.datastore.mapping.core.DatastoreUtils - Cannot unbind session, there's no SessionHolder registered
-09:28:23.272 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
-09:28:23.272 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
-09:28:23.275 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
-09:28:23.276 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
-09:28:23.281 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [test_1544088503281] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:23.281 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:23.281 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:23.281 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:23.281 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:23.281 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:23.335 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@262974a4]
-09:28:23.335 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:23.338 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_field.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:23.339 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:23.339 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:23.339 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:23.339 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
-09:28:23.339 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:23.339 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:23.459 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@1202e320]
-09:28:23.459 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:23.459 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@7c5f42c0]
-09:28:23.459 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:23.461 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_wrapper.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:23.461 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:23.461 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:23.461 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:23.461 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
-09:28:23.461 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:23.461 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:23.516 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@21ff8ad2]
-09:28:23.516 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:23.516 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@5534f248]
-09:28:23.516 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:23.520 [Test worker] WARN org.grails.datastore.mapping.core.DatastoreUtils - Cannot unbind session, there's no SessionHolder registered
-09:28:23.523 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
-09:28:23.524 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
-09:28:23.527 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
-09:28:23.527 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
-09:28:23.532 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [test_1544088503532] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:23.532 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:23.532 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:23.533 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:23.533 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:23.533 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:23.585 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@4dc424a7]
-09:28:23.585 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:23.591 [Test worker] WARN org.grails.datastore.mapping.core.DatastoreUtils - Cannot unbind session, there's no SessionHolder registered
-09:28:23.595 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
-09:28:23.595 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
-09:28:23.600 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
-09:28:23.600 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
-09:28:23.607 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [test_1544088503607] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:23.608 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:23.608 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:23.608 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:23.608 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:23.608 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:23.661 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@7ec01f0a]
-09:28:23.661 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:23.664 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/_themes/test/default/_field.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:23.664 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:23.664 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:23.664 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:23.664 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
-09:28:23.664 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:23.664 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:23.723 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@5d1c1e4c]
-09:28:23.723 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:23.723 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@53ac0a0f]
-09:28:23.723 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:23.725 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/_themes/test/default/_wrapper.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
-09:28:23.725 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:23.725 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
-09:28:23.725 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:23.725 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
-09:28:23.725 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
-09:28:23.725 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
-09:28:23.785 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@6050b347]
-09:28:23.785 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:23.785 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@6fda5d64]
-09:28:23.785 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
-09:28:23.802 [Test worker] WARN org.grails.datastore.mapping.core.DatastoreUtils - Cannot unbind session, there's no SessionHolder registered
-09:28:23.803 [Test worker] DEBUG grails.core.DefaultGrailsApplication - loaded classes: [[class grails.plugin.formfields.mock.Person, class grails.plugin.formfields.FormFieldsTagLib]]
-09:28:23.803 [Test worker] DEBUG grails.core.DefaultGrailsApplication - Going to inspect artefact classes.
-09:28:23.803 [Test worker] DEBUG grails.core.DefaultGrailsApplication - Inspecting [grails.plugin.formfields.mock.Person]
-09:28:23.803 [Test worker] DEBUG grails.core.DefaultGrailsApplication - Adding artefact class grails.plugin.formfields.mock.Person of kind Domain
-09:28:23.803 [Test worker] DEBUG grails.core.DefaultGrailsApplication - Inspecting [grails.plugin.formfields.FormFieldsTagLib]
-09:28:23.803 [Test worker] DEBUG grails.core.DefaultGrailsApplication - Adding artefact class grails.plugin.formfields.FormFieldsTagLib of kind TagLib
-09:28:23.805 [Test worker] DEBUG org.springframework.web.context.support.GenericWebApplicationContext - Closing org.springframework.web.context.support.GenericWebApplicationContext@588b3de8, started on Thu Dec 06 09:28:21 UTC 2018
+<pre>09:28:23.530 [Test worker] DEBUG org.springframework.web.context.support.StandardServletEnvironment - Activating profiles []
+09:28:23.531 [Test worker] DEBUG org.springframework.web.context.support.GenericWebApplicationContext - Refreshing org.springframework.web.context.support.GenericWebApplicationContext@69e530b5
+09:28:23.532 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
+09:28:23.532 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsApplicationPostProcessor'
+09:28:23.533 [Test worker] DEBUG org.grails.plugins.CorePluginFinder - Attempting to load [16] core plugins
+09:28:23.543 [Test worker] DEBUG org.grails.plugins.DefaultGrailsPlugin - Configuring plugin [codecs:4.0.0.BUILD-SNAPSHOT] to watch resources with pattern: file:./grails-app/utils/**/*Codec.groovy
+09:28:23.547 [Test worker] DEBUG org.grails.plugins.DefaultGrailsPlugin - Configuring plugin [interceptors:4.0.0.BUILD-SNAPSHOT] to watch resources with pattern: file:./grails-app/controllers/**/*Interceptor.groovy
+09:28:23.548 [Test worker] DEBUG org.grails.plugins.DefaultGrailsPlugin - Configuring plugin [i18n:4.0.0.BUILD-SNAPSHOT] to watch resources with pattern: file:./grails-app/i18n/**/*.properties
+09:28:23.552 [Test worker] INFO grails.plugins.DefaultGrailsPluginManager - Attempting to load [0] user defined plugins
+09:28:23.552 [Test worker] INFO grails.plugins.DefaultGrailsPluginManager - Grails plug-in [core] with version [4.0.0.BUILD-SNAPSHOT] loaded successfully
+09:28:23.552 [Test worker] INFO grails.plugins.DefaultGrailsPluginManager - Grails plug-in [eventBus] with version [3.3.2] loaded successfully
+09:28:23.554 [Test worker] DEBUG grails.core.DefaultGrailsApplication - loaded classes: [[]]
+09:28:23.555 [Test worker] DEBUG grails.core.DefaultGrailsApplication - Going to inspect artefact classes.
+09:28:23.556 [Test worker] DEBUG org.springframework.web.context.support.StandardServletEnvironment - Activating profile 'web'
+09:28:23.560 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultGrailsIntegerConverter]
+09:28:23.560 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultGrailslongConverter]
+09:28:23.560 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultGrailsLongConverter]
+09:28:23.560 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [halJsonDataBindingSourceCreator]
+09:28:23.560 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultDateConverter]
+09:28:23.560 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [dataBindingSourceRegistry]
+09:28:23.560 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultGrailsShortConverter]
+09:28:23.560 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [halXmlDataBindingSourceCreator]
+09:28:23.560 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultGrailsDoubleConverter]
+09:28:23.560 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsWebDataBinder]
+09:28:23.560 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [timeZoneConverter]
+09:28:23.560 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultGrailsBigDecimalConverter]
+09:28:23.560 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultGrailsshortConverter]
+09:28:23.560 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultGrailsFloatConverter]
+09:28:23.560 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultGrailsdoubleConverter]
+09:28:23.560 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultCurrencyConverter]
+09:28:23.560 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [xmlDataBindingSourceCreator]
+09:28:23.560 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultGrailsintConverter]
+09:28:23.560 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultGrailsfloatConverter]
+09:28:23.560 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [jsonApiDataBindingSourceCreator]
+09:28:23.560 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [defaultGrailsBigIntegerConverter]
+09:28:23.560 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [jsonDataBindingSourceCreator]
+09:28:23.564 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Overriding bean definition for bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor' with a different definition: replacing [Root bean: class [org.springframework.context.annotation.ConfigurationClassPostProcessor]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null] with [Root bean: class [org.springframework.context.annotation.ConfigurationClassPostProcessor]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null]
+09:28:23.564 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Overriding bean definition for bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor' with a different definition: replacing [Root bean: class [org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null] with [Root bean: class [org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null]
+09:28:23.564 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Overriding bean definition for bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor' with a different definition: replacing [Root bean: class [org.springframework.context.annotation.CommonAnnotationBeanPostProcessor]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null] with [Root bean: class [org.springframework.context.annotation.CommonAnnotationBeanPostProcessor]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null]
+09:28:23.564 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Overriding bean definition for bean 'org.springframework.context.event.internalEventListenerProcessor' with a different definition: replacing [Root bean: class [org.springframework.context.event.EventListenerMethodProcessor]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null] with [Root bean: class [org.springframework.context.event.EventListenerMethodProcessor]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null]
+09:28:23.564 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Overriding bean definition for bean 'org.springframework.context.event.internalEventListenerFactory' with a different definition: replacing [Root bean: class [org.springframework.context.event.DefaultEventListenerFactory]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null] with [Root bean: class [org.springframework.context.event.DefaultEventListenerFactory]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null]
+09:28:23.564 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [proxyHandler]
+09:28:23.564 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [mapBasedSmartPropertyOverrideConfigurer]
+09:28:23.564 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [messageSource]
+09:28:23.564 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [conversionService]
+09:28:23.564 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsPlaceholderConfigurer]
+09:28:23.564 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [transactionManagerAwarePostProcessor]
+09:28:23.564 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [propertySourcesPlaceholderConfigurer]
+09:28:23.564 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [classLoader]
+09:28:23.564 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsConfigProperties]
+09:28:23.564 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsResourceLocator]
+09:28:23.564 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsBeanOverrideConfigurer]
+09:28:23.564 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [customEditors]
+09:28:23.564 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsApplicationAwarePostProcessor]
+09:28:23.564 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [proxyHandler]
+09:28:23.564 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [abstractGrailsResourceLocator]
+09:28:23.564 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [eventBus]
+09:28:23.564 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [pluginManagerPostProcessor]
+09:28:23.564 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsConfigurationClassPostProcessor]
+09:28:23.564 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [gormDispatchEventRegistrar]
+09:28:23.564 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsEventBus]
+09:28:23.564 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [org.springframework.aop.config.internalAutoProxyCreator]
+09:28:23.565 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsConfigurationClassPostProcessor'
+09:28:23.565 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsPlaceholderConfigurer'
+09:28:23.566 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'propertySourcesPlaceholderConfigurer'
+09:28:23.567 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'customEditors'
+09:28:23.567 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.context.event.internalEventListenerProcessor'
+09:28:23.567 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.boot.context.properties.ConfigurationBeanFactoryMetadata'
+09:28:23.567 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'mapBasedSmartPropertyOverrideConfigurer'
+09:28:23.567 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsBeanOverrideConfigurer'
+09:28:23.567 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.context.event.internalEventListenerFactory'
+09:28:23.567 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor'
+09:28:23.568 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor'
+09:28:23.568 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor'
+09:28:23.568 [Test worker] WARN org.springframework.boot.context.properties.PropertySourcesDeducer - Multiple PropertySourcesPlaceholderConfigurer beans registered [grailsPlaceholderConfigurer, propertySourcesPlaceholderConfigurer], falling back to Environment
+09:28:23.569 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'transactionManagerAwarePostProcessor'
+09:28:23.569 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.aop.config.internalAutoProxyCreator'
+09:28:23.569 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsApplicationAwarePostProcessor'
+09:28:23.570 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'pluginManagerPostProcessor'
+09:28:23.570 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'messageSource'
+09:28:23.570 [Test worker] DEBUG org.springframework.ui.context.support.UiApplicationContextUtils - Unable to locate ThemeSource with name 'themeSource': using default [org.springframework.ui.context.support.ResourceBundleThemeSource@17da3990]
+09:28:23.571 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'conversionService'
+09:28:23.571 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
+09:28:23.571 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultGrailsIntegerConverter'
+09:28:23.572 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'classLoader'
+09:28:23.572 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsEventBus'
+09:28:23.573 [Test worker] WARN grails.events.bus.EventBusBuilder - No event bus implementations found on classpath, using synchronous implementation.
+09:28:23.573 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultGrailslongConverter'
+09:28:23.574 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultGrailsLongConverter'
+09:28:23.574 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'halJsonDataBindingSourceCreator'
+09:28:23.574 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultDateConverter'
+09:28:23.575 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'dataBindingSourceRegistry'
+09:28:23.576 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'halXmlDataBindingSourceCreator'
+09:28:23.576 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'xmlDataBindingSourceCreator'
+09:28:23.576 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'jsonApiDataBindingSourceCreator'
+09:28:23.576 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'jsonDataBindingSourceCreator'
+09:28:23.577 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultGrailsShortConverter'
+09:28:23.578 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultGrailsDoubleConverter'
+09:28:23.578 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsWebDataBinder'
+09:28:23.581 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'timeZoneConverter'
+09:28:23.581 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultGrailsBigDecimalConverter'
+09:28:23.581 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultGrailsshortConverter'
+09:28:23.581 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultGrailsFloatConverter'
+09:28:23.581 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultGrailsdoubleConverter'
+09:28:23.582 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultCurrencyConverter'
+09:28:23.582 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultGrailsintConverter'
+09:28:23.582 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultGrailsfloatConverter'
+09:28:23.582 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'defaultGrailsBigIntegerConverter'
+09:28:23.583 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'proxyHandler'
+09:28:23.584 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsConfigProperties'
+09:28:23.585 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsResourceLocator'
+09:28:23.585 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'eventBus'
+09:28:23.586 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'gormDispatchEventRegistrar'
+09:28:23.592 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [mimeTypes]
+09:28:23.592 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsMimeUtility]
+09:28:23.592 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [mimeTypeResolver]
+09:28:23.592 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'mimeTypes'
+09:28:23.593 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsMimeUtility'
+09:28:23.594 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'mimeTypeResolver'
+09:28:23.595 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [xmlErrorsMarshaller]
+09:28:23.595 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [errorsXmlMarshallerRegisterer]
+09:28:23.595 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [jsonErrorsMarshaller]
+09:28:23.595 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [errorsJsonMarshallerRegisterer]
+09:28:23.595 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [convertersConfigurationInitializer]
+09:28:23.595 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'xmlErrorsMarshaller'
+09:28:23.596 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'errorsXmlMarshallerRegisterer'
+09:28:23.596 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'jsonErrorsMarshaller'
+09:28:23.596 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'errorsJsonMarshallerRegisterer'
+09:28:23.596 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'convertersConfigurationInitializer'
+09:28:23.597 [Test worker] DEBUG org.grails.web.converters.configuration.ConvertersConfigurationInitializer - Initializing Converters Default Configurations...
+09:28:23.597 [Test worker] DEBUG org.grails.web.converters.configuration.ConvertersConfigurationInitializer - Initializing default JSON Converters Configuration...
+09:28:23.597 [Test worker] DEBUG org.grails.web.converters.configuration.ConvertersConfigurationInitializer - Using default JSON Date Marshaller
+09:28:23.597 [Test worker] DEBUG org.grails.web.converters.configuration.ConvertersConfigurationInitializer - Initializing default XML Converters Configuration...
+09:28:23.599 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [groovyPageUnitTestResourceLoader]
+09:28:23.599 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [filteringCodecsByContentTypeSettings]
+09:28:23.599 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [jspViewResolver]
+09:28:23.599 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [compositeViewResolver]
+09:28:23.599 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsUrlMappingsHolder]
+09:28:23.599 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsLinkGenerator]
+09:28:23.599 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [gspTagLibraryLookup]
+09:28:23.599 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [groovyPagesTemplateEngine]
+09:28:23.599 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [multipartResolver]
+09:28:23.599 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [rendererRegistry]
+09:28:23.599 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [localeResolver]
+09:28:23.599 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [groovyPagesTemplateRenderer]
+09:28:23.599 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsUrlConverter]
+09:28:23.599 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [jspTagLibraryResolver]
+09:28:23.599 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [groovyPageLocator]
+09:28:23.599 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'groovyPageUnitTestResourceLoader'
+09:28:23.600 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'filteringCodecsByContentTypeSettings'
+09:28:23.601 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'jspViewResolver'
+09:28:23.602 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'groovyPagesTemplateEngine'
+09:28:23.602 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'gspTagLibraryLookup'
+09:28:23.604 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'jspTagLibraryResolver'
+09:28:23.605 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'groovyPageLocator'
+09:28:23.606 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'compositeViewResolver'
+09:28:23.607 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsUrlMappingsHolder'
+09:28:23.609 [Test worker] DEBUG org.grails.web.mapping.RegexUrlMapping - Mapping [/] has a higher precedence than [/(*)/(*)?/(*)?] because it is the root
+09:28:23.609 [Test worker] DEBUG org.grails.web.mapping.DefaultUrlMappingsHolder - Reverse mapping: [DefaultUrlMappingsHolder.UrlMappingKey@787ed0da controller = [null], action = [null], namespace = [null], plugin = [null], httpMethod = '*', params = set[[empty]]] -&gt; org.grails.web.mapping.ResponseCodeUrlMapping@47854a
+09:28:23.609 [Test worker] DEBUG org.grails.web.mapping.DefaultUrlMappingsHolder - Reverse mapping: [DefaultUrlMappingsHolder.UrlMappingKey@5b422b70 controller = [null], action = [null], namespace = [null], plugin = [null], httpMethod = '*', params = set[[empty]]] -&gt; /
+09:28:23.609 [Test worker] DEBUG org.grails.web.mapping.DefaultUrlMappingsHolder - Reverse mapping: [DefaultUrlMappingsHolder.UrlMappingKey@550d9ca5 controller = [null], action = [null], namespace = [null], plugin = [null], httpMethod = '*', params = set['controller']] -&gt; /(*)/(*)?/(*)?
+09:28:23.609 [Test worker] DEBUG org.grails.web.mapping.DefaultUrlMappingsHolder - Reverse mapping: [DefaultUrlMappingsHolder.UrlMappingKey@5bfb7ede controller = [null], action = [null], namespace = [null], plugin = [null], httpMethod = '*', params = set['controller', 'action']] -&gt; /(*)/(*)?/(*)?
+09:28:23.610 [Test worker] DEBUG org.grails.web.mapping.DefaultUrlMappingsHolder - Reverse mapping: [DefaultUrlMappingsHolder.UrlMappingKey@67aadd3e controller = [null], action = [null], namespace = [null], plugin = [null], httpMethod = '*', params = set['controller', 'action', 'id']] -&gt; /(*)/(*)?/(*)?
+09:28:23.610 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsUrlConverter'
+09:28:23.610 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsLinkGenerator'
+09:28:23.612 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'multipartResolver'
+09:28:23.612 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'rendererRegistry'
+09:28:23.613 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'localeResolver'
+09:28:23.614 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [codecLookup]
+09:28:23.614 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'codecLookup'
+09:28:23.621 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [org.grails.beans.ConstraintsEvaluator]
+09:28:23.621 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [constraintRegistry]
+09:28:23.621 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsDomainClassMappingContext]
+09:28:23.621 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsDatastore]
+09:28:23.621 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [transactionManager]
+09:28:23.621 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.grails.beans.ConstraintsEvaluator'
+09:28:23.621 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'constraintRegistry'
+09:28:23.623 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsDomainClassMappingContext'
+09:28:23.623 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsDatastore'
+09:28:23.628 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'transactionManager'
+09:28:23.629 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grailsTagDateHelper]
+09:28:23.629 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [fieldsDomainPropertyFactory]
+09:28:23.629 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [domainModelService]
+09:28:23.629 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [beanPropertyAccessorFactory]
+09:28:23.629 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grailsTagDateHelper'
+09:28:23.630 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'fieldsDomainPropertyFactory'
+09:28:23.630 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'domainModelService'
+09:28:23.631 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'beanPropertyAccessorFactory'
+09:28:23.636 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.mock.PersonValidator]
+09:28:23.636 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.mock.Person]
+09:28:23.636 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.mock.PersonValidator'
+09:28:23.644 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
+09:28:23.644 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
+09:28:23.648 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
+09:28:23.649 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
+09:28:23.658 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [test_1544088503658] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:23.658 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:23.658 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:23.658 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:23.658 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:23.658 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:23.770 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@179a9404]
+09:28:23.771 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:23.773 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.grails.plugins.web.taglib.ValidationTagLib'
+09:28:23.778 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.grails.plugins.web.taglib.RenderTagLib'
+09:28:23.778 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'groovyPagesTemplateRenderer'
+09:28:23.780 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_field.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:23.780 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:23.780 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:23.780 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:23.780 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
+09:28:23.780 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:23.780 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:23.862 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@15136a4b]
+09:28:23.862 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:23.862 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@6ca71eb1]
+09:28:23.863 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:23.864 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_wrapper.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:23.864 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:23.864 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:23.864 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:23.864 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
+09:28:23.864 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:23.864 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:23.943 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@42bd90bb]
+09:28:23.943 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:23.943 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@ef9f17b]
+09:28:23.943 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:23.962 [Test worker] WARN org.grails.datastore.mapping.core.DatastoreUtils - Cannot unbind session, there's no SessionHolder registered
+09:28:23.965 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
+09:28:23.965 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
+09:28:23.971 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
+09:28:23.971 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
+09:28:23.976 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [test_1544088503975] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:23.976 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:23.976 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:23.976 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:23.976 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:23.976 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:24.050 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@4b482dff]
+09:28:24.050 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:24.053 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_field.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:24.053 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:24.053 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:24.053 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:24.053 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
+09:28:24.053 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:24.054 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:24.170 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@1930ebd9]
+09:28:24.170 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:24.170 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@777adf31]
+09:28:24.170 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:24.172 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_wrapper.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:24.172 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:24.172 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:24.172 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:24.172 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
+09:28:24.172 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:24.172 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:24.250 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@6117ba8f]
+09:28:24.250 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:24.250 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@68003540]
+09:28:24.250 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:24.266 [Test worker] WARN org.grails.datastore.mapping.core.DatastoreUtils - Cannot unbind session, there's no SessionHolder registered
+09:28:24.269 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
+09:28:24.269 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
+09:28:24.272 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
+09:28:24.273 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
+09:28:24.277 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [test_1544088504277] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:24.277 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:24.277 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:24.277 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:24.277 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:24.277 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:24.354 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@af44602]
+09:28:24.354 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:24.357 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_field.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:24.357 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:24.357 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:24.357 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:24.357 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
+09:28:24.357 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:24.357 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:24.438 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@19c8b92f]
+09:28:24.438 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:24.438 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@583dff36]
+09:28:24.438 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:24.439 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_wrapper.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:24.439 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:24.439 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:24.439 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:24.439 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
+09:28:24.439 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:24.439 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:24.552 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@7349da3a]
+09:28:24.552 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:24.552 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@5b8e723e]
+09:28:24.552 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:24.572 [Test worker] WARN org.grails.datastore.mapping.core.DatastoreUtils - Cannot unbind session, there's no SessionHolder registered
+09:28:24.575 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
+09:28:24.575 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
+09:28:24.579 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
+09:28:24.579 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
+09:28:24.583 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [test_1544088504583] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:24.583 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:24.583 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:24.583 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:24.583 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:24.583 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:24.657 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@1a8f2419]
+09:28:24.657 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:24.660 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_field.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:24.660 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:24.660 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:24.660 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:24.660 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
+09:28:24.660 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:24.660 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:24.741 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@7d7476e4]
+09:28:24.742 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:24.742 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@4e5d60fa]
+09:28:24.742 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:24.743 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_wrapper.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:24.743 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:24.743 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:24.743 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:24.743 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
+09:28:24.743 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:24.743 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:24.824 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@18668c53]
+09:28:24.824 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:24.824 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@36d1259]
+09:28:24.824 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:24.840 [Test worker] WARN org.grails.datastore.mapping.core.DatastoreUtils - Cannot unbind session, there's no SessionHolder registered
+09:28:24.842 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
+09:28:24.842 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
+09:28:24.846 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
+09:28:24.846 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
+09:28:24.850 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [test_1544088504850] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:24.850 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:24.850 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:24.850 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:24.850 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:24.850 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:24.925 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@1059bac2]
+09:28:24.925 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:24.927 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_field.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:24.927 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:24.927 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:24.927 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:24.927 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
+09:28:24.927 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:24.928 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:25.040 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@4e6fea6c]
+09:28:25.040 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:25.040 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@31c24c16]
+09:28:25.040 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:25.041 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_wrapper.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:25.042 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:25.042 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:25.042 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:25.042 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
+09:28:25.042 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:25.042 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:25.126 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@13c3eaa5]
+09:28:25.126 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:25.126 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@c913061]
+09:28:25.126 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:25.143 [Test worker] WARN org.grails.datastore.mapping.core.DatastoreUtils - Cannot unbind session, there's no SessionHolder registered
+09:28:25.147 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
+09:28:25.147 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
+09:28:25.150 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
+09:28:25.151 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
+09:28:25.155 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [test_1544088505155] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:25.155 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:25.155 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:25.155 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:25.155 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:25.156 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:25.230 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@51951241]
+09:28:25.230 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:25.233 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_field.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:25.233 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:25.233 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:25.233 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:25.233 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
+09:28:25.233 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:25.233 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:25.314 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@1cd3a85f]
+09:28:25.314 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:25.314 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@600c3f1]
+09:28:25.314 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:25.316 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_wrapper.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:25.316 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:25.316 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:25.316 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:25.316 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
+09:28:25.316 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:25.316 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:25.428 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@747e95aa]
+09:28:25.428 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:25.428 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@360e6cae]
+09:28:25.428 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:25.447 [Test worker] WARN org.grails.datastore.mapping.core.DatastoreUtils - Cannot unbind session, there's no SessionHolder registered
+09:28:25.450 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
+09:28:25.450 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
+09:28:25.453 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
+09:28:25.453 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
+09:28:25.457 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [test_1544088505457] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:25.457 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:25.457 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:25.457 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:25.458 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:25.458 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:25.533 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@77dd1838]
+09:28:25.533 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:25.535 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_field.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:25.535 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:25.535 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:25.535 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:25.535 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
+09:28:25.535 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:25.536 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:25.616 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@43b56a2]
+09:28:25.616 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:25.616 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@23cce0d5]
+09:28:25.616 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:25.617 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_wrapper.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:25.617 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:25.617 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:25.617 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:25.617 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
+09:28:25.617 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:25.617 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:25.720 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@2bfa7afe]
+09:28:25.720 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:25.720 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@5108083]
+09:28:25.723 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:25.756 [Test worker] WARN org.grails.datastore.mapping.core.DatastoreUtils - Cannot unbind session, there's no SessionHolder registered
+09:28:25.761 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
+09:28:25.761 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
+09:28:25.767 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
+09:28:25.767 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
+09:28:25.774 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [test_1544088505773] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:25.774 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:25.774 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:25.774 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:25.774 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:25.774 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:25.983 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@2e606f22]
+09:28:25.983 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:25.989 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_field.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:25.989 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:25.989 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:25.990 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:25.990 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
+09:28:25.990 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:25.990 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:26.100 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@42d286e9]
+09:28:26.100 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:26.100 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@52f4a0b9]
+09:28:26.100 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:26.103 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_wrapper.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:26.103 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:26.103 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:26.103 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:26.103 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
+09:28:26.103 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:26.103 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:26.185 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@70f3647b]
+09:28:26.185 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:26.185 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@174aebe7]
+09:28:26.185 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:26.200 [Test worker] WARN org.grails.datastore.mapping.core.DatastoreUtils - Cannot unbind session, there's no SessionHolder registered
+09:28:26.203 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
+09:28:26.203 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
+09:28:26.207 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
+09:28:26.207 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
+09:28:26.211 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [test_1544088506211] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:26.212 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:26.212 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:26.212 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:26.212 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:26.212 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:26.290 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@70c291c5]
+09:28:26.290 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:26.293 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_field.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:26.293 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:26.293 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:26.293 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:26.293 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
+09:28:26.293 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:26.293 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:26.376 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@63efd1b7]
+09:28:26.376 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:26.376 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@1ac4523]
+09:28:26.376 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:26.407 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/default/_wrapper.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:26.408 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:26.408 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:26.408 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:26.408 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
+09:28:26.408 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:26.408 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:26.489 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@23b50b0]
+09:28:26.491 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:26.491 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@16d34f02]
+09:28:26.491 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:26.494 [Test worker] WARN org.grails.datastore.mapping.core.DatastoreUtils - Cannot unbind session, there's no SessionHolder registered
+09:28:26.497 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
+09:28:26.498 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
+09:28:26.501 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
+09:28:26.501 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
+09:28:26.505 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [test_1544088506505] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:26.505 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:26.505 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:26.505 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:26.506 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:26.506 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:26.585 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@7e151e1b]
+09:28:26.585 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:26.592 [Test worker] WARN org.grails.datastore.mapping.core.DatastoreUtils - Cannot unbind session, there's no SessionHolder registered
+09:28:26.595 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
+09:28:26.595 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
+09:28:26.600 [Test worker] DEBUG org.grails.spring.DefaultRuntimeSpringConfiguration - [RuntimeConfiguration] Registering bean [grails.plugin.formfields.FormFieldsTagLib]
+09:28:26.601 [Test worker] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating shared instance of singleton bean 'grails.plugin.formfields.FormFieldsTagLib'
+09:28:26.606 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [test_1544088506606] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:26.606 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:26.606 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:26.606 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:26.606 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:26.606 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:26.685 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@5c85ef2f]
+09:28:26.685 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:26.688 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/_themes/test/default/_field.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:26.688 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:26.688 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:26.688 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:26.688 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
+09:28:26.688 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:26.688 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:26.770 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@78ce40fc]
+09:28:26.770 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:26.770 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@6002b4ca]
+09:28:26.770 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:26.771 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Preprocessing Byte array resource [/_fields/_themes/test/default/_wrapper.gsp] for sitemesh. Replacing head, title, meta and body elements with sitemesh:capture*.
+09:28:26.771 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:26.771 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: page
+09:28:26.771 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:26.771 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: expr
+09:28:26.771 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - parse: html
+09:28:26.771 [Test worker] DEBUG org.grails.gsp.compiler.GroovyPageParser - Configure grails.views.gsp.keepgenerateddir property to view generated source.
+09:28:26.882 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageMetaInfo@133e8ba0]
+09:28:26.882 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:26.882 [Test worker] DEBUG grails.util.CacheEntry - Updating cache for value [org.grails.gsp.GroovyPageTemplate@614cd8a3]
+09:28:26.882 [Test worker] DEBUG grails.util.CacheEntry - Unlocking cache for update
+09:28:26.898 [Test worker] WARN org.grails.datastore.mapping.core.DatastoreUtils - Cannot unbind session, there's no SessionHolder registered
+09:28:26.899 [Test worker] DEBUG grails.core.DefaultGrailsApplication - loaded classes: [[class grails.plugin.formfields.mock.Person, class grails.plugin.formfields.FormFieldsTagLib]]
+09:28:26.899 [Test worker] DEBUG grails.core.DefaultGrailsApplication - Going to inspect artefact classes.
+09:28:26.899 [Test worker] DEBUG grails.core.DefaultGrailsApplication - Inspecting [grails.plugin.formfields.mock.Person]
+09:28:26.899 [Test worker] DEBUG grails.core.DefaultGrailsApplication - Adding artefact class grails.plugin.formfields.mock.Person of kind Domain
+09:28:26.899 [Test worker] DEBUG grails.core.DefaultGrailsApplication - Inspecting [grails.plugin.formfields.FormFieldsTagLib]
+09:28:26.900 [Test worker] DEBUG grails.core.DefaultGrailsApplication - Adding artefact class grails.plugin.formfields.FormFieldsTagLib of kind TagLib
+09:28:26.901 [Test worker] DEBUG org.springframework.web.context.support.GenericWebApplicationContext - Closing org.springframework.web.context.support.GenericWebApplicationContext@69e530b5, started on Thu Dec 06 09:28:23 UTC 2018
 </pre>
 </span>
 </div>
@@ -712,7 +712,7 @@
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 5.0</a> at Dec 6, 2018, 9:28:52 AM</p>
+<a href="http://www.gradle.org">Gradle 5.0</a> at Dec 6, 2018 9:29:03 AM</p>
 </div>
 </div>
 </body>

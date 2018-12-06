@@ -49,10 +49,10 @@ dependencies {
 
 	console "org.grails:grails-console"
 
-	testCompile "org.codehaus.groovy:groovy-dateutil:2.5.4"
 	testCompile 'javassist:javassist:3.12.0.GA'
 	testCompile 'cglib:cglib-nodep:3.2.9'
 	testCompile('org.jodd:jodd-wot:3.3.4') {
+	testCompile "org.codehaus.groovy:groovy-dateutil:$groovyVersion"
 		exclude module: 'slf4j-api'
 		exclude module: 'asm'
 	}

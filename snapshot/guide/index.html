@@ -65,7 +65,7 @@
                     <h1>Grails Fields Plugin</h1>
                     <p></p>
                     <p>Customizable form-field rendering based on overrideable GSP template</p>
-                    <p><strong>Version:</strong> 2.2.9.BUILD-SNAPSHOT</p>
+                    <p><strong>Version:</strong> 3.0.0.BUILD-SNAPSHOT</p>
 
                 </div>
                 
@@ -1043,6 +1043,28 @@ to <code>grails-app/conf/application.yml</code> to change the default templates 
 </div>
 <div class="paragraph">
 <p>During template development it is usually recommended to disable template caching in order to allow the plugin to recognize new/renamed/moved templates without restarting the application. See the "Performance" section of the guide for the exact settings.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_see_template_seach_path">See Template Seach Path</h3>
+<div class="paragraph">
+<p>The plugin logs which locations it is checking for templates as debug log. You can enable this by defining a logger in logback.groovy</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>logger('grails.plugin.formfields.FormFieldsTemplateService', DEBUG,['STDOUT'])</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The can disable the caching in application.yml using:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>grails:
+    plugin:
+        fields:
+            disableLookupCache: true</pre>
+</div>
 </div>
 </div>
 <div class="sect2">

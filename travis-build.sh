@@ -9,19 +9,21 @@ echo "Test for branch $TRAVIS_BRANCH JDK: $TRAVIS_JDK_VERSION"
 ./gradlew test --no-daemon || EXIT_STATUS=$?
 
 if [ $EXIT_STATUS -ne 0 ]; then
+  echo "test failed => exit $EXIT_STATUS"
   exit $EXIT_STATUS
 fi
 
 echo "Assemble for branch $TRAVIS_BRANCH JDK: $TRAVIS_JDK_VERSION"
-./gradlew --stop
 
 ./gradlew assemble --no-daemon || EXIT_STATUS=$?
 
 if [ $EXIT_STATUS -ne 0 ]; then
+  echo "assemble failed => exit $EXIT_STATUS"
   exit $EXIT_STATUS
 fi
 
 if [ "${TRAVIS_JDK_VERSION}" == "openjdk11" ] ; then
+  echo "JDK 11 => exit $EXIT_STATUS"
   exit $EXIT_STATUS
 fi
 

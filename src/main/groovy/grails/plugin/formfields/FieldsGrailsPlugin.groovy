@@ -17,7 +17,6 @@ package grails.plugin.formfields
 
 import grails.plugins.Plugin
 
-
 import grails.validation.ConstraintsEvaluator
 import org.grails.scaffolding.model.DomainModelServiceImpl
 import org.grails.scaffolding.model.property.DomainPropertyFactoryImpl
@@ -25,6 +24,8 @@ import org.grails.scaffolding.model.property.DomainPropertyFactoryImpl
 class FieldsGrailsPlugin extends Plugin {
 
 	def grailsVersion = '3.0 > *'
+
+	def loadAfter = ['domainClass']
 
 	@Override
 	Closure doWithSpring() {{->

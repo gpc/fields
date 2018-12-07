@@ -17,7 +17,7 @@ abstract class BuildsAccessorFactory extends Specification implements GrailsWebU
             def dpf = new DomainPropertyFactoryImpl(grailsDomainClassMappingContext: applicationContext.getBean("grailsDomainClassMappingContext", MappingContext), trimStrings: true, convertEmptyStringsToNull: true)
 
             beanPropertyAccessorFactory(BeanPropertyAccessorFactory) {
-                constraintsEvaluator = ref('org.grails.beans.ConstraintsEvaluator')
+                constraintsEvaluator = ref(FieldsGrailsPlugin.CONSTRAINTS_EVALULATOR_BEAN_NAME)
                 proxyHandler = new DefaultProxyHandler()
                 grailsDomainClassMappingContext = ref("grailsDomainClassMappingContext")
                 fieldsDomainPropertyFactory = dpf

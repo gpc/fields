@@ -2,6 +2,7 @@ package grails.plugin.formfields.taglib
 
 import grails.core.support.proxy.DefaultProxyHandler
 import grails.plugin.formfields.BeanPropertyAccessorFactory
+import grails.plugin.formfields.FieldsGrailsPlugin
 import grails.testing.gorm.DataTest
 import grails.testing.web.GrailsWebUnitTest
 import org.grails.datastore.mapping.model.MappingContext
@@ -44,7 +45,7 @@ abstract class AbstractFormFieldsTagLibSpec extends Specification implements Gra
 				domainPropertyFactory = ref('fieldsDomainPropertyFactory')
 			}
 			beanPropertyAccessorFactory(BeanPropertyAccessorFactory) {
-				constraintsEvaluator = ref('org.grails.beans.ConstraintsEvaluator')
+				constraintsEvaluator = ref(FieldsGrailsPlugin.CONSTRAINTS_EVALULATOR_BEAN_NAME)
 				proxyHandler = new DefaultProxyHandler()
 				grailsDomainClassMappingContext = ref("grailsDomainClassMappingContext")
 				fieldsDomainPropertyFactory = ref('fieldsDomainPropertyFactory')

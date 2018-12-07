@@ -17,11 +17,12 @@ package grails.plugin.formfields
 
 import grails.plugins.Plugin
 
-import grails.validation.ConstraintsEvaluator
 import org.grails.scaffolding.model.DomainModelServiceImpl
 import org.grails.scaffolding.model.property.DomainPropertyFactoryImpl
 
 class FieldsGrailsPlugin extends Plugin {
+
+	static final String CONSTRAINTS_EVALULATOR_BEAN_NAME = 'validateableConstraintsEvaluator'
 
 	def grailsVersion = '3.0 > *'
 
@@ -30,7 +31,7 @@ class FieldsGrailsPlugin extends Plugin {
 	@Override
 	Closure doWithSpring() {{->
 		beanPropertyAccessorFactory(BeanPropertyAccessorFactory) {
-			constraintsEvaluator = ref(ConstraintsEvaluator.BEAN_NAME)
+			constraintsEvaluator = ref(CONSTRAINTS_EVALULATOR_BEAN_NAME)
 			proxyHandler = ref('proxyHandler')
 			fieldsDomainPropertyFactory = ref('fieldsDomainPropertyFactory')
 			grailsDomainClassMappingContext = ref('grailsDomainClassMappingContext')

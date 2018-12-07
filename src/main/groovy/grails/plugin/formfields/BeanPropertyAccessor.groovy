@@ -16,11 +16,11 @@
 
 package grails.plugin.formfields
 
+import grails.core.GrailsDomainClass
 import org.grails.scaffolding.model.property.Constrained
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
 import org.springframework.validation.FieldError
-import grails.core.*
 
 interface BeanPropertyAccessor {
 

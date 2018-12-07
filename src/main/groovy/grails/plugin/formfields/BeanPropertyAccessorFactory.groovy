@@ -16,9 +16,9 @@
 
 package grails.plugin.formfields
 
+import grails.core.GrailsApplication
 import grails.gorm.validation.DefaultConstrainedProperty
 import groovy.transform.PackageScope
-import grails.core.*
 import grails.core.support.GrailsApplicationAware
 import grails.core.support.proxy.ProxyHandler
 import org.grails.datastore.gorm.validation.constraints.eval.ConstraintsEvaluator

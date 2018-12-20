@@ -31,6 +31,7 @@ import org.grails.scaffolding.model.DomainModelService
 import org.grails.scaffolding.model.property.Constrained
 import org.grails.scaffolding.model.property.DomainPropertyFactory
 import org.grails.web.servlet.mvc.GrailsWebRequest
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.servlet.LocaleResolver
 
@@ -60,7 +61,10 @@ class FormFieldsTagLib {
 	FormFieldsTemplateService formFieldsTemplateService
 	BeanPropertyAccessorFactory beanPropertyAccessorFactory
 	DomainPropertyFactory fieldsDomainPropertyFactory
-	GrailsApplication grailsApplication
+
+	@Autowired(required = false)
+	Collection<MappingContext> mappingContexts
+
 	DomainModelService domainModelService
 	LocaleResolver localeResolver
 	CodecLookup codecLookup
@@ -528,8 +532,8 @@ class FormFieldsTagLib {
 	}
 
 	private PersistentEntity resolveDomainClass(String beanClassName) {
-		grailsApplication.mainContext.getBeanNamesForType(MappingContext).findResult { String beanName ->
-			grailsApplication.mainContext.getBean(beanName, MappingContext).getPersistentEntity(beanClassName)
+		mappingContexts.findResult { MappingContext mappingContext ->
+			mappingContext.getPersistentEntity(beanClassName)
 		}
 	}
 

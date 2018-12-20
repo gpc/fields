@@ -16,6 +16,7 @@
 
 package grails.plugin.formfields
 
+import grails.core.GrailsApplication
 import groovy.transform.CompileStatic
 import groovy.xml.MarkupBuilder
 import org.apache.commons.lang.StringUtils
@@ -59,7 +60,7 @@ class FormFieldsTagLib {
 	FormFieldsTemplateService formFieldsTemplateService
 	BeanPropertyAccessorFactory beanPropertyAccessorFactory
 	DomainPropertyFactory fieldsDomainPropertyFactory
-	MappingContext grailsDomainClassMappingContext
+	GrailsApplication grailsApplication
 	DomainModelService domainModelService
 	LocaleResolver localeResolver
 	CodecLookup codecLookup
@@ -221,7 +222,7 @@ class FormFieldsTagLib {
 		def collection = resolveBean(attrs.remove('collection'))
 		PersistentEntity domainClass
 		if (attrs.containsKey('domainClass')) {
-			domainClass = grailsDomainClassMappingContext.getPersistentEntity((String) attrs.remove('domainClass'))
+			domainClass = resolveDomainClass((String) attrs.remove('domainClass'))
 		} else {
 			domainClass = (collection instanceof Collection) && collection ? resolveDomainClass(collection.iterator().next()) : null
 		}
@@ -523,7 +524,13 @@ class FormFieldsTagLib {
 	}
 
 	private PersistentEntity resolveDomainClass(Class beanClass) {
-		grailsDomainClassMappingContext.getPersistentEntity(beanClass.name)
+		resolveDomainClass(beanClass.name)
+	}
+
+	private PersistentEntity resolveDomainClass(String beanClassName) {
+		grailsApplication.mainContext.getBeanNamesForType(MappingContext).findResult { String beanName ->
+			grailsApplication.mainContext.getBean(beanName, MappingContext).getPersistentEntity(beanClassName)
+		}
 	}
 
 	private List<PersistentProperty> resolvePersistentProperties(PersistentEntity domainClass, Map attrs, boolean list = false) {

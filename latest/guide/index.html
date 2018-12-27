@@ -65,7 +65,7 @@
                     <h1>Grails Fields Plugin</h1>
                     <p></p>
                     <p>Customizable form-field rendering based on overrideable GSP template</p>
-                    <p><strong>Version:</strong> 2.2.8</p>
+                    <p><strong>Version:</strong> 2.2.10</p>
 
                 </div>
                 
@@ -141,7 +141,33 @@
 <h2 id="_changelog">Changelog</h2>
 <div class="sectionbody">
 <div class="sect2">
+<h3 id="_version_2_2_11_build_snapshot">Version 2.2.11.BUILD-SNAPSHOT</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_version_2_2_10">Version 2.2.10</h3>
+<div class="paragraph">
+<p><a href="https://github.com/grails-fields-plugin/grails-fields/compare/v2.2.8&#8230;&#8203;v2.2.10">GitHub diff</a></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Improvement: Additional attributes passed to the <code>_table.gsp</code> template</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_version_2_2_9">Version 2.2.9</h3>
+<div class="paragraph">
+<p>(Not released due to build error)</p>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_version_2_2_8">Version 2.2.8</h3>
+<div class="paragraph">
+<p><a href="https://github.com/grails-fields-plugin/grails-fields/compare/v2.2.7&#8230;&#8203;v2.2.8">GitHub diff</a></p>
+</div>
 <div class="ulist">
 <ul>
 <li>
@@ -158,6 +184,9 @@
 </div>
 <div class="sect2">
 <h3 id="_version_2_2_7">Version 2.2.7</h3>
+<div class="paragraph">
+<p><a href="https://github.com/grails-fields-plugin/grails-fields/compare/v2.2.6&#8230;&#8203;v2.2.7">GitHub diff</a></p>
+</div>
 <div class="ulist">
 <ul>
 <li>
@@ -171,6 +200,9 @@
 </div>
 <div class="sect2">
 <h3 id="_version_2_2_6">Version 2.2.6</h3>
+<div class="paragraph">
+<p><a href="https://github.com/grails-fields-plugin/grails-fields/compare/v2.2.5&#8230;&#8203;v2.2.6">GitHub diff</a></p>
+</div>
 <div class="ulist">
 <ul>
 <li>
@@ -180,9 +212,6 @@
 <p>Improvement: <code>&lt;f:table\&gt;</code> can now show <code>id</code>, <code>lastUpdated</code> and <code>dateCreated</code> (see <a href="../ref/Tags/table.html">f:table</a> doc). Injecting <code>DomainModelService</code> instead of instantiating <code>DomainModelServiceImpl</code> in <code>FormsFieldTagLib</code> (Issue <a href="https://github.com/grails-fields-plugin/grails-fields/issues/257">#257</a>)</p>
 </li>
 </ul>
-</div>
-<div class="paragraph">
-<p><a href="https://github.com/grails-fields-plugin/grails-fields/compare/v2.2.5&#8230;&#8203;v2.2.6">GitHub diff</a></p>
 </div>
 </div>
 <div class="sect2">
@@ -1034,6 +1063,28 @@ to <code>grails-app/conf/application.yml</code> to change the default templates 
 </div>
 <div class="paragraph">
 <p>During template development it is usually recommended to disable template caching in order to allow the plugin to recognize new/renamed/moved templates without restarting the application. See the "Performance" section of the guide for the exact settings.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_see_template_seach_path">See Template Seach Path</h3>
+<div class="paragraph">
+<p>The plugin logs which locations it is checking for templates as debug log. You can enable this by defining a logger in logback.groovy</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>logger('grails.plugin.formfields.FormFieldsTemplateService', DEBUG,['STDOUT'])</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The can disable the caching in application.yml using:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>grails:
+    plugin:
+        fields:
+            disableLookupCache: true</pre>
+</div>
 </div>
 </div>
 <div class="sect2">

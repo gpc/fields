@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>Grails Fields Plugin 2.2.8</title>
+    <title>Grails Fields Plugin 2.2.10</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -119,6 +119,7 @@ Since then you can specify the folders where the templates are located. You can 
 
 &lt;<span class="key">f</span>:display bean=<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span> property=<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>/&gt;
 
+<span class="comment">// renders widget and wrapper from subdirectory of _fields/_themes/purecss if defined</span>
 &lt;<span class="key">f</span>:display bean=<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span> property=<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span> theme=<span class="string"><span class="delimiter">&quot;</span><span class="content">purecss</span><span class="delimiter">&quot;</span></span>/&gt;
 
 <span class="comment">// renders _fields/bootstrap3/_displayWrapper.gsp:</span>
@@ -195,8 +196,23 @@ Since then you can specify the folders where the templates are located. You can 
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>theme</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Theme to use if available.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Theme to use if available. The theme can define a new directory structure in /_fields/_themes/&lt;themename&gt; which will take priority over templates, wrapper and widget if they are specified, as it is injecting the search path first in the list.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>templates</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specify the folder inside _fields where to look up for the wrapper and widget template.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>widget</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specify the folder inside _fields where to look up for the widget template.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>wrapper</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specify the folder inside _fields where to look up for the wrapper template.</p></td>
 </tr>
 </tbody>
 </table>

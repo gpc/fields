@@ -16,6 +16,7 @@
 
 package grails.plugin.formfields
 
+import grails.core.GrailsApplication
 import groovy.transform.CompileStatic
 import groovy.xml.MarkupBuilder
 import org.apache.commons.lang.StringUtils
@@ -30,6 +31,7 @@ import org.grails.scaffolding.model.DomainModelService
 import org.grails.scaffolding.model.property.Constrained
 import org.grails.scaffolding.model.property.DomainPropertyFactory
 import org.grails.web.servlet.mvc.GrailsWebRequest
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.servlet.LocaleResolver
 
@@ -59,7 +61,10 @@ class FormFieldsTagLib {
 	FormFieldsTemplateService formFieldsTemplateService
 	BeanPropertyAccessorFactory beanPropertyAccessorFactory
 	DomainPropertyFactory fieldsDomainPropertyFactory
-	MappingContext grailsDomainClassMappingContext
+
+	@Autowired(required = false)
+	Collection<MappingContext> mappingContexts
+
 	DomainModelService domainModelService
 	LocaleResolver localeResolver
 	CodecLookup codecLookup
@@ -221,7 +226,7 @@ class FormFieldsTagLib {
 		def collection = resolveBean(attrs.remove('collection'))
 		PersistentEntity domainClass
 		if (attrs.containsKey('domainClass')) {
-			domainClass = grailsDomainClassMappingContext.getPersistentEntity((String) attrs.remove('domainClass'))
+			domainClass = resolveDomainClass((String) attrs.remove('domainClass'))
 		} else {
 			domainClass = (collection instanceof Collection) && collection ? resolveDomainClass(collection.iterator().next()) : null
 		}
@@ -239,7 +244,7 @@ class FormFieldsTagLib {
 
 			out << render(
 				template: "/templates/_fields/$template",
-				model: [domainClass: domainClass,
+				model: attrs + [domainClass: domainClass,
 						domainProperties: columnProperties,
 						columnProperties: columnProperties,
 						collection: collection,
@@ -523,7 +528,13 @@ class FormFieldsTagLib {
 	}
 
 	private PersistentEntity resolveDomainClass(Class beanClass) {
-		grailsDomainClassMappingContext.getPersistentEntity(beanClass.name)
+		resolveDomainClass(beanClass.name)
+	}
+
+	private PersistentEntity resolveDomainClass(String beanClassName) {
+		mappingContexts.findResult { MappingContext mappingContext ->
+			mappingContext.getPersistentEntity(beanClassName)
+		}
 	}
 
 	private List<PersistentProperty> resolvePersistentProperties(PersistentEntity domainClass, Map attrs, boolean list = false) {

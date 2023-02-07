@@ -1,7 +1,11 @@
 package grails.plugin.formfields.taglib
 
+import grails.plugin.formfields.mock.Gender
 import grails.plugin.formfields.mock.Person
 import grails.testing.web.taglib.TagLibUnitTest
+import grails.validation.ValidationErrors
+import org.grails.plugins.web.taglib.FormatTagLib
+import org.springframework.context.support.StaticMessageSource
 import spock.lang.Issue
 import grails.plugin.formfields.*
 
@@ -55,5 +59,45 @@ class FieldTagWithBodySpec extends AbstractFormFieldsTagLibSpec implements TagLi
 
         expect:
         applyTemplate('<f:field bean="personInstance" property="name" input-foo="bar">${attrs.foo}</f:field>', [personInstance: personInstance]) == 'bar'
+    }
+
+    @Issue("https://github.com/grails-fields-plugin/grails-fields/issues/323")
+    void 'validation defaultMessage strings are escaped'() {
+        given:
+        views['/_fields/default/_wrapper.gsp'] = '${widget}'
+
+        and:
+        def person = new Person(name: 'Not Allowed', gender: Gender.Male, password: 'XYZ').with {
+            errors = new ValidationErrors(it)
+            errors.rejectValue('name', 'unresolved.code', 'custom error with special chars & < > \' "')
+            it
+        }
+
+        when:
+        def result = applyTemplate('<f:field bean="personInstance" property="name" encodeAs="raw">${errors[0]}</f:field>', [personInstance: person])
+
+        then:
+        result == 'custom error with special chars &amp; &lt; &gt; &#39; &quot;'
+    }
+
+    void 'resolved error codes are not escaped'() {
+        given:
+        views['/_fields/default/_wrapper.gsp'] = '${widget}'
+
+        and:
+        ((StaticMessageSource) messageSource).addMessage('name.invalid', FormatTagLib.resolveLocale(null), '<div>Name is invalid</div>')
+
+        and:
+        def person = new Person(name: 'Not Allowed', gender: Gender.Male, password: 'XYZ').with {
+            errors = new ValidationErrors(it)
+            errors.rejectValue('name', 'name.invalid', 'default error message')
+            it
+        }
+
+        when:
+        def result = applyTemplate('<f:field bean="personInstance" property="name" encodeAs="raw">${errors[0]}</f:field>', [personInstance: person])
+
+        then:
+        result == '<div>Name is invalid</div>'
     }
 }

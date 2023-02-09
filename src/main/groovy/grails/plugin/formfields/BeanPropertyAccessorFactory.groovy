@@ -18,6 +18,7 @@ package grails.plugin.formfields
 
 import grails.core.GrailsApplication
 import grails.gorm.validation.DefaultConstrainedProperty
+import grails.validation.Validateable
 import groovy.transform.PackageScope
 import grails.core.support.GrailsApplicationAware
 import grails.core.support.proxy.ProxyHandler
@@ -110,7 +111,9 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 	}
 
 	private Constrained resolveConstraints(BeanWrapper beanWrapper, String propertyName) {
-		grails.gorm.validation.Constrained constraint = constraintsEvaluator.evaluate(beanWrapper.wrappedClass)[propertyName]
+        Class<?> type = beanWrapper.wrappedClass
+        boolean defaultNullable = Validateable.class.isAssignableFrom(type) ? type.metaClass.invokeStaticMethod(type, 'defaultNullable') : false
+		grails.gorm.validation.Constrained constraint = constraintsEvaluator.evaluate(type, defaultNullable)[propertyName]
 		if (!constraint) {
 			constraint = createDefaultConstraint(beanWrapper, propertyName)
 		}

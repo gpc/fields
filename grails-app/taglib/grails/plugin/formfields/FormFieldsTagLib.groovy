@@ -33,6 +33,9 @@ import org.grails.scaffolding.model.property.DomainPropertyFactory
 import org.grails.web.servlet.mvc.GrailsWebRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.MessageSource
+import org.springframework.context.MessageSourceResolvable
+import org.springframework.context.NoSuchMessageException
 import org.springframework.web.servlet.LocaleResolver
 
 import javax.servlet.http.HttpServletRequest
@@ -68,6 +71,7 @@ class FormFieldsTagLib {
 	DomainModelService domainModelService
 	LocaleResolver localeResolver
 	CodecLookup codecLookup
+	MessageSource messageSource
 
 	static defaultEncodeAs = [taglib: 'raw']
 
@@ -458,7 +462,18 @@ class FormFieldsTagLib {
 			value             : (value instanceof Number || value instanceof Boolean || value) ? value : valueDefault,
 			constraints       : propertyAccessor.constraints,
 			persistentProperty: propertyAccessor.domainProperty,
-			errors            : propertyAccessor.errors.collect { message(error: it) },
+			errors            : propertyAccessor.errors.collect { error ->
+				String errorMsg = null
+				try {
+					errorMsg = error instanceof MessageSourceResolvable ? messageSource.getMessage(error, locale) : messageSource.getMessage(error.toString(), null, locale)
+				}
+				catch (NoSuchMessageException ignored) {
+					// no-op
+				}
+				// unresolved message codes fallback to the defaultMessage and this should
+				// be escaped as it could be an error message with user input
+				errorMsg && errorMsg == error.defaultMessage ? message(error: error, encodeAs: "HTML") :  message(error: error)
+			},
 			required          : attrs.containsKey("required") ? Boolean.valueOf(attrs.remove('required')) : propertyAccessor.required,
 			invalid           : attrs.containsKey("invalid") ? Boolean.valueOf(attrs.remove('invalid')) : propertyAccessor.invalid,
 			prefix            : resolvePrefix(attrs.remove('prefix')),

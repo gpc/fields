@@ -1,7 +1,11 @@
 package grails.plugin.formfields
 
-import grails.plugin.formfields.mock.*
-import spock.lang.*
+
+import grails.plugin.formfields.mock.Gender
+import grails.plugin.formfields.mock.Person
+import grails.validation.Validateable
+import spock.lang.Issue
+import spock.lang.Unroll
 
 @Unroll
 class CommandPropertyAccessorSpec extends BuildsAccessorFactory {
@@ -256,6 +260,20 @@ class CommandPropertyAccessorSpec extends BuildsAccessorFactory {
 		propertyAccessor.constraints.blank
 	}
 
+	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/218')
+	void 'respect defaultNullable() when evaluating constraints of a Validateable'() {
+		given:
+        ValidateableCommand command = new ValidateableCommand()
+        DefaultNullableValidateableCommand command2 = new DefaultNullableValidateableCommand()
+
+		and:
+		def propertyAccessor = factory.accessorFor(command, 'myNullableProperty')
+		def propertyAccessor2 = factory.accessorFor(command2, 'myNullableProperty')
+
+		expect:
+		!propertyAccessor.constraints.nullable
+		propertyAccessor2.constraints.nullable
+	}
 }
 
 class TestCommand {
@@ -278,4 +296,16 @@ class TestCommand {
 
 class UnconstrainedCommand {
 	String stringProperty
+}
+
+class ValidateableCommand implements Validateable {
+    String myNullableProperty
+}
+
+class DefaultNullableValidateableCommand implements Validateable {
+	String myNullableProperty
+
+	static boolean defaultNullable() {
+		return true
+	}
 }

@@ -231,7 +231,7 @@ class FormFieldsTemplateService {
 
     private boolean shouldCache() {
         // If not explicitly specified, there is no template caching
-        Boolean cacheDisabled = grailsApplication?.config?.grails?.plugin?.fields?.disableLookupCache
+        Boolean cacheDisabled = grailsApplication?.config?.getProperty('grails.plugin.fields.disableLookupCache', Boolean)
         return !cacheDisabled
     }
 

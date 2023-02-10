@@ -11,6 +11,7 @@ import org.grails.scaffolding.model.DomainModelServiceImpl
 import org.grails.scaffolding.model.property.DomainPropertyFactory
 import org.grails.scaffolding.model.property.DomainPropertyFactoryImpl
 import org.grails.spring.beans.factory.InstanceFactoryBean
+import org.springframework.context.support.StaticMessageSource
 import spock.lang.Specification
 import grails.plugin.formfields.mock.*
 
@@ -31,7 +32,7 @@ abstract class AbstractFormFieldsTagLibSpec extends Specification implements Gra
 		applicationContext.getBean("groovyPagesTemplateEngine").clearPageCache()
 		applicationContext.getBean("groovyPagesTemplateRenderer").clearCache()
 
-		messageSource.@messages.clear() // bit of a hack but messages don't get torn down otherwise
+		(messageSource as StaticMessageSource).messageMap.clear() // bit of a hack but messages don't get torn down otherwise
 	}
 
 	void setupSpec() {
@@ -52,7 +53,7 @@ abstract class AbstractFormFieldsTagLibSpec extends Specification implements Gra
 			}
 		}
 	}
-	
+
 	protected void mockEmbeddedSitemeshLayout(taglib) {
 	 	taglib.metaClass.applyLayout = { Map attrs, Closure body ->
 	 		if (attrs.name == '_fields/embedded') {

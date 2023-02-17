@@ -202,22 +202,24 @@ class TableSpec extends AbstractFormFieldsTagLibSpec implements TagLibUnitTest<F
 	}
 
 	@Issue('https://github.com/grails-fields-plugin/grails-fields/issues/325')
-	void "table tag renders transient columns when using the order attribute '<f:table collection=\"collection\" order=\"['transient']\"/>'"() {
-		given:
-		def expectedTableColumns = ['Transient Text', 'Name']
-
+	void "table tag renders transient columns when using the order attribute '<f:table collection=\"collection\" order=\"['transient']\"/>'"(String order, List expectedTableColumns) {
 		when:
 		def table = XML.parse(applyTemplate(
 			'<f:table collection="collection" order="${order}"/>',
 			[
 				collection: personList,
-				order: 'transientText, name'
+				order: order
 			]
 		))
 		def renderedTableColumns = table.thead.tr.th.a.collect { it.text().trim() }
 
 		then:
 		renderedTableColumns == expectedTableColumns
+
+		where:
+		order | expectedTableColumns
+		'transientText, name' | ['Transient Text', 'Name']
+		'name, transientText' | ['Name', 'Transient Text']
 	}
 
 	void "table tag displays embedded properties by default with toString"() {

@@ -419,9 +419,9 @@ class FormFieldsTagLib {
 
 	private List<String> resolvePropertyNames(PersistentEntity domainClass, Map attrs) {
 		if (attrs.containsKey('order')) {
-			return getList(attrs.remove('order'))
+			return getList(attrs.order)
 		}
-		if (attrs.containsKey('properties')) {
+		else if (attrs.containsKey('properties')) {
 			return getList(attrs.remove('properties'))
 		} else {
 

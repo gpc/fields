@@ -217,7 +217,7 @@ class TableSpec extends AbstractFormFieldsTagLibSpec implements TagLibUnitTest<F
 		renderedTableColumns == expectedTableColumns
 
 		where:
-		order | expectedTableColumns
+		order                 | expectedTableColumns
 		'transientText, name' | ['Transient Text', 'Name']
 		'name, transientText' | ['Name', 'Transient Text']
 	}

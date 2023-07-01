@@ -1,26 +1,29 @@
 package grails.plugin.formfields
 
 import grails.plugin.formfields.mock.Person
+import grails.plugins.GrailsPluginManager
+import grails.testing.services.ServiceUnitTest
 import org.grails.web.gsp.io.GrailsConventionGroovyPageLocator
 import org.grails.gsp.io.GroovyPageResourceScriptSource
 import org.springframework.core.io.ByteArrayResource
 import spock.lang.*
 
 @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/5')
-@Stepwise
-class TemplateLookupCachingSpec extends BuildsAccessorFactory {
+class TemplateLookupCachingSpec extends BuildsAccessorFactory implements ServiceUnitTest<FormFieldsTemplateService> {
 
-	@Shared def service = new FormFieldsTemplateService()
-	def mockGroovyPageLocator = Mock(GrailsConventionGroovyPageLocator)
-	@Shared def beanPropertyAccessorFactory
-	def person = new Person(name: 'Bart Simpson', password: 'eatmyshorts')
+	GrailsConventionGroovyPageLocator mockGroovyPageLocator = Mock()
+
+	@Shared
+	BeanPropertyAccessorFactory beanPropertyAccessorFactory
+
+	Person person = new Person(name: 'Bart Simpson', password: 'eatmyshorts')
 
 	void setupSpec() {
-		service.pluginManager = applicationContext.pluginManager
 		beanPropertyAccessorFactory = getFactory()
 	}
 
 	def setup() {
+		service.pluginManager = applicationContext.getBean(GrailsPluginManager)
 		service.groovyPageLocator = mockGroovyPageLocator
 	}
 
@@ -43,15 +46,27 @@ class TemplateLookupCachingSpec extends BuildsAccessorFactory {
 
 	void 'the next time the template is cached'() {
 		given:
-		def property = beanPropertyAccessorFactory.accessorFor(person, 'name')
-
-		when:
-		def template = service.findTemplate(property, 'input', null, null)
-
-		then:
-		template.path == '/_fields/person/name/input'
+		def templateResource = new GroovyPageResourceScriptSource('/_fields/person/name/_widget.gsp', new ByteArrayResource('PERSON NAME TEMPLATE'.getBytes('UTF-8')))
 
 		and:
+		def property = beanPropertyAccessorFactory.accessorFor(person, 'name')
+
+		when: 'calling it the first time'
+		def template = service.findTemplate(property, 'input', null, null)
+
+		then: 'the template path is correct'
+		template.path == '/_fields/person/name/input'
+
+		and: 'the template was found by the service'
+		1 * mockGroovyPageLocator.findTemplateByPath(_) >> templateResource
+
+		when: 'calling it the second time'
+		template = service.findTemplate(property, 'input', null, null)
+
+		then: 'the template path is still correct'
+		template.path == '/_fields/person/name/input'
+
+		and: 'The mockGroovyPageLocator is only called the first time'
 		0 * mockGroovyPageLocator.findTemplateByPath(_)
 	}
 
@@ -78,10 +93,10 @@ class TemplateLookupCachingSpec extends BuildsAccessorFactory {
 
 		and:
 		def property = beanPropertyAccessorFactory.accessorFor(person, 'name')
-		
+
 		when:
 		def template = service.findTemplate(property, 'field', null, null)
-		
+
 		then:
 		template.path == '/_fields/person/name/field'
 

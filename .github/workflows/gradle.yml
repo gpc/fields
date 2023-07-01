@@ -1,0 +1,47 @@
+name: Java CI
+on:
+  push:
+    branches:
+      - master
+      - upgrade/grails4
+  pull_request:
+    branches:
+      - master
+      - upgrade/grails4
+  workflow_dispatch:
+
+permissions:
+  contents: read  #  to fetch code (actions/checkout)
+
+jobs:
+  build:
+    permissions:
+      contents: read  #  to fetch code (actions/checkout)
+      checks: write  #  to publish result as PR check (scacap/action-surefire-report)
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: ['8']
+    env:
+      WORKSPACE: ${{ github.workspace }}
+      GRADLE_OPTS: -Xmx1500m -Dfile.encoding=UTF-8
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: ${{ matrix.java }}
+      - name: Run Tests
+        if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+        id: tests
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: check
+      - name: Run Build
+        if: github.event_name == 'push'
+        id: build
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build

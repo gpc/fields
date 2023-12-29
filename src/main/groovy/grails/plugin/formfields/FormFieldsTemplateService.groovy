@@ -19,6 +19,7 @@ package grails.plugin.formfields
 import grails.core.GrailsApplication
 import grails.plugins.GrailsPluginManager
 import grails.util.GrailsNameUtils
+import groovy.transform.Memoized
 import groovy.util.logging.Slf4j
 import org.grails.datastore.mapping.model.types.ManyToMany
 import org.grails.datastore.mapping.model.types.ManyToOne
@@ -36,7 +37,9 @@ import static org.grails.io.support.GrailsResourceUtils.appendPiecesForUri
 
 @Slf4j
 class FormFieldsTemplateService {
+
     public static final String SETTING_WIDGET_PREFIX = 'grails.plugin.fields.widgetPrefix'
+    public static final String DISABLE_LOOKUP_CACHE = 'grails.plugin.fields.disableLookupCache'
     private static final String THEMES_FOLDER = "_themes"
 
     @Autowired
@@ -48,51 +51,57 @@ class FormFieldsTemplateService {
     @Autowired
     GrailsPluginManager pluginManager
 
-    String getWidgetPrefix(){
-        Closure widgetPrefixNameResolver = getWidgetPrefixName
-        return widgetPrefixNameResolver()
+    String getWidgetPrefix() {
+        return shouldCache ? widgetPrefixCached : widgetPrefixNotCached
     }
 
-    @Lazy
-    private Closure getWidgetPrefixName = shouldCache() ? getWidgetPrefixNameCacheable.memoize() : getWidgetPrefixNameCacheable
+    @Memoized
+    private String getWidgetPrefixCached() {
+        widgetPrefixNotCached
+    }
 
-    private Closure getWidgetPrefixNameCacheable = { ->
+    private String getWidgetPrefixNotCached() {
         return grailsApplication?.config?.getProperty(SETTING_WIDGET_PREFIX, 'widget-')
     }
 
+
+    String getTemplateFor(String property) {
+        shouldCache ? getTemplateForCached(property) : getTemplateForNotCached(property)
+    }
+
+
+    @Memoized
+    private getTemplateForCached(String templateProperty) {
+        getTemplateForNotCached(templateProperty)
+    }
+
     Map findTemplate(BeanPropertyAccessor propertyAccessor, String templateName, String templatesFolder, String theme = null) {
-        // it looks like the assignment below is redundant, but tests fail if findTemplateCached is invoked directly
-        Closure templateFinder = findTemplateCached
-        templateFinder(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, theme)
+        shouldCache ?
+                findTemplateCached(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, theme) :
+                findTemplateNotCached(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, theme)
     }
 
-    String getTemplateFor(String property){
-        Closure nameFinder = getTemplateName
-        nameFinder(property)
-    }
-
-    @Lazy
-    private Closure getTemplateName = shouldCache() ? getTemplateNameCacheable.memoize() : getTemplateNameCacheable
-
-    private getTemplateNameCacheable = { String templateProperty ->
+    private getTemplateForNotCached(String templateProperty) {
         return grailsApplication?.config?.getProperty("grails.plugin.fields.$templateProperty", templateProperty) ?: templateProperty
     }
 
-	@Lazy
-	private Closure findTemplateCached = shouldCache() ? findTemplateCacheable.memoize() : findTemplateCacheable
+    @Memoized
+    private findTemplateCached(BeanPropertyAccessor propertyAccessor, String controllerNamespace, String controllerName, String actionName, String templateName, String templatesFolder, String themeName) {
+        findTemplateNotCached(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, themeName)
+    }
 
-    private findTemplateCacheable = {BeanPropertyAccessor propertyAccessor, String controllerNamespace, String controllerName, String actionName, String templateName, String templatesFolder, String themeName->
-		List<String> candidatePaths
-		if (themeName) {
-			//if theme is specified, first resolve all theme paths and then all the default paths
-			String themeFolder = THEMES_FOLDER + "/" + themeName
-			candidatePaths = candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, themeFolder)
-			candidatePaths = candidatePaths + candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, null)
-		} else {
-			candidatePaths = candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, null)
-		}
+    private findTemplateNotCached(BeanPropertyAccessor propertyAccessor, String controllerNamespace, String controllerName, String actionName, String templateName, String templatesFolder, String themeName) {
+        List<String> candidatePaths
+        if (themeName) {
+            //if theme is specified, first resolve all theme paths and then all the default paths
+            String themeFolder = THEMES_FOLDER + "/" + themeName
+            candidatePaths = candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, themeFolder)
+            candidatePaths = candidatePaths + candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, null)
+        } else {
+            candidatePaths = candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, null)
+        }
 
-        candidatePaths.findResult {String path ->
+        candidatePaths.findResult { String path ->
             log.debug "looking for template with path $path"
             def source = groovyPageLocator.findTemplateByPath(path)
             if (source) {
@@ -229,9 +238,9 @@ class FormFieldsTemplateService {
         RequestContextHolder.requestAttributes?.actionName
     }
 
-    private boolean shouldCache() {
-        // If not explicitly specified, there is no template caching
-        Boolean cacheDisabled = grailsApplication?.config?.getProperty('grails.plugin.fields.disableLookupCache', Boolean)
+    private boolean getShouldCache() {
+        // If not explicitly specified, templates will be cached
+        Boolean cacheDisabled = grailsApplication?.config?.getProperty(DISABLE_LOOKUP_CACHE, Boolean, Boolean.FALSE)
         return !cacheDisabled
     }
 

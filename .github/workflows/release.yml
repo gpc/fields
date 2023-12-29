@@ -6,8 +6,8 @@ jobs:
     release:
         runs-on: ubuntu-latest
         env:
-            GIT_USER_NAME: sbglasius
-            GIT_USER_EMAIL: soeren@glasius.dk
+            GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+            GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
         steps:
             -   uses: actions/checkout@v4
                 with:
@@ -23,6 +23,7 @@ jobs:
                     token: ${{ secrets.GITHUB_TOKEN }}
             -   name: Publish to Sonatype OSSRH
                 id: publish
+                if: steps.assemble.outcome == 'success'
                 uses: gradle/gradle-build-action@v2
                 env:
                     SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
@@ -54,6 +55,28 @@ jobs:
                     message: 'Set project version to next SNAPSHOT'
             -   name: Export Gradle Properties
                 uses: micronaut-projects/github-actions/export-gradle-properties@master
+            -   name: Build documentation
+                id: asciidoctor
+                uses: gradle/gradle-build-action@v2
+                env:
+                    RELEASE_VERSION: ${{ steps.get_version.outputs.version-without-v }}
+                with:
+                    arguments: -Pversion="${RELEASE_VERSION}"
+            -   name: Export Gradle Properties
+                uses: micronaut-projects/github-actions/export-gradle-properties@master
+            -   name: Publish to Github Pages
+                if: success()
+                uses: micronaut-projects/github-pages-deploy-action@master
+                env:
+                    BETA: ${{ steps.get_version.outputs.isPrerelase }}
+                    TARGET_REPOSITORY: ${{ github.repository }}
+                    GH_TOKEN: ${{ secrets.GH_TOKEN }}
+                    BRANCH: gh-pages
+                    FOLDER: build/asciidoc
+                    DOC_FOLDER: latest
+                    COMMIT_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
+                    COMMIT_NAME: ${{ secrets.GIT_USER_NAME }}
+                    VERSION: ${{ steps.get_version.outputs.version-without-v }}
             -   name: Run post-release
                 if: success()
                 uses: micronaut-projects/github-actions/post-release@master

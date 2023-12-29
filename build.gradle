@@ -1,77 +1,178 @@
 buildscript {
-	repositories {
-		mavenLocal()
-		maven { url "https://repo.grails.org/grails/core" }
-	}
-	dependencies {
-		classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-		classpath 'io.github.groovylang.groovydoc:groovydoc-gradle-plugin:1.0.1'
-	}
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://repo.grails.org/grails/core" }
+    }
+    dependencies {
+        classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+        classpath 'io.github.groovylang.groovydoc:groovydoc-gradle-plugin:1.0.1'
+        classpath "io.github.gradle-nexus:publish-plugin:1.1.0"
+    }
+}
+plugins {
+    id 'org.asciidoctor.jvm.convert' version '3.2.0'
 }
 
 version project.projectVersion
-group "org.grails.plugins"
 
-apply plugin:"eclipse"
-apply plugin:"idea"
-apply plugin: "org.grails.grails-plugin"
-apply plugin: "org.grails.grails-gsp"
-apply plugin: "org.grails.grails-plugin-publish"
+group 'org.grails.plugins'
 
-ext {
-	commonBuild = 'https://raw.githubusercontent.com/grails/grails-common-build/1549696f8d1a6bce3d84db9c4c1bfde61eddf175'
-
-}
+apply plugin: 'org.grails.grails-plugin'
+apply plugin: 'org.grails.grails-gsp'
+apply plugin: "org.grails.grails-doc"
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+apply plugin: "io.github.gradle-nexus.publish-plugin"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
-	mavenLocal()
-	mavenCentral()
-	maven { url "https://repo.grails.org/grails/core" }
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://repo.grails.org/grails/core" }
 }
 
 dependencies {
-	provided 'org.springframework.boot:spring-boot-starter-logging'
-	provided "org.springframework.boot:spring-boot-starter-actuator"
-	provided "org.springframework.boot:spring-boot-autoconfigure"
-	provided "org.springframework.boot:spring-boot-starter-tomcat"
+    provided 'org.springframework.boot:spring-boot-starter-logging'
+    provided "org.springframework.boot:spring-boot-starter-actuator"
+    provided "org.springframework.boot:spring-boot-autoconfigure"
+    provided "org.springframework.boot:spring-boot-starter-tomcat"
 
-	provided "org.grails:grails-web-boot"
+    provided "org.grails:grails-web-boot"
 	provided "org.grails:grails-dependencies"
 	provided "javax.servlet:javax.servlet-api:$servletApiVersion"
 
-	compile "org.grails:scaffolding-core:$scaffoldingVersion"
-	
-	testCompile "org.grails:grails-web-testing-support:2.0.0.RC1"
-	testCompile "org.grails:grails-gorm-testing-support:2.0.0.RC1"
+    compile "org.grails:scaffolding-core"
 
-	console "org.grails:grails-console"
+    testCompile "org.grails:grails-web-testing-support"
+    testCompile "org.grails:grails-gorm-testing-support"
 
-	testCompile 'javassist:javassist:3.12.0.GA'
-	testCompile "org.codehaus.groovy:groovy-dateutil:$groovyVersion"
-	testCompile "cglib:cglib-nodep:$cglibNodepVersion"
-	testCompile("org.jodd:jodd-wot:$joddWotVersion") {
-		exclude module: 'slf4j-api'
-		exclude module: 'asm'
-	}
+    console "org.grails:grails-console"
+
+    testCompile 'org.javassist:javassist:3.29.0-GA'
+    testCompile "org.codehaus.groovy:groovy-dateutil"
+    testCompile "cglib:cglib-nodep:2.2.2"
+    testCompile("org.jodd:jodd-wot:$joddWotVersion") {
+        exclude module: 'slf4j-api'
+        exclude module: 'asm'
+    }
 }
 
-grailsPublish {
-	userOrg = "grails"
-	githubSlug = project.githubSlug
-	license {
-		name = 'Apache-2.0'
-	}
-	title = project.title
-	desc = project.projectDesc
-
-	developers = [
-			graemerocher: "Graeme Rocher",
-			robfletcher: "Rob Fletcher",
-			sbglasius: "Søren Berg Glasius"
-	]
+tasks.withType(GroovyCompile) {
+    configure(groovyOptions) {
+        forkOptions.jvmArgs = ['-Xmx1024m']
+    }
 }
 
-apply from: "${commonBuild}/common-docs.gradle"
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = project.group
+            artifactId = 'jms'
+            version = project.version
+
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+
+            pom {
+                name = 'Jms'
+                description = 'JMS integration for Grails'
+                url = 'https://github.com/gpc/jms'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'brownj'
+                        name = 'Jeff Scott Brown'
+                        email = 'brownj@objectcomputing.com'
+                    }
+                    developer {
+                        id = 'sbglasius'
+                        name = 'Søren Berg Glasius'
+                        email = 'soeren+gpc@glasius.dk'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/gpc/jms.git'
+                    developerConnection = 'scm:git:https://github.com/gpc/jms.git'
+                    url = 'https://github.com/gpc/jms'
+                }
+            }
+        }
+    }
+}
+
+ext."signing.keyId" = project.findProperty('signing.keyId') ?: System.getenv('SIGNING_KEY_ID')
+ext."signing.password" = project.findProperty('signing.password') ?: System.getenv('SIGNING_PASSPHRASE')
+ext."signing.secretKeyRingFile" = project.findProperty('signing.secretKeyRingFile') ?: (System.getenv('SIGNING_PASSPHRASE') ?: "${System.getProperty('user.home')}/.gnupg/secring.gpg")
+
+ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+
+afterEvaluate {
+    signing {
+        required { isReleaseVersion }
+        sign publishing.publications.maven
+    }
+}
+
+tasks.withType(Sign) {
+    onlyIf { isReleaseVersion }
+}
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            def ossUser = System.getenv("SONATYPE_USERNAME") ?: project.findProperty('sonatypeOss2Username') ?: ''
+            def ossPass = System.getenv("SONATYPE_PASSWORD") ?: project.findProperty("sonatypeOss2Password") ?: ''
+            def ossStagingProfileId = System.getenv("SONATYPE_STAGING_PROFILE_ID") ?: project.findProperty("sonatypeOssStagingProfileIdJms") ?: ''
+
+            nexusUrl = uri("https://s01.oss.sonatype.org/service/local/")
+            snapshotRepositoryUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+            username = ossUser
+            password = ossPass
+            stagingProfileId = ossStagingProfileId
+        }
+    }
+}
+
+asciidoctor {
+    resources {
+        from('src/docs/images')
+        into "./images"
+    }
+    sources {
+        include 'index.adoc'
+    }
+    attributes 'experimental': 'true',
+            'compat-mode': 'true',
+            'toc': 'left',
+            'icons': 'font',
+            'version': project.version,
+            'sourcedir': 'src/main/groovy'
+    baseDirFollowsSourceDir()
+    outputDir = "${buildDir}/asciidoc"
+}
+
+task apiDocs(type: Copy) {
+    from groovydoc.outputs.files
+    into file("${buildDir}/asciidoc/api")
+}
+
+asciidoctor.dependsOn(apiDocs)
+
+task snapshotVersion {
+    doLast {
+        if (!project.version.endsWith('-SNAPSHOT')) {
+            ant.propertyfile(file: "gradle.properties") {
+                entry(key: "version", value: "${project.version}-SNAPSHOT")
+            }
+        }
+    }
+}

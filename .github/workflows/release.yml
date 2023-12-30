@@ -32,18 +32,19 @@ jobs:
                     RELEASE_VERSION: ${{ steps.get_version.outputs.version-without-v }}
                 run: |
                     echo "${SECRING_FILE}" | base64 -d > "${GITHUB_WORKSPACE}/secring.gpg"
+                    cat "${GITHUB_WORKSPACE}/secring.gpg" | head 
                     echo "Publishing Artifacts for $RELEASE_VERSION"
                     (set -x; ./gradlew -Pversion="${RELEASE_VERSION}" -Psigning.secretKeyRingFile="${GITHUB_WORKSPACE}/secring.gpg" publishToSonatype closeAndReleaseSonatypeStagingRepository --no-daemon)
                     rm  "${GITHUB_WORKSPACE}/secring.gpg"
             -   name: Bump patch version by one
-                uses: flatherskevin/semver-action@v1
-                id: version
+                uses: dhkatz/get-version-action@v3.0.0
+                id: patch_version
                 with:
                     incrementLevel: patch
                     source: tags
             -   name: Set version in gradle.properties
                 env:
-                    NEXT_VERSION: ${{ steps.version.outputs.nextVersion }}
+                    NEXT_VERSION: ${{ steps.patch_version.outputs.nextVersion }}
                 run: |
                     echo "Preparing next snapshot"
                     ./gradlew snapshotVersion -Pversion="${NEXT_VERSION}"
@@ -62,7 +63,7 @@ jobs:
                 env:
                     RELEASE_VERSION: ${{ steps.get_version.outputs.version-without-v }}
                 with:
-                    arguments: -Pversion="${RELEASE_VERSION}"
+                    arguments: -Pversion="${RELEASE_VERSION}" asciidoctor
             -   name: Export Gradle Properties
                 uses: micronaut-projects/github-actions/export-gradle-properties@master
             -   name: Publish to Github Pages

@@ -52,16 +52,15 @@ jobs:
                 with:
                     java-version: 8
                     distribution: temurin
-            -   uses: actions-ecosystem/action-get-latest-tag@v1
-                id: get-latest-tag
-            -   uses: actions-ecosystem/action-bump-semver@v1
-                id: bump-semver
+            -   name: Bump version and push tag
+                id: tag_version
+                uses: mathieudutour/github-tag-action@v6.1
                 with:
-                    current_version: ${{ steps.get-latest-tag.outputs.tag }}
-                    level: patch
+                    github_token: ${{ secrets.GITHUB_TOKEN }}
+                    dry_run: true
             -   name: Set version in gradle.properties
                 env:
-                    NEXT_VERSION: ${{ steps.bump-semver.outputs.new_version }}
+                    NEXT_VERSION: ${{ steps.tag_version.outputs.new_version }}
                 run: |
                     echo "Preparing next snapshot as ${NEXT_VERSION}"
                     ./gradlew snapshotVersion -Pversion="${NEXT_VERSION}"

@@ -68,7 +68,7 @@ publishing {
     publications {
         maven(MavenPublication) {
             groupId = project.group
-            artifactId = 'jms'
+            artifactId = 'fields'
             version = project.version
 
             from components.java
@@ -76,9 +76,9 @@ publishing {
             artifact javadocJar
 
             pom {
-                name = 'Jms'
-                description = 'JMS integration for Grails'
-                url = 'https://github.com/gpc/jms'
+                name = 'Fields'
+                description = 'Fields integration for Grails'
+                url = 'https://github.com/gpc/fields'
                 licenses {
                     license {
                         name = 'The Apache License, Version 2.0'
@@ -87,9 +87,16 @@ publishing {
                 }
                 developers {
                     developer {
-                        id = 'brownj'
-                        name = 'Jeff Scott Brown'
-                        email = 'brownj@objectcomputing.com'
+                        id = 'robfletcher'
+                        name = 'Rob Fletcher'
+                    }
+                    developer {
+                        id = 'graemerocher'
+                        name = 'Graeme Rocher'
+                    } 
+                    developer {
+                        id = 'sdelamo'
+                        name = 'Sergio del Amo'
                     }
                     developer {
                         id = 'sbglasius'
@@ -98,9 +105,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = 'scm:git:git://github.com/gpc/jms.git'
-                    developerConnection = 'scm:git:https://github.com/gpc/jms.git'
-                    url = 'https://github.com/gpc/jms'
+                    connection = 'scm:git:git://github.com/gpc/fields.git'
+                    developerConnection = 'scm:git:https://github.com/gpc/fields.git'
+                    url = 'https://github.com/gpc/fields'
                 }
             }
         }

@@ -139,11 +139,6 @@ afterEvaluate {
 
 tasks.withType(Sign).configureEach {
     onlyIf { isReleaseVersion }
-    doFirst {
-        println "-" * 50
-        println ext.dump()
-        println "-" * 50
-    }
 }
 
 import io.github.gradlenexus.publishplugin.InitializeNexusStagingRepository
@@ -160,8 +155,8 @@ nexusPublishing {
 			def ossPass = System.getenv("SONATYPE_PASSWORD") ?: project.hasProperty("sonatypeOssPassword") ? project.sonatypeOssPassword : ''
 			def ossStagingProfileId = System.getenv("SONATYPE_STAGING_PROFILE_ID") ?: project.hasProperty("sonatypeOssStagingProfileIdExternalConfig") ? project.sonatypeOssStagingProfileIdExternalConfig : ''
 
-			nexusUrl = uri("https://oss.sonatype.org/service/local/")
-			snapshotRepositoryUrl = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+			nexusUrl = uri("https://s01.oss.sonatype.org/service/local/")
+			snapshotRepositoryUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
 			username = ossUser
 			password = ossPass
 			stagingProfileId = ossStagingProfileId

@@ -23,7 +23,6 @@ jobs:
                     token: ${{ secrets.GITHUB_TOKEN }}
             -   name: Publish to Sonatype OSSRH
                 id: publish
-                if: steps.assemble.outcome == 'success'
                 uses: gradle/gradle-build-action@v2
                 env:
                     SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}

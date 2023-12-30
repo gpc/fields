@@ -43,6 +43,13 @@ jobs:
             GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
             GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
         steps:
+            -   uses: actions/checkout@v4
+                with:
+                    token: ${{ secrets.GITHUB_TOKEN }}
+            -   uses: actions/setup-java@v4
+                with:
+                    java-version: 8
+                    distribution: temurin
             -   name: Bump patch version by one for next SNAPSHOT
                 uses: dhkatz/get-version-action@v3.0.0
                 id: patch_version
@@ -68,6 +75,13 @@ jobs:
             GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
             GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
         steps:
+            -   uses: actions/checkout@v4
+                with:
+                    token: ${{ secrets.GITHUB_TOKEN }}
+            -   uses: actions/setup-java@v4
+                with:
+                    java-version: 8
+                    distribution: temurin
             -   uses: dhkatz/get-version-action@v3.0.0
                 id: get_version
             -   uses: micronaut-projects/github-actions/export-gradle-properties@master

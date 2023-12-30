@@ -2,12 +2,14 @@ name: Release
 on:
     release:
         types: [ published ]
+permissions:
+    contents: write
 jobs:
     release:
         runs-on: ubuntu-latest
         env:
-            GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
-            GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
+            GIT_USER_NAME: ${{ vars.GIT_USER_NAME }}
+            GIT_USER_EMAIL: ${{ vars.GIT_USER_EMAIL }}
         steps:
             -   uses: actions/checkout@v4
                 with:
@@ -40,8 +42,8 @@ jobs:
         runs-on: ubuntu-latest
         needs: release
         env:
-            GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
-            GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
+            GIT_USER_NAME: ${{ vars.GIT_USER_NAME }}
+            GIT_USER_EMAIL: ${{ vars.GIT_USER_EMAIL }}
         steps:
             -   uses: actions/checkout@v4
                 with:
@@ -65,16 +67,16 @@ jobs:
             -   uses: actions-js/push@master
                 with:
                     github_token: ${{ secrets.GITHUB_TOKEN }}
-                    author_name: ${{ secrets.GIT_USER_NAME }}
-                    author_email: $${ secrets.GIT_USER_EMAIL }}
-                    branch: 'master'
+                    author_name: ${{ vars.GIT_USER_NAME }}
+                    author_email: $${ vars.GIT_USER_EMAIL }}
+                    branch: master
                     message: 'Set project version to next SNAPSHOT'
     documenation:
         runs-on: ubuntu-latest
         needs: bump-version
         env:
-            GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
-            GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
+            GIT_USER_NAME: ${{ vars.GIT_USER_NAME }}
+            GIT_USER_EMAIL: ${{ vars.GIT_USER_EMAIL }}
         steps:
             -   uses: actions/checkout@v4
                 with:
@@ -101,8 +103,8 @@ jobs:
                     BRANCH: gh-pages
                     FOLDER: build/asciidoc
                     DOC_FOLDER: latest
-                    COMMIT_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
-                    COMMIT_NAME: ${{ secrets.GIT_USER_NAME }}
+                    COMMIT_EMAIL: ${{ vars.GIT_USER_EMAIL }}
+                    COMMIT_NAME: ${{ vars.GIT_USER_NAME }}
                     VERSION: ${{ steps.get_version.outputs.version-without-v }}
             -   uses: micronaut-projects/github-actions/post-release@master
                 if: success()

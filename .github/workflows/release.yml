@@ -48,21 +48,22 @@ jobs:
             -   uses: actions/checkout@v4
                 with:
                     token: ${{ secrets.GITHUB_TOKEN }}
+                    fetch-depth: '0'
             -   uses: actions/setup-java@v4
                 with:
                     java-version: 8
                     distribution: temurin
-            -   name: Bump patch version by one for next SNAPSHOT
-                uses: dhkatz/get-version-action@v3.0.0
+            -   uses: boxt/github-tag-action@2.11.0
                 id: patch_version
-                with:
-                    incrementLevel: patch
-                    source: tags
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                    DEFAULT_BUMP: patch
+                    DRY_RUN: true
             -   name: Set version in gradle.properties
                 env:
-                    NEXT_VERSION: ${{ steps.patch_version.outputs.nextVersion }}
+                    NEXT_VERSION: ${{ steps.patch_version.outputs.tag }}
                 run: |
-                    echo "Preparing next snapshot"
+                    echo "Preparing next snapshot as ${NEXT_VERSION}"
                     ./gradlew snapshotVersion -Pversion="${NEXT_VERSION}"
             -   uses: actions-js/push@master
                 with:

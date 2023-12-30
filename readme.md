@@ -1,6 +1,6 @@
-[![Build Status](https://travis-ci.org/grails-fields-plugin/grails-fields.svg?branch=master)](https://travis-ci.org/grails-fields-plugin/grails-fields) [![Join the chat at https://gitter.im/grails-fields-plugin/grails-fields](https://badges.gitter.im/grails-fields-plugin/grails-fields.svg)](https://gitter.im/grails-fields-plugin/grails-fields?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-- `master` branch for Grails 4.0.
+- `master` new coordinate: `io.github.gpc:fields:4.0.0-RC1` - Grails 4.x 
+- `3.0.0.RC1` last version on coordinates: `org.grails.plugins:fields:3.0.0.RC` - Grails 4.x 
 - `2.2.x` y `2.1.x` for Grails 3. 
 - `grails2.x` for Grails 2.
 
@@ -8,9 +8,4 @@ A spiritual successor to the bean-fields plugin that attempts to provide a confi
 
 For further information please see the full documentation.
 
-Documentation can be found here:
-
-- [Stable](https://grails-fields-plugin.github.io/grails-fields/latest) version
-- [Snapshot](https://grails-fields-plugin.github.io/grails-fields/snapshot) version
-
-
+Documentation can be found [here](https://gpc.github.io/fields)

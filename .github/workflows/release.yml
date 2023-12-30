@@ -22,17 +22,19 @@ jobs:
                 with:
                     token: ${{ secrets.GITHUB_TOKEN }}
             -   name: Publish to Sonatype OSSRH
-                id: publish
-                uses: gradle/gradle-build-action@v2
                 env:
                     SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
                     SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
                     SONATYPE_STAGING_PROFILE_ID: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
-                    SIGN_ARMORED_KEY: ${{ secrets.SIGN_ARMORED_KEY }}
-                    SIGN_PASSWORD: ${{ secrets.SIGNING_PASSPHRASE }}
+                    SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+                    SIGNING_PASSPHRASE: ${{ secrets.SIGNING_PASSPHRASE }}
+                    SECRING_FILE: ${{ secrets.SECRING_FILE }}
                     RELEASE_VERSION: ${{ steps.get_version.outputs.version-without-v }}
-                with:
-                    arguments: -Pversion=${RELEASE_VERSION} publishToSonatype closeAndReleaseSonatypeStagingRepository
+                run: |
+                    echo "${SECRING_FILE}" | base64 -d > "${GITHUB_WORKSPACE}/secring.gpg"
+                    echo "Publishing Artifacts for $RELEASE_VERSION"
+                    (set -x; ./gradlew -Pversion="${RELEASE_VERSION}" -Psigning.secretKeyRingFile="${GITHUB_WORKSPACE}/secring.gpg" publishToSonatype closeAndReleaseSonatypeStagingRepository --no-daemon)
+                    rm  "${GITHUB_WORKSPACE}/secring.gpg"
             -   name: Bump patch version by one
                 uses: flatherskevin/semver-action@v1
                 id: version

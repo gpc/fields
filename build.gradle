@@ -109,17 +109,13 @@ publishing {
     }
 }
 
-ext."signing.keyId" = project.findProperty('signing.keyId') ?: System.getenv('SIGNING_KEY_ID')
-ext."signing.password" = project.findProperty('signing.password') ?: System.getenv('SIGNING_PASSPHRASE')
-ext."signing.secretKeyRingFile" = project.findProperty('signing.secretKeyRingFile') ?: (System.getenv('SIGNING_PASSPHRASE') ?: "${System.getProperty('user.home')}/.gnupg/secring.gpg")
-
 ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 
-afterEvaluate {
-    signing {
-        required { isReleaseVersion }
-        sign publishing.publications.maven
-    }
+import io.github.gradlenexus.publishplugin.InitializeNexusStagingRepository
+
+tasks.withType(InitializeNexusStagingRepository).configureEach {
+	onlyIf { isReleaseVersion }
+	shouldRunAfter(tasks.withType(Sign))
 }
 
 tasks.withType(Sign) {
@@ -127,19 +123,19 @@ tasks.withType(Sign) {
 }
 
 nexusPublishing {
-    repositories {
-        sonatype {
-            def ossUser = System.getenv("SONATYPE_USERNAME") ?: project.findProperty('sonatypeOss2Username') ?: ''
-            def ossPass = System.getenv("SONATYPE_PASSWORD") ?: project.findProperty("sonatypeOss2Password") ?: ''
-            def ossStagingProfileId = System.getenv("SONATYPE_STAGING_PROFILE_ID") ?: project.findProperty("sonatypeOssStagingProfileIdJms") ?: ''
+	repositories {
+		sonatype {
+			def ossUser = System.getenv("SONATYPE_USERNAME") ?: project.hasProperty("sonatypeOssUsername") ? project.sonatypeOssUsername : ''
+			def ossPass = System.getenv("SONATYPE_PASSWORD") ?: project.hasProperty("sonatypeOssPassword") ? project.sonatypeOssPassword : ''
+			def ossStagingProfileId = System.getenv("SONATYPE_STAGING_PROFILE_ID") ?: project.hasProperty("sonatypeOssStagingProfileIdExternalConfig") ? project.sonatypeOssStagingProfileIdExternalConfig : ''
 
-            nexusUrl = uri("https://s01.oss.sonatype.org/service/local/")
-            snapshotRepositoryUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-            username = ossUser
-            password = ossPass
-            stagingProfileId = ossStagingProfileId
-        }
-    }
+			nexusUrl = uri("https://oss.sonatype.org/service/local/")
+			snapshotRepositoryUrl = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+			username = ossUser
+			password = ossPass
+			stagingProfileId = ossStagingProfileId
+		}
+	}
 }
 
 asciidoctor {
@@ -169,7 +165,7 @@ asciidoctor.dependsOn(apiDocs)
 
 task snapshotVersion {
     doLast {
-        if (!project.version.endsWith('-SNAPSHOT')) {
+        if (isReleaseVersion) {
             ant.propertyfile(file: "gradle.properties") {
                 entry(key: "version", value: "${project.version}-SNAPSHOT")
             }

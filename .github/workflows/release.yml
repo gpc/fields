@@ -43,6 +43,7 @@ jobs:
                 with:
                     token: ${{ secrets.GITHUB_TOKEN }}
             -   name: Publish to Sonatype OSSRH
+                if: ${{ false }}
                 env:
                     SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
                     SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
@@ -102,7 +103,7 @@ jobs:
                 id: asciidoctor
             -   uses: gradle/gradle-build-action@v2
                 with:
-                    arguments: -Pversion="${RELEASE_VERSION}" asciidoctor
+                    arguments: -Pversion="${{ env.RELEASE_VERSION }}" asciidoctor
             -   uses: micronaut-projects/github-pages-deploy-action@master
                 if: success()
                 env:
@@ -114,7 +115,7 @@ jobs:
                     DOC_FOLDER: latest
                     COMMIT_EMAIL: ${{ vars.GIT_USER_EMAIL }}
                     COMMIT_NAME: ${{ vars.GIT_USER_NAME }}
-                    VERSION: ${RELEASE_VERSION}
+                    VERSION: ${{ env.RELEASE_VERSION }}
             -   uses: micronaut-projects/github-actions/post-release@master
                 if: success()
                 with:

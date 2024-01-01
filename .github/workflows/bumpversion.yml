@@ -4,14 +4,27 @@ on:
 
 
 jobs:
+    pre: 
+        runs-on: ubuntu-latest
+        outputs:
+            version: ${{ steps.version.outputs.release }}
+        steps:
+            -   uses: madhead/semver-utils@latest
+                id: version
+                with:
+                    # A version to work with
+                    version: 4.0.0-RC11
+
     build:
         runs-on: ubuntu-latest
+        needs: pre
         steps:
             -   uses: actions/checkout@v4
+            -   uses: madhead/semver-utils@latest
+                id: version
                 with:
-                    fetch-depth: 0
-            -   uses: battila7/get-version-action@v2
-                id: get_version
-            -   run: echo ${{ steps.get_version.outputs.version }}
-            -   run: echo ${{ steps.get_version.outputs.version-without-v }}
-            -   run: echo ${{ steps.get_version.outputs.prerelease }}
+                    # A version to work with
+                    version: ${{needs.pre.outputs.version}}
+            -   run: |
+                    echo "Release: ${{ steps.version.outputs.release }}"           # 1.2.3
+                    echo "Patch  : ${{ steps.version.outputs.inc-patch }}"         # 1.2.4

@@ -106,6 +106,7 @@ jobs:
             -   uses: micronaut-projects/github-pages-deploy-action@master
                 if: success()
                 env:
+                    BETA: false
                     TARGET_REPOSITORY: ${{ github.repository }}
                     GH_TOKEN: ${{ secrets.GH_TOKEN }}
                     BRANCH: gh-pages

@@ -20,20 +20,23 @@ import grails.core.GrailsApplication
 import grails.core.GrailsDomainClass
 import grails.gorm.Entity
 import grails.gorm.validation.ConstrainedProperty
-import grails.plugins.VersionComparator
 import grails.util.GrailsNameUtils
+import grails.validation.Validateable
 import grails.web.databinding.WebDataBinding
 import groovy.transform.Canonical
 import groovy.transform.CompileStatic
+import groovy.transform.Memoized
 import groovy.transform.TupleConstructor
 import org.apache.commons.lang.ClassUtils
 import org.grails.datastore.gorm.GormEntity
+import org.grails.datastore.gorm.GormValidateable
 import org.grails.datastore.mapping.dirty.checking.DirtyCheckable
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
 import org.grails.scaffolding.model.property.Constrained
 import org.springframework.validation.FieldError
 
+@CompileStatic
 @Canonical
 @TupleConstructor(includes = ['beanType', 'propertyName', 'propertyType'])
 class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
@@ -51,22 +54,10 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
     PersistentEntity entity
     GrailsApplication grailsApplication
 
-    /**
-     * Since Grails 2.3 blank values that are provided for String properties are
-     * <a href="http://grails.1312388.n4.nabble.com/Grails-2-3-Data-Binding-String-Trimming-And-Null-Conversions-td4645255.html">converted to null by default</a>
-     */
-    @Lazy
-    private boolean convertBlanksToNull = { ->
-
-        String applicationGrailsVersion = grailsApplication.metadata.getGrailsVersion()
-        boolean isAtLeastGrails2Point3 = new VersionComparator().compare(applicationGrailsVersion, '2.3') != -1
-
-        if (isAtLeastGrails2Point3) {
-            getDataBindingConfigParamValue('convertEmptyStringsToNull') && getDataBindingConfigParamValue('trimStrings')
-        } else {
-            false
-        }
-    }()
+    @Memoized
+    private boolean convertBlanksToNull() {
+        getDataBindingConfigParamValue('convertEmptyStringsToNull') && getDataBindingConfigParamValue('trimStrings')
+    }
 
     /**
      * Returns the effective value of a a boolean config param from the <code>grails.databinding</code> node
@@ -90,7 +81,7 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
         [
                 "${GrailsNameUtils.getPropertyName(rootBeanType.simpleName)}.${pathFromRoot}.label".replaceAll(/\[(.+)\]/, ''),
                 "${GrailsNameUtils.getPropertyName(beanType.simpleName)}.${propertyName}.label"
-        ].unique()
+        ].unique() as List<String>
     }
 
     String getDefaultLabel() {
@@ -98,12 +89,12 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
     }
 
     List<FieldError> getErrors() {
-        if (rootBean.metaClass.hasProperty(rootBean, 'errors') && rootBean.errors) {
-
-            rootBean.errors.getFieldErrors(pathFromRoot)
-        } else {
-            []
+        if (rootBean instanceof Validateable) {
+            return (rootBean as Validateable).errors.getFieldErrors(pathFromRoot)
+        } else if (rootBean instanceof GormValidateable) {
+            return (rootBean as GormValidateable).errors.getFieldErrors(pathFromRoot)
         }
+        return []
     }
 
     boolean isRequired() {
@@ -113,7 +104,7 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
             // if the property prohibits nulls and blanks are converted to nulls, then blanks will be prohibited even if a blank
             // constraint does not exist
             boolean hasBlankConstraint = constraints?.hasAppliedConstraint(ConstrainedProperty.BLANK_CONSTRAINT)
-            boolean blanksImplicitlyProhibited = !hasBlankConstraint && !constraints?.nullable && convertBlanksToNull
+            boolean blanksImplicitlyProhibited = !hasBlankConstraint && !constraints?.nullable && convertBlanksToNull()
             !constraints?.nullable && (!constraints?.blank || blanksImplicitlyProhibited)
         } else {
             !constraints?.nullable
@@ -124,8 +115,7 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
         !errors.isEmpty()
     }
 
-    @CompileStatic
-    private List<Class> getSuperclassesAndInterfaces(Class type) {
+    private static List<Class> getSuperclassesAndInterfaces(Class type) {
         List<Class> superclasses = []
         superclasses.addAll(ClassUtils.getAllSuperclasses(ClassUtils.primitiveToWrapper(type)))
         for (Object it in ClassUtils.getAllInterfaces(type)) {

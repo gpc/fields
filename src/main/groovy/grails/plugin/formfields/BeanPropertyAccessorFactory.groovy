@@ -17,11 +17,13 @@
 package grails.plugin.formfields
 
 import grails.core.GrailsApplication
-import grails.gorm.validation.DefaultConstrainedProperty
-import grails.validation.Validateable
-import groovy.transform.PackageScope
 import grails.core.support.GrailsApplicationAware
 import grails.core.support.proxy.ProxyHandler
+import grails.gorm.validation.ConstrainedProperty
+import grails.gorm.validation.DefaultConstrainedProperty
+import grails.validation.Validateable
+import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
 import org.grails.datastore.gorm.validation.constraints.eval.ConstraintsEvaluator
 import org.grails.datastore.gorm.validation.constraints.registry.DefaultConstraintRegistry
 import org.grails.datastore.mapping.model.MappingContext
@@ -38,158 +40,159 @@ import org.springframework.beans.PropertyAccessorFactory
 import org.springframework.context.support.StaticMessageSource
 
 import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Type
+import java.util.regex.Matcher
 import java.util.regex.Pattern
 
+@CompileStatic
 class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 
-	GrailsApplication grailsApplication
-	ConstraintsEvaluator constraintsEvaluator
-	ProxyHandler proxyHandler
-	DomainPropertyFactory fieldsDomainPropertyFactory
-	MappingContext grailsDomainClassMappingContext
+    GrailsApplication grailsApplication
+    ConstraintsEvaluator constraintsEvaluator
+    ProxyHandler proxyHandler
+    DomainPropertyFactory fieldsDomainPropertyFactory
+    MappingContext grailsDomainClassMappingContext
 
-	BeanPropertyAccessor accessorFor(bean, String propertyPath) {
-		if (bean == null) {
-			new PropertyPathAccessor(propertyPath)
-		} else {
-			resolvePropertyFromPath(bean, propertyPath)
-		}
-	}
-
-	private PersistentEntity resolveDomainClass(Class beanClass) {
-		grailsDomainClassMappingContext.getPersistentEntity(beanClass.name)
-	}
-
-	private BeanPropertyAccessor resolvePropertyFromPath(bean, String pathFromRoot) {
-		def beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(bean)
-		def pathElements = pathFromRoot.tokenize(".")
-
-		def params = [rootBean: bean, rootBeanType: bean.getClass(), pathFromRoot: pathFromRoot, grailsApplication: grailsApplication]
-
-		DomainProperty domainProperty = resolvePropertyFromPathComponents(beanWrapper, pathElements, params)
-
-		if (domainProperty != null) {
-			new DelegatingBeanPropertyAccessorImpl(bean, params.value, params.propertyType, pathFromRoot, domainProperty)
-		} else {
-			new BeanPropertyAccessorImpl(params)
-		}
-
-	}
-
-	private DomainProperty resolvePropertyFromPathComponents(BeanWrapper beanWrapper, List<String> pathElements, params) {
-		def propertyName = pathElements.remove(0)
-		PersistentEntity beanClass = resolveDomainClass(beanWrapper.wrappedClass)
-		def propertyType = resolvePropertyType(beanWrapper, beanClass, propertyName)
-		def value = beanWrapper.getPropertyValue(propertyName)
-		if (pathElements.empty) {
-			params.value = value
-			params.propertyType = propertyType
-
-			PersistentProperty persistentProperty
-			String nameWithoutIndex = stripIndex(propertyName)
-			if (beanClass != null) {
-				persistentProperty = beanClass.getPropertyByName(nameWithoutIndex)
-				if (!persistentProperty && beanClass.isIdentityName(nameWithoutIndex)) {
-					persistentProperty = beanClass.identity
-				}
-			}
-
-			if (persistentProperty != null) {
-				fieldsDomainPropertyFactory.build(persistentProperty)
-			} else {
-				params.entity = beanClass
-				params.beanType = beanWrapper.wrappedClass
-				params.propertyType = propertyType
-				params.propertyName = nameWithoutIndex
-				params.domainProperty = null
-				params.constraints = resolveConstraints(beanWrapper, params.propertyName)
-				null
-			}
-		} else {
-			resolvePropertyFromPathComponents(beanWrapperFor(propertyType, value), pathElements, params)
-		}
-	}
-
-	private Constrained resolveConstraints(BeanWrapper beanWrapper, String propertyName) {
-        Class<?> type = beanWrapper.wrappedClass
-        boolean defaultNullable = Validateable.class.isAssignableFrom(type) ? type.metaClass.invokeStaticMethod(type, 'defaultNullable') : false
-		grails.gorm.validation.Constrained constraint = constraintsEvaluator.evaluate(type, defaultNullable)[propertyName]
-		if (!constraint) {
-			constraint = createDefaultConstraint(beanWrapper, propertyName)
-		}
-		new Constrained(constraint)
-	}
-
-    private grails.gorm.validation.Constrained createDefaultConstraint(BeanWrapper beanWrapper, String propertyName) {
-        def defaultConstraint = new DefaultConstrainedProperty(beanWrapper.wrappedClass, propertyName, beanWrapper.getPropertyType(propertyName), new DefaultConstraintRegistry(new StaticMessageSource()))
-        defaultConstraint.nullable = true
-		defaultConstraint
+    BeanPropertyAccessor accessorFor(bean, String propertyPath) {
+        if (bean == null) {
+            new PropertyPathAccessor(propertyPath)
+        } else {
+            resolvePropertyFromPath(bean, propertyPath)
+        }
     }
 
-    private Class resolvePropertyType(BeanWrapper beanWrapper, PersistentEntity beanClass, String propertyName) {
-		Class propertyType = null
-		if (beanClass) {
-			propertyType = resolveDomainPropertyType(beanClass, propertyName)
-		}
-		if (!propertyType) {
-			propertyType = resolveNonDomainPropertyType(beanWrapper, propertyName)
-		}
-		propertyType
-	}
+    private PersistentEntity resolveDomainClass(Class beanClass) {
+        grailsDomainClassMappingContext.getPersistentEntity(beanClass.name)
+    }
 
-	private Class resolveDomainPropertyType(PersistentEntity beanClass, String propertyName) {
-		def propertyNameWithoutIndex = stripIndex(propertyName)
-		def persistentProperty = beanClass.getPropertyByName(propertyNameWithoutIndex)
-		if (!persistentProperty && beanClass.isIdentityName(propertyNameWithoutIndex)) {
-			persistentProperty = beanClass.identity
-		}
-		if (!persistentProperty) {
-			return null
-		}
-		boolean isIndexed = propertyName =~ INDEXED_PROPERTY_PATTERN
-		if (isIndexed) {
-			if (persistentProperty instanceof Basic) {
-				persistentProperty.componentType
-			} else if (persistentProperty instanceof Association) {
-				persistentProperty.associatedEntity.javaClass
-			}
-		} else {
-			persistentProperty.type
-		}
-	}
+    private BeanPropertyAccessor resolvePropertyFromPath(bean, String pathFromRoot) {
+        BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(bean)
+        List<String> pathElements = pathFromRoot.tokenize(".")
 
-	private Class resolveNonDomainPropertyType(BeanWrapper beanWrapper, String propertyName) {
-		def type = beanWrapper.getPropertyType(propertyName)
+        Map<String, Object> params = [rootBean: bean, rootBeanType: bean.getClass(), pathFromRoot: pathFromRoot, grailsApplication: grailsApplication]
+
+        DomainProperty domainProperty = resolvePropertyFromPathComponents(beanWrapper, pathElements, params)
+
+        if (domainProperty != null) {
+            new DelegatingBeanPropertyAccessorImpl(bean, params.value, params.propertyType as Class, pathFromRoot, domainProperty)
+        } else {
+            new BeanPropertyAccessorImpl(params)
+        }
+
+    }
+
+    private DomainProperty resolvePropertyFromPathComponents(BeanWrapper beanWrapper, List<String> pathElements, Map params) {
+        String propertyName = pathElements.remove(0)
+        PersistentEntity beanClass = resolveDomainClass(beanWrapper.wrappedClass)
+        Class propertyType = resolvePropertyType(beanWrapper, beanClass, propertyName)
+        Object value = beanWrapper.getPropertyValue(propertyName)
+        if (pathElements.empty) {
+            params.value = value
+            params.propertyType = propertyType
+
+            PersistentProperty persistentProperty
+            String nameWithoutIndex = stripIndex(propertyName)
+            if (beanClass != null) {
+                persistentProperty = beanClass.getPropertyByName(nameWithoutIndex)
+                if (!persistentProperty && beanClass.isIdentityName(nameWithoutIndex)) {
+                    persistentProperty = beanClass.identity
+                }
+            }
+
+            if (persistentProperty != null) {
+                return fieldsDomainPropertyFactory.build(persistentProperty)
+            } else {
+                params.entity = beanClass
+                params.beanType = beanWrapper.wrappedClass
+                params.propertyType = propertyType
+                params.propertyName = nameWithoutIndex
+                params.domainProperty = null
+                params.constraints = resolveConstraints(beanWrapper, params.propertyName as String)
+                return null
+            }
+        } else {
+            return resolvePropertyFromPathComponents(beanWrapperFor(propertyType, value), pathElements, params)
+        }
+    }
+
+    private Constrained resolveConstraints(BeanWrapper beanWrapper, String propertyName) {
+        Class<?> type = beanWrapper.wrappedClass
+        boolean defaultNullable = Validateable.class.isAssignableFrom(type) ? type.metaClass.invokeStaticMethod(type, 'defaultNullable') : false
+        ConstrainedProperty constraint = constraintsEvaluator.evaluate(type, defaultNullable)[propertyName]
+
+        new Constrained(constraint ?: createDefaultConstraint(beanWrapper, propertyName))
+    }
+
+    private static ConstrainedProperty createDefaultConstraint(BeanWrapper beanWrapper, String propertyName) {
+        new DefaultConstrainedProperty(beanWrapper.wrappedClass, propertyName, beanWrapper.getPropertyType(propertyName), new DefaultConstraintRegistry(new StaticMessageSource())).tap {
+            nullable = true
+        }
+    }
+
+    private static Class resolvePropertyType(BeanWrapper beanWrapper, PersistentEntity beanClass, String propertyName) {
+        return resolveDomainPropertyType(beanClass, propertyName) ?: resolveNonDomainPropertyType(beanWrapper, propertyName)
+    }
+
+    private static Class resolveDomainPropertyType(PersistentEntity beanClass, String propertyName) {
+        if(beanClass) {
+            String propertyNameWithoutIndex = stripIndex(propertyName)
+            PersistentProperty persistentProperty = beanClass.getPropertyByName(propertyNameWithoutIndex)
+            if (!persistentProperty && beanClass.isIdentityName(propertyNameWithoutIndex)) {
+                persistentProperty = beanClass.identity
+            }
+            if (!persistentProperty) {
+                return null
+            }
+            boolean isIndexed = propertyName =~ INDEXED_PROPERTY_PATTERN
+            if (isIndexed) {
+                if (persistentProperty instanceof Basic) {
+                    return (persistentProperty as Basic).componentType
+                } else if (persistentProperty instanceof Association) {
+                    return (persistentProperty as Association).associatedEntity.javaClass
+                }
+            } else {
+                return persistentProperty.type
+            }
+        }
+        return null
+    }
+
+    private static Class<?> resolveNonDomainPropertyType(BeanWrapper beanWrapper, String propertyName) {
+        Class<?> type = beanWrapper.getPropertyType(propertyName)
 		if (type == null) {
-			def match = propertyName =~ INDEXED_PROPERTY_PATTERN
+			String match = getPropertyMatch(propertyName)
 			if (match) {
-				def genericType = beanWrapper.getPropertyDescriptor(match[0][1]).readMethod.genericReturnType
+                Type genericType = beanWrapper.getPropertyDescriptor(match).readMethod.genericReturnType 
 				if (genericType instanceof ParameterizedType) {
-					switch (genericType.rawType) {
+                    ParameterizedType parameterizedType = genericType as ParameterizedType
+					switch (parameterizedType.rawType) {
 						case Collection:
-							type = genericType.actualTypeArguments[0]
-							break
+							return parameterizedType.actualTypeArguments[0] as Class
 						case Map:
-							type = genericType.actualTypeArguments[1]
-							break
+							return parameterizedType.actualTypeArguments[1] as Class
 					}
 				} else {
-					type = Object
+					return Object
 				}
 			}
 		}
-		type
+		return type
 	}
 
-	private BeanWrapper beanWrapperFor(Class type, value) {
-		value ? PropertyAccessorFactory.forBeanPropertyAccess(proxyHandler.unwrapIfProxy(value)) : new BeanWrapperImpl(type)
-	}
+    private BeanWrapper beanWrapperFor(Class type, value) {
+        value ? PropertyAccessorFactory.forBeanPropertyAccess(proxyHandler.unwrapIfProxy(value)) : new BeanWrapperImpl(type)
+    }
 
-	private static final Pattern INDEXED_PROPERTY_PATTERN = ~/^(\w+)\[(.+)\]$/
+    private static final Pattern INDEXED_PROPERTY_PATTERN = ~/^(\w+)\[(.+)]$/
 
-	@PackageScope
-	static String stripIndex(String propertyName) {
-		def matcher = propertyName =~ INDEXED_PROPERTY_PATTERN
-		matcher.matches() ? matcher[0][1] : propertyName
-	}
+    private static String getPropertyMatch(String propertyName) {
+        Matcher matcher = propertyName =~ INDEXED_PROPERTY_PATTERN
+        matcher.matches() ? (matcher[0] as String[])[1] : null
+    }
+
+    @PackageScope
+    static String stripIndex(String propertyName) {
+        def matcher = propertyName =~ INDEXED_PROPERTY_PATTERN
+        matcher.matches() ? (matcher[0] as String[])[1] : propertyName
+    }
 }

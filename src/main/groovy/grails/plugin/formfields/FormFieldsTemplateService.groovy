@@ -17,8 +17,10 @@
 package grails.plugin.formfields
 
 import grails.core.GrailsApplication
+import grails.plugins.GrailsPlugin
 import grails.plugins.GrailsPluginManager
 import grails.util.GrailsNameUtils
+import groovy.transform.CompileStatic
 import groovy.transform.Memoized
 import groovy.util.logging.Slf4j
 import org.grails.datastore.mapping.model.types.ManyToMany
@@ -28,14 +30,13 @@ import org.grails.datastore.mapping.model.types.OneToOne
 import org.grails.scaffolding.model.property.Constrained
 import org.grails.web.gsp.io.GrailsConventionGroovyPageLocator
 import org.grails.web.servlet.mvc.GrailsWebRequest
-import org.grails.web.util.GrailsApplicationAttributes
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.context.request.RequestAttributes
 import org.springframework.web.context.request.RequestContextHolder
 
 import static org.grails.io.support.GrailsResourceUtils.appendPiecesForUri
 
 @Slf4j
+@CompileStatic
 class FormFieldsTemplateService {
 
     public static final String SETTING_WIDGET_PREFIX = 'grails.plugin.fields.widgetPrefix'
@@ -55,67 +56,14 @@ class FormFieldsTemplateService {
         return shouldCache ? widgetPrefixCached : widgetPrefixNotCached
     }
 
-    @Memoized
-    private String getWidgetPrefixCached() {
-        widgetPrefixNotCached
-    }
-
-    private String getWidgetPrefixNotCached() {
-        return grailsApplication?.config?.getProperty(SETTING_WIDGET_PREFIX, 'widget-')
-    }
-
-
     String getTemplateFor(String property) {
         shouldCache ? getTemplateForCached(property) : getTemplateForNotCached(property)
-    }
-
-
-    @Memoized
-    private getTemplateForCached(String templateProperty) {
-        getTemplateForNotCached(templateProperty)
     }
 
     Map findTemplate(BeanPropertyAccessor propertyAccessor, String templateName, String templatesFolder, String theme = null) {
         shouldCache ?
                 findTemplateCached(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, theme) :
                 findTemplateNotCached(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, theme)
-    }
-
-    private getTemplateForNotCached(String templateProperty) {
-        return grailsApplication?.config?.getProperty("grails.plugin.fields.$templateProperty", templateProperty) ?: templateProperty
-    }
-
-    @Memoized
-    private findTemplateCached(BeanPropertyAccessor propertyAccessor, String controllerNamespace, String controllerName, String actionName, String templateName, String templatesFolder, String themeName) {
-        findTemplateNotCached(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, themeName)
-    }
-
-    private findTemplateNotCached(BeanPropertyAccessor propertyAccessor, String controllerNamespace, String controllerName, String actionName, String templateName, String templatesFolder, String themeName) {
-        List<String> candidatePaths
-        if (themeName) {
-            //if theme is specified, first resolve all theme paths and then all the default paths
-            String themeFolder = THEMES_FOLDER + "/" + themeName
-            candidatePaths = candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, themeFolder)
-            candidatePaths = candidatePaths + candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, null)
-        } else {
-            candidatePaths = candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, null)
-        }
-
-        candidatePaths.findResult { String path ->
-            log.debug "looking for template with path $path"
-            def source = groovyPageLocator.findTemplateByPath(path)
-            if (source) {
-                Map template = [path: path]
-                def plugin = pluginManager.allPlugins.find {
-                    source.URI.startsWith(it.pluginPath)
-                }
-                template.plugin = plugin?.name
-                log.debug "found template $template.path ${plugin ? "in $template.plugin plugin" : ''}"
-                return template
-            } else {
-                null
-            }
-        }
     }
 
     static String toPropertyNameFormat(Class type) {
@@ -194,15 +142,6 @@ class FormFieldsTemplateService {
         templateResolveOrder
     }
 
-    private String getAssociationPath(BeanPropertyAccessor propertyAccessor) {
-        String associationPath = null
-        if (propertyAccessor.domainProperty instanceof OneToOne) associationPath = 'oneToOne'
-        if (propertyAccessor.domainProperty instanceof OneToMany) associationPath = 'oneToMany'
-        if (propertyAccessor.domainProperty instanceof ManyToMany) associationPath = 'manyToMany'
-        if (propertyAccessor.domainProperty instanceof ManyToOne) associationPath = 'manyToOne'
-        associationPath
-    }
-
     protected String getWidget(Constrained cp, Class propertyType) {
         if (null == cp) {
             return null
@@ -224,24 +163,86 @@ class FormFieldsTemplateService {
         return widget
     }
 
-    private String getControllerNamespace() {
-        if (GrailsWebRequest.metaClass.respondsTo(GrailsWebRequest, "getControllerNamespace").size() > 0) {
-            return RequestContextHolder.requestAttributes?.getAttribute(GrailsApplicationAttributes.CONTROLLER_NAMESPACE_ATTRIBUTE, RequestAttributes.SCOPE_REQUEST)
+    @Memoized
+    private String getWidgetPrefixCached() {
+        widgetPrefixNotCached
+    }
+
+    private String getWidgetPrefixNotCached() {
+        return grailsApplication?.config?.getProperty(SETTING_WIDGET_PREFIX, 'widget-')
+    }
+
+    @Memoized
+    private String getTemplateForCached(String templateProperty) {
+        getTemplateForNotCached(templateProperty)
+    }
+
+    private String getTemplateForNotCached(String templateProperty) {
+        grailsApplication?.config?.getProperty("grails.plugin.fields.$templateProperty", templateProperty) ?: templateProperty
+    }
+
+    @Memoized
+    private Map<String, String> findTemplateCached(BeanPropertyAccessor propertyAccessor, String controllerNamespace, String controllerName, String actionName, String templateName, String templatesFolder, String themeName) {
+        findTemplateNotCached(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, themeName)
+    }
+
+    private Map<String, String> findTemplateNotCached(BeanPropertyAccessor propertyAccessor, String controllerNamespace, String controllerName, String actionName, String templateName, String templatesFolder, String themeName) {
+        List<String> candidatePaths
+        if (themeName) {
+            //if theme is specified, first resolve all theme paths and then all the default paths
+            String themeFolder = THEMES_FOLDER + "/" + themeName
+            candidatePaths = candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, themeFolder)
+            candidatePaths = candidatePaths + candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, null)
+        } else {
+            candidatePaths = candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, null)
         }
-    }
 
-    private String getControllerName() {
-        RequestContextHolder.requestAttributes?.controllerName
-    }
-
-    private String getActionName() {
-        RequestContextHolder.requestAttributes?.actionName
+        candidatePaths.findResult { String path ->
+            log.debug "looking for template with path $path"
+            def source = groovyPageLocator.findTemplateByPath(path)
+            if (source) {
+                Map template = [path: path]
+                GrailsPlugin plugin = pluginManager.allPlugins.find {
+                    source.URI.startsWith(it.pluginPath)
+                }
+                template.plugin = plugin?.name
+                log.debug "found template $template.path ${plugin ? "in $template.plugin plugin" : ''}"
+                return template
+            }
+            return null
+        }
     }
 
     private boolean getShouldCache() {
         // If not explicitly specified, templates will be cached
         Boolean cacheDisabled = grailsApplication?.config?.getProperty(DISABLE_LOOKUP_CACHE, Boolean, Boolean.FALSE)
         return !cacheDisabled
+    }
+
+    private static String getAssociationPath(BeanPropertyAccessor propertyAccessor) {
+        switch (propertyAccessor.domainProperty) {
+            case OneToOne: return 'oneToOne'
+            case OneToMany: return 'oneToMany'
+            case ManyToMany: return 'manyToMany'
+            case ManyToOne: return 'manyToOne'
+            default: return null
+        }
+    }
+
+    private static String getControllerNamespace() {
+        return grailsWebRequest?.getControllerNamespace()
+    }
+
+    private static String getControllerName() {
+        grailsWebRequest?.controllerName
+    }
+
+    private static String getActionName() {
+        grailsWebRequest?.actionName
+    }
+
+    private static GrailsWebRequest getGrailsWebRequest() {
+        RequestContextHolder.requestAttributes as GrailsWebRequest
     }
 
 }

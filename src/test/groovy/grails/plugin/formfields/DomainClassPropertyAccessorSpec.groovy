@@ -256,10 +256,10 @@ class DomainClassPropertyAccessorSpec extends BuildsAccessorFactory {
 		person.address.country = "Australia"
 		person.errors.rejectValue('address.country', 'not.inList') // http://jira.grails.org/browse/GRAILS-8480
 
-		and:
-		def propertyAccessor = factory.accessorFor(person, "address.country")
+		when:
+		BeanPropertyAccessor propertyAccessor = factory.accessorFor(person, "address.country")
 
-		expect:
+		then:
 		propertyAccessor.errors.first().code == "not.inList"
 		propertyAccessor.invalid
 	}

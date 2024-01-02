@@ -41,7 +41,7 @@ dependencies {
     compileOnly "org.grails:grails-web-boot"
 	compileOnly "org.grails:grails-dependencies"
 
-    implementation "org.grails:scaffolding-core"
+    implementation "org.grails:scaffolding-core:$grailsScaffoldingVersion"
 
     testImplementation "org.grails:grails-web-testing-support"
     testImplementation "org.grails:grails-gorm-testing-support"
@@ -55,13 +55,13 @@ dependencies {
     }
 }
 
-tasks.withType(GroovyCompile) {
+tasks.withType(GroovyCompile).configureEach {
     configure(groovyOptions) {
         forkOptions.jvmArgs = ['-Xmx1024m']
     }
 }
 
-tasks.withType(Test) {
+tasks.withType(Test).configureEach {
     useJUnitPlatform()
 }
 

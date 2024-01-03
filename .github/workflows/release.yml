@@ -43,7 +43,7 @@ jobs:
                 with:
                     token: ${{ secrets.GITHUB_TOKEN }}
             -   name: Publish to Sonatype OSSRH
-                if: ${{ false }}
+                # if: ${{ false }} # prevent deploy
                 env:
                     SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
                     SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
@@ -83,7 +83,7 @@ jobs:
                     author_name: ${{ vars.GIT_USER_NAME }}
                     author_email: $${ vars.GIT_USER_EMAIL }}
                     branch: master
-                    message: Set project version to ${NEXT_VERSION}-SNAPSHOT
+                    message: Set project version to ${{ env.NEXT_VERSION }}-SNAPSHOT
     documenation:
         runs-on: ubuntu-latest
         needs: [ get-version, release ]

@@ -9,3 +9,18 @@ A spiritual successor to the bean-fields plugin that attempts to provide a confi
 For further information please see the full documentation.
 
 Documentation can be found [here](https://gpc.github.io/fields)
+
+## Important 
+
+If you use `org.grails.plugins:scaffolding` version 4.10.0 or less you need to exclude the original `org.grals.plugins:fields:3.3.0.RC1` like this:
+
+```
+implementation("org.grails.plugins:scaffolding") {
+  exclude module: 'fields'
+}
+implementation 'io.github.gpc:fields:5.0.0-RC2'
+```
+
+if you are using Grails 4.x, replace `implementation` with `compile` and use `io.github.gpc:fields:4.0.0`. 
+
+GA versions for Grails 5.x and 6.x are pending

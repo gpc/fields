@@ -11,9 +11,9 @@ Documentation can be found [here](https://gpc.github.io/fields)
 ## Tags and branches: 
 - `master` latest version for Grails 5.x `implementation "io.github.gpc:fields:5.0.0"` - Grails 4.x 
 - `4.0.0` latest version for Grails 4.x `compile "io.github.gpc:fields:4.0.0"`
-- `3.0.0.RC1` last version on coordinates: `org.grails.plugins:fields:3.0.0.RC` - Grails 4.x 
-- `2.2.x` and `2.1.x` for Grails 3. 
-- `grails2.x` for Grails 2.
+- `3.0.0.RC1` last version on coordinates: `org.grails.plugins:fields:3.0.0.RC` - Grails 4.x (no support)
+- `2.2.x` and `2.1.x` for Grails 3. (no support)
+- `grails2.x` for Grails 2. (no support)
 
 
 ## Important 

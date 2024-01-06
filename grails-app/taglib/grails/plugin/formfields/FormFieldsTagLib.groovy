@@ -319,6 +319,7 @@ class FormFieldsTagLib {
 	 * @attr order A comma-separated list of properties to include in provided order
 	 * @attr except A comma-separated list of properties to exclude
 	 * @attr theme Theme name
+	 * @attr template OPTIONAL The template used when rendering the domainClass
 	 */
 	def display = { attrs, body ->
 		attrs = beanStack.innerAttributes + attrs
@@ -327,13 +328,15 @@ class FormFieldsTagLib {
 
 		String property = attrs.remove(PROPERTY_ATTR)
 		String templatesFolder = attrs.remove(TEMPLATES_ATTR)
-		String theme = attrs.remove(THEME_ATTR)
+		String theme = attrs.remove(THEME_ATTR)        
 
 		if (property == null) {
 			PersistentEntity domainClass = resolveDomainClass(bean)
 			if (domainClass) {
+				String template = attrs.remove('template') ?: 'list'
+
 				List properties = resolvePersistentProperties(domainClass, attrs)
-				out << render(template: "/templates/_fields/list", model: [domainClass: domainClass, domainProperties: properties]) { prop ->
+				out << render(template: "/templates/_fields/$template", model: [domainClass: domainClass, domainProperties: properties]) { prop ->
 					BeanPropertyAccessor propertyAccessor = resolveProperty(bean, prop.name)
 					Map model = buildModel(propertyAccessor, attrs, 'HTML')
 					out << raw(renderDisplayWidget(propertyAccessor, model, attrs, templatesFolder, theme))

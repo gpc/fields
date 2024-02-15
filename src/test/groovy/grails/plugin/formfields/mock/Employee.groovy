@@ -4,5 +4,12 @@ import grails.persistence.Entity
 
 @Entity
 class Employee extends Person {
-	int salary
+
+    int salary
+
+    int getYearlySalary() {
+        200 * salary
+    }
+
+    static transients = ['yearlySalary']
 }

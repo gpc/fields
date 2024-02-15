@@ -16,7 +16,6 @@ import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
 import org.grails.scaffolding.model.property.Constrained
 import org.grails.scaffolding.model.property.DomainProperty
-import org.springframework.validation.Errors
 import org.springframework.validation.FieldError
 
 @CompileStatic

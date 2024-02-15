@@ -57,7 +57,7 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
         if (bean == null) {
             new PropertyPathAccessor(propertyPath)
         } else {
-            resolvePropertyFromPath(bean, propertyPath)
+            resolvePropertyFromPath(unwrapIfProxy(bean), propertyPath)
         }
     }
 
@@ -180,7 +180,11 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 	}
 
     private BeanWrapper beanWrapperFor(Class type, value) {
-        value ? PropertyAccessorFactory.forBeanPropertyAccess(proxyHandler.unwrapIfProxy(value)) : new BeanWrapperImpl(type)
+        value ? PropertyAccessorFactory.forBeanPropertyAccess(unwrapIfProxy(value)) : new BeanWrapperImpl(type)
+    }
+
+    private Object unwrapIfProxy(value) {
+        return proxyHandler.unwrapIfProxy(value)
     }
 
     private static final Pattern INDEXED_PROPERTY_PATTERN = ~/^(\w+)\[(.+)]$/
@@ -195,4 +199,6 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
         def matcher = propertyName =~ INDEXED_PROPERTY_PATTERN
         matcher.matches() ? (matcher[0] as String[])[1] : propertyName
     }
+    
+    
 }

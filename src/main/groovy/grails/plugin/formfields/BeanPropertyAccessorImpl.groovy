@@ -51,21 +51,9 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
     PersistentEntity entity
     GrailsApplication grailsApplication
 
-    /**
-     * Since Grails 2.3 blank values that are provided for String properties are
-     * <a href="http://grails.1312388.n4.nabble.com/Grails-2-3-Data-Binding-String-Trimming-And-Null-Conversions-td4645255.html">converted to null by default</a>
-     */
     @Lazy
     private boolean convertBlanksToNull = { ->
-
-        String applicationGrailsVersion = grailsApplication.metadata.getGrailsVersion()
-        boolean isAtLeastGrails2Point3 = new VersionComparator().compare(applicationGrailsVersion, '2.3') != -1
-
-        if (isAtLeastGrails2Point3) {
-            getDataBindingConfigParamValue('convertEmptyStringsToNull') && getDataBindingConfigParamValue('trimStrings')
-        } else {
-            false
-        }
+        getDataBindingConfigParamValue('convertEmptyStringsToNull') && getDataBindingConfigParamValue('trimStrings')
     }()
 
     /**
@@ -78,6 +66,10 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
         grailsApplication.config.getProperty("grails.databinding.$paramName", Boolean, defaultParamValue)
     }
 
+    private boolean getAddPathFromRoot() {
+        grailsApplication.config.getProperty('grails.plugin.fields.i18n.addPathFromRoot', Boolean, false)
+    }
+
     List<Class> getBeanSuperclasses() {
         getSuperclassesAndInterfaces(beanType)
     }
@@ -87,10 +79,15 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
     }
 
     List<String> getLabelKeys() {
-        [
-                "${GrailsNameUtils.getPropertyName(rootBeanType.simpleName)}.${pathFromRoot}.label".replaceAll(/\[(.+)\]/, ''),
-                "${GrailsNameUtils.getPropertyName(beanType.simpleName)}.${propertyName}.label"
-        ].unique()
+        List<String> labelKeys = []
+        
+        labelKeys << "${GrailsNameUtils.getPropertyName(rootBeanType.simpleName)}.${pathFromRoot}.label".replaceAll(/\[(.+)\]/, '') 
+        if(addPathFromRoot) {
+            labelKeys << "${pathFromRoot}.label".replaceAll(/\[(.+)\]/, '')
+        }                
+        labelKeys << "${GrailsNameUtils.getPropertyName(beanType.simpleName)}.${propertyName}.label".toString()
+
+        return labelKeys.unique()
     }
 
     String getDefaultLabel() {

@@ -69,13 +69,17 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 		DomainProperty domainProperty = resolvePropertyFromPathComponents(beanWrapper, pathElements, params)
 
 		if (domainProperty != null) {
-			new DelegatingBeanPropertyAccessorImpl(bean, params.value, params.propertyType, pathFromRoot, domainProperty)
+			new DelegatingBeanPropertyAccessorImpl(bean, params.value, params.propertyType, pathFromRoot, domainProperty, addPathFromRoot)
 		} else {
 			new BeanPropertyAccessorImpl(params)
 		}
 
 	}
 
+	private boolean getAddPathFromRoot() {
+		grailsApplication.config.getProperty('grails.plugin.fields.i18n.addPathFromRoot', boolean)
+	}
+	
 	private DomainProperty resolvePropertyFromPathComponents(BeanWrapper beanWrapper, List<String> pathElements, params) {
 		def propertyName = pathElements.remove(0)
 		PersistentEntity beanClass = resolveDomainClass(beanWrapper.wrappedClass)

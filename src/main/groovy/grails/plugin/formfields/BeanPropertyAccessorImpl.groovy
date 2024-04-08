@@ -69,6 +69,10 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
         grailsApplication.config.getProperty("grails.databinding.$paramName", Boolean, defaultParamValue)
     }
 
+    private boolean getAddPathFromRoot() {
+        grailsApplication.config.getProperty('grails.plugin.fields.i18n.addPathFromRoot', Boolean, false)
+    }
+
     List<Class> getBeanSuperclasses() {
         getSuperclassesAndInterfaces(beanType)
     }
@@ -78,10 +82,15 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
     }
 
     List<String> getLabelKeys() {
-        [
-                "${GrailsNameUtils.getPropertyName(rootBeanType.simpleName)}.${pathFromRoot}.label".replaceAll(/\[(.+)\]/, ''),
-                "${GrailsNameUtils.getPropertyName(beanType.simpleName)}.${propertyName}.label"
-        ].unique() as List<String>
+        List<String> labelKeys = []
+        
+        labelKeys << "${GrailsNameUtils.getPropertyName(rootBeanType.simpleName)}.${pathFromRoot}.label".replaceAll(/\[(.+)\]/, '') 
+        if(addPathFromRoot) {
+            labelKeys << "${pathFromRoot}.label".replaceAll(/\[(.+)\]/, '')
+        }                
+        labelKeys << "${GrailsNameUtils.getPropertyName(beanType.simpleName)}.${propertyName}.label".toString()
+
+        return labelKeys.unique() as List<String>
     }
 
     String getDefaultLabel() {

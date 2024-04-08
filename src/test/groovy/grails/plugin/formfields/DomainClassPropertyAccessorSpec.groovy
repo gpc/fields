@@ -158,7 +158,7 @@ class DomainClassPropertyAccessorSpec extends BuildsAccessorFactory {
         propertyAccessor.domainProperty == null
     }
 
-    @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/37')
+	@Issue('https://github.com/gpc/fields/issues/37')
     void "resolves constraints of the '#property' property when the intervening path is null"() {
         given:
         def book = new Book()
@@ -214,7 +214,7 @@ class DomainClassPropertyAccessorSpec extends BuildsAccessorFactory {
         propertyAccessor.constraints.inList == ["USA", "UK", "Canada"]
     }
 
-    @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/38')
+	@Issue('https://github.com/gpc/fields/issues/38')
     void "label keys for '#property' are '#labels'"() {
         given:
         def bean = beanType.list().find { it.class == beanType }
@@ -231,6 +231,25 @@ class DomainClassPropertyAccessorSpec extends BuildsAccessorFactory {
         Person   | 'address.city'   | ['person.address.city.label', 'address.city.label']
         Author   | 'books[0].title' | ['author.books.title.label', 'book.title.label']
     }
+
+	@Issue('https://github.com/gpc/fields/issues/340')
+	void "label keys for '#property' are '#labels' when addPathFromRoot == true"() {
+		given:
+		config.setAt('grails.plugin.fields.i18n.addPathFromRoot', true)
+		def bean = beanType.list().find { it.class == beanType}
+		def propertyAccessor = factory.accessorFor(bean, property)
+
+		expect:
+		propertyAccessor.labelKeys == labels
+
+		where:
+		beanType | property         | labels
+		Person   | 'name'           | ['person.name.label', 'name.label']
+		Person   | 'dateOfBirth'    | ['person.dateOfBirth.label', 'dateOfBirth.label']
+		Person   | 'address'        | ['person.address.label', 'address.label']
+		Person   | 'address.city'   | ['person.address.city.label', 'address.city.label']
+		Author   | 'books[0].title' | ['author.books.title.label', 'books.title.label', 'book.title.label']
+	}
 
     void "default label for '#property' is '#label'"() {
         given:
@@ -292,7 +311,7 @@ class DomainClassPropertyAccessorSpec extends BuildsAccessorFactory {
         propertyAccessor.invalid
     }
 
-    @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/160')
+    @Issue('https://github.com/gpc/fields/issues/160')
     void "resolves transient property"() {
         given:
         def propertyAccessor = factory.accessorFor(person, "transientText")
@@ -309,7 +328,7 @@ class DomainClassPropertyAccessorSpec extends BuildsAccessorFactory {
         propertyAccessor.constraints.nullable
     }
 
-    @Issue('https://github.com/grails-fields-plugin/grails-fields/issues/160')
+    @Issue('https://github.com/gpc/fields/issues/160')
     void "resolves id property that has no constraints"() {
         given:
         def propertyAccessor = factory.accessorFor(person, "id")

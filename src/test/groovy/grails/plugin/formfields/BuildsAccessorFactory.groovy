@@ -21,6 +21,7 @@ abstract class BuildsAccessorFactory extends Specification implements GrailsWebU
                 proxyHandler = new DefaultProxyHandler()
                 grailsDomainClassMappingContext = ref("grailsDomainClassMappingContext")
                 fieldsDomainPropertyFactory = dpf
+                grailsApplication = ref('grailsApplication')
             }
         }
     }

@@ -30,8 +30,9 @@ class DelegatingBeanPropertyAccessorImpl implements BeanPropertyAccessor {
     final Class beanType
     final String propertyName
     final Class propertyType
+    final boolean addPathFromRoot
 
-    DelegatingBeanPropertyAccessorImpl(Object rootBean, Object value, Class propertyType, String pathFromRoot, DomainProperty domainProperty) {
+    DelegatingBeanPropertyAccessorImpl(Object rootBean, Object value, Class propertyType, String pathFromRoot, DomainProperty domainProperty, boolean addPathFromRoot) {
         this.rootBean = rootBean
         this.value = value
         this.pathFromRoot = pathFromRoot
@@ -39,6 +40,7 @@ class DelegatingBeanPropertyAccessorImpl implements BeanPropertyAccessor {
         this.propertyType = propertyType
         this.propertyName = domainProperty.name
         this.beanType = domainProperty.beanType
+        this.addPathFromRoot = addPathFromRoot
     }
 
     @Override
@@ -97,6 +99,9 @@ class DelegatingBeanPropertyAccessorImpl implements BeanPropertyAccessor {
         List labelKeys = []
         if (rootBean) {
             labelKeys.add("${GrailsNameUtils.getPropertyName(rootBeanType.simpleName)}.${pathFromRoot}.label".replaceAll(/\[(.+)\]/, ''))
+            if (addPathFromRoot) {
+                labelKeys.add("${pathFromRoot}.label".replaceAll(/\[(.+)\]/, ''))
+            }
         }
         labelKeys.addAll(domainProperty.labelKeys)
         labelKeys.unique() as List<String>

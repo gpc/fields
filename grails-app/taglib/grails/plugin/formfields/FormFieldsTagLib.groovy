@@ -18,6 +18,7 @@ package grails.plugin.formfields
 
 import grails.core.GrailsApplication
 import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
 import groovy.xml.MarkupBuilder
 import org.apache.commons.lang.StringUtils
 import org.grails.buffer.FastStringWriter
@@ -44,6 +45,7 @@ import java.text.NumberFormat
 
 import static FormFieldsTemplateService.toPropertyNameFormat
 
+@Slf4j
 class FormFieldsTagLib {
 	static final namespace = 'f'
 
@@ -614,6 +616,9 @@ class FormFieldsTagLib {
 	private CharSequence resolveMessage(List<String> keysInPreferenceOrder, String defaultMessage) {
 		def message = keysInPreferenceOrder.findResult { key ->
 			message(code: key, default: null) ?: null
+		}
+		if(log.traceEnabled && !message) {
+			log.trace("i18n missing translation for one of ${keysInPreferenceOrder}")
 		}
 		message ?: defaultMessage
 	}

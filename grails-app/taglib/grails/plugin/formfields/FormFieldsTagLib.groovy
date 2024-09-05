@@ -564,10 +564,10 @@ class FormFieldsTagLib {
 		List<PersistentProperty> properties
 
 		if (attrs.order) {
-			if (attrs.except) {
-				throwTagError('The [except] and [order] attributes may not be used together.')
-			}
 			def orderBy = getList(attrs.order)
+			if (attrs.except) {
+				orderBy = orderBy - getList(attrs.except)
+			}
 			properties = orderBy.collect { propertyName ->
 				fieldsDomainPropertyFactory.build(domainClass.getPropertyByName(propertyName))
 			}

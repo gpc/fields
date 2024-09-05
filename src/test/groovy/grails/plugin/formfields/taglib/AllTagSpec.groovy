@@ -86,18 +86,17 @@ class AllTagSpec extends AbstractFormFieldsTagLibSpec implements TagLibUnitTest<
 
     }
 
-    @Issue('https://github.com/grails3-plugins/fields/issues/9')
-    void 'order attribute and except attribute are mutually exclusive'() {
+    @Issue('https://github.com/gpc/fields/issues/347')
+    void 'allow order and except attributes'() {
         given:
         views["/_fields/default/_field.gsp"] = '|${property}|'
         views["/_fields/default/_wrapper.gsp"] = '${widget}'
 
         when:
-        applyTemplate('<f:all bean="personInstance" except="password" order="name, minor, gender"/>', [personInstance: personInstance])
+        def output = applyTemplate('<f:all bean="personInstance" except="minor, password" order="name, minor, gender"/>', [personInstance: personInstance])
 
         then:
-        GrailsTagException e = thrown()
-        e.message.contains 'The [except] and [order] attributes may not be used together.'
+        output == '|name||gender|'
     }
 
     void "f:all tag supports theme"() {

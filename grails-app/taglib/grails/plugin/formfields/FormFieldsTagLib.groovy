@@ -190,26 +190,31 @@ class FormFieldsTagLib {
 
 			String prefixAttribute = formFieldsTemplateService.getWidgetPrefix() ?: 'widget-'
 			attrs.each { k, v ->
-
 				if (k?.startsWith(prefixAttribute))
 					widgetAttrs[k.replace(prefixAttribute, '')] = v
 				else
 					wrapperAttrs[k] = v
 			}
 
+			List classes = [widgetAttrs['class']?:'']
+			if (model.invalid) classes << (widgetAttrs.remove('invalidClass')?:'error')
+			if (model.required) classes << (widgetAttrs.remove('requiredClass')?:'required')
+			widgetAttrs['class'] = classes.join(' ').trim()
+			if (widgetAttrs['class'].isEmpty()) {
+				widgetAttrs.remove('class')
+			}
 			if (hasBody(body)) {
 				model.widget = raw(body(model + [attrs: widgetAttrs] + widgetAttrs))
 			} else {
 				model.widget = renderWidget(propertyAccessor, model, widgetAttrs, widgetFolder ?: templatesFolder, theme)
 			}
 
-
 			String templateName = formFieldsTemplateService.getTemplateFor("wrapper")
 			Map template = formFieldsTemplateService.findTemplate(propertyAccessor, templateName, fieldFolder ?: templatesFolder, theme)
 			if (template) {
 				out << render(template: template.path, plugin: template.plugin, model: model + [attrs: wrapperAttrs] + wrapperAttrs)
 			} else {
-				out << renderDefaultField(model)
+				out << renderDefaultField(wrapperAttrs, model)
 			}
 		}
 	}
@@ -623,26 +628,37 @@ class FormFieldsTagLib {
 		message ?: defaultMessage
 	}
 
-	private CharSequence renderDefaultField(Map model) {
-		List classes = ['fieldcontain']
-		if (model.invalid) classes << 'error'
-		if (model.required) classes << 'required'
-
+	private CharSequence renderDefaultField(Map attrs, Map model) {
+		List classes = [attrs['class']?:'fieldcontain']
+		if (model.invalid) classes << (attrs.remove('invalidClass')?:'error')
+		if (model.required) classes << (attrs.remove('requiredClass')?:'required')
+		attrs['class'] = classes.join(' ').trim()
 		Writer writer = new FastStringWriter()
-		new MarkupBuilder(writer).div(class: classes.join(' ')) {
-			label(for: (model.prefix ?: '') + model.property, model.label) {
+		def mb = new MarkupBuilder(writer)
+		mb.setDoubleQuotes(true)
+		mb.div(class: attrs['class']) {
+			label(class: attrs.labelClass, for: (model.prefix ?: '') + model.property, model.label) {
 				if (model.required) {
 					span(class: 'required-indicator', '*')
 				}
 			}
-			// TODO: encoding information of widget gets lost - don't use MarkupBuilder
-			def widget = model.widget
-			if (widget != null) {
-				mkp.yieldUnescaped widget
+			if (attrs.divClass) {
+				div(class: attrs.divClass) {
+					renderWidget(mkp, model)
+				}
+			} else {
+				renderWidget(mkp, model)
 			}
-
 		}
 		writer.buffer
+	}
+
+	private void renderWidget(def mkp, Map model) {
+		// TODO: encoding information of widget gets lost - don't use MarkupBuilder
+		def widget = model.widget
+		if (widget != null) {
+			mkp.yieldUnescaped widget
+		}
 	}
 
 	CharSequence renderDefaultInput(Map model, Map attrs = [:]) {

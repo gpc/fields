@@ -343,7 +343,7 @@ class FormFieldsTagLib {
 				String template = attrs.remove('template') ?: 'list'
 
 				List properties = resolvePersistentProperties(domainClass, attrs)
-				out << render(template: "/templates/_fields/$template", model: [domainClass: domainClass, domainProperties: properties]) { prop ->
+				out << render(template: "/templates/_fields/$template", model: attrs + [domainClass: domainClass, domainProperties: properties]) { prop ->
 					BeanPropertyAccessor propertyAccessor = resolveProperty(bean, prop.name)
 					Map model = buildModel(propertyAccessor, attrs, 'HTML')
 					out << raw(renderDisplayWidget(propertyAccessor, model, attrs, templatesFolder, theme))

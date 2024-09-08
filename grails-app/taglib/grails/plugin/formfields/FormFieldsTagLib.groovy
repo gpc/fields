@@ -197,8 +197,8 @@ class FormFieldsTagLib {
 			}
 
 			List classes = [widgetAttrs['class']?:'']
-			if (model.invalid) classes << (widgetAttrs.remove('invalidClass')?:'error')
-			if (model.required) classes << (widgetAttrs.remove('requiredClass')?:'required')
+			if (model.invalid) classes << (widgetAttrs.remove('invalidClass')?:'')
+			if (model.required) classes << (widgetAttrs.remove('requiredClass')?:'')
 			widgetAttrs['class'] = classes.join(' ').trim()
 			if (widgetAttrs['class'].isEmpty()) {
 				widgetAttrs.remove('class')
@@ -214,7 +214,7 @@ class FormFieldsTagLib {
 			if (template) {
 				out << render(template: template.path, plugin: template.plugin, model: model + [attrs: wrapperAttrs] + wrapperAttrs)
 			} else {
-				out << renderDefaultField(wrapperAttrs, model)
+				out << renderDefaultField(model, wrapperAttrs)
 			}
 		}
 	}
@@ -628,7 +628,7 @@ class FormFieldsTagLib {
 		message ?: defaultMessage
 	}
 
-	private CharSequence renderDefaultField(Map attrs, Map model) {
+	protected CharSequence renderDefaultField(Map model, Map attrs = [:]) {
 		List classes = [attrs['class']?:'fieldcontain']
 		if (model.invalid) classes << (attrs.remove('invalidClass')?:'error')
 		if (model.required) classes << (attrs.remove('requiredClass')?:'required')

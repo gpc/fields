@@ -1,4 +1,4 @@
-<ol class="${listClass?:'property-list'} ${domainClass.decapitalizedName}">
+<ol class="${pageScope['class']?:'property-list'} ${domainClass.decapitalizedName}">
     <g:each in="${domainProperties}" var="p">
         <li class="${listItemClass?:'fieldcontain'}">
             <span id="${p.name}-label" class="${labelClass?:'property-label'}"><g:message code="${domainClass.decapitalizedName}.${p.name}.label" default="${p.defaultLabel}" /></span>

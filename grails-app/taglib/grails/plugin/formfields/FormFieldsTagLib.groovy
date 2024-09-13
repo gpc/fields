@@ -168,9 +168,10 @@ class FormFieldsTagLib {
 	 * @attr widget Specify the folder inside _fields where to look up for the widget template.
 	 * @attr templates Specify the folder inside _fields where to look up for the wrapper and widget template.
 	 * @attr theme Theme name
-	 * @attr divClass class for optional div that will be added if set and contain the widget
-	 * @attr invalidClass class added to wrapper that if property is invalid. Also available for widget.
-	 * @attr requiredClass class added to wrapper when property is required. Also available for widget.
+	 * @attr css html css attribute for wrapper (default: field-contain)
+	 * @attr divClass class for optional div that will be added if set and contain the widget (default: no div created)
+	 * @attr invalidClass class added to wrapper that if property is invalid. (default: error) Also available for widget.
+	 * @attr requiredClass class added to wrapper when property is required. (default: required) Also available for widget.
 	 */
 	def field = { attrs, body ->
 		attrs = beanStack.innerAttributes + attrs

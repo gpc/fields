@@ -20,6 +20,7 @@ import grails.core.GrailsApplication
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import groovy.xml.MarkupBuilder
+import groovy.xml.MarkupBuilderHelper
 import org.apache.commons.lang.StringUtils
 import org.grails.buffer.FastStringWriter
 import org.grails.datastore.mapping.model.MappingContext
@@ -190,15 +191,16 @@ class FormFieldsTagLib {
 
 			String prefixAttribute = formFieldsTemplateService.getWidgetPrefix() ?: 'widget-'
 			attrs.each { k, v ->
-				if (k?.startsWith(prefixAttribute))
+				if (k?.startsWith(prefixAttribute)) {
 					widgetAttrs[k.replace(prefixAttribute, '')] = v
-				else
+				} else {
 					wrapperAttrs[k] = v
+				}
 			}
 
-			List classes = [widgetAttrs['class']?:'']
-			if (model.invalid) classes << (widgetAttrs.remove('invalidClass')?:'')
-			if (model.required) classes << (widgetAttrs.remove('requiredClass')?:'')
+			List classes = [widgetAttrs['class'] ?: '']
+			if (model.invalid) classes << (widgetAttrs.remove('invalidClass') ?: '')
+			if (model.required) classes << (widgetAttrs.remove('requiredClass') ?: '')
 			widgetAttrs['class'] = classes.join(' ').trim()
 			if (widgetAttrs['class'].isEmpty()) {
 				widgetAttrs.remove('class')
@@ -361,10 +363,11 @@ class FormFieldsTagLib {
 
 			String prefixAttribute = formFieldsTemplateService.getWidgetPrefix() ?: 'widget-'
 			attrs.each { k, v ->
-				if (k?.startsWith(prefixAttribute))
+				if (k?.startsWith(prefixAttribute)) {
 					widgetAttrs[k.replace(prefixAttribute, '')] = v
-				else
+				} else {
 					wrapperAttrs[k] = v
+				}
 			}
 
 
@@ -394,8 +397,9 @@ class FormFieldsTagLib {
 		Map widgetAttrs = [:]
 		attrs.each { k, v ->
 			String prefixAttribute = formFieldsTemplateService.getWidgetPrefix()
-			if (k?.startsWith(prefixAttribute))
+			if (k?.startsWith(prefixAttribute)) {
 				widgetAttrs[k.replace(prefixAttribute, '')] = v
+			}
 		}
 		return widgetAttrs
 	}
@@ -430,11 +434,9 @@ class FormFieldsTagLib {
 	private List<String> resolvePropertyNames(PersistentEntity domainClass, Map attrs) {
 		if (attrs.containsKey('order')) {
 			return getList(attrs.order)
-		}
-		else if (attrs.containsKey('properties')) {
+		} else if (attrs.containsKey('properties')) {
 			return getList(attrs.remove('properties'))
 		} else {
-
 			List<String> properties = resolvePersistentProperties(domainClass, attrs, true)*.name
 			int maxProperties = attrs.containsKey('maxProperties') ? attrs.remove('maxProperties').toInteger() : 7
 			if (maxProperties && properties.size() > maxProperties) {
@@ -479,8 +481,7 @@ class FormFieldsTagLib {
 				String errorMsg = null
 				try {
 					errorMsg = error instanceof MessageSourceResolvable ? messageSource.getMessage(error, locale) : messageSource.getMessage(error.toString(), null, locale)
-				}
-				catch (NoSuchMessageException ignored) {
+				} catch (NoSuchMessageException ignored) {
 					// no-op
 				}
 				// unresolved message codes fallback to the defaultMessage and this should
@@ -546,8 +547,9 @@ class FormFieldsTagLib {
 
 	private String resolvePrefix(prefixAttribute) {
 		def prefix = resolvePageScopeVariable(prefixAttribute) ?: prefixAttribute ?: beanStack.prefix
-		if (prefix && !prefix.endsWith('.'))
+		if (prefix && !prefix.endsWith('.')) {
 			prefix = prefix + '.'
+		}
 		prefix ?: ''
 	}
 
@@ -622,16 +624,16 @@ class FormFieldsTagLib {
 		def message = keysInPreferenceOrder.findResult { key ->
 			message(code: key, default: null) ?: null
 		}
-		if(log.traceEnabled && !message) {
+		if (log.traceEnabled && !message) {
 			log.trace("i18n missing translation for one of ${keysInPreferenceOrder}")
 		}
 		message ?: defaultMessage
 	}
 
 	protected CharSequence renderDefaultField(Map model, Map attrs = [:]) {
-		List classes = [attrs['class']?:'fieldcontain']
-		if (model.invalid) classes << (attrs.remove('invalidClass')?:'error')
-		if (model.required) classes << (attrs.remove('requiredClass')?:'required')
+		List classes = [attrs['class'] ?: 'fieldcontain']
+		if (model.invalid) classes << (attrs.remove('invalidClass') ?: 'error')
+		if (model.required) classes << (attrs.remove('requiredClass') ?: 'required')
 		attrs['class'] = classes.join(' ').trim()
 		Writer writer = new FastStringWriter()
 		def mb = new MarkupBuilder(writer)
@@ -653,7 +655,7 @@ class FormFieldsTagLib {
 		writer.buffer
 	}
 
-	private void renderWidget(def mkp, Map model) {
+	private void renderWidget(MarkupBuilderHelper mkp, Map model) {
 		// TODO: encoding information of widget gets lost - don't use MarkupBuilder
 		def widget = model.widget
 		if (widget != null) {
@@ -729,18 +731,24 @@ class FormFieldsTagLib {
 		if (!attrs.type) {
 			if (constrained?.inList) {
 				attrs.from = constrained.inList
-				if (!model.required) attrs.noSelection = ["": ""]
+				if (!model.required) {
+					attrs.noSelection = ["": ""]
+				}
 				return g.select(attrs)
 			} else if (constrained?.password) {
 				attrs.type = "password"
 				attrs.remove('value')
-			} else if (constrained?.email) attrs.type = "email"
-			else if (constrained?.url) attrs.type = "url"
-			else attrs.type = "text"
+			} else if (constrained?.email) {
+				attrs.type = "email"
+			} else if (constrained?.url) {
+				attrs.type = "url"
+			} else {
+				attrs.type = "text"
+			}
 		}
 
-		if (constrained?.matches) attrs.pattern = constrained.matches
-		if (constrained?.maxSize) attrs.maxlength = constrained.maxSize
+		if (constrained?.matches) { attrs.pattern = constrained.matches }
+		if (constrained?.maxSize) { attrs.maxlength = constrained.maxSize }
 
 		if (constrained?.widget == 'textarea') {
 			attrs.remove('type')

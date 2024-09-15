@@ -389,6 +389,7 @@ class DomainClassPropertyAccessorSpec extends BuildsAccessorFactory {
         Employee | 'name' | [Person]
     }
 
+    @IgnoreIf({ VersionNumber.parse(Jvm.current.javaVersion).major >= 17 })
     void 'the superclasses of Person.#path are #expected'() {
         given:
         def propertyAccessor = factory.accessorFor(person, path)

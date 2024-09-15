@@ -46,11 +46,12 @@ dependencies {
 
     testImplementation 'org.javassist:javassist:3.29.0-GA'
     testImplementation "org.apache.groovy:groovy-dateutil"
-    testImplementation "cglib:cglib-nodep:2.2.2"
     testImplementation("org.jodd:jodd-wot:$joddWotVersion") {
         exclude module: 'slf4j-api'
         exclude module: 'asm'
     }
+
+    testRuntimeOnly "net.bytebuddy:byte-buddy:$byteBuddyVersion"
 }
 
 tasks.withType(GroovyCompile).configureEach {

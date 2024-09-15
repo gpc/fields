@@ -1,5 +1,6 @@
 package grails.plugin.formfields.taglib
 
+import grails.converters.XML
 import grails.plugin.formfields.FormFieldsTagLib
 import grails.plugin.formfields.FormFieldsTemplateService
 import grails.plugin.formfields.mock.Author
@@ -40,7 +41,7 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec implements TagLibUnitT
 	void 'display tag allows to specify order'() {
 		when:"A list is rendered"
 		def result = applyTemplate('<f:display bean="personInstance" order="salutation,name,gender"/>', [personInstance: personInstance])
-		def ol = new XmlSlurper().parseText(result)
+		def ol = XML.parse(result)
 
 		then:
 		ol.li.span.collect {it.text().trim()} == ["Salutation", "Name", "Gender"]
@@ -50,7 +51,7 @@ class DisplayTagSpec extends AbstractFormFieldsTagLibSpec implements TagLibUnitT
 	void "display tag allows to specify the except"() {
 		when:
 		def result = applyTemplate('<f:display bean="personInstance" except="salutation,grailsDeveloper,picture,anotherPicture,password,dateOfBirth,emails"/>', [personInstance: personInstance])
-		def ol = new XmlSlurper().parseText(result)
+		def ol = XML.parse(result)
 
 		then:
 		ol.li.span.collect {it.text().trim()}.sort() == ["Address", "Biography", "Gender", "Minor", "Name"]

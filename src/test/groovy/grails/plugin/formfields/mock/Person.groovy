@@ -20,9 +20,7 @@ class Person {
 	byte[] anotherPicture
 	String biography
 
-    transient String getTransientText() {
-        "transient text"
-    }
+    transient String transientText = "transient text"
 
 	static hasMany = [emails: String]
 	static embedded = ['address']

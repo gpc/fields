@@ -6,6 +6,7 @@ import grails.util.GrailsNameUtils
 import grails.validation.Validateable
 import grails.web.databinding.WebDataBinding
 import groovy.transform.Canonical
+import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import groovy.transform.ToString
 import org.apache.commons.lang.ClassUtils
@@ -142,6 +143,7 @@ class DelegatingBeanPropertyAccessorImpl implements BeanPropertyAccessor {
         this.hashCode() == obj?.hashCode()
     }
 
+    @CompileDynamic
     private List<Class> getSuperclassesAndInterfaces(Class type) {
         List<Class> superclasses = []
         superclasses.addAll(ClassUtils.getAllSuperclasses(ClassUtils.primitiveToWrapper(type)))

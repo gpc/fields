@@ -40,7 +40,7 @@ import org.springframework.context.MessageSourceResolvable
 import org.springframework.context.NoSuchMessageException
 import org.springframework.web.servlet.LocaleResolver
 
-import javax.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletRequest
 import java.sql.Blob
 import java.text.NumberFormat
 

@@ -122,7 +122,7 @@ class TableSpec extends AbstractFormFieldsTagLibSpec implements TagLibUnitTest<F
 	void "table tag renders columns for properties until maxProperties is reached, ordered by the domain class constraints"() {
 		when:
 		def output = applyTemplate('<f:table collection="collection" maxProperties="5"/>', [collection: personList])
-		def table = new XmlSlurper().parseText(output)
+		def table = XML.parse(output)
 
 		then:
 		table.thead.tr.th.a.collect { it.text().trim() } == ['Salutation', 'Name', 'Date Of Birth', 'Address', 'Grails Developer']

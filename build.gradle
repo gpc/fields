@@ -1,8 +1,8 @@
 buildscript {
     repositories {
-        mavenLocal()
         maven { url "https://plugins.gradle.org/m2/" }
         maven { url "https://repo.grails.org/grails/core" }
+        mavenLocal()
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
@@ -23,13 +23,13 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 apply plugin: "io.github.gradle-nexus.publish-plugin"
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.17
+targetCompatibility = 1.17
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven { url "https://repo.grails.org/grails/core" }
+    mavenLocal()
 }
 
 dependencies {
@@ -37,17 +37,15 @@ dependencies {
     compileOnly "org.springframework.boot:spring-boot-starter-actuator"
     compileOnly "org.springframework.boot:spring-boot-autoconfigure"
     compileOnly "org.springframework.boot:spring-boot-starter-tomcat"
-
-    compileOnly "org.grails:grails-web-boot"
-	compileOnly "org.grails:grails-dependencies"
-
+    compileOnly "org.grails:grails-dependencies"
+    compileOnly "org.grails.plugins:gsp:${grailsVersion}"
     implementation "org.grails:scaffolding-core:$grailsScaffoldingVersion"
 
     testImplementation "org.grails:grails-web-testing-support"
     testImplementation "org.grails:grails-gorm-testing-support"
 
     testImplementation 'org.javassist:javassist:3.29.0-GA'
-    testImplementation "org.codehaus.groovy:groovy-dateutil"
+    testImplementation "org.apache.groovy:groovy-dateutil"
     testImplementation "cglib:cglib-nodep:2.2.2"
     testImplementation("org.jodd:jodd-wot:$joddWotVersion") {
         exclude module: 'slf4j-api'

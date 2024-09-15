@@ -10,6 +10,7 @@ import org.spockframework.util.VersionNumber
 import org.springframework.beans.NotReadablePropertyException
 import spock.lang.IgnoreIf
 import spock.lang.Issue
+import spock.lang.PendingFeature
 import spock.lang.Shared
 import spock.lang.Unroll
 import spock.util.environment.Jvm
@@ -362,6 +363,7 @@ class DomainClassPropertyAccessorSpec extends BuildsAccessorFactory {
         "minor"       | false // boolean properties are never considered required
     }
 
+    @PendingFeature(reason = 'until domain class inheritance works in Groovy 4')
     def 'the superclasses of #type.simpleName are #expected'() {
         given:
         def propertyAccessor = factory.accessorFor(type.getConstructor().newInstance(), path)

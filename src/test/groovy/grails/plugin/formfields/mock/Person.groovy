@@ -3,7 +3,13 @@ package grails.plugin.formfields.mock
 import grails.persistence.Entity
 
 @Entity
-class Person {
+class Person extends HomoSapiens {}
+
+/*
+ 	Workaround for problem with domain inheritance in Groovy 4.
+ 	(Superclasses cannot be Gorm entities).
+*/
+class HomoSapiens {
     Salutation salutation
 	String name
 	String password

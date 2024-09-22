@@ -1,0 +1,48 @@
+name: Java CI
+on:
+  push:
+    branches:
+      - 'master'
+      - '[5-9]+.[0-9]+.x'
+  pull_request:
+    branches:
+      - 'master'
+      - '[5-9]+.[0-9]+.x'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      WORKSPACE: ${{ github.workspace }}
+      GRADLE_OPTS: -Xmx1500m -Dfile.encoding=UTF-8
+      SIGNING_KEYRING: ${{ secrets.SECRING_FILE }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'adopt'
+          java-version: '8'
+      - name: Run Build
+        uses: gradle/gradle-build-action@v3
+        with:
+          arguments: build -Dgeb.env=chromeHeadless
+  publish:
+    if: github.event_name == 'push'
+    needs: ['build']
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'adopt'
+          java-version: '8'
+      - name: Publish Artifacts (repo.grails.org)
+        id: publish
+        uses: gradle/gradle-build-action@v3
+        env:
+          ARTIFACTORY_USERNAME: ${{ secrets.TEMP_ARTIFACTORY_USERNAME }}
+          ARTIFACTORY_PASSWORD: ${{ secrets.TEMP_ARTIFACTORY_PASSWORD }}
+        with:
+          arguments: -Dorg.gradle.internal.publish.checksums.insecure=true publish

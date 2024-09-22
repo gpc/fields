@@ -2,11 +2,9 @@ buildscript {
     repositories {
         maven { url "https://plugins.gradle.org/m2/" }
         maven { url "https://repo.grails.org/grails/core" }
-        mavenLocal()
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
-        classpath 'io.github.groovylang.groovydoc:groovydoc-gradle-plugin:1.0.1'
     }
 }
 plugins {
@@ -20,13 +18,11 @@ apply plugin: 'org.grails.grails-gsp'
 apply plugin: "org.grails.grails-doc"
 apply plugin: "org.grails.internal.grails-plugin-publish"
 
-sourceCompatibility = 1.17
-targetCompatibility = 1.17
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 repositories {
     mavenCentral()
     maven { url "https://repo.grails.org/grails/core" }
-    mavenLocal()
 }
 
 dependencies {

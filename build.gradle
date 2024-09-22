@@ -7,7 +7,6 @@ buildscript {
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
         classpath 'io.github.groovylang.groovydoc:groovydoc-gradle-plugin:1.0.1'
-        classpath "io.github.gradle-nexus:publish-plugin:1.1.0"
     }
 }
 plugins {
@@ -19,15 +18,12 @@ group 'org.grails.plugins'
 apply plugin: 'org.grails.grails-plugin'
 apply plugin: 'org.grails.grails-gsp'
 apply plugin: "org.grails.grails-doc"
-apply plugin: 'maven-publish'
-apply plugin: 'signing'
-apply plugin: "io.github.gradle-nexus.publish-plugin"
+apply plugin: "org.grails.internal.grails-plugin-publish"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven { url "https://repo.grails.org/grails/core" }
 }
@@ -55,114 +51,19 @@ dependencies {
     }
 }
 
-tasks.withType(GroovyCompile).configureEach {
-    configure(groovyOptions) {
-        forkOptions.jvmArgs = ['-Xmx1024m']
-    }
-}
-
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
 }
 
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId = project.group
-            artifactId = 'fields'
-            version = project.version
-
-            from components.java
-            artifact sourcesJar
-            artifact javadocJar
-
-            pom {
-                name = 'Fields'
-                description = 'Fields integration for Grails'
-                url = 'https://github.com/gpc/fields'
-                licenses {
-                    license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-                developers {
-                    developer {
-                        id = 'robfletcher'
-                        name = 'Rob Fletcher'
-                    }
-                    developer {
-                        id = 'graemerocher'
-                        name = 'Graeme Rocher'
-                    } 
-                    developer {
-                        id = 'sdelamo'
-                        name = 'Sergio del Amo'
-                    }
-                    developer {
-                        id = 'sbglasius'
-                        name = 'Søren Berg Glasius'
-                        email = 'soeren+gpc@glasius.dk'
-                    }
-                }
-                scm {
-                    connection = 'scm:git:git://github.com/gpc/fields.git'
-                    developerConnection = 'scm:git:https://github.com/gpc/fields.git'
-                    url = 'https://github.com/gpc/fields'
-                }
-            }
-        }
+grailsPublish {
+    userOrg = "grails"
+    githubSlug = 'gpc/fields'
+    license {
+        name = 'Apache-2.0'
     }
-}
-
-ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
-
-if(System.getenv('SIGNING_KEY_ID')) {
-    ext["signing.keyId"] = System.getenv('SIGNING_KEY_ID')
-    ext["signing.password"] = System.getenv('SIGNING_PASSPHRASE')
-    ext["signing.secretKeyRingFile"] = System.getenv('SIGNING_FILE')
-}
-
-afterEvaluate {
-    signing {
-        if (System.getenv('SIGN_ARMORED_KEY')) {
-            String signingKey = System.getenv('SIGN_ARMORED_KEY')
-            String signingPassword = System.getenv('SIGN_PASSWORD')
-            useInMemoryPgpKeys(signingKey, signingPassword)
-        } 
-        required {
-            isReleaseVersion
-        }
-
-        sign publishing.publications.maven
-    }
-}
-
-tasks.withType(Sign).configureEach {
-    onlyIf { isReleaseVersion }
-}
-
-import io.github.gradlenexus.publishplugin.InitializeNexusStagingRepository
-
-tasks.withType(InitializeNexusStagingRepository).configureEach {
-    onlyIf { isReleaseVersion }
-    shouldRunAfter(tasks.withType(Sign))
-}
-
-nexusPublishing {
-	repositories {
-		sonatype {
-			def ossUser = System.getenv("SONATYPE_USERNAME") ?: project.hasProperty("sonatypeOssUsername") ? project.sonatypeOssUsername : ''
-			def ossPass = System.getenv("SONATYPE_PASSWORD") ?: project.hasProperty("sonatypeOssPassword") ? project.sonatypeOssPassword : ''
-			def ossStagingProfileId = System.getenv("SONATYPE_STAGING_PROFILE_ID") ?: project.hasProperty("sonatypeOssStagingProfileIdExternalConfig") ? project.sonatypeOssStagingProfileIdExternalConfig : ''
-
-			nexusUrl = uri("https://s01.oss.sonatype.org/service/local/")
-			snapshotRepositoryUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-			username = ossUser
-			password = ossPass
-			stagingProfileId = ossStagingProfileId
-		}
-	}
+    title = "Grails Fields Plugin"
+    desc = "Fields integration for Grails"
+    developers = [robfletcher: 'Rob Fletcher', graemerocher: "Graeme Rocher", sdelamo: "Sergio del Amo", sbglasius: 'Søren Berg Glasius']
 }
 
 asciidoctor {
@@ -189,13 +90,3 @@ tasks.register('apiDocs', Copy) {
 }
 
 asciidoctor.dependsOn(apiDocs)
-
-tasks.register('snapshotVersion') {
-    doLast {
-        if (isReleaseVersion) {
-            ant.propertyfile(file: "gradle.properties") {
-                entry(key: "version", value: "${project.version}-SNAPSHOT")
-            }
-        }
-    }
-}

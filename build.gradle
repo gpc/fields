@@ -6,17 +6,10 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
-        classpath 'io.github.groovylang.groovydoc:groovydoc-gradle-plugin:1.0.1'
-        classpath "io.github.gradle-nexus:publish-plugin:1.1.0"
-    }
-
-    configurations.configureEach {
-        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-            if ((details.requested.group == 'org.codehaus.groovy' || details.requested.group == 'org.apache.groovy') && details.requested.name != 'groovy-bom') {
-                details.useTarget(group: 'org.codehaus.groovy', name: details.requested.name, version: "$GroovySystem.version")
-                details.because "Use version of Groovy provided by Gradle"
-            }
+        classpath 'io.github.groovylang.groovydoc:groovydoc-gradle-plugin:1.0.1', {
+            exclude group:'org.codehaus.groovy'
         }
+        classpath "io.github.gradle-nexus:publish-plugin:1.1.0"
     }
 }
 plugins {

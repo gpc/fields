@@ -41,7 +41,7 @@ jobs:
         id: publish
         uses: gradle/gradle-build-action@v3
         env:
-          ARTIFACTORY_USERNAME: ${{ secrets.TEMP_ARTIFACTORY_USERNAME }}
-          ARTIFACTORY_PASSWORD: ${{ secrets.TEMP_ARTIFACTORY_PASSWORD }}
+          ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
         with:
           arguments: -Dorg.gradle.internal.publish.checksums.insecure=true publish

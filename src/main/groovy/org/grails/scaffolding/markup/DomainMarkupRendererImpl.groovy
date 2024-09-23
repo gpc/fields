@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired
  * @see {@link DomainMarkupRenderer}
  * @author James Kleeh
  */
-@CompileStatic
 class DomainMarkupRendererImpl implements DomainMarkupRenderer {
 
     @Autowired

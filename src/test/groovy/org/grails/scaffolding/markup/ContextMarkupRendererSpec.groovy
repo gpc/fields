@@ -185,7 +185,7 @@ class ContextMarkupRendererSpec extends ClosureCaptureSpecification {
         })
 
         then:
-        closureCapture.calls[0].name == "toPropertyNameFormat"
+        closureCapture.calls[0].name == "fieldset"
         closureCapture.calls[0].args[0] == [class: "embedded timeZone"]
         closureCapture.calls[0][0].name == "legend"
         closureCapture.calls[0][0].args[0] == "Bar"

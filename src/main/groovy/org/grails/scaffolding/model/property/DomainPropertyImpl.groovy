@@ -3,6 +3,7 @@ package org.grails.scaffolding.model.property
 import grails.gorm.validation.PersistentEntityValidator
 import grails.util.GrailsNameUtils
 import groovy.transform.CompileStatic
+import org.grails.datastore.mapping.config.Property
 import org.grails.datastore.mapping.model.MappingContext
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
@@ -18,7 +19,7 @@ import static grails.gorm.validation.ConstrainedProperty.BLANK_CONSTRAINT
 @CompileStatic
 class DomainPropertyImpl implements DomainProperty {
 
-    @Delegate PersistentProperty persistentProperty
+    @Delegate PersistentProperty<Property> persistentProperty
     PersistentProperty rootProperty
     PersistentEntity domainClass
     Constrained constrained
@@ -90,10 +91,10 @@ class DomainPropertyImpl implements DomainProperty {
     }
 
     List<String> getLabelKeys() {
-        List labelKeys = []
-        labelKeys.add("${GrailsNameUtils.getPropertyName(beanType.simpleName)}.${name}.label")
+        List<String> labelKeys = []
+        labelKeys.add("${GrailsNameUtils.getPropertyName(beanType.simpleName)}.${name}.label".toString())
         if (rootProperty) {
-            labelKeys.add("${GrailsNameUtils.getPropertyName(rootBeanType.simpleName)}.${pathFromRoot}.label".replaceAll(/\[(.+)\]/, ''))
+            labelKeys.add("${GrailsNameUtils.getPropertyName(rootBeanType.simpleName)}.${pathFromRoot}.label".replaceAll(/\[(.+)\]/, '').toString())
         }
         labelKeys.unique()
     }

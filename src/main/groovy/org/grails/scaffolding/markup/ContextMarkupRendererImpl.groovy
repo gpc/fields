@@ -6,7 +6,7 @@ import groovy.transform.CompileStatic
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.springframework.context.MessageSource
 
-import javax.annotation.Resource
+import jakarta.annotation.Resource
 
 /**
  * @see {@link ContextMarkupRenderer}

@@ -5,7 +5,7 @@ import org.grails.scaffolding.registry.output.DefaultOutputRenderer
 import grails.web.mapping.LinkGenerator
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-import javax.annotation.PostConstruct
+import jakarta.annotation.PostConstruct
 
 /**
  * Bean for registering the default domain renderers

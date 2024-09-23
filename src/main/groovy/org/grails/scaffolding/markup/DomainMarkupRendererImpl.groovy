@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired
  * @see {@link DomainMarkupRenderer}
  * @author James Kleeh
  */
-@CompileStatic
 class DomainMarkupRendererImpl implements DomainMarkupRenderer {
 
     @Autowired
@@ -85,7 +84,7 @@ class DomainMarkupRendererImpl implements DomainMarkupRenderer {
     String renderInput(PersistentEntity domainClass) {
         outputMarkupContent(
             contextMarkupRenderer.inputContext(domainClass) { ->
-                DomainMarkupRendererImpl contextDelegate = delegate
+                def contextDelegate = delegate
                 domainModelService.getInputProperties(domainClass).each { DomainProperty property ->
                     if (property.persistentProperty instanceof Embedded) {
                         callWithDelegate(contextDelegate, contextMarkupRenderer.embeddedInputContext(property) {

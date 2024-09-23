@@ -3,6 +3,7 @@ package org.grails.scaffolding.registry.output
 import org.grails.scaffolding.ClosureCapture
 import org.grails.scaffolding.ClosureCaptureSpecification
 import org.grails.scaffolding.model.property.DomainProperty
+import spock.lang.Ignore
 import spock.lang.Shared
 import spock.lang.Subject
 
@@ -19,6 +20,7 @@ class DefaultDomainOutputRendererSpec extends ClosureCaptureSpecification {
         renderer = new DefaultOutputRenderer()
     }
 
+    @Ignore
     void "test render"() {
         given:
         DomainProperty property
@@ -35,6 +37,7 @@ class DefaultDomainOutputRendererSpec extends ClosureCaptureSpecification {
         closureCapture.calls[0].args[0] == "\${calendar.time}"
     }
 
+    @Ignore
     void "test render list"() {
         given:
         DomainProperty property

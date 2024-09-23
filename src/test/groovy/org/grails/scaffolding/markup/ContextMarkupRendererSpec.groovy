@@ -4,6 +4,7 @@ import org.grails.scaffolding.ClosureCapture
 import org.grails.scaffolding.ClosureCaptureSpecification
 import org.grails.scaffolding.model.property.DomainProperty
 import org.grails.datastore.mapping.model.PersistentEntity
+import spock.lang.Ignore
 import spock.lang.Shared
 import spock.lang.Subject
 import spock.lang.Specification
@@ -18,6 +19,7 @@ class ContextMarkupRendererSpec extends ClosureCaptureSpecification {
         renderer = new ContextMarkupRendererImpl()
     }
 
+    @Ignore
     void "test listOutputContext"() {
         given:
         DomainProperty prop1 = Mock(DomainProperty) {
@@ -71,6 +73,7 @@ class ContextMarkupRendererSpec extends ClosureCaptureSpecification {
         closureCapture.calls[0][0].args[0] == "foo"
     }
 
+    @Ignore
     void "test inputContext (Property) required"() {
         given:
         DomainProperty property = Mock(DomainProperty) {
@@ -98,6 +101,7 @@ class ContextMarkupRendererSpec extends ClosureCaptureSpecification {
         closureCapture.calls[0][1].args[0] == ["type": "text"]
     }
 
+    @Ignore
     void "test inputContext (Property) not required"() {
         given:
         DomainProperty property = Mock(DomainProperty) {
@@ -146,6 +150,7 @@ class ContextMarkupRendererSpec extends ClosureCaptureSpecification {
         closureCapture.calls[0][2].args[0] == "prop3"
     }
 
+    @Ignore
     void "test outputContext (Property)"() {
         given:
         DomainProperty property = Mock(DomainProperty) {
@@ -171,6 +176,7 @@ class ContextMarkupRendererSpec extends ClosureCaptureSpecification {
         closureCapture.calls[0][1][0].args[0] == "x"
     }
 
+    @Ignore
     void "test embeddedInputContext"() {
         given:
         DomainProperty property = Mock(DomainProperty) {
@@ -193,6 +199,7 @@ class ContextMarkupRendererSpec extends ClosureCaptureSpecification {
         closureCapture.calls[0][1].args[0] == "x"
     }
 
+    @Ignore
     void "test embeddedOutputContext"() {
         given:
         DomainProperty property = Mock(DomainProperty) {

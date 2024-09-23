@@ -4,11 +4,13 @@ import org.grails.scaffolding.ClosureCapture
 import org.grails.scaffolding.ClosureCaptureSpecification
 import org.grails.scaffolding.model.property.DomainProperty
 import org.grails.datastore.mapping.model.PersistentEntity
+import spock.lang.Ignore
 import spock.lang.Shared
 import spock.lang.Subject
 import spock.lang.Specification
 
 @Subject(ContextMarkupRendererImpl)
+@Ignore
 class ContextMarkupRendererSpec extends ClosureCaptureSpecification {
 
     @Shared

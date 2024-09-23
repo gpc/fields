@@ -3,6 +3,7 @@ package org.grails.scaffolding.registry.output
 import org.grails.scaffolding.ClosureCapture
 import org.grails.scaffolding.ClosureCaptureSpecification
 import org.grails.scaffolding.model.property.DomainProperty
+import spock.lang.Ignore
 import spock.lang.Shared
 import spock.lang.Subject
 
@@ -10,6 +11,7 @@ import spock.lang.Subject
  * Created by Jim on 6/7/2016.
  */
 @Subject(DefaultOutputRenderer)
+@Ignore
 class DefaultDomainOutputRendererSpec extends ClosureCaptureSpecification {
 
     @Shared

@@ -1,122 +1,75 @@
 name: Release
 on:
-    release:
-        types: [ published ]
-permissions:
-    contents: write
+  release:
+    types: [published]
 jobs:
-    get-version:
-        name: Get version
-        runs-on: ubuntu-latest
+  release:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: ['11']
+    env:
+      GIT_USER_NAME: grails-build
+      GIT_USER_EMAIL: grails-build@users.noreply.github.com
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'adopt'
+          java-version: ${{ matrix.java }}
+      - name: Set the current release version
+        id: release_version
+        run: echo ::set-output name=release_version::${GITHUB_REF:11}
+      - name: Run pre-release
+        uses: micronaut-projects/github-actions/pre-release@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate secring file
         env:
-            GIT_USER_NAME: ${{ vars.GIT_USER_NAME }}
-            GIT_USER_EMAIL: ${{ vars.GIT_USER_EMAIL }}
-        outputs:
-            version: ${{ steps.get_version.outputs.version-without-v }}
-            next-patch-version: ${{ steps.version.outputs.inc-patch }}
-        steps:
-            -   uses: actions/checkout@v4
-                with:
-                    token: ${{ secrets.GITHUB_TOKEN }}
-            -   uses: dhkatz/get-version-action@v3.0.0
-                id: get_version
-            -   uses: madhead/semver-utils@latest
-                id: version
-                with:
-                    version: ${{ steps.get_version.outputs.version-without-v }}
-    release:
-        name: Release to SONATYPE
-        runs-on: ubuntu-latest
-        needs: get-version
+          SECRING_FILE: ${{ secrets.SECRING_FILE }}
+        run: echo $SECRING_FILE | base64 -d > ${{ github.workspace }}/secring.gpg
+      - name: Publish to Sonatype OSSRH
+        id: publish
+        uses: gradle/gradle-build-action@v3
         env:
-            GIT_USER_NAME: ${{ vars.GIT_USER_NAME }}
-            GIT_USER_EMAIL: ${{ vars.GIT_USER_EMAIL }}
-        steps:
-            -   uses: actions/checkout@v4
-                with:
-                    token: ${{ secrets.GITHUB_TOKEN }}
-            -   uses: actions/setup-java@v4
-                with:
-                    java-version: 8
-                    distribution: temurin
-            -   uses: micronaut-projects/github-actions/pre-release@master
-                with:
-                    token: ${{ secrets.GITHUB_TOKEN }}
-            -   name: Publish to Sonatype OSSRH
-                # if: ${{ false }} # prevent deploy
-                env:
-                    SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-                    SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-                    SONATYPE_STAGING_PROFILE_ID: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
-                    SECRING_FILE: ${{ secrets.SECRING_FILE }}
-                    SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
-                    SIGNING_PASSPHRASE: ${{ secrets.SIGNING_PASSPHRASE }}
-                    SIGNING_FILE: ${{ github.workspace }}/secring.pgp
-                    RELEASE_VERSION: ${{ needs.get-version.outputs.version }}
-                run: |
-                    echo "${SECRING_FILE}" | base64 -d > "${SIGNING_FILE}"
-                    echo "Publishing Artifacts for $RELEASE_VERSION"
-                    (set -x; ./gradlew -Pversion="${RELEASE_VERSION}" publishToSonatype closeAndReleaseSonatypeStagingRepository --no-daemon)
-                    rm  "${SIGNING_FILE}"
-    bump-snapshot-version:
-        runs-on: ubuntu-latest
-        needs: [ get-version, release ]
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          SONATYPE_NEXUS_URL: ${{ secrets.SONATYPE_NEXUS_URL }}
+          SONATYPE_STAGING_PROFILE_ID: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY_ID }}
+          SIGNING_PASSPHRASE: ${{ secrets.SIGNING_PASSPHRASE }}
+          SECRING_FILE: ${{ secrets.SECRING_FILE }}
+        with:
+          arguments: -Psigning.secretKeyRingFile=${{ github.workspace }}/secring.gpg publishToSonatype closeAndReleaseSonatypeStagingRepository
+      - name: Run Assemble
+        id: assemble
+        if: steps.publish.outcome == 'success'
+        uses: gradle/gradle-build-action@v3
+        with:
+          arguments: assemble
+      - name: Export Gradle Properties
+        uses: micronaut-projects/github-actions/export-gradle-properties@master
+      - name: Publish to Github Pages
+        if: steps.assemble.outcome == 'success'
+        uses: micronaut-projects/github-pages-deploy-action@master
         env:
-            GIT_USER_NAME: ${{ vars.GIT_USER_NAME }}
-            GIT_USER_EMAIL: ${{ vars.GIT_USER_EMAIL }}
-            NEXT_VERSION: ${{ needs.get-version.outputs.next-patch-version }}
-        steps:
-            -   uses: actions/checkout@v4
-                with:
-                    token: ${{ secrets.GITHUB_TOKEN }}
-            -   uses: actions/setup-java@v4
-                with:
-                    java-version: 8
-                    distribution: temurin
-            -   name: Set version in gradle.properties
-                run: |
-                    echo "Preparing next snapshot as ${NEXT_VERSION}"
-                    ./gradlew snapshotVersion -Pversion="${NEXT_VERSION}"
-            -   uses: actions-js/push@master
-                with:
-                    github_token: ${{ secrets.GITHUB_TOKEN }}
-                    author_name: ${{ vars.GIT_USER_NAME }}
-                    author_email: $${ vars.GIT_USER_EMAIL }}
-                    branch: master
-                    message: Set project version to ${{ env.NEXT_VERSION }}-SNAPSHOT
-    documenation:
-        runs-on: ubuntu-latest
-        needs: [ get-version, release ]
+          BETA: ${{ contains(steps.release_version.outputs.release_version, 'M') || contains(steps.release_version.outputs.release_version, 'RC') }}
+          TARGET_REPOSITORY: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: build/docs
+          DOC_FOLDER: gh-pages
+          COMMIT_EMAIL: ${{ env.GIT_USER_EMAIL }}
+          COMMIT_NAME: ${{ env.GIT_USER_NAME }}
+          VERSION: ${{ steps.release_version.outputs.release_version }}
+      - name: Run post-release
+        if: success()
+        uses: micronaut-projects/github-actions/post-release@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
         env:
-            GIT_USER_NAME: ${{ vars.GIT_USER_NAME }}
-            GIT_USER_EMAIL: ${{ vars.GIT_USER_EMAIL }}
-            RELEASE_VERSION: ${{ needs.get-version.outputs.version }}
-        steps:
-            -   uses: actions/checkout@v4
-                with:
-                    token: ${{ secrets.GITHUB_TOKEN }}
-            -   uses: actions/setup-java@v4
-                with:
-                    java-version: 8
-                    distribution: temurin
-            -   uses: micronaut-projects/github-actions/export-gradle-properties@master
-                id: asciidoctor
-            -   uses: gradle/gradle-build-action@v2
-                with:
-                    arguments: -Pversion="${{ env.RELEASE_VERSION }}" asciidoctor
-            -   uses: micronaut-projects/github-pages-deploy-action@master
-                if: success()
-                env:
-                    BETA: false
-                    TARGET_REPOSITORY: ${{ github.repository }}
-                    GH_TOKEN: ${{ secrets.GH_TOKEN }}
-                    BRANCH: gh-pages
-                    FOLDER: build/asciidoc
-                    DOC_FOLDER: latest
-                    COMMIT_EMAIL: ${{ vars.GIT_USER_EMAIL }}
-                    COMMIT_NAME: ${{ vars.GIT_USER_NAME }}
-                    VERSION: ${{ env.RELEASE_VERSION }}
-            -   uses: micronaut-projects/github-actions/post-release@master
-                if: success()
-                with:
-                    token: ${{ secrets.GH_TOKEN }}
+          SNAPSHOT_SUFFIX: -SNAPSHOT

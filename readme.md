@@ -9,7 +9,8 @@ Documentation can be found [here](https://gpc.github.io/fields)
 
 
 ## Tags and branches: 
-- `master` latest version for Grails 5.x `implementation "io.github.gpc:fields:5.0.0"` - Grails 4.x 
+- `master` latest version for Grails 7.x `implementation "org.grals.plugins:fields:7.0.0"`
+- `5.1.0` latest version for Grails 5.x `implementation "org.grals.plugins:fields:5.1.0"`
 - `4.0.0` latest version for Grails 4.x `compile "io.github.gpc:fields:4.0.0"`
 - `3.0.0.RC1` last version on coordinates: `org.grails.plugins:fields:3.0.0.RC` - Grails 4.x (no support)
 - `2.2.x` and `2.1.x` for Grails 3. (no support)

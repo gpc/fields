@@ -20,15 +20,14 @@ import grails.core.GrailsApplication
 import grails.core.GrailsDomainClass
 import grails.gorm.Entity
 import grails.gorm.validation.ConstrainedProperty
+import grails.util.GrailsClassUtils
 import grails.util.GrailsNameUtils
 import grails.validation.Validateable
 import grails.web.databinding.WebDataBinding
 import groovy.transform.Canonical
-import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import groovy.transform.Memoized
 import groovy.transform.TupleConstructor
-import org.apache.commons.lang.ClassUtils
 import org.grails.datastore.gorm.GormEntity
 import org.grails.datastore.gorm.GormValidateable
 import org.grails.datastore.mapping.dirty.checking.DirtyCheckable
@@ -125,17 +124,22 @@ class BeanPropertyAccessorImpl implements BeanPropertyAccessor {
         !errors.isEmpty()
     }
 
-    @CompileDynamic
-    private static List<Class> getSuperclassesAndInterfaces(Class type) {
+    private static List<Class<?>> getAllSuperclasses(Class<?> clazz) {
+        List<Class<?>> superclasses = []
+        Class<?> current = clazz
+        while ((current = current.getSuperclass()) != null) {
+            superclasses.add(current)
+        }
+        return superclasses
+    }
+
+    protected static List<Class> getSuperclassesAndInterfaces(Class type) {
         List<Class> superclasses = []
-        superclasses.addAll(ClassUtils.getAllSuperclasses(ClassUtils.primitiveToWrapper(type)))
-        for (Object it in ClassUtils.getAllInterfaces(type)) {
-            Class interfaceCls = (Class) it
+        superclasses.addAll(getAllSuperclasses(org.springframework.util.ClassUtils.resolvePrimitiveIfNecessary(type)))
+        for (Class<?> interfaceCls : GrailsClassUtils.getAllInterfacesForClass(type)) {
             String name = interfaceCls.name
-            if (name.indexOf('$') == -1) {
-                if (interfaceCls.package != GormEntity.package) {
-                    superclasses.add(interfaceCls)
-                }
+            if (!name.contains('$') && interfaceCls.package != GormEntity.package) {
+                superclasses.add(interfaceCls)
             }
         }
         superclasses.removeAll([Object, GroovyObject, Serializable, Cloneable, Comparable, WebDataBinding, DirtyCheckable, Entity])

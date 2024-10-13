@@ -15,7 +15,7 @@ import org.springframework.validation.FieldError
 
 import static grails.plugin.formfields.BeanPropertyAccessorFactory.stripIndex
 import static java.util.Collections.EMPTY_LIST
-import static org.apache.commons.lang.StringUtils.substringAfterLast
+import static grails.util.GrailsStringUtils.substringAfterLast
 
 @CompileStatic
 @Canonical

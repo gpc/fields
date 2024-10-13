@@ -16,12 +16,11 @@
 
 package grails.plugin.formfields
 
-import grails.core.GrailsApplication
+import grails.util.GrailsStringUtils
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import groovy.xml.MarkupBuilder
 import groovy.xml.MarkupBuilderHelper
-import org.apache.commons.lang.StringUtils
 import org.grails.buffer.FastStringWriter
 import org.grails.datastore.mapping.model.MappingContext
 import org.grails.datastore.mapping.model.PersistentEntity
@@ -713,7 +712,7 @@ class FormFieldsTagLib {
 			return g.field(attrs + [type: "file"])
 		} else if (model.type in [TimeZone, Currency, Locale]) {
 			if (!model.required) attrs.noSelection = ["": ""]
-			return g."${StringUtils.uncapitalize(model.type.simpleName)}Select"(attrs)
+			return g."${GrailsStringUtils.uncapitalize(model.type.simpleName)}Select"(attrs)
 		} else {
 			return null
 		}

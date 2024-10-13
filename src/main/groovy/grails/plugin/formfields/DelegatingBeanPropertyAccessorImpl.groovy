@@ -1,18 +1,12 @@
 package grails.plugin.formfields
 
 import grails.core.GrailsDomainClass
-import grails.gorm.Entity
 import grails.util.GrailsNameUtils
 import grails.validation.Validateable
-import grails.web.databinding.WebDataBinding
 import groovy.transform.Canonical
-import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import groovy.transform.ToString
-import org.apache.commons.lang.ClassUtils
-import org.grails.datastore.gorm.GormEntity
 import org.grails.datastore.gorm.GormValidateable
-import org.grails.datastore.mapping.dirty.checking.DirtyCheckable
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
 import org.grails.scaffolding.model.property.Constrained
@@ -72,12 +66,12 @@ class DelegatingBeanPropertyAccessorImpl implements BeanPropertyAccessor {
 
     @Override
     List<Class> getBeanSuperclasses() {
-        getSuperclassesAndInterfaces(beanType)
+        BeanPropertyAccessorImpl.getSuperclassesAndInterfaces(beanType)
     }
 
     @Override
     List<Class> getPropertyTypeSuperclasses() {
-        getSuperclassesAndInterfaces(propertyType)
+        BeanPropertyAccessorImpl.getSuperclassesAndInterfaces(propertyType)
     }
 
     @Override
@@ -141,22 +135,5 @@ class DelegatingBeanPropertyAccessorImpl implements BeanPropertyAccessor {
     @Override
     boolean equals(Object obj) {
         this.hashCode() == obj?.hashCode()
-    }
-
-    @CompileDynamic
-    private List<Class> getSuperclassesAndInterfaces(Class type) {
-        List<Class> superclasses = []
-        superclasses.addAll(ClassUtils.getAllSuperclasses(ClassUtils.primitiveToWrapper(type)))
-        for (Object it in ClassUtils.getAllInterfaces(type)) {
-            Class interfaceCls = (Class) it
-            String name = interfaceCls.name
-            if (name.indexOf('$') == -1) {
-                if (interfaceCls.package != GormEntity.package) {
-                    superclasses.add(interfaceCls)
-                }
-            }
-        }
-        superclasses.removeAll([Object, GroovyObject, Serializable, Cloneable, Comparable, WebDataBinding, DirtyCheckable, Entity])
-        return superclasses.unique()
     }
 }

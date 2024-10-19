@@ -11,6 +11,7 @@ buildscript {
 }
 plugins {
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
+    id 'java-library'
 }
 
 version project.projectVersion
@@ -38,7 +39,7 @@ dependencies {
     compileOnly "org.grails:grails-web-boot"
 	compileOnly "org.grails:grails-dependencies"
 
-    implementation "org.grails:scaffolding-core:$grailsScaffoldingVersion"
+    api "org.grails:scaffolding-core:$grailsScaffoldingVersion"
 
     testImplementation "org.grails:grails-web-testing-support"
     testImplementation "org.grails:grails-gorm-testing-support"

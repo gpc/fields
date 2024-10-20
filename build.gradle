@@ -9,8 +9,10 @@ buildscript {
 }
 plugins {
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
+    id 'java-library'
 }
 
+version project.projectVersion
 group 'org.grails.plugins'
 
 apply plugin: 'org.grails.grails-plugin'
@@ -75,7 +77,7 @@ asciidoctor {
             'compat-mode': 'true',
             'toc': 'left',
             'icons': 'font',
-            'version': project.version,
+            'version': project.projectVersion,
             'sourcedir': 'src/main/groovy'
     baseDirFollowsSourceDir()
     outputDir = "${buildDir}/asciidoc"

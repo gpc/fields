@@ -90,4 +90,8 @@ tasks.register('apiDocs', Copy) {
     into file("${buildDir}/asciidoc/api")
 }
 
+tasks.named('jar', Jar) {
+    it.archiveClassifier = ''
+}
+
 asciidoctor.dependsOn(apiDocs)

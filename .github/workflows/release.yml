@@ -9,8 +9,8 @@ jobs:
       matrix:
         java: ['11']
     env:
-      GIT_USER_NAME: grails-build
-      GIT_USER_EMAIL: grails-build@users.noreply.github.com
+      GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+      GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4
